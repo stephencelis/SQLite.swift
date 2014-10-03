@@ -1,0 +1,65 @@
+html,body,div,span,applet,object,iframe,h1,h2,h3,h4,h5,h6,p,blockquote,pre,a,
+abbr,acronym,address,big,cite,code,del,dfn,em,figure,font,img,ins,kbd,q,s,
+samp,small,strike,strong,sub,sup,tt,var,b,u,i,center,dl,dt,dd,ol,ul,li,
+fieldset,form,label,legend,table,caption,tbody,tfoot,thead,tr,th,td {
+	border: 0;
+	font-size: 100%;
+	margin: 0;
+	outline: 0;
+	padding: 0;
+	vertical-align: baseline
+}
+body {
+	background-color: rgba(255,255,255,0.65);
+	color: rgba(0,0,0,1);
+	font-family: Helvetica,sans-serif;
+	font-size: 62.5%;
+	margin-left: 15px;
+}
+section {
+	padding: 20px 25px 20px 35px
+}
+h3 {
+	color: rgba(128,128,128,1);
+	display: block;
+	font-size: 2.2em;
+	font-weight: 100;
+	margin-bottom: 15px;
+	margin-top: 20px;
+}
+p {
+	color: rgba(65,65,65,1);
+	font-size: 1.4em;
+	line-height: 145%;
+	margin-bottom: 5px;
+}
+a {
+	color: rgba(0,136,204,1);
+	text-decoration: none
+}
+code {
+	color: rgba(128,128,128,1);
+	font-family: Menlo,monospace;
+	font-size: .9em;
+	word-wrap: break-word
+}
+h4 {
+	color: rgba(128,128,128,1);
+	font-size: .6em;
+	font-weight: normal;
+	letter-spacing: 2px;
+	margin-bottom: 8px;
+	text-transform: uppercase
+}
+aside {
+	background-color: rgba(249,249,249,1);
+	border-left: 5px solid rgba(238,238,238,1);
+	font-size: 1.2em;
+	margin: 25px 45px 35px 35px;
+	padding: 15px 15px 7px;
+
+}
+aside p {
+	font-size: 1em;
+	margin-bottom: 8px
+}
