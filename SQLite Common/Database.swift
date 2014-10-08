@@ -330,6 +330,12 @@ public final class Database {
         if block() != SQLITE_OK { assertionFailure("\(lastError)") }
     }
 
+    // MARK: - Query Building
+
+    public subscript(tableName: String) -> Query {
+        return Query(self, tableName)
+    }
+
 }
 
 extension Database: DebugPrintable {
