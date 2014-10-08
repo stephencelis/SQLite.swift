@@ -191,9 +191,7 @@ extension Statement: SequenceType {
 
     public typealias Generator = Statement
 
-    public func generate() -> Generator {
-        return self
-    }
+    public func generate() -> Generator { return self }
 
 }
 
