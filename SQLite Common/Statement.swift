@@ -187,6 +187,7 @@ public final class Statement {
 
 }
 
+// MARK: - SequenceType
 extension Statement: SequenceType {
 
     public typealias Generator = Statement
@@ -195,6 +196,7 @@ extension Statement: SequenceType {
 
 }
 
+// MARK: - GeneratorType
 extension Statement: GeneratorType {
 
     /// A single row.
@@ -245,6 +247,7 @@ extension Statement: GeneratorType {
 
 }
 
+// MARK: - DebugPrintable
 extension Statement: DebugPrintable {
 
     public var debugDescription: String {
