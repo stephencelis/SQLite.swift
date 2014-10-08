@@ -173,7 +173,7 @@ class StatementTests: XCTestCase {
 
     func test_values_returnsDictionaryOfColumnsToValues() {
         InsertUser(db, "alice")
-        let stmt = db.prepare("SELECT id, email FROM users")
+        let stmt = db.prepare("SELECT id, \"email\" FROM users")
         stmt.next()
 
         let values = stmt.values!
