@@ -232,16 +232,6 @@ public final class Database {
         return transaction(mode, statements)
     }
 
-    /// Runs a series of statements in a transaction. The first statement to
-    /// fail will short-circuit the rest and roll back the changes. A successful
-    /// transaction will automatically be committed.
-    ///
-    /// :param: mode       The mode in which the transaction will acquire a
-    ///                    lock.
-    ///
-    /// :param: statements Statements to run in the transaction.
-    ///
-    /// :returns: The last statement executed, successful or not.
     private func transaction(mode: TransactionMode, _ statements: [@autoclosure () -> Statement]) -> Statement {
         var transaction = run("BEGIN \(mode.rawValue) TRANSACTION")
         // FIXME: rdar://18479820 // for statement in statements { transaction = transaction && statement() }
@@ -259,7 +249,7 @@ public final class Database {
     /// fail will short-circuit the rest and roll back the changes. A successful
     /// savepoint will automatically be committed.
     ///
-    /// :param: statements Statements to run in the transaction.
+    /// :param: statements Statements to run in the savepoint.
     ///
     /// :returns: The last statement executed, successful or not.
     public func savepoint(statements: (@autoclosure () -> Statement)...) -> Statement {
@@ -268,6 +258,15 @@ public final class Database {
         return transaction
     }
 
+    /// Runs a series of statements in a new savepoint. The first statement to
+    /// fail will short-circuit the rest and roll back the changes. A successful
+    /// savepoint will automatically be committed.
+    ///
+    /// :param: name       The name of the savepoint.
+    ///
+    /// :param: statements Statements to run in the savepoint.
+    ///
+    /// :returns: The last statement executed, successful or not.
     public func savepoint(name: String, _ statements: (@autoclosure () -> Statement)...) -> Statement {
         return savepoint(name, statements)
     }
