@@ -97,7 +97,7 @@ public struct Query {
 
     /// Adds a JOIN clause to the query.
     ///
-    /// :param: type      The JOIN operator used .
+    /// :param: type      The JOIN operator used.
     ///
     /// :param: tableName The table being joined.
     ///
