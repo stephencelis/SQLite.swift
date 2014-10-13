@@ -39,9 +39,9 @@ db.lastChanges  // {Some 1}
 db.lastID       // {Some 2}
 
 for row in db.prepare("SELECT id, email FROM users") {
-    println(row)
-    // [Optional(1), Optional("betsy@example.com")]
-    // [Optional(2), Optional("alice@example.com")]
+    println("id: \(row[0]), email: \(row[1])")
+    // id: Optional(1), email: Optional("betsy@example.com")
+    // id: Optional(2), email: Optional("alice@example.com")
 }
 
 db.scalar("SELECT count(*) FROM users") // {Some 2}
