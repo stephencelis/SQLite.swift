@@ -21,8 +21,8 @@
 // THE SOFTWARE.
 //
 
-/// A query object. Used to build SQL statements using a collection of
-/// chainable helper functions.
+/// A query object. Used to build SQL statements with a collection of chainable
+/// helper functions.
 public struct Query {
 
     private var database: Database
