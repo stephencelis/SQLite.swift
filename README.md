@@ -86,7 +86,7 @@ To install SQLite.swift:
 
 [4.1]: https://developer.apple.com/xcode/downloads/
 [4.2]: http://git-scm.com/book/en/Git-Tools-Submodules
-[4.3]: https://github.com/stephencelis/SQLite.swift/master.zip
+[4.3]: https://github.com/stephencelis/SQLite.swift/archive/master.zip
 
 
 ## Communication
