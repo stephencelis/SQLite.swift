@@ -1,5 +1,5 @@
 db.transaction(
-    sr.run("dolly@example.com"),
-    jr.run("emery@example.com", db.lastID)
+    sr.run("dolly@acme.com"),
+    jr.run("emery@acme.com", db.lastID)
 )
 count.scalar()

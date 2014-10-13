@@ -3,17 +3,17 @@
 <link rel='stylesheet' type='text/css' href='style-1.1.15.css'>
 <meta id='xcode-display' name='xcode-display' content='render'>
 <section>
-	<p>
-		This time, our transaction fails because Emery has already been added to the database. The addition of Fiona has been rolled back, and we’ll need to get to the bottom of this discrepancy (or make some schematic changes to our database to allow for multiple managers per user).
-	</p>
-	<aside>
-		<h4>Experiment</h4>
-		<p>
-			Transactions can’t be nested, but savepoints can! Try calling the <code>savepoint</code> function instead, which shares semantics with <code>transaction</code>, but can successfully run in layers.
-		</p>
-	</aside>
-	<h3>&amp; More…</h3>
-	<p>
-		We’ve only explored the surface to SQLite.swift. Dive into the code to discover more!
-	</p>
+    <p>
+        This time, our transaction fails because Emery has already been added to the database. The addition of Fiona has been rolled back, and we’ll need to get to the bottom of this discrepancy (or make some schematic changes to our database to allow for multiple managers per user).
+    </p>
+    <aside>
+        <h4>Experiment</h4>
+        <p>
+            Transactions can’t be nested, but savepoints can! Try calling the <code>savepoint</code> function instead, which shares semantics with <code>transaction</code>, but can successfully run in layers.
+        </p>
+    </aside>
+    <h3>Query Building</h3>
+    <p>
+        In order to both minimize the risk of SQL syntax errors and maximize our ability to quickly access data, SQLite.swift exposes a query-building interface via the <code>Query</code> struct. We can access this interface by subscripting our database connection with a table name.
+    </p>
 </section>

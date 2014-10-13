@@ -20,6 +20,28 @@
         <documentation relative-path='fragment-8.html'/>
         <code source-file-name='section-18.swift'/>
         <documentation relative-path='fragment-9.html'/>
+        <code source-file-name='section-20.swift'/>
+        <documentation relative-path='fragment-10.html'/>
+        <code source-file-name='section-22.swift'/>
+        <documentation relative-path='fragment-11.html'/>
+        <code source-file-name='section-24.swift'/>
+        <documentation relative-path='fragment-12.html'/>
+        <code source-file-name='section-26.swift'/>
+        <documentation relative-path='fragment-13.html'/>
+        <code source-file-name='section-28.swift'/>
+        <documentation relative-path='fragment-14.html'/>
+        <code source-file-name='section-30.swift'/>
+        <documentation relative-path='fragment-15.html'/>
+        <code source-file-name='section-32.swift'/>
+        <documentation relative-path='fragment-16.html'/>
+        <code source-file-name='section-34.swift'/>
+        <documentation relative-path='fragment-17.html'/>
+        <code source-file-name='section-36.swift'/>
+        <documentation relative-path='fragment-18.html'/>
+        <code source-file-name='section-38.swift'/>
+        <documentation relative-path='fragment-19.html'/>
+        <code source-file-name='section-40.swift'/>
+        <documentation relative-path='fragment-20.html'/>
     </sections>
     <timeline fileName='timeline.xctimeline'/>
 </playground>

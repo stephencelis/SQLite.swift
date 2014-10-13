@@ -1,6 +1,6 @@
 let txn = db.transaction(
-    sr.run("fiona@example.com"),
-    jr.run("emery@example.com", db.lastID)
+    sr.run("fiona@acme.com"),
+    jr.run("emery@acme.com", db.lastID)
 )
 count.scalar()
 
