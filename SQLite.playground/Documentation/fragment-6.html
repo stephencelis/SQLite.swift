@@ -14,6 +14,6 @@
     </aside>
     <h3>Transactions &amp; Savepoints</h3>
     <p>
-        Using the <code>transaction</code> and <code>savepoint</code> functions, we can run a series of statements, commiting the changes to the database if all succeed, or bailing out early and rolling back on failure. In the following example we prepare two statements: one to insert a manager into the database, and one—given a manager’s row ID—to insert a managed user into the database.
+        Using the <code>transaction</code> and <code>savepoint</code> functions, we can run a series of statements, commiting the changes to the database if they all succeed. If a single statement fails, we bail out early and roll back. In the following example we prepare two statements: one to insert a manager into the database, and one—given a manager’s row ID—to insert a managed user into the database.
     </p>
 </section>
