@@ -404,18 +404,14 @@ public struct Query {
     /// :param: values A dictionary of column names to values.
     ///
     /// :returns: The statement.
-    public func insert(values: Values) -> Statement {
-        return insert(values).statement
-    }
+    public func insert(values: Values) -> Statement { return insert(values).statement }
 
     /// Runs an INSERT statement with the given row of values.
     ///
     /// :param: values A dictionary of column names to values.
     ///
     /// :returns: The row ID.
-    public func insert(values: Values) -> Int? {
-        return insert(values).ID
-    }
+    public func insert(values: Values) -> Int? { return insert(values).ID }
 
     /// Runs an INSERT statement with the given row of values.
     ///
@@ -432,18 +428,14 @@ public struct Query {
     /// :param: values A dictionary of column names to values.
     ///
     /// :returns: The statement.
-    public func update(values: Values) -> Statement {
-        return update(values).statement
-    }
+    public func update(values: Values) -> Statement { return update(values).statement }
 
     /// Runs an UPDATE statement against the query with the given values.
     ///
     /// :param: values A dictionary of column names to values.
     ///
     /// :returns: The number of updated rows.
-    public func update(values: Values) -> Int {
-        return update(values).changes
-    }
+    public func update(values: Values) -> Int { return update(values).changes }
 
     /// Runs an UPDATE statement against the query with the given values.
     ///
@@ -458,16 +450,12 @@ public struct Query {
     /// Runs an DELETE statement against the query.
     ///
     /// :returns: The statement.
-    public func delete() -> Statement {
-        return delete().statement
-    }
+    public func delete() -> Statement { return delete().statement }
 
     /// Runs an DELETE statement against the query.
     ///
     /// :returns: The number of deleted rows.
-    public func delete() -> Int {
-        return delete().changes
-    }
+    public func delete() -> Int { return delete().changes }
 
     /// Runs an DELETE statement against the query.
     ///
