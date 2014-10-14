@@ -1,3 +1,4 @@
+
 //
 // SQLite.Database
 // Copyright (c) 2014 Stephen Celis.
@@ -20,6 +21,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
+
+func quote(#literal: String) -> String {
+    let escaped = join("''", split(literal) { $0 == "'" })
+    return "'\(escaped)'"
+}
 
 /// A connection (handle) to a SQLite database.
 public final class Database {
@@ -85,7 +91,7 @@ public final class Database {
     /// :param: bindings  A list of parameters to bind to the statement.
     ///
     /// :returns: A prepared statement.
-    public func prepare(statement: String, _ bindings: Datatype?...) -> Statement {
+    public func prepare(statement: String, _ bindings: Value?...) -> Statement {
         if !bindings.isEmpty { return prepare(statement, bindings) }
 
         var statementHandle: COpaquePointer = nil
@@ -100,7 +106,7 @@ public final class Database {
     /// :param: bindings  A list of parameters to bind to the statement.
     ///
     /// :returns: A prepared statement.
-    public func prepare(statement: String, _ bindings: [Datatype?]) -> Statement {
+    public func prepare(statement: String, _ bindings: [Value?]) -> Statement {
         return prepare(statement).bind(bindings)
     }
 
@@ -112,7 +118,7 @@ public final class Database {
     ///                   statement.
     ///
     /// :returns: A prepared statement.
-    public func prepare(statement: String, _ bindings: [String: Datatype?]) -> Statement {
+    public func prepare(statement: String, _ bindings: [String: Value?]) -> Statement {
         return prepare(statement).bind(bindings)
     }
 
@@ -125,7 +131,7 @@ public final class Database {
     /// :param: bindings  A list of parameters to bind to the statement.
     ///
     /// :returns: The statement.
-    public func run(statement: String, _ bindings: Datatype?...) -> Statement {
+    public func run(statement: String, _ bindings: Value?...) -> Statement {
         return run(statement, bindings)
     }
 
@@ -136,7 +142,7 @@ public final class Database {
     /// :param: bindings  A list of parameters to bind to the statement.
     ///
     /// :returns: The statement.
-    public func run(statement: String, _ bindings: [Datatype?]) -> Statement {
+    public func run(statement: String, _ bindings: [Value?]) -> Statement {
         return prepare(statement).run(bindings)
     }
 
@@ -148,7 +154,7 @@ public final class Database {
     ///                   statement.
     ///
     /// :returns: The statement.
-    public func run(statement: String, _ bindings: [String: Datatype?]) -> Statement {
+    public func run(statement: String, _ bindings: [String: Value?]) -> Statement {
         return prepare(statement).run(bindings)
     }
 
@@ -162,7 +168,7 @@ public final class Database {
     /// :param: bindings  A list of parameters to bind to the statement.
     ///
     /// :returns: The first value of the first row returned.
-    public func scalar(statement: String, _ bindings: Datatype?...) -> Datatype? {
+    public func scalar(statement: String, _ bindings: Value?...) -> Value? {
         return scalar(statement, bindings)
     }
 
@@ -174,7 +180,7 @@ public final class Database {
     /// :param: bindings  A list of parameters to bind to the statement.
     ///
     /// :returns: The first value of the first row returned.
-    public func scalar(statement: String, _ bindings: [Datatype?]) -> Datatype? {
+    public func scalar(statement: String, _ bindings: [Value?]) -> Value? {
         return prepare(statement).scalar(bindings)
     }
 
@@ -187,7 +193,7 @@ public final class Database {
     ///                   statement.
     ///
     /// :returns: The first value of the first row returned.
-    public func scalar(statement: String, _ bindings: [String: Datatype?]) -> Datatype? {
+    public func scalar(statement: String, _ bindings: [String: Value?]) -> Value? {
         return prepare(statement).scalar(bindings)
     }
 
@@ -272,12 +278,12 @@ public final class Database {
     }
 
     private func savepoint(name: String, _ statements: [@autoclosure () -> Statement]) -> Statement {
-        let quotedName = join("''", split(name) { $0 == "'" })
-        var savepoint = run("SAVEPOINT '\(quotedName)'")
+        let quotedName = quote(literal: name)
+        var savepoint = run("SAVEPOINT \(quotedName)")
         // FIXME: rdar://18479820 // for statement in statements { savepoint = savepoint && statement() }
         for idx in 0..<statements.count { savepoint = savepoint && statements[idx]() }
-        savepoint = savepoint && run("RELEASE SAVEPOINT '\(quotedName)'")
-        if savepoint.failed { run("ROLLBACK TO SAVEPOINT '\(quotedName)'") }
+        savepoint = savepoint && run("RELEASE SAVEPOINT \(quotedName)")
+        if savepoint.failed { run("ROLLBACK TO SAVEPOINT \(quotedName)") }
         return savepoint
     }
 
@@ -328,12 +334,6 @@ public final class Database {
 
     private func try(block: @autoclosure () -> Int32) {
         if block() != SQLITE_OK { assertionFailure("\(lastError)") }
-    }
-
-    // MARK: - Query Building
-
-    public subscript(tableName: String) -> Query {
-        return Query(self, tableName)
     }
 
 }

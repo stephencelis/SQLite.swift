@@ -47,7 +47,7 @@ public final class Statement {
     /// :param: values A list of parameters to bind to the statement.
     ///
     /// :returns: The statement object (useful for chaining).
-    public func bind(values: Datatype?...) -> Statement {
+    public func bind(values: Value?...) -> Statement {
         return bind(values)
     }
 
@@ -56,7 +56,7 @@ public final class Statement {
     /// :param: values A list of parameters to bind to the statement.
     ///
     /// :returns: The statement object (useful for chaining).
-    public func bind(values: [Datatype?]) -> Statement {
+    public func bind(values: [Value?]) -> Statement {
         if values.isEmpty { return self }
         reset()
         assert(values.count == Int(sqlite3_bind_parameter_count(handle)), "\(Int(sqlite3_bind_parameter_count(handle))) values expected, \(values.count) passed")
@@ -70,7 +70,7 @@ public final class Statement {
     ///                statement.
     ///
     /// :returns: The statement object (useful for chaining).
-    public func bind(values: [String: Datatype?]) -> Statement {
+    public func bind(values: [String: Value?]) -> Statement {
         reset()
         for (name, value) in values {
             let idx = sqlite3_bind_parameter_index(handle, name)
@@ -96,9 +96,9 @@ public final class Statement {
         try(sqlite3_bind_text(handle, Int32(idx), text, -1, SQLITE_TRANSIENT))
     }
 
-    private func bind(value: Datatype?, atIndex idx: Int) {
-        if let datatype = value {
-            datatype.bindTo(self, atIndex: idx)
+    private func bind(value: Value?, atIndex idx: Int) {
+        if let Value = value {
+            Value.bindTo(self, atIndex: idx)
         } else {
             try(sqlite3_bind_null(handle, Int32(idx)))
         }
@@ -109,7 +109,7 @@ public final class Statement {
     /// :param: bindings A list of parameters to bind to the statement.
     ///
     /// :returns: The statement object (useful for chaining).
-    public func run(bindings: Datatype?...) -> Statement {
+    public func run(bindings: Value?...) -> Statement {
         if !bindings.isEmpty { return run(bindings) }
         reset(clearBindings: false)
         for _ in self {}
@@ -119,7 +119,7 @@ public final class Statement {
     /// :param: bindings A list of parameters to bind to the statement.
     ///
     /// :returns: The statement object (useful for chaining).
-    public func run(bindings: [Datatype?]) -> Statement {
+    public func run(bindings: [Value?]) -> Statement {
         return bind(bindings).run()
     }
 
@@ -127,7 +127,7 @@ public final class Statement {
     ///                  statement.
     ///
     /// :returns: The statement object (useful for chaining).
-    public func run(bindings: [String: Datatype?]) -> Statement {
+    public func run(bindings: [String: Value?]) -> Statement {
         return bind(bindings).run()
     }
 
@@ -136,10 +136,10 @@ public final class Statement {
     /// :param: bindings A list of parameters to bind to the statement.
     ///
     /// :returns: The first value of the first row returned.
-    public func scalar(bindings: Datatype?...) -> Datatype? {
+    public func scalar(bindings: Value?...) -> Value? {
         if !bindings.isEmpty { return scalar(bindings) }
         reset(clearBindings: false)
-        let value: Datatype? = next()?[0]
+        let value: Value? = next()?[0]
         for _ in self {}
         return value
     }
@@ -147,7 +147,7 @@ public final class Statement {
     /// :param: bindings A list of parameters to bind to the statement.
     ///
     /// :returns: The first value of the first row returned.
-    public func scalar(bindings: [Datatype?]) -> Datatype? {
+    public func scalar(bindings: [Value?]) -> Value? {
         return bind(bindings).scalar()
     }
 
@@ -155,7 +155,7 @@ public final class Statement {
     ///                  statement.
     ///
     /// :returns: The first value of the first row returned.
-    public func scalar(bindings: [String: Datatype?]) -> Datatype? {
+    public func scalar(bindings: [String: Value?]) -> Value? {
         return bind(bindings).scalar()
     }
 
@@ -200,7 +200,7 @@ extension Statement: SequenceType {
 extension Statement: GeneratorType {
 
     /// A single row.
-    public typealias Element = [Datatype?]
+    public typealias Element = [Value?]
 
     /// :returns: The next row from the result set (or nil).
     public func next() -> Element? {
@@ -236,9 +236,9 @@ extension Statement: GeneratorType {
     }
 
     /// :returns: A dictionary of column name to row value.
-    public var values: [String: Datatype?]? {
+    public var values: [String: Value?]? {
         if let row = row {
-            var values = [String: Datatype?]()
+            var values = [String: Value?]()
             for idx in 0..<row.count { values[columnNames[idx]] = row[idx] }
             return values
         }

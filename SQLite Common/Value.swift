@@ -1,5 +1,5 @@
 //
-// SQLite.Datatype
+// SQLite.Value
 // Copyright (c) 2014 Stephen Celis.
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -21,13 +21,15 @@
 // THE SOFTWARE.
 //
 
-public protocol Datatype {
+public protocol Value {
 
     func bindTo(statement: Statement, atIndex idx: Int)
 
 }
 
-extension Bool: Datatype {
+public protocol Number: Value {}
+
+extension Bool: Value {
 
     public func bindTo(statement: Statement, atIndex idx: Int) {
         statement.bind(bool: self, atIndex: idx)
@@ -35,7 +37,7 @@ extension Bool: Datatype {
 
 }
 
-extension Double: Datatype {
+extension Double: Number {
 
     public func bindTo(statement: Statement, atIndex idx: Int) {
         statement.bind(double: self, atIndex: idx)
@@ -43,15 +45,7 @@ extension Double: Datatype {
 
 }
 
-extension Float: Datatype {
-
-    public func bindTo(statement: Statement, atIndex idx: Int) {
-        statement.bind(double: Double(self), atIndex: idx)
-    }
-
-}
-
-extension Int: Datatype {
+extension Int: Number {
 
     public func bindTo(statement: Statement, atIndex idx: Int) {
         statement.bind(int: self, atIndex: idx)
@@ -59,7 +53,7 @@ extension Int: Datatype {
 
 }
 
-extension String: Datatype {
+extension String: Value {
 
     public func bindTo(statement: Statement, atIndex idx: Int) {
         statement.bind(text: self, atIndex: idx)

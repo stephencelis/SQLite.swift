@@ -22,7 +22,7 @@
 //
 
 /// A dictionary mapping column names to values.
-public typealias Values = [String: Datatype?]
+public typealias Values = [String: Value?]
 
 /// A query object. Used to build SQL statements with a collection of chainable
 /// helper functions.
@@ -33,7 +33,6 @@ public struct Query {
     internal init(_ database: Database, _ tableName: String) {
         self.database = database
         self.tableName = tableName
-        self.columnNames = ["*"]
     }
 
     // MARK: - Keywords
@@ -64,213 +63,63 @@ public struct Query {
 
     }
 
-    private var columnNames: [String]
-    private var tableName: String
-    private var joins = [JoinType, String, String]()
-    private var conditions: String?
-    private var bindings = [Datatype?]()
-    private var groupByHaving: ([String], String?, [Datatype?])?
-    private var order = [String, SortDirection]()
-    private var limit: Int?
-    private var offset: Int?
+    private var columns: [Expressible] = [Expression<()>("*")]
+    internal var tableName: String
+    private var joins = [Expressible]()
+    private var filter: Expression<Bool>?
+    private var group: Expressible?
+    private var order = [Expressible]()
+    private var limit: (to: Int, offset: Int?)? = nil
 
-    // MARK: -
-
-    /// Sets a SELECT clause on the query.
-    ///
-    /// :param: columnNames A list of columns to retrieve.
-    ///
-    /// :returns: A query with the given SELECT clause applied.
-    public func select(columnNames: String...) -> Query {
+    public func select(columns: Expressible...) -> Query {
         var query = self
-        query.columnNames = columnNames
+        query.columns = columns
         return query
     }
 
-    /// Adds an INNER JOIN clause to the query.
-    ///
-    /// :param: tableName  The table being joined.
-    ///
-    /// :param: constraint The condition in which the table is joined.
-    ///
-    /// :returns: A query with the given INNER JOIN clause applied.
-    public func join(tableName: String, on constraint: String) -> Query {
-        return join(.Inner, tableName, on: constraint)
-    }
-
-    /// Adds a JOIN clause to the query.
-    ///
-    /// :param: type      The JOIN operator used.
-    ///
-    /// :param: tableName The table being joined.
-    ///
-    /// :param: constraint The condition in which the table is joined.
-    ///
-    /// :returns: A query with the given JOIN clause applied.
-    public func join(type: JoinType, _ tableName: String, on constraint: String) -> Query {
+    public func select(star: Star) -> Query {
         var query = self
-        query.joins.append(type, tableName, constraint)
+        query.columns = [star(nil, nil)]
         return query
     }
 
-    /// Adds a condition to the query’s WHERE clause.
-    ///
-    /// :param: condition A dictionary of conditions where the keys map to
-    ///                   column names and the columns must equal the given
-    ///                   values.
-    ///
-    /// :returns: A query with the given condition applied.
-    public func filter(condition: [String: Datatype?]) -> Query {
+    public func join(table: Query, on: Expression<Bool>) -> Query {
+        return join(.Inner, table, on: on)
+    }
+
+    public func join(type: JoinType, _ table: Query, on: Expression<Bool>) -> Query {
         var query = self
-        for (column, value) in condition {
-            if let value = value {
-                query = query.filter("\(column) = ?", value)
-            } else {
-                query = query.filter("\(column) IS NULL")
-            }
-        }
+        let condition = table.filter.map { on && $0 } ?? on
+        let expression = Expression<()>("\(type.rawValue) JOIN \(table.tableName) ON \(condition.SQL)", condition.bindings)
+        query.joins.append(expression)
         return query
     }
 
-    /// Adds a condition to the query’s WHERE clause.
-    ///
-    /// :param: condition A dictionary of conditions where the keys map to
-    ///                   column names and the columns must be in the lists of
-    ///                   given values.
-    ///
-    /// :returns: A query with the given condition applied.
-    public func filter(condition: [String: [Datatype?]]) -> Query {
+    public func filter(condition: Expression<Bool>) -> Query {
         var query = self
-        for (column, values) in condition {
-            let templates = Swift.join(", ", [String](count: values.count, repeatedValue: "?"))
-            query = query.filter("\(column) IN (\(templates))", values)
-        }
+        query.filter = filter.map { $0 && condition } ?? condition
         return query
     }
 
-    /// Adds a condition to the query’s WHERE clause.
-    ///
-    /// :param: condition A dictionary of conditions where the keys map to
-    ///                   column names and the columns must be in the ranges of
-    ///                   given values.
-    ///
-    /// :returns: A query with the given condition applied.
-    public func filter<T: Datatype>(condition: [String: Range<T>]) -> Query {
+    public func group(by: Expressible...) -> Query {
+        return group(by)
+    }
+
+    public func group(by: Expressible, having: Expression<Bool>) -> Query {
+        return group([by], having: having)
+    }
+
+    public func group(by: [Expressible], having: Expression<Bool>? = nil) -> Query {
         var query = self
-        for (column, value) in condition {
-            query = query.filter("\(column) BETWEEN ? AND ?", value.startIndex, value.endIndex)
-        }
+        var group = SQLite.join(" ", [Expression<()>("GROUP BY"), SQLite.join(", ", by)])
+        if let having = having { group = SQLite.join(" ", [group, Expression<()>("HAVING"), having]) }
+        query.group = group
         return query
     }
 
-    /// Adds a condition to the query’s WHERE clause.
-    ///
-    /// :param: condition A string condition with optional "?"-parameterized
-    ///                   bindings.
-    ///
-    /// :param: bindings  A list of parameters to bind to the WHERE clause.
-    ///
-    /// :returns: A query with the given condition applied.
-    public func filter(condition: String, _ bindings: Datatype?...) -> Query {
-        return filter(condition, bindings)
-    }
-
-    /// Adds a condition to the query’s WHERE clause.
-    ///
-    /// :param: condition A string condition with optional "?"-parameterized
-    ///                   bindings.
-    ///
-    /// :param: bindings  A list of parameters to bind to the WHERE clause.
-    ///
-    /// :returns: A query with the given condition applied.
-    public func filter(condition: String, _ bindings: [Datatype?]) -> Query {
+    public func order(by: Expressible...) -> Query {
         var query = self
-        if let conditions = query.conditions {
-            query.conditions = "\(conditions) AND \(condition)"
-        } else {
-            query.conditions = condition
-        }
-        query.bindings += bindings
-        return query
-    }
-
-    /// Sets a GROUP BY clause on the query.
-    ///
-    /// :param: by A list of columns to group by.
-    ///
-    /// :returns: A query with the given GROUP BY clause applied.
-    public func group(by: String...) -> Query {
-        return group(by, [])
-    }
-
-    /// Sets a GROUP BY-HAVING clause on the query.
-    ///
-    /// :param: by       A column to group by.
-    ///
-    /// :param: having   A condition determining which groups are returned.
-    ///
-    /// :param: bindings A list of parameters to bind to the HAVING clause.
-    ///
-    /// :returns: A query with the given GROUP BY clause applied.
-    public func group(by: String, having: String, _ bindings: Datatype?...) -> Query {
-        return group([by], having: having, bindings)
-    }
-
-    /// Sets a GROUP BY-HAVING clause on the query.
-    ///
-    /// :param: by       A list of columns to group by.
-    ///
-    /// :param: having   A condition determining which groups are returned.
-    ///
-    /// :param: bindings A list of parameters to bind to the HAVING clause.
-    ///
-    /// :returns: A query with the given GROUP BY clause applied.
-    public func group(by: [String], having: String, _ bindings: Datatype?...) -> Query {
-        return group(by, having: having, bindings)
-    }
-
-    private func group(by: [String], having: String? = nil, _ bindings: [Datatype?]) -> Query {
-        var query = self
-        query.groupByHaving = (by, having, bindings)
-        return query
-    }
-
-    /// Adds sorting instructions to the query’s ORDER BY clause.
-    ///
-    /// :param: by A list of columns to order by with an ascending sort.
-    ///
-    /// :returns: A query with the given sorting instructions applied.
-    public func order(by: String...) -> Query {
-        return order(by)
-    }
-
-    private func order(by: [String]) -> Query {
-        return order(by.map { ($0, .Asc) })
-    }
-
-    /// Adds sorting instructions to the query’s ORDER BY clause.
-    ///
-    /// :param: by        A column to order by.
-    ///
-    /// :param: direction The direction in which the column is ordered.
-    ///
-    /// :returns: A query with the given sorting instructions applied.
-    public func order(by: String, _ direction: SortDirection) -> Query {
-        return order([(by, direction)])
-    }
-
-    /// Adds sorting instructions to the query’s ORDER BY clause.
-    ///
-    /// :param: by An ordered list of columns and directions to sort them by.
-    ///
-    /// :returns: A query with the given sorting instructions applied.
-    public func order(by: (String, SortDirection)...) -> Query {
-        return order(by)
-    }
-
-    private func order(by: [(String, SortDirection)]) -> Query {
-        var query = self
-        query.order += by
+        query.order = by
         return query
     }
 
@@ -297,91 +146,83 @@ public struct Query {
     // prevent limit(nil, offset: 5)
     private func limit(#to: Int?, offset: Int? = nil) -> Query {
         var query = self
-        (query.limit, query.offset) = (to, offset)
+        if let to = to {
+            query.limit = (to, offset)
+        } else {
+            query.limit = nil
+        }
         return query
     }
 
     // MARK: - Compiling Statements
 
     private var selectStatement: Statement {
-        let columnNames = Swift.join(", ", self.columnNames)
-
-        var parts = ["SELECT \(columnNames) FROM \(tableName)"]
-        joinClause.map(parts.append)
-        whereClause.map(parts.append)
-        groupClause.map(parts.append)
-        orderClause.map(parts.append)
-        limitClause.map(parts.append)
-
-        var bindings = self.bindings
-        if let (_, _, values) = groupByHaving { bindings += values }
-
-        return database.prepare(Swift.join(" ", parts), bindings)
+        var expressions = [selectClause]
+        joinClause.map(expressions.append)
+        whereClause.map(expressions.append)
+        group.map(expressions.append)
+        orderClause.map(expressions.append)
+        limitClause.map(expressions.append)
+        let expression = SQLite.join(" ", expressions)
+        return database.prepare(expression.SQL, expression.bindings)
     }
 
-    private func insertStatement(values: Values) -> Statement {
-        var (parts, bindings) = (["INSERT INTO \(tableName)"], self.bindings)
-        let valuesClause = Swift.join(", ", map(values) { columnName, value in
-            bindings.append(value)
-            return columnName
-        })
-        let templates = Swift.join(", ", [String](count: values.count, repeatedValue: "?"))
-        parts.append("(\(valuesClause)) VALUES (\(templates))")
-        return database.prepare(Swift.join(" ", parts), bindings)
+    private func insertStatement(values: [(Expressible, Expressible)]) -> Statement {
+        var expressions: [Expressible] = [Expression<()>("INSERT INTO \(tableName)")]
+        let (c, v) = (SQLite.join(", ", values.map { $0.0 }), SQLite.join(", ", values.map { $0.1 }))
+        expressions.append(Expression<()>("(\(c.SQL)) VALUES (\(v.SQL))", c.bindings + v.bindings))
+        whereClause.map(expressions.append)
+        let expression = SQLite.join(" ", expressions)
+        return database.prepare(expression.SQL, expression.bindings)
     }
 
-    private func updateStatement(values: Values) -> Statement {
-        var (parts, bindings) = (["UPDATE \(tableName)"], [Datatype?]())
-        let valuesClause = Swift.join(", ", map(values) { columnName, value in
-            bindings.append(value)
-            return "\(columnName) = ?"
-        })
-        parts.append("SET \(valuesClause)")
-        whereClause.map(parts.append)
-        return database.prepare(Swift.join(" ", parts), bindings + self.bindings)
+    private func updateStatement(values: [(Expressible, Expressible)]) -> Statement {
+        var expressions: [Expressible] = [Expression<()>("UPDATE \(tableName) SET")]
+        expressions.append(SQLite.join(", ", values.map { SQLite.join(" = ", [$0, $1]) }))
+        whereClause.map(expressions.append)
+        let expression = SQLite.join(" ", expressions)
+        return database.prepare(expression.SQL, expression.bindings)
     }
 
     private var deleteStatement: Statement {
-        var parts = ["DELETE FROM \(tableName)"]
-        whereClause.map(parts.append)
-        return database.prepare(Swift.join(" ", parts), bindings)
+        var expressions: [Expressible] = [Expression<()>("DELETE FROM \(tableName)")]
+        whereClause.map(expressions.append)
+        let expression = SQLite.join(" ", expressions)
+        return database.prepare(expression.SQL, expression.bindings)
     }
 
     // MARK: -
 
-    private var joinClause: String? {
+    private var selectClause: Expressible {
+        let select = SQLite.join(", ", columns)
+        return SQLite.join(" ", [Expression<()>("SELECT"), select, Expression<()>("FROM \(tableName)")])
+    }
+
+    private var joinClause: Expressible? {
         if joins.count == 0 { return nil }
-        let clause = joins.map { "\($0.rawValue) JOIN \($1) ON \($2)" }
-        return Swift.join(" ", clause)
+        return SQLite.join(" ", joins)
     }
 
-    private var whereClause: String? {
-        if let conditions = conditions { return "WHERE \(conditions)" }
-        return nil
-    }
-
-    private var groupClause: String? {
-        if let (groupBy, having, _) = groupByHaving {
-            let groups = Swift.join(", ", groupBy)
-            var clause = ["GROUP BY \(groups)"]
-            having.map { clause.append("HAVING \($0)") }
-            return Swift.join(" ", clause)
+    private var whereClause: Expressible? {
+        if let filter = filter {
+            return Expression<()>("WHERE \(filter.SQL)", filter.bindings)
         }
         return nil
     }
 
-    private var orderClause: String? {
+    private var orderClause: Expressible? {
         if order.count == 0 { return nil }
-        let mapped = order.map { "\($0.0) \($0.1.rawValue)" }
-        let joined = Swift.join(", ", mapped)
-        return "ORDER BY \(joined)"
+        let clause = SQLite.join(", ", order)
+        return Expression<()>("ORDER BY \(clause.SQL)", clause.bindings)
     }
 
-    private var limitClause: String? {
-        if let to = limit {
-            var clause = ["LIMIT \(to)"]
-            offset.map { clause.append("OFFSET \($0)") }
-            return Swift.join(" ", clause)
+    private var limitClause: Expressible? {
+        if let limit = limit {
+            var clause = Expression<()>("LIMIT \(limit.to)")
+            if let offset = limit.offset {
+                clause = SQLite.join(" ", [clause, Expression<()>("OFFSET \(offset)")])
+            }
+            return clause
         }
         return nil
     }
@@ -391,73 +232,93 @@ public struct Query {
     /// The first result (or nil if the query has no results).
     public var first: Values? { return limit(1).generate().next() }
 
-    /// The last result (or nil if the query has no results).
-    public var last: Values? { return reverse(self).first }
-
     /// Returns true if the query has no results.
     public var isEmpty: Bool { return first == nil }
 
     // MARK: - Modifying
 
-    /// Runs an INSERT statement with the given row of values.
+    public final class ValuesBuilder {
+
+        private let query: Query
+
+        private var values = [(Expressible, Expressible)]()
+
+        private init(_ query: Query, _ builder: ValuesBuilder -> ()) {
+            self.query = query
+            builder(self)
+        }
+
+        public func set<T: Value>(column: Expression<T>, _ value: T?) {
+            values.append((column, Expression<()>(value: value)))
+        }
+
+    }
+
+    /// Runs an INSERT statement against the query.
     ///
-    /// :param: values A dictionary of column names to values.
+    /// :param: builder A block with a ValuesBuilder, used for aggregating
+    ///                 values for the INSERT.
     ///
     /// :returns: The statement.
-    public func insert(values: Values) -> Statement { return insert(values).statement }
+    public func insert(builder: ValuesBuilder -> ()) -> Statement { return insert(builder).statement }
 
-    /// Runs an INSERT statement with the given row of values.
+    /// Runs an INSERT statement against the query.
     ///
-    /// :param: values A dictionary of column names to values.
+    /// :param: builder A block with a ValuesBuilder, used for aggregating
+    ///                 values for the INSERT.
     ///
     /// :returns: The row ID.
-    public func insert(values: Values) -> Int? { return insert(values).ID }
+    public func insert(builder: ValuesBuilder -> ()) -> Int? { return insert(builder).ID }
 
-    /// Runs an INSERT statement with the given row of values.
+    /// Runs an INSERT statement against the query.
     ///
-    /// :param: values A dictionary of column names to values.
+    /// :param: builder A block with a ValuesBuilder, used for aggregating
+    ///                 values for the INSERT.
     ///
     /// :returns: The row ID and statement.
-    public func insert(values: Values) -> (ID: Int?, statement: Statement) {
-        let statement = insertStatement(values).run()
+    public func insert(builder: ValuesBuilder -> ()) -> (ID: Int?, statement: Statement) {
+        let statement = insertStatement(ValuesBuilder(self, builder).values).run()
         return (statement.failed ? nil : database.lastID, statement)
     }
 
-    /// Runs an UPDATE statement against the query with the given values.
+    /// Runs an UPDATE statement against the query.
     ///
-    /// :param: values A dictionary of column names to values.
+    /// :param: builder A block with a ValuesBuilder, used for aggregating
+    ///                 values for the UPDATE.
     ///
     /// :returns: The statement.
-    public func update(values: Values) -> Statement { return update(values).statement }
+    public func update(builder: ValuesBuilder -> ()) -> Statement { return update(builder).statement }
 
-    /// Runs an UPDATE statement against the query with the given values.
+    /// Runs an UPDATE statement against the query.
     ///
-    /// :param: values A dictionary of column names to values.
+    /// :param: builder A block with a ValuesBuilder, used for aggregating
+    ///                 values for the UPDATE.
     ///
     /// :returns: The number of updated rows.
-    public func update(values: Values) -> Int { return update(values).changes }
+    public func update(builder: ValuesBuilder -> ()) -> Int { return update(builder).changes }
 
-    /// Runs an UPDATE statement against the query with the given values.
+    /// Runs an UPDATE statement against the query.
     ///
-    /// :param: values A dictionary of column names to values.
+    /// :param: builder A block with a ValuesBuilder, used for aggregating
+    ///                 values for the UPDATE.
     ///
     /// :returns: The number of updated rows and statement.
-    public func update(values: Values) -> (changes: Int, statement: Statement) {
-        let statement = updateStatement(values).run()
+    public func update(builder: ValuesBuilder -> ()) -> (changes: Int, statement: Statement) {
+        let statement = updateStatement(ValuesBuilder(self, builder).values).run()
         return (statement.failed ? 0 : database.lastChanges ?? 0, statement)
     }
 
-    /// Runs an DELETE statement against the query.
+    /// Runs a DELETE statement against the query.
     ///
     /// :returns: The statement.
     public func delete() -> Statement { return delete().statement }
 
-    /// Runs an DELETE statement against the query.
+    /// Runs a DELETE statement against the query.
     ///
     /// :returns: The number of deleted rows.
     public func delete() -> Int { return delete().changes }
 
-    /// Runs an DELETE statement against the query.
+    /// Runs a DELETE statement against the query.
     ///
     /// :returns: The number of deleted rows and statement.
     public func delete() -> (changes: Int, statement: Statement) {
@@ -468,63 +329,64 @@ public struct Query {
     // MARK: - Aggregate Functions
 
     /// Runs count(*) against the query and returns it.
-    public var count: Int { return count("*") }
+    public var count: Int { return count(Expression<()>("*")) }
 
     /// Runs count() against the query.
     ///
-    /// :param: columnName The column used for the calculation.
+    /// :param: column The column used for the calculation.
     ///
     /// :returns: The number of rows matching the given column.
-    public func count(columnName: String) -> Int {
-        return calculate("count", columnName) as Int
+    public func count<T>(column: Expression<T>) -> Int {
+        return calculate(SQLite.count(column))!
     }
 
     /// Runs max() against the query.
     ///
-    /// :param: columnName The column used for the calculation.
+    /// :param: column The column used for the calculation.
     ///
     /// :returns: The largest value of the given column.
-    public func max(columnName: String) -> Datatype? {
-        return calculate("max", columnName)
+    public func max<T: Value>(column: Expression<T>) -> T? {
+        return calculate(SQLite.max(column))
     }
 
     /// Runs min() against the query.
     ///
-    /// :param: columnName The column used for the calculation.
+    /// :param: column The column used for the calculation.
     ///
     /// :returns: The smallest value of the given column.
-    public func min(columnName: String) -> Datatype? {
-        return calculate("min", columnName)
+    public func min<T: Value>(column: Expression<T>) -> T? {
+        return calculate(SQLite.min(column))
     }
 
     /// Runs avg() against the query.
     ///
-    /// :param: columnName The column used for the calculation.
+    /// :param: column The column used for the calculation.
+    ///
     /// :returns: The average value of the given column.
-    public func average(columnName: String) -> Double? {
-        return calculate("avg", columnName) as? Double
+    public func average<T: Number>(column: Expression<T>) -> Double? {
+        return calculate(SQLite.average(column))
     }
 
     /// Runs sum() against the query.
     ///
-    /// :param: columnName The column used for the calculation.
+    /// :param: column The column used for the calculation.
     ///
     /// :returns: The sum of the given column’s values.
-    public func sum(columnName: String) -> Datatype? {
-        return calculate("sum", columnName)
+    public func sum<T: Number>(column: Expression<T>) -> T? {
+        return calculate(SQLite.sum(column))
     }
 
     /// Runs total() against the query.
     ///
-    /// :param: columnName The column used for the calculation.
+    /// :param: column The column used for the calculation.
     ///
     /// :returns: The total of the given column’s values.
-    public func total(columnName: String) -> Double {
-        return calculate("total", columnName) as Double
+    public func total<T: Number>(column: Expression<T>) -> Double {
+        return calculate(SQLite.total(column))!
     }
 
-    private func calculate(function: String, _ columnName: String) -> Datatype? {
-        return select("\(function)(\(columnName))").selectStatement.scalar()
+    private func calculate<T, U>(expression: Expression<T>) -> U? {
+        return select(expression).selectStatement.scalar() as? U
     }
 
 }
@@ -552,15 +414,10 @@ public struct QueryGenerator: GeneratorType {
 
 }
 
-/// Reverses the order of a given query.
-///
-/// :param: query A query object to reverse.
-///
-/// :returns: A reversed query.
-public func reverse(query: Query) -> Query {
-    if query.order.count == 0 { return query.order("\(query.tableName).ROWID", .Desc) }
+extension Database {
 
-    var reversed = query
-    reversed.order = query.order.map { ($0, $1 == .Asc ? .Desc : .Asc) }
-    return reversed
+    public subscript(tableName: String) -> Query {
+        return Query(self, tableName)
+    }
+
 }

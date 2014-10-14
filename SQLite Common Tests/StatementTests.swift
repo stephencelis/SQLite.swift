@@ -171,7 +171,7 @@ class StatementTests: XCTestCase {
         XCTAssertEqual("alice@example.com", row[1] as String)
     }
 
-    func test_values_returnsDictionaryOfColumnsToValues() {
+    func test_values_returnsDictionaryOfExpressionsToValues() {
         InsertUser(db, "alice")
         let stmt = db.prepare("SELECT id, \"email\" FROM users")
         stmt.next()
