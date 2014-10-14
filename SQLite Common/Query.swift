@@ -200,7 +200,7 @@ public struct Query {
     ///
     /// :returns: A query with the given GROUP BY clause applied.
     public func group(by: String...) -> Query {
-        return group(by, bindings)
+        return group(by, [])
     }
 
     /// Sets a GROUP BY-HAVING clause on the query.
