@@ -46,7 +46,7 @@ for row in db.prepare("SELECT id, email FROM users") {
 
 db.scalar("SELECT count(*) FROM users") // {Some 2}
 
-let jr = db.prepare("INSERT INTO users (email, manager_id) VALUES (? ?)")
+let jr = db.prepare("INSERT INTO users (email, manager_id) VALUES (?, ?)")
 db.transaction(
     stmt.run("dolly@example.com"),
     jr.run("emery@example.com", db.lastID)
