@@ -64,6 +64,32 @@ db.transaction(
 )
 ```
 
+SQLite.swift also exposes a powerful query building interface.
+
+``` swift
+let products = db["products"]
+
+let available = products.filter("quantity > ?", 0).order("name").limit(5)
+for product in available {
+    println(product["name"])
+}
+// SELECT * FROM products WHERE quantity > 0 ORDER BY name LIMIT 5
+
+products.count            // SELECT count(*) FROM products
+products.average("price") // SELECT avg(price) FROM products
+
+if let id = products.insert(["name": "Sprocket", "price": 19.99]) {
+    println("inserted \(id)")
+}
+// INSERT INTO products (name, price) VALUES ('Sprocket', 19.99)
+
+let updates: Int = products.filter(["id": id]).update(["quantity": 20])
+// UPDATE products SET quantity = 20 WHERE id = 42
+
+let deletes: Int = products.filter(["quantity": 0]).delete()
+// DELETE FROM products WHERE quantity = 0
+```
+
 
 ## Installation
 
