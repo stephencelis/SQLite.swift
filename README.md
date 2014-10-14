@@ -9,17 +9,6 @@ A pure [Swift][1.1] framework wrapping [SQLite3][1.2].
 [1.3]: https://github.com/stephencelis/SQLite.swift
 
 
-## Features
-
- - A lightweight, uncomplicated query and parameter binding interface
- - A flexible, chainable query builder
- - Safe, automatically-typed data access
- - Transactions with implicit commit/rollback
- - Developer-friendly error handling and debugging
- - Well-documented
- - Extensively tested
-
-
 ## Usage
 
 Explore interactively from the Xcode project’s playground.
@@ -57,38 +46,22 @@ for row in db.prepare("SELECT id, email FROM users") {
 
 db.scalar("SELECT count(*) FROM users") // {Some 2}
 
-let jr = db.prepare("INSERT INTO users (email, manager_id) VALUES (?, ?)")
+let jr = db.prepare("INSERT INTO users (email, manager_id) VALUES (? ?)")
 db.transaction(
     stmt.run("dolly@example.com"),
     jr.run("emery@example.com", db.lastID)
 )
 ```
 
-SQLite.swift also exposes a powerful query building interface.
 
-``` swift
-let products = db["products"]
+## Features
 
-let available = products.filter("quantity > ?", 0).order("name").limit(5)
-for product in available {
-    println(product["name"])
-}
-// SELECT * FROM products WHERE quantity > 0 ORDER BY name LIMIT 5
-
-products.count            // SELECT count(*) FROM products
-products.average("price") // SELECT avg(price) FROM products
-
-if let id = products.insert(["name": "Sprocket", "price": 19.99]) {
-    println("inserted \(id)")
-}
-// INSERT INTO products (name, price) VALUES ('Sprocket', 19.99)
-
-let updates: Int = products.filter(["id": id]).update(["quantity": 20])
-// UPDATE products SET quantity = 20 WHERE id = 42
-
-let deletes: Int = products.filter(["quantity": 0]).delete()
-// DELETE FROM products WHERE quantity = 0
-```
+ - Uncomplicated query and parameter binding interface
+ - Safe, automatically-typed data access
+ - Implicit commit/rollback interface
+ - Developer-friendly error handling and debugging
+ - Well-documented
+ - Extensively tested
 
 
 ## Installation
