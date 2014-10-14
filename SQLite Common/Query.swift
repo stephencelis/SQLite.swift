@@ -21,6 +21,9 @@
 // THE SOFTWARE.
 //
 
+/// A dictionary mapping column names to values.
+public typealias Values = [String: Datatype?]
+
 /// A query object. Used to build SQL statements with a collection of chainable
 /// helper functions.
 public struct Query {
@@ -316,7 +319,7 @@ public struct Query {
         return database.prepare(Swift.join(" ", parts), bindings)
     }
 
-    private func insertStatement(values: [String: Datatype?]) -> Statement {
+    private func insertStatement(values: Values) -> Statement {
         var (parts, bindings) = (["INSERT INTO \(tableName)"], self.bindings)
         let valuesClause = Swift.join(", ", map(values) { columnName, value in
             bindings.append(value)
@@ -327,7 +330,7 @@ public struct Query {
         return database.prepare(Swift.join(" ", parts), bindings)
     }
 
-    private func updateStatement(values: [String: Datatype?]) -> Statement {
+    private func updateStatement(values: Values) -> Statement {
         var (parts, bindings) = (["UPDATE \(tableName)"], [Datatype?]())
         let valuesClause = Swift.join(", ", map(values) { columnName, value in
             bindings.append(value)
@@ -385,13 +388,11 @@ public struct Query {
 
     // MARK: - Array
 
-    public typealias Element = [String: Datatype?]
-
     /// The first result (or nil if the query has no results).
-    public var first: Element? { return limit(1).generate().next() }
+    public var first: Values? { return limit(1).generate().next() }
 
     /// The last result (or nil if the query has no results).
-    public var last: Element? { return reverse(self).first }
+    public var last: Values? { return reverse(self).first }
 
     /// Returns true if the query has no results.
     public var isEmpty: Bool { return first == nil }
@@ -403,7 +404,7 @@ public struct Query {
     /// :param: values A dictionary of column names to values.
     ///
     /// :returns: The statement.
-    public func insert(values: [String: Datatype?]) -> Statement {
+    public func insert(values: Values) -> Statement {
         return insert(values).statement
     }
 
@@ -412,7 +413,7 @@ public struct Query {
     /// :param: values A dictionary of column names to values.
     ///
     /// :returns: The row ID.
-    public func insert(values: [String: Datatype?]) -> Int? {
+    public func insert(values: Values) -> Int? {
         return insert(values).ID
     }
 
@@ -421,7 +422,7 @@ public struct Query {
     /// :param: values A dictionary of column names to values.
     ///
     /// :returns: The row ID and statement.
-    public func insert(values: [String: Datatype?]) -> (ID: Int?, statement: Statement) {
+    public func insert(values: Values) -> (ID: Int?, statement: Statement) {
         let statement = insertStatement(values).run()
         return (statement.failed ? nil : database.lastID, statement)
     }
@@ -431,7 +432,7 @@ public struct Query {
     /// :param: values A dictionary of column names to values.
     ///
     /// :returns: The statement.
-    public func update(values: [String: Datatype?]) -> Statement {
+    public func update(values: Values) -> Statement {
         return update(values).statement
     }
 
@@ -440,7 +441,7 @@ public struct Query {
     /// :param: values A dictionary of column names to values.
     ///
     /// :returns: The number of updated rows.
-    public func update(values: [String: Datatype?]) -> Int {
+    public func update(values: Values) -> Int {
         return update(values).changes
     }
 
@@ -449,7 +450,7 @@ public struct Query {
     /// :param: values A dictionary of column names to values.
     ///
     /// :returns: The number of updated rows and statement.
-    public func update(values: [String: Datatype?]) -> (changes: Int, statement: Statement) {
+    public func update(values: Values) -> (changes: Int, statement: Statement) {
         let statement = updateStatement(values).run()
         return (statement.failed ? 0 : database.lastChanges ?? 0, statement)
     }
@@ -552,13 +553,11 @@ extension Query: SequenceType {
 // MARK: - GeneratorType
 public struct QueryGenerator: GeneratorType {
 
-    public typealias Element = [String: Datatype?]
-
     private var statement: Statement
 
     private init(_ statement: Statement) { self.statement = statement }
 
-    public func next() -> Element? {
+    public func next() -> Values? {
         statement.next()
         return statement.values
     }
