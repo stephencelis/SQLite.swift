@@ -9,6 +9,17 @@ A pure [Swift][1.1] framework wrapping [SQLite3][1.2].
 [1.3]: https://github.com/stephencelis/SQLite.swift
 
 
+## Features
+
+ - A lightweight, uncomplicated query and parameter binding interface
+ - A flexible, chainable query builder
+ - Safe, automatically-typed data access
+ - Transactions with implicit commit/rollback
+ - Developer-friendly error handling and debugging
+ - Well-documented
+ - Extensively tested
+
+
 ## Usage
 
 Explore interactively from the Xcode project’s playground.
@@ -52,16 +63,6 @@ db.transaction(
     jr.run("emery@example.com", db.lastID)
 )
 ```
-
-
-## Features
-
- - Uncomplicated query and parameter binding interface
- - Safe, automatically-typed data access
- - Implicit commit/rollback interface
- - Developer-friendly error handling and debugging
- - Well-documented
- - Extensively tested
 
 
 ## Installation
