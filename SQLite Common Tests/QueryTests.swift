@@ -320,7 +320,7 @@ class QueryTests: XCTestCase {
         XCTAssertEqual(30, users.max("age") as Int)
     }
 
-    func test_max_returnsMinimum() {
+    func test_min_returnsMinimum() {
         XCTAssert(users.min("age") == nil)
 
         InsertUser(db, "alice", age: 20)
