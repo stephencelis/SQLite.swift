@@ -59,66 +59,10 @@ extension Int: Datatype {
 
 }
 
-extension Int16: Datatype {
-
-    public func bindTo(statement: Statement, atIndex idx: Int) {
-        statement.bind(int: Int(self), atIndex: idx)
-    }
-
-}
-
-extension Int32: Datatype {
-
-    public func bindTo(statement: Statement, atIndex idx: Int) {
-        statement.bind(int: Int(self), atIndex: idx)
-    }
-
-}
-
-extension Int64: Datatype {
-
-    public func bindTo(statement: Statement, atIndex idx: Int) {
-        statement.bind(int: Int(self), atIndex: idx)
-    }
-
-}
-
 extension String: Datatype {
 
     public func bindTo(statement: Statement, atIndex idx: Int) {
         statement.bind(text: self, atIndex: idx)
     }
 
-}
-
-extension UInt: Datatype {
-
-    public func bindTo(statement: Statement, atIndex idx: Int) {
-        statement.bind(int: Int(self), atIndex: idx)
-    }
-
-}
-
-extension UInt16: Datatype {
-
-    public func bindTo(statement: Statement, atIndex idx: Int) {
-        statement.bind(int: Int(self), atIndex: idx)
-    }
-
-}
-
-extension UInt32: Datatype {
-
-    public func bindTo(statement: Statement, atIndex idx: Int) {
-        statement.bind(int: Int(self), atIndex: idx)
-    }
-
-}
-
-extension UInt64: Datatype {
-
-    public func bindTo(statement: Statement, atIndex idx: Int) {
-        statement.bind(int: Int(self), atIndex: idx)
-    }
-    
 }
