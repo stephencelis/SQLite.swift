@@ -1,4 +1,6 @@
-let agelessAdmins = admins.filter(["age": nil])
+let ordered = admins.order(email.asc, age.asc).limit(3)
 
-// SELECT count(*) FROM users WHERE admin = 1 AND age IS NULL
-agelessAdmins.count
+// SELECT * FROM users WHERE admin ORDER BY email ASC, age ASC LIMIT 3
+for admin in ordered {
+    println(admin)
+}

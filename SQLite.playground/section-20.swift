@@ -1,1 +1,5 @@
-let users = db["users"]
+let id = Expression<Int>("id")
+let email = Expression<String>("email")
+let age = Expression<Int>("age")
+let admin = Expression<Bool>("admin")
+let manager_id = Expression<Int>("manager_id")

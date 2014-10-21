@@ -42,6 +42,8 @@
         <documentation relative-path='fragment-19.html'/>
         <code source-file-name='section-40.swift'/>
         <documentation relative-path='fragment-20.html'/>
+        <code source-file-name='section-42.swift'/>
+        <documentation relative-path='fragment-21.html'/>
     </sections>
     <timeline fileName='timeline.xctimeline'/>
 </playground>

@@ -4,9 +4,6 @@
 <meta id='xcode-display' name='xcode-display' content='render'>
 <section>
     <p>
-        You may notice that iteration works a little differently here. Rather than arrays of rows, we are given dictionaries of column names to row values. This gives us a little more powerful of a mapping to work with and pass around.
-    </p>
-    <p>
-        Queries can be used and reused, and can quickly return rows, counts and other aggregate values.
+        <code>Query</code> objects can also build <code>SELECT</code> statements. A freshly-subscripted query will select every row (and every column) from a table. Iteration lazily executes the statement.
     </p>
 </section>

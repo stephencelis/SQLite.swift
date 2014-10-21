@@ -1,2 +1,1 @@
-// SELECT count(*) FROM users WHERE admin = 1
-admins.count
+let admins = users.filter(admin)
