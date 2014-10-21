@@ -12,7 +12,7 @@ A pure [Swift][1.1] framework wrapping [SQLite3][1.2].
 ## Features
 
  - A lightweight, uncomplicated query and parameter binding interface
- - A flexible, chainable query builder
+ - A flexible, chainable, type-safe query builder
  - Safe, automatically-typed data access
  - Transactions with implicit commit/rollback
  - Developer-friendly error handling and debugging
@@ -64,30 +64,32 @@ db.transaction(
 )
 ```
 
-SQLite.swift also exposes a powerful query building interface.
+SQLite.swift also exposes a powerful, type-safe query building interface.
 
 ``` swift
-let products = db["products"]
+let users = db["users"]
+let email = Expression<String>("email")
+let admin = Expression<Bool>("admin")
+let age = Expression<Int>("age")
 
-let available = products.filter("quantity > ?", 0).order("name").limit(5)
-for product in available {
-    println(product["name"])
-}
-// SELECT * FROM products WHERE quantity > 0 ORDER BY name LIMIT 5
+for user in users.filter(admin && age >= 30).order(age.desc) { /* ... */ }
+// SELECT * FROM users WHERE (admin) AND (age >= 30) ORDER BY age DESC
 
-products.count            // SELECT count(*) FROM products
-products.average("price") // SELECT avg(price) FROM products
+for user in users.group(age, having: count(age) == 1) { /* ... */ }
+// SELECT * FROM users GROUP BY age HAVING count(age) = 1
 
-if let id = products.insert(["name": "Sprocket", "price": 19.99]) {
-    println("inserted \(id)")
-}
-// INSERT INTO products (name, price) VALUES ('Sprocket', 19.99)
+users.count
+// SELECT count(*) FROM users
 
-let updates: Int = products.filter(["id": id]).update(["quantity": 20])
-// UPDATE products SET quantity = 20 WHERE id = 42
+users.filter(admin).average(age)
+// SELECT average(age) FROM users WHERE admin
 
-let deletes: Int = products.filter(["quantity": 0]).delete()
-// DELETE FROM products WHERE quantity = 0
+if let id = users.insert { u in u.set(email, "fiona@example.com") } { /* ... */ }
+// INSERT INTO users (email) VALUES ('fiona@example.com')
+
+let ageless = users.filter(admin && age == nil)
+let updates: Int = ageless.update { u in u.set(admin, false) }
+// UPDATE users SET admin = 0 WHERE (admin) AND (age IS NULL)
 ```
 
 
