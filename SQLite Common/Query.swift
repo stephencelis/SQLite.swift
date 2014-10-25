@@ -71,22 +71,48 @@ public struct Query {
     private var order = [Expressible]()
     private var limit: (to: Int, offset: Int?)? = nil
 
+    /// Sets the SELECT clause on the query.
+    ///
+    /// :param: columns A list of expressions to select.
+    ///
+    /// :returns A query with the given SELECT clause applied.
     public func select(columns: Expressible...) -> Query {
         var query = self
         query.columns = columns
         return query
     }
 
+    /// Sets the SELECT clause on the query.
+    ///
+    /// :param: star A literal *.
+    ///
+    /// :returns A query with SELECT * applied.
     public func select(star: Star) -> Query {
         var query = self
         query.columns = [star(nil, nil)]
         return query
     }
 
+    /// Adds an INNER JOIN clause to the query.
+    ///
+    /// :param: table A query representing the other table.
+    ///
+    /// :param: on    A boolean expression describing the join condition.
+    ///
+    /// :returns A query with the given INNER JOIN clause applied.
     public func join(table: Query, on: Expression<Bool>) -> Query {
         return join(.Inner, table, on: on)
     }
 
+    /// Adds a JOIN clause to the query.
+    ///
+    /// :param: type  The JOIN operator.
+    ///
+    /// :param: table A query representing the other table.
+    ///
+    /// :param: on    A boolean expression describing the join condition.
+    ///
+    /// :returns A query with the given JOIN clause applied.
     public func join(type: JoinType, _ table: Query, on: Expression<Bool>) -> Query {
         var query = self
         let condition = table.filter.map { on && $0 } ?? on
@@ -95,20 +121,44 @@ public struct Query {
         return query
     }
 
+    /// Adds a condition the the query’s WHERE clause.
+    ///
+    /// :param: condition A boolean expression to filter on.
+    ///
+    /// :returns A query with the given WHERE clause applied.
     public func filter(condition: Expression<Bool>) -> Query {
         var query = self
         query.filter = filter.map { $0 && condition } ?? condition
         return query
     }
 
+    /// Sets a GROUP BY clause on the query.
+    ///
+    /// :param: by A list of columns to group by.
+    ///
+    /// :returns: A query with the given GROUP BY clause applied.
     public func group(by: Expressible...) -> Query {
         return group(by)
     }
 
+    /// Sets a GROUP BY clause (with optional HAVING) on the query.
+    ///
+    /// :param: by       A column to group by.
+    ///
+    /// :param: having   A condition determining which groups are returned.
+    ///
+    /// :returns: A query with the given GROUP BY clause applied.
     public func group(by: Expressible, having: Expression<Bool>) -> Query {
         return group([by], having: having)
     }
 
+    /// Sets a GROUP BY-HAVING clause on the query.
+    ///
+    /// :param: by       A list of columns to group by.
+    ///
+    /// :param: having   A condition determining which groups are returned.
+    ///
+    /// :returns: A query with the given GROUP BY clause applied.
     public func group(by: [Expressible], having: Expression<Bool>? = nil) -> Query {
         var query = self
         var group = SQLite.join(" ", [Expression<()>("GROUP BY"), SQLite.join(", ", by)])
@@ -117,6 +167,11 @@ public struct Query {
         return query
     }
 
+    /// Sets an ORDER BY clause on the query.
+    ///
+    /// :param: by An ordered list of columns and directions to sort by.
+    ///
+    /// :returns: A query with the given ORDER BY clause applied.
     public func order(by: Expressible...) -> Query {
         var query = self
         query.order = by
