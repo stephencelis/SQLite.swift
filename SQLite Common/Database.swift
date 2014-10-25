@@ -1,4 +1,3 @@
-
 //
 // SQLite.Database
 // Copyright (c) 2014 Stephen Celis.
@@ -21,11 +20,6 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
-
-func quote(#literal: String) -> String {
-    let escaped = join("''", split(literal) { $0 == "'" })
-    return "'\(escaped)'"
-}
 
 /// A connection (handle) to a SQLite database.
 public final class Database {
@@ -344,4 +338,9 @@ extension Database: DebugPrintable {
         return "Database(\(String.fromCString(sqlite3_db_filename(handle, nil))!))"
     }
 
+}
+
+private func quote(#literal: String) -> String {
+    let escaped = join("''", split(literal) { $0 == "'" })
+    return "'\(escaped)'"
 }
