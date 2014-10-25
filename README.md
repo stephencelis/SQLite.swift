@@ -84,11 +84,11 @@ users.count
 users.filter(admin).average(age)
 // SELECT average(age) FROM users WHERE admin
 
-if let id = users.insert { u in u.set(email, "fiona@example.com") } { /* ... */ }
+if let id = users.insert(email <- "fiona@example.com") { /* ... */ }
 // INSERT INTO users (email) VALUES ('fiona@example.com')
 
 let ageless = users.filter(admin && age == nil)
-let updates: Int = ageless.update { u in u.set(admin, false) }
+let updates: Int = ageless.update(admin <- false)
 // UPDATE users SET admin = 0 WHERE (admin) AND (age IS NULL)
 ```
 

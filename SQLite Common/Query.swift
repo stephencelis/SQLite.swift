@@ -167,7 +167,7 @@ public struct Query {
         return database.prepare(expression.SQL, expression.bindings)
     }
 
-    private func insertStatement(values: [(Expressible, Expressible)]) -> Statement {
+    private func insertStatement(values: [ValueSetter]) -> Statement {
         var expressions: [Expressible] = [Expression<()>("INSERT INTO \(tableName)")]
         let (c, v) = (SQLite.join(", ", values.map { $0.0 }), SQLite.join(", ", values.map { $0.1 }))
         expressions.append(Expression<()>("(\(c.SQL)) VALUES (\(v.SQL))", c.bindings + v.bindings))
@@ -176,7 +176,7 @@ public struct Query {
         return database.prepare(expression.SQL, expression.bindings)
     }
 
-    private func updateStatement(values: [(Expressible, Expressible)]) -> Statement {
+    private func updateStatement(values: [ValueSetter]) -> Statement {
         var expressions: [Expressible] = [Expression<()>("UPDATE \(tableName) SET")]
         expressions.append(SQLite.join(", ", values.map { SQLite.join(" = ", [$0, $1]) }))
         whereClause.map(expressions.append)
@@ -237,74 +237,61 @@ public struct Query {
 
     // MARK: - Modifying
 
-    public final class ValuesBuilder {
-
-        private let query: Query
-
-        private var values = [(Expressible, Expressible)]()
-
-        private init(_ query: Query, _ builder: ValuesBuilder -> ()) {
-            self.query = query
-            builder(self)
-        }
-
-        public func set<T: Value>(column: Expression<T>, _ value: T?) {
-            values.append((column, Expression<()>(value: value)))
-        }
-
-    }
+    public typealias ValueSetter = (Expressible, Expressible)
 
     /// Runs an INSERT statement against the query.
     ///
-    /// :param: builder A block with a ValuesBuilder, used for aggregating
-    ///                 values for the INSERT.
+    /// :param: values A list of values to set.
     ///
     /// :returns: The statement.
-    public func insert(builder: ValuesBuilder -> ()) -> Statement { return insert(builder).statement }
+    public func insert(values: ValueSetter...) -> Statement { return insert(values).statement }
 
     /// Runs an INSERT statement against the query.
     ///
-    /// :param: builder A block with a ValuesBuilder, used for aggregating
-    ///                 values for the INSERT.
+    /// :param: values A list of values to set.
     ///
     /// :returns: The row ID.
-    public func insert(builder: ValuesBuilder -> ()) -> Int? { return insert(builder).ID }
+    public func insert(values: ValueSetter...) -> Int? { return insert(values).ID }
 
     /// Runs an INSERT statement against the query.
     ///
-    /// :param: builder A block with a ValuesBuilder, used for aggregating
-    ///                 values for the INSERT.
+    /// :param: values A list of values to set.
     ///
     /// :returns: The row ID and statement.
-    public func insert(builder: ValuesBuilder -> ()) -> (ID: Int?, statement: Statement) {
-        let statement = insertStatement(ValuesBuilder(self, builder).values).run()
+    public func insert(values: ValueSetter...) -> (ID: Int?, statement: Statement) {
+        return insert(values)
+    }
+
+    private func insert(values: [ValueSetter]) -> (ID: Int?, statement: Statement) {
+        let statement = insertStatement(values).run()
         return (statement.failed ? nil : database.lastID, statement)
     }
 
     /// Runs an UPDATE statement against the query.
     ///
-    /// :param: builder A block with a ValuesBuilder, used for aggregating
-    ///                 values for the UPDATE.
+    /// :param: values A list of values to set.
     ///
     /// :returns: The statement.
-    public func update(builder: ValuesBuilder -> ()) -> Statement { return update(builder).statement }
+    public func update(values: ValueSetter...) -> Statement { return update(values).statement }
 
     /// Runs an UPDATE statement against the query.
     ///
-    /// :param: builder A block with a ValuesBuilder, used for aggregating
-    ///                 values for the UPDATE.
+    /// :param: values A list of values to set.
     ///
     /// :returns: The number of updated rows.
-    public func update(builder: ValuesBuilder -> ()) -> Int { return update(builder).changes }
+    public func update(values: ValueSetter...) -> Int { return update(values).changes }
 
     /// Runs an UPDATE statement against the query.
     ///
-    /// :param: builder A block with a ValuesBuilder, used for aggregating
-    ///                 values for the UPDATE.
+    /// :param: values A list of values to set.
     ///
     /// :returns: The number of updated rows and statement.
-    public func update(builder: ValuesBuilder -> ()) -> (changes: Int, statement: Statement) {
-        let statement = updateStatement(ValuesBuilder(self, builder).values).run()
+    public func update(values: ValueSetter...) -> (changes: Int, statement: Statement) {
+        return update(values)
+    }
+
+    private func update(values: [ValueSetter]) -> (changes: Int, statement: Statement) {
+        let statement = updateStatement(values).run()
         return (statement.failed ? 0 : database.lastChanges ?? 0, statement)
     }
 
@@ -420,4 +407,22 @@ extension Database {
         return Query(self, tableName)
     }
 
+}
+
+/// Returns a setter to be used with INSERT and UPDATE statements.
+///
+/// :param: column The column being set.
+///
+/// :param: value  The value the column is being set to.
+///
+/// :returns: A setter that can be used in a Query's insert and update
+///           functions.
+public func set<T: Value>(column: Expression<T>, value: T?) -> Query.ValueSetter {
+    return (column, Expression<()>(value: value))
+}
+
+infix operator <- { associativity left precedence 140 }
+
+public func <-<T: Value>(column: Expression<T>, value: T?) -> Query.ValueSetter {
+    return set(column, value)
 }

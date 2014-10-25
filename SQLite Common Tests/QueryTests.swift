@@ -243,31 +243,20 @@ class QueryTests: XCTestCase {
 
     func test_insert_insertsRows() {
         let SQL = "INSERT INTO users (email, age) VALUES ('alice@example.com', 30)"
+
         ExpectExecutions(db, [SQL: 1]) { _ in
-            XCTAssertEqual(1, self.users.insert { u in
-                u.set(self.email, "alice@example.com")
-                u.set(self.age, 30)
-            }.ID!)
+            XCTAssertEqual(1, self.users.insert(self.email <- "alice@example.com", self.age <- 30).ID!)
         }
 
-        XCTAssert(users.insert { u in
-            u.set(self.email, "alice@example.com")
-            u.set(self.age, 30)
-        }.ID == nil)
+        XCTAssert(self.users.insert(self.email <- "alice@example.com", self.age <- 30).ID == nil)
     }
 
     func test_update_updatesRows() {
         InsertUsers(db, "alice", "betsy")
         InsertUser(db, "dolly", admin: true)
 
-        XCTAssertEqual(2, users.filter(!admin).update { u in
-            u.set(self.age, 30)
-            u.set(self.admin, true)
-        }.changes)
-        XCTAssertEqual(0, users.filter(!admin).update { u in
-            u.set(self.age, 30)
-            u.set(self.admin, true)
-        }.changes)
+        XCTAssertEqual(2, users.filter(!admin).update(age <- 30, admin <- true).changes)
+        XCTAssertEqual(0, users.filter(!admin).update(age <- 30, admin <- true).changes)
     }
 
     func test_delete_deletesRows() {
