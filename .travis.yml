@@ -1,0 +1,4 @@
+language: objective-c
+osx_image: xcode61
+script:
+  - xcodebuild -scheme 'SQLite iOS' test

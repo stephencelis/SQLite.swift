@@ -1,9 +1,11 @@
-# SQLite.swift
+# SQLite.swift [![Build Status][0.1]][0.2]
 
 A pure [Swift][1.1] framework wrapping [SQLite3][1.2].
 
 [SQLite.swift][1.3] aims to be small, simple, and safe.
 
+[0.1]: https://img.shields.io/travis/stephencelis/SQLite.swift.svg?style=flat
+[0.2]: https://travis-ci.org/stephencelis/SQLite.swift
 [1.1]: https://developer.apple.com/swift/
 [1.2]: http://www.sqlite.org
 [1.3]: https://github.com/stephencelis/SQLite.swift
