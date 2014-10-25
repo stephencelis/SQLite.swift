@@ -51,18 +51,6 @@ public struct Query {
 
     }
 
-    /// Determines the direction in which rows are returned for a query’s ORDER
-    /// BY clause.
-    public enum SortDirection: String {
-
-        /// Ascending order (smaller to larger values).
-        case Asc = "ASC"
-
-        /// Descending order (larger to smaller values).
-        case Desc = "DESC"
-
-    }
-
     private var columns: [Expressible] = [Expression<()>("*")]
     internal var tableName: String
     private var joins = [Expressible]()
