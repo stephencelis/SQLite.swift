@@ -198,7 +198,7 @@ public struct Query {
         return limit(to: to, offset: offset)
     }
 
-    // prevent limit(nil, offset: 5)
+    // prevents limit(nil, offset: 5)
     private func limit(#to: Int?, offset: Int? = nil) -> Query {
         var query = self
         if let to = to {
