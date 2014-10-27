@@ -265,13 +265,13 @@ public func match(string: String, expression: Expression<String>) -> Expression<
 // MARK: Compound
 
 public func &&(lhs: Expression<Bool>, rhs: Expression<Bool>) -> Expression<Bool> {
-    return Expression(surround("\(lhs.SQL) AND \(rhs.SQL)"), lhs.bindings + rhs.bindings)
+    return infix("AND", lhs, rhs)
 }
 public func &&(lhs: Expression<Bool>, rhs: Bool) -> Expression<Bool> { return lhs && Expression(value: rhs) }
 public func &&(lhs: Bool, rhs: Expression<Bool>) -> Expression<Bool> { return Expression(value: lhs) && rhs }
 
 public func ||(lhs: Expression<Bool>, rhs: Expression<Bool>) -> Expression<Bool> {
-    return Expression(surround("\(lhs.SQL) OR \(rhs.SQL)"), lhs.bindings + rhs.bindings)
+    return infix("OR", lhs, rhs)
 }
 public func ||(lhs: Expression<Bool>, rhs: Bool) -> Expression<Bool> { return lhs || Expression(value: rhs) }
 public func ||(lhs: Bool, rhs: Expression<Bool>) -> Expression<Bool> { return Expression(value: lhs) || rhs }
