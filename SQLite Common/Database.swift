@@ -234,7 +234,7 @@ public final class Database {
 
     private func transaction(mode: TransactionMode, _ statements: [@autoclosure () -> Statement]) -> Statement {
         var transaction = run("BEGIN \(mode.rawValue) TRANSACTION")
-        // FIXME: rdar://18479820 // for statement in statements { transaction = transaction && statement() }
+        // FIXME: rdar://15217242 // for statement in statements { transaction = transaction && statement() }
         for idx in 0..<statements.count { transaction = transaction && statements[idx]() }
         transaction = transaction && run("COMMIT TRANSACTION")
         if transaction.failed { run("ROLLBACK TRANSACTION") }
@@ -274,7 +274,7 @@ public final class Database {
     private func savepoint(name: String, _ statements: [@autoclosure () -> Statement]) -> Statement {
         let quotedName = quote(literal: name)
         var savepoint = run("SAVEPOINT \(quotedName)")
-        // FIXME: rdar://18479820 // for statement in statements { savepoint = savepoint && statement() }
+        // FIXME: rdar://15217242 // for statement in statements { savepoint = savepoint && statement() }
         for idx in 0..<statements.count { savepoint = savepoint && statements[idx]() }
         savepoint = savepoint && run("RELEASE SAVEPOINT \(quotedName)")
         if savepoint.failed { run("ROLLBACK TO SAVEPOINT \(quotedName)") }
