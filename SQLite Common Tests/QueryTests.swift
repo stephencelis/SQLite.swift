@@ -39,6 +39,13 @@ class QueryTests: XCTestCase {
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query.select(*) {} }
     }
 
+    func test_selectDistinct_withExpression_compilesSelectClause() {
+        let query = users.select(distinct: age)
+
+        let SQL = "SELECT DISTINCT age FROM users"
+        ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
+    }
+
     func test_join_compilesJoinClause() {
         let managers = db["users AS managers"]
         let managers_id = Expression<Int>("managers.id")

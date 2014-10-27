@@ -51,7 +51,7 @@ public struct Query {
 
     }
 
-    private var columns: [Expressible] = [Expression<()>("*")]
+    private var columns: Expressible = Expression<()>("*")
     internal var tableName: String
     private var joins = [Expressible]()
     private var filter: Expression<Bool>?
@@ -66,7 +66,7 @@ public struct Query {
     /// :returns A query with the given SELECT clause applied.
     public func select(columns: Expressible...) -> Query {
         var query = self
-        query.columns = columns
+        query.columns = SQLite.join(", ", columns)
         return query
     }
 
@@ -77,9 +77,22 @@ public struct Query {
     /// :returns A query with SELECT * applied.
     public func select(star: Star) -> Query {
         var query = self
-        query.columns = [star(nil, nil)]
+        query.columns = star(nil, nil)
         return query
     }
+
+    /// Sets the SELECT DISTINCT clause on the query.
+    ///
+    /// :param: columns A list of expressions to select.
+    ///
+    /// :returns A query with the given SELECT DISTINCT clause applied.
+    public func select(distinct columns: Expressible...) -> Query {
+        var query = self
+        query.columns = SQLite.join(" ", [Expression<()>("DISTINCT"), SQLite.join(", ", columns)])
+        return query
+    }
+
+    // rdar://18778670 causes select(distinct: *) to make select(*) ambiguous
 
     /// Adds an INNER JOIN clause to the query.
     ///
@@ -237,8 +250,7 @@ public struct Query {
     // MARK: -
 
     private var selectClause: Expressible {
-        let select = SQLite.join(", ", columns)
-        return SQLite.join(" ", [Expression<()>("SELECT"), select, Expression<()>("FROM \(tableName)")])
+        return SQLite.join(" ", [Expression<()>("SELECT"), columns, Expression<()>("FROM \(tableName)")])
     }
 
     private var joinClause: Expressible? {
