@@ -170,67 +170,67 @@ public prefix func ~(rhs: Expression<Int>) -> Expression<Int> {
 
 // MARK: - Predicates
 
-public func ==<T: Value where T: Equatable>(lhs: Expression<T>, rhs: Expression<T>) -> Expression<Bool> {
+public func ==<T: protocol<Value, Equatable>>(lhs: Expression<T>, rhs: Expression<T>) -> Expression<Bool> {
     return infix("=", lhs, rhs)
 }
-public func ==<T: Value where T: Equatable>(lhs: Expression<T>, rhs: T?) -> Expression<Bool> {
+public func ==<T: protocol<Value, Equatable>>(lhs: Expression<T>, rhs: T?) -> Expression<Bool> {
     if let rhs = rhs { return lhs == Expression(value: rhs) }
     return Expression("\(lhs.SQL) IS ?", lhs.bindings + [nil])
 }
-public func ==<T: Value where T: Equatable>(lhs: T?, rhs: Expression<T>) -> Expression<Bool> {
+public func ==<T: protocol<Value, Equatable>>(lhs: T?, rhs: Expression<T>) -> Expression<Bool> {
     if let lhs = lhs { return Expression(value: lhs) == rhs }
     return Expression("? IS \(rhs.SQL)", [nil] + rhs.bindings)
 }
 
-public func !=<T: Value where T: Equatable>(lhs: Expression<T>, rhs: Expression<T>) -> Expression<Bool> {
+public func !=<T: protocol<Value, Equatable>>(lhs: Expression<T>, rhs: Expression<T>) -> Expression<Bool> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func !=<T: Value where T: Equatable>(lhs: Expression<T>, rhs: T?) -> Expression<Bool> {
+public func !=<T: protocol<Value, Equatable>>(lhs: Expression<T>, rhs: T?) -> Expression<Bool> {
     if let rhs = rhs { return lhs != Expression(value: rhs) }
     return Expression("\(lhs.SQL) IS NOT ?", lhs.bindings + [nil])
 }
-public func !=<T: Value where T: Equatable>(lhs: T?, rhs: Expression<T>) -> Expression<Bool> {
+public func !=<T: protocol<Value, Equatable>>(lhs: T?, rhs: Expression<T>) -> Expression<Bool> {
     if let lhs = lhs { return Expression(value: lhs) != rhs }
     return Expression("? IS NOT \(rhs.SQL)", [nil] + rhs.bindings)
 }
 
-public func ><T: Value where T: Comparable>(lhs: Expression<T>, rhs: Expression<T>) -> Expression<Bool> {
+public func ><T: protocol<Value, Comparable>>(lhs: Expression<T>, rhs: Expression<T>) -> Expression<Bool> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func ><T: Value where T: Comparable>(lhs: Expression<T>, rhs: T) -> Expression<Bool> {
+public func ><T: protocol<Value, Comparable>>(lhs: Expression<T>, rhs: T) -> Expression<Bool> {
     return lhs > Expression(value: rhs)
 }
-public func ><T: Value where T: Comparable>(lhs: T, rhs: Expression<T>) -> Expression<Bool> {
+public func ><T: protocol<Value, Comparable>>(lhs: T, rhs: Expression<T>) -> Expression<Bool> {
     return Expression(value: lhs) > rhs
 }
 
-public func >=<T: Value where T: Comparable>(lhs: Expression<T>, rhs: Expression<T>) -> Expression<Bool> {
+public func >=<T: protocol<Value, Comparable>>(lhs: Expression<T>, rhs: Expression<T>) -> Expression<Bool> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func >=<T: Value where T: Comparable>(lhs: Expression<T>, rhs: T) -> Expression<Bool> {
+public func >=<T: protocol<Value, Comparable>>(lhs: Expression<T>, rhs: T) -> Expression<Bool> {
     return lhs >= Expression(value: rhs)
 }
-public func >=<T: Value where T: Comparable>(lhs: T, rhs: Expression<T>) -> Expression<Bool> {
+public func >=<T: protocol<Value, Comparable>>(lhs: T, rhs: Expression<T>) -> Expression<Bool> {
     return Expression(value: lhs) >= rhs
 }
 
-public func <<T: Value where T: Comparable>(lhs: Expression<T>, rhs: Expression<T>) -> Expression<Bool> {
+public func <<T: protocol<Value, Comparable>>(lhs: Expression<T>, rhs: Expression<T>) -> Expression<Bool> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func <<T: Value where T: Comparable>(lhs: Expression<T>, rhs: T) -> Expression<Bool> {
+public func <<T: protocol<Value, Comparable>>(lhs: Expression<T>, rhs: T) -> Expression<Bool> {
     return lhs < Expression(value: rhs)
 }
-public func <<T: Value where T: Comparable>(lhs: T, rhs: Expression<T>) -> Expression<Bool> {
+public func <<T: protocol<Value, Comparable>>(lhs: T, rhs: Expression<T>) -> Expression<Bool> {
     return Expression(value: lhs) < rhs
 }
 
-public func <=<T: Value where T: Comparable>(lhs: Expression<T>, rhs: Expression<T>) -> Expression<Bool> {
+public func <=<T: protocol<Value, Comparable>>(lhs: Expression<T>, rhs: Expression<T>) -> Expression<Bool> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func <=<T: Value where T: Comparable>(lhs: Expression<T>, rhs: T) -> Expression<Bool> {
+public func <=<T: protocol<Value, Comparable>>(lhs: Expression<T>, rhs: T) -> Expression<Bool> {
     return lhs <= Expression(value: rhs)
 }
-public func <=<T: Value where T: Comparable>(lhs: T, rhs: Expression<T>) -> Expression<Bool> {
+public func <=<T: protocol<Value, Comparable>>(lhs: T, rhs: Expression<T>) -> Expression<Bool> {
     return Expression(value: lhs) <= rhs
 }
 
@@ -238,7 +238,7 @@ public prefix func -<T: Number>(rhs: Expression<T>) -> Expression<T> {
     return wrap(__FUNCTION__, rhs)
 }
 
-public func ~=<I: IntervalType, T: Value where T: Comparable, T == I.Bound>(lhs: I, rhs: Expression<T>) -> Expression<Bool> {
+public func ~=<I: IntervalType, T: protocol<Value, Comparable> where T == I.Bound>(lhs: I, rhs: Expression<T>) -> Expression<Bool> {
     return Expression("\(rhs.SQL) BETWEEN ? AND ?", rhs.bindings + [lhs.start, lhs.end])
 }
 
