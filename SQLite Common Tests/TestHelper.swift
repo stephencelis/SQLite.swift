@@ -44,3 +44,14 @@ func ExpectExecutions(db: Database, statements: [String: Int], block: Database -
 
     XCTAssertEqual(statements, fulfilled)
 }
+
+func ExpectExecution(db: Database, SQL: String, statement: @autoclosure () -> Statement) {
+    ExpectExecutions(db, [SQL: 1]) { _ in
+        statement()
+        return
+    }
+}
+
+func ExpectExecution(db: Database, SQL: String, query: Query) {
+    ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
+}

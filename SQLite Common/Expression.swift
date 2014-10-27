@@ -399,6 +399,113 @@ public func contains<T: Value>(values: [T?], column: Expression<T>) -> Expressio
     return infix("IN", column, Expression("(\(templates))", values.map { $0 }))
 }
 
+// MARK: - Modifying
+
+/// A pair of expressions used to set values in INSERT and UPDATE statements.
+public typealias Setter = (Expressible, Expressible)
+
+/// Returns a setter to be used with INSERT and UPDATE statements.
+///
+/// :param: column The column being set.
+///
+/// :param: value  The value the column is being set to.
+///
+/// :returns: A setter that can be used in a Query's insert and update
+///           functions.
+public func set<T: Value>(column: Expression<T>, value: T?) -> Setter {
+    return (column, Expression<()>(value: value))
+}
+
+/// Returns a setter to be used with INSERT and UPDATE statements.
+///
+/// :param: column The column being set.
+///
+/// :param: value  The value the column is being set to.
+///
+/// :returns: A setter that can be used in a Query's insert and update
+///           functions.
+public func set<T: Value>(column: Expression<T>, value: Expression<T>) -> Setter {
+    return (column, value)
+}
+
+infix operator <- { associativity left precedence 140 }
+public func <-<T: Value>(column: Expression<T>, value: T?) -> Setter {
+    return set(column, value)
+}
+public func <-<T: Value>(column: Expression<T>, value: Expression<T>) -> Setter {
+    return set(column, value)
+}
+
+public func +=(column: Expression<String>, value: String) -> Setter {
+    return set(column, column + value)
+}
+public func +=(column: Expression<String>, value: Expression<String>) -> Setter {
+    return set(column, column + value)
+}
+
+public func +=<T: Number>(column: Expression<T>, value: T) -> Setter {
+    return set(column, column + value)
+}
+public func +=<T: Number>(column: Expression<T>, value: Expression<T>) -> Setter {
+    return set(column, column + value)
+}
+
+public func -=<T: Number>(column: Expression<T>, value: T) -> Setter {
+    return set(column, column - value)
+}
+public func -=<T: Number>(column: Expression<T>, value: Expression<T>) -> Setter {
+    return set(column, column - value)
+}
+
+public func *=<T: Number>(column: Expression<T>, value: T) -> Setter {
+    return set(column, column * value)
+}
+public func *=<T: Number>(column: Expression<T>, value: Expression<T>) -> Setter {
+    return set(column, column * value)
+}
+
+public func /=<T: Number>(column: Expression<T>, value: T) -> Setter {
+    return set(column, column / value)
+}
+public func /=<T: Number>(column: Expression<T>, value: Expression<T>) -> Setter {
+    return set(column, column / value)
+}
+
+public func %=(column: Expression<Int>, value: Int) -> Setter {
+    return set(column, column % value)
+}
+public func %=(column: Expression<Int>, value: Expression<Int>) -> Setter {
+    return set(column, column % value)
+}
+
+public func <<=(column: Expression<Int>, value: Int) -> Setter {
+    return set(column, column << value)
+}
+public func <<=(column: Expression<Int>, value: Expression<Int>) -> Setter {
+    return set(column, column << value)
+}
+
+public func >>=(column: Expression<Int>, value: Int) -> Setter {
+    return set(column, column >> value)
+}
+public func >>=(column: Expression<Int>, value: Expression<Int>) -> Setter {
+    return set(column, column >> value)
+}
+
+public func &=(column: Expression<Int>, value: Int) -> Setter {
+    return set(column, column & value)
+}
+public func &=(column: Expression<Int>, value: Expression<Int>) -> Setter {
+    return set(column, column & value)
+}
+
+public func |=(column: Expression<Int>, value: Int) -> Setter {
+    return set(column, column | value)
+}
+public func |=(column: Expression<Int>, value: Expression<Int>) -> Setter {
+    return set(column, column | value)
+}
+
 // MARK: - Internal
 
 internal func join(separator: String, expressions: [Expressible]) -> Expression<()> {

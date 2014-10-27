@@ -140,8 +140,7 @@ class ExpressionTests: XCTestCase {
 
     func test_bitwiseNot_integerExpression_buildsComplementIntegerExpression() {
         let int = Expression<Int>(value: 2)
-        let query = users.select(~int)
-        ExpectExecutions(db, ["SELECT ~(2) FROM users": 1]) { _ in for _ in query {} }
+        ExpectExecutionMatches(db, "~(2)", users.select(~int))
     }
 
     func test_equalityOperator_withEquatableExpressions_buildsBooleanExpression() {
@@ -201,61 +200,61 @@ class ExpressionTests: XCTestCase {
     func test_unaryMinusOperator_withIntegerExpression_buildsNegativeIntegerExpression() {
         let int = Expression<Int>(value: 2)
         let query = users.select(-int)
-        ExpectExecution(db, query, "-(2)")
+        ExpectExecutionMatches(db, "-(2)", query)
     }
 
     func test_unaryMinusOperator_withDoubleExpression_buildsNegativeDoubleExpression() {
         let double = Expression<Double>(value: 2.0)
         let query = users.select(-double)
-        ExpectExecution(db, query, "-(2.0)")
+        ExpectExecutionMatches(db, "-(2.0)", query)
     }
 
     func test_betweenOperator_withComparableExpression_buildsBetweenBooleanExpression() {
         let int = Expression<Int>(value: 2)
         let query = users.select(0...5 ~= int)
-        ExpectExecution(db, query, "2 BETWEEN 0 AND 5")
+        ExpectExecutionMatches(db, "2 BETWEEN 0 AND 5", query)
     }
 
     func test_likeOperator_withStringExpression_buildsLikeExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(like("%ello", string))
-        ExpectExecution(db, query, "'Hello' LIKE '%ello'")
+        ExpectExecutionMatches(db, "'Hello' LIKE '%ello'", query)
     }
 
     func test_globOperator_withStringExpression_buildsGlobExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(glob("*ello", string))
-        ExpectExecution(db, query, "'Hello' GLOB '*ello'")
+        ExpectExecutionMatches(db, "'Hello' GLOB '*ello'", query)
     }
 
     func test_matchOperator_withStringExpression_buildsMatchExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(match("ello", string))
-        ExpectExecution(db, query, "'Hello' MATCH 'ello'")
+        ExpectExecutionMatches(db, "'Hello' MATCH 'ello'", query)
     }
 
     func test_doubleAndOperator_withBooleanExpressions_buildsCompoundExpression() {
         let bool = Expression<Bool>(value: true)
         let query = users.select(bool && bool)
-        ExpectExecution(db, query, "(1) AND (1)")
+        ExpectExecutionMatches(db, "(1) AND (1)", query)
     }
 
     func test_doubleOrOperator_withBooleanExpressions_buildsCompoundExpression() {
         let bool = Expression<Bool>(value: true)
         let query = users.select(bool || bool)
-        ExpectExecution(db, query, "(1) OR (1)")
+        ExpectExecutionMatches(db, "(1) OR (1)", query)
     }
 
     func test_unaryNotOperator_withBooleanExpressions_buildsNotExpression() {
         let bool = Expression<Bool>(value: true)
         let query = users.select(!bool)
-        ExpectExecution(db, query, "NOT (1)")
+        ExpectExecutionMatches(db, "NOT (1)", query)
     }
 
     func test_absFunction_withNumberExpressions_buildsAbsExpression() {
         let int = Expression<Int>(value: -2)
         let query = users.select(abs(int))
-        ExpectExecution(db, query, "abs(-2)")
+        ExpectExecutionMatches(db, "abs(-2)", query)
     }
 
     func test_coalesceFunction_withValueExpressions_buildsCoalesceExpression() {
@@ -263,161 +262,252 @@ class ExpressionTests: XCTestCase {
         let int2 = Expression<Int>(value: nil)
         let int3 = Expression<Int>(value: 3)
         let query = users.select(coalesce(int1, int2, int3))
-        ExpectExecution(db, query, "coalesce(NULL, NULL, 3)")
+        ExpectExecutionMatches(db, "coalesce(NULL, NULL, 3)", query)
     }
 
     func test_ifNullFunction_withValueExpressionAndValue_buildsIfNullExpression() {
         let int = Expression<Int>(value: nil)
-        ExpectExecution(db, users.select(ifnull(int, 1)), "ifnull(NULL, 1)")
-        ExpectExecution(db, users.select(int ?? 1), "ifnull(NULL, 1)")
+        ExpectExecutionMatches(db, "ifnull(NULL, 1)", users.select(ifnull(int, 1)))
+        ExpectExecutionMatches(db, "ifnull(NULL, 1)", users.select(int ?? 1))
     }
 
     func test_lengthFunction_withValueExpression_buildsLengthIntExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(length(string))
-        ExpectExecution(db, query, "length('Hello')")
+        ExpectExecutionMatches(db, "length('Hello')", query)
     }
 
     func test_lowerFunction_withStringExpression_buildsLowerStringExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(lower(string))
-        ExpectExecution(db, query, "lower('Hello')")
+        ExpectExecutionMatches(db, "lower('Hello')", query)
     }
 
     func test_ltrimFunction_withStringExpression_buildsTrimmedStringExpression() {
         let string = Expression<String>(value: " Hello")
         let query = users.select(ltrim(string))
-        ExpectExecution(db, query, "ltrim(' Hello')")
+        ExpectExecutionMatches(db, "ltrim(' Hello')", query)
     }
 
     func test_ltrimFunction_withStringExpressionAndReplacementCharacters_buildsTrimmedStringExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(ltrim(string, "H"))
-        ExpectExecution(db, query, "ltrim('Hello', 'H')")
+        ExpectExecutionMatches(db, "ltrim('Hello', 'H')", query)
     }
 
     func test_randomFunction_buildsRandomIntExpression() {
         let query = users.select(random)
-        ExpectExecution(db, query, "random()")
+        ExpectExecutionMatches(db, "random()", query)
     }
 
     func test_replaceFunction_withStringExpressionAndFindReplaceStrings_buildsReplacedStringExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(replace(string, "He", "E"))
-        ExpectExecution(db, query, "replace('Hello', 'He', 'E')")
+        ExpectExecutionMatches(db, "replace('Hello', 'He', 'E')", query)
     }
 
     func test_roundFunction_withDoubleExpression_buildsRoundedDoubleExpression() {
         let double = Expression<Double>(value: 3.14159)
         let query = users.select(round(double))
-        ExpectExecution(db, query, "round(3.14159)")
+        ExpectExecutionMatches(db, "round(3.14159)", query)
     }
 
     func test_roundFunction_withDoubleExpressionAndPrecision_buildsRoundedDoubleExpression() {
         let double = Expression<Double>(value: 3.14159)
         let query = users.select(round(double, 2))
-        ExpectExecution(db, query, "round(3.14159, 2)")
+        ExpectExecutionMatches(db, "round(3.14159, 2)", query)
     }
 
     func test_rtrimFunction_withStringExpression_buildsTrimmedStringExpression() {
         let string = Expression<String>(value: "Hello ")
         let query = users.select(rtrim(string))
-        ExpectExecution(db, query, "rtrim('Hello ')")
+        ExpectExecutionMatches(db, "rtrim('Hello ')", query)
     }
 
     func test_rtrimFunction_withStringExpressionAndReplacementCharacters_buildsTrimmedStringExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(rtrim(string, "lo"))
-        ExpectExecution(db, query, "rtrim('Hello', 'lo')")
+        ExpectExecutionMatches(db, "rtrim('Hello', 'lo')", query)
     }
 
     func test_substrFunction_withStringExpressionAndStartIndex_buildsSubstringExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(substr(string, 1))
-        ExpectExecution(db, query, "substr('Hello', 1)")
+        ExpectExecutionMatches(db, "substr('Hello', 1)", query)
     }
 
     func test_substrFunction_withStringExpressionPositionAndLength_buildsSubstringExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(substr(string, 1, 2))
-        ExpectExecution(db, query, "substr('Hello', 1, 2)")
+        ExpectExecutionMatches(db, "substr('Hello', 1, 2)", query)
     }
 
     func test_substrFunction_withStringExpressionAndRange_buildsSubstringExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(substr(string, 1..<3))
-        ExpectExecution(db, query, "substr('Hello', 1, 2)")
+        ExpectExecutionMatches(db, "substr('Hello', 1, 2)", query)
     }
 
     func test_trimFunction_withStringExpression_buildsTrimmedStringExpression() {
         let string = Expression<String>(value: " Hello ")
         let query = users.select(trim(string))
-        ExpectExecution(db, query, "trim(' Hello ')")
+        ExpectExecutionMatches(db, "trim(' Hello ')", query)
     }
 
     func test_trimFunction_withStringExpressionAndReplacementCharacters_buildsTrimmedStringExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(trim(string, "lo"))
-        ExpectExecution(db, query, "trim('Hello', 'lo')")
+        ExpectExecutionMatches(db, "trim('Hello', 'lo')", query)
     }
 
     func test_upperFunction_withStringExpression_buildsLowerStringExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(upper(string))
-        ExpectExecution(db, query, "upper('Hello')")
+        ExpectExecutionMatches(db, "upper('Hello')", query)
     }
 
     let id = Expression<Int>("id")
+    let age = Expression<Int>("age")
     let email = Expression<String>("email")
     let salary = Expression<Double>("salary")
     let admin = Expression<Bool>("admin")
 
     func test_countFunction_withExpression_buildsCountExpression() {
-        ExpectExecution(db, users.select(count(id)), "count(id)")
-        ExpectExecution(db, users.select(count(email)), "count(email)")
-        ExpectExecution(db, users.select(count(salary)), "count(salary)")
-        ExpectExecution(db, users.select(count(admin)), "count(admin)")
+        ExpectExecutionMatches(db, "count(id)", users.select(count(id)))
+        ExpectExecutionMatches(db, "count(email)", users.select(count(email)))
+        ExpectExecutionMatches(db, "count(salary)", users.select(count(salary)))
+        ExpectExecutionMatches(db, "count(admin)", users.select(count(admin)))
     }
 
     func test_countFunction_withStar_buildsCountExpression() {
-        ExpectExecution(db, users.select(count(*)), "count(*)")
+        ExpectExecutionMatches(db, "count(*)", users.select(count(*)))
     }
 
     func test_maxFunction_withExpression_buildsMaxExpression() {
-        ExpectExecution(db, users.select(max(id)), "max(id)")
-        ExpectExecution(db, users.select(max(email)), "max(email)")
-        ExpectExecution(db, users.select(max(salary)), "max(salary)")
-        ExpectExecution(db, users.select(max(admin)), "max(admin)")
+        ExpectExecutionMatches(db, "max(id)", users.select(max(id)))
+        ExpectExecutionMatches(db, "max(email)", users.select(max(email)))
+        ExpectExecutionMatches(db, "max(salary)", users.select(max(salary)))
+        ExpectExecutionMatches(db, "max(admin)", users.select(max(admin)))
     }
 
     func test_minFunction_withExpression_buildsMinExpression() {
-        ExpectExecution(db, users.select(min(id)), "min(id)")
-        ExpectExecution(db, users.select(min(email)), "min(email)")
-        ExpectExecution(db, users.select(min(salary)), "min(salary)")
-        ExpectExecution(db, users.select(min(admin)), "min(admin)")
+        ExpectExecutionMatches(db, "min(id)", users.select(min(id)))
+        ExpectExecutionMatches(db, "min(email)", users.select(min(email)))
+        ExpectExecutionMatches(db, "min(salary)", users.select(min(salary)))
+        ExpectExecutionMatches(db, "min(admin)", users.select(min(admin)))
     }
 
     func test_averageFunction_withExpression_buildsAverageExpression() {
-        ExpectExecution(db, users.select(average(id)), "avg(id)")
-        ExpectExecution(db, users.select(average(salary)), "avg(salary)")
+        ExpectExecutionMatches(db, "avg(id)", users.select(average(id)))
+        ExpectExecutionMatches(db, "avg(salary)", users.select(average(salary)))
     }
 
     func test_sumFunction_withExpression_buildsSumExpression() {
-        ExpectExecution(db, users.select(sum(id)), "sum(id)")
-        ExpectExecution(db, users.select(sum(salary)), "sum(salary)")
+        ExpectExecutionMatches(db, "sum(id)", users.select(sum(id)))
+        ExpectExecutionMatches(db, "sum(salary)", users.select(sum(salary)))
     }
 
     func test_totalFunction_withExpression_buildsTotalExpression() {
-        ExpectExecution(db, users.select(total(id)), "total(id)")
-        ExpectExecution(db, users.select(total(salary)), "total(salary)")
+        ExpectExecutionMatches(db, "total(id)", users.select(total(id)))
+        ExpectExecutionMatches(db, "total(salary)", users.select(total(salary)))
     }
 
     func test_containsFunction_withValueExpressionAndValueArray_buildsInExpression() {
-        ExpectExecution(db, users.select(contains([1, 2, 3], id)), "id IN (1, 2, 3)")
+        ExpectExecutionMatches(db, "id IN (1, 2, 3)", users.select(contains([1, 2, 3], id)))
+    }
+
+    func test_plusEquals_withStringExpression_buildsSetter() {
+        let SQL = "UPDATE users SET email = email || email"
+        ExpectExecution(db, SQL, users.update(email += email))
+    }
+
+    func test_plusEquals_withStringValue_buildsSetter() {
+        let SQL = "UPDATE users SET email = email || '.com'"
+        ExpectExecution(db, SQL, users.update(email += ".com"))
+    }
+
+    func test_plusEquals_withNumberExpression_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age + age", users.update(age += age))
+        ExpectExecution(db, "UPDATE users SET salary = salary + salary", users.update(salary += salary))
+    }
+
+    func test_plusEquals_withNumberValue_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age + 1", users.update(age += 1))
+        ExpectExecution(db, "UPDATE users SET salary = salary + 100.0", users.update(salary += 100))
+    }
+
+    func test_minusEquals_withNumberExpression_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age - age", users.update(age -= age))
+        ExpectExecution(db, "UPDATE users SET salary = salary - salary", users.update(salary -= salary))
+    }
+
+    func test_minusEquals_withNumberValue_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age - 1", users.update(age -= 1))
+        ExpectExecution(db, "UPDATE users SET salary = salary - 100.0", users.update(salary -= 100))
+    }
+
+    func test_timesEquals_withNumberExpression_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age * age", users.update(age *= age))
+        ExpectExecution(db, "UPDATE users SET salary = salary * salary", users.update(salary *= salary))
+    }
+
+    func test_timesEquals_withNumberValue_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age * 1", users.update(age *= 1))
+        ExpectExecution(db, "UPDATE users SET salary = salary * 100.0", users.update(salary *= 100))
+    }
+
+    func test_divideEquals_withNumberExpression_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age / age", users.update(age /= age))
+        ExpectExecution(db, "UPDATE users SET salary = salary / salary", users.update(salary /= salary))
+    }
+
+    func test_divideEquals_withNumberValue_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age / 1", users.update(age /= 1))
+        ExpectExecution(db, "UPDATE users SET salary = salary / 100.0", users.update(salary /= 100))
+    }
+
+    func test_moduloEquals_withIntegerExpression_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age % age", users.update(age %= age))
+    }
+
+    func test_moduloEquals_withIntegerValue_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age % 10", users.update(age %= 10))
+    }
+
+    func test_rightShiftEquals_withIntegerExpression_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age >> age", users.update(age >>= age))
+    }
+
+    func test_rightShiftEquals_withIntegerValue_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age >> 1", users.update(age >>= 1))
+    }
+
+    func test_leftShiftEquals_withIntegerExpression_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age << age", users.update(age <<= age))
+    }
+
+    func test_leftShiftEquals_withIntegerValue_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age << 1", users.update(age <<= 1))
+    }
+
+    func test_bitwiseAndEquals_withIntegerExpression_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age & age", users.update(age &= age))
+    }
+
+    func test_bitwiseAndEquals_withIntegerValue_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age & 1", users.update(age &= 1))
+    }
+
+    func test_bitwiseOrEquals_withIntegerExpression_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age | age", users.update(age |= age))
+    }
+
+    func test_bitwiseOrEquals_withIntegerValue_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age | 1", users.update(age |= 1))
     }
 
 }
 
-func ExpectExecution(db: Database, query: Query, SQL: String) {
-    ExpectExecutions(db, ["SELECT \(SQL) FROM users": 1]) { _ in for _ in query {} }
+func ExpectExecutionMatches(db: Database, SQL: String, query: Query) {
+    ExpectExecution(db, "SELECT \(SQL) FROM users", query)
 }
