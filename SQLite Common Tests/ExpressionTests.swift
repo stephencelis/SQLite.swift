@@ -246,13 +246,13 @@ class ExpressionTests: XCTestCase {
     func test_doubleAndOperator_withBooleanExpressions_buildsCompoundExpression() {
         let bool = Expression<Bool>(value: true)
         let query = users.select(bool && bool)
-        ExpectExecutionMatches(db, "(1) AND (1)", query)
+        ExpectExecutionMatches(db, "(1 AND 1)", query)
     }
 
     func test_doubleOrOperator_withBooleanExpressions_buildsCompoundExpression() {
         let bool = Expression<Bool>(value: true)
         let query = users.select(bool || bool)
-        ExpectExecutionMatches(db, "(1) OR (1)", query)
+        ExpectExecutionMatches(db, "(1 OR 1)", query)
     }
 
     func test_unaryNotOperator_withBooleanExpressions_buildsNotExpression() {
@@ -534,8 +534,8 @@ class ExpressionTests: XCTestCase {
 
     func test_precedencePreserved() {
         let n = Expression<Int>(value: 1)
-        ExpectExecutionMatches(db, "(((1 = 1)) AND ((1 = 1))) OR ((1 = 1))", users.select((n == n && n == n) || n == n))
-        ExpectExecutionMatches(db, "((1 = 1)) AND (((1 = 1)) OR ((1 = 1)))", users.select(n == n && (n == n || n == n)))
+        ExpectExecutionMatches(db, "(((1 = 1) AND (1 = 1)) OR (1 = 1))", users.select((n == n && n == n) || n == n))
+        ExpectExecutionMatches(db, "((1 = 1) AND ((1 = 1) OR (1 = 1)))", users.select(n == n && (n == n || n == n)))
     }
 
 }
