@@ -506,6 +506,14 @@ class ExpressionTests: XCTestCase {
         ExpectExecution(db, "UPDATE users SET age = age | 1", users.update(age |= 1))
     }
 
+    func test_postfixPlus_withIntegerValue_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age + 1", users.update(age++))
+    }
+
+    func test_postfixMinus_withIntegerValue_buildsSetter() {
+        ExpectExecution(db, "UPDATE users SET age = age - 1", users.update(age--))
+    }
+
 }
 
 func ExpectExecutionMatches(db: Database, SQL: String, query: Query) {

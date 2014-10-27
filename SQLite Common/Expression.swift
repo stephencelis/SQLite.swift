@@ -506,6 +506,9 @@ public func |=(column: Expression<Int>, value: Expression<Int>) -> Setter {
     return set(column, column | value)
 }
 
+public postfix func ++(rhs: Expression<Int>) -> Setter { return rhs += 1 }
+public postfix func --(rhs: Expression<Int>) -> Setter { return rhs -= 1 }
+
 // MARK: - Internal
 
 internal func join(separator: String, expressions: [Expressible]) -> Expression<()> {
