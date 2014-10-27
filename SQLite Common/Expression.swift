@@ -38,6 +38,14 @@ public struct Expression<T> {
         self.init("?", [value])
     }
 
+    public var asc: Expression<()> {
+        return join(" ", [self, Expression("ASC")])
+    }
+
+    public var desc: Expression<()> {
+        return join(" ", [self, Expression("DESC")])
+    }
+
 }
 
 public protocol Expressible {
@@ -90,14 +98,6 @@ extension Expression: Expressible {
 
     public var expression: Expression<()> {
         return Expression<()>(SQL, bindings)
-    }
-
-    public var asc: Expression<()> {
-        return join(" ", [self, Expression("ASC")])
-    }
-
-    public var desc: Expression<()> {
-        return join(" ", [self, Expression("DESC")])
     }
 
 }
