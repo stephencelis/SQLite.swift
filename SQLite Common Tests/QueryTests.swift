@@ -46,7 +46,7 @@ class QueryTests: XCTestCase {
 
         let query = users.join(managers, on: managers_id == users_manager_id)
 
-        let SQL = "SELECT * FROM users INNER JOIN users AS managers ON managers.id = users.manager_id"
+        let SQL = "SELECT * FROM users INNER JOIN users AS managers ON (managers.id = users.manager_id)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
@@ -57,7 +57,7 @@ class QueryTests: XCTestCase {
 
         let query = users.join(.LeftOuter, managers, on: managers_id == users_manager_id)
 
-        let SQL = "SELECT * FROM users LEFT OUTER JOIN users AS managers ON managers.id = users.manager_id"
+        let SQL = "SELECT * FROM users LEFT OUTER JOIN users AS managers ON (managers.id = users.manager_id)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
@@ -90,15 +90,15 @@ class QueryTests: XCTestCase {
             .join(managed, on: managed_manager_id == users_id)
 
         let SQL = "SELECT * FROM users " +
-            "INNER JOIN users AS managers ON managers.id = users.manager_id " +
-            "INNER JOIN users AS managed ON users.id = managed.manager_id"
+            "INNER JOIN users AS managers ON (managers.id = users.manager_id) " +
+            "INNER JOIN users AS managed ON (users.id = managed.manager_id)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_filter_compilesWhereClause() {
         let query = users.filter(admin == true)
 
-        let SQL = "SELECT * FROM users WHERE admin = 1"
+        let SQL = "SELECT * FROM users WHERE (admin = 1)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
@@ -130,14 +130,14 @@ class QueryTests: XCTestCase {
     func test_group_withExpressionNameAndHavingBindings_compilesGroupClause() {
         let query = users.group(age, having: age >= 30)
 
-        let SQL = "SELECT * FROM users GROUP BY age HAVING age >= 30"
+        let SQL = "SELECT * FROM users GROUP BY age HAVING (age >= 30)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_group_withExpressionNamesAndHavingBindings_compilesGroupClause() {
         let query = users.group([age, admin], having: age >= 30)
 
-        let SQL = "SELECT * FROM users GROUP BY age, admin HAVING age >= 30"
+        let SQL = "SELECT * FROM users GROUP BY age, admin HAVING (age >= 30)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
@@ -215,7 +215,7 @@ class QueryTests: XCTestCase {
         let SQL = "SELECT users.email, count(users.email) FROM users " +
             "LEFT OUTER JOIN users AS managers ON (managers.id = users.manager_id) AND (managers.admin = 1) " +
             "WHERE users.age BETWEEN 21 AND 32 " +
-            "GROUP BY users.age HAVING count(users.email) > 1 " +
+            "GROUP BY users.age HAVING (count(users.email) > 1) " +
             "ORDER BY users.email DESC " +
             "LIMIT 1 " +
             "OFFSET 2"

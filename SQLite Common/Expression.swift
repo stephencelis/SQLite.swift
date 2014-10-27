@@ -147,7 +147,7 @@ public func <<(lhs: Expression<Int>, rhs: Int) -> Expression<Int> { return lhs <
 public func <<(lhs: Int, rhs: Expression<Int>) -> Expression<Int> { return Expression(value: lhs) << rhs }
 
 public func >>(lhs: Expression<Int>, rhs: Expression<Int>) -> Expression<Int> {
-    return Expression("\(lhs.SQL) \(__FUNCTION__) \(rhs.SQL)", lhs.bindings + rhs.bindings)
+    return infix(__FUNCTION__, lhs, rhs)
 }
 public func >>(lhs: Expression<Int>, rhs: Int) -> Expression<Int> { return lhs >> Expression(value: rhs) }
 public func >>(lhs: Int, rhs: Expression<Int>) -> Expression<Int> { return Expression(value: lhs) >> rhs }
@@ -259,13 +259,13 @@ public func match(string: String, expression: Expression<String>) -> Expression<
 // MARK: Compound
 
 public func &&(lhs: Expression<Bool>, rhs: Expression<Bool>) -> Expression<Bool> {
-    return Expression("(\(lhs.SQL)) AND (\(rhs.SQL))", lhs.bindings + rhs.bindings)
+    return Expression("\(surround(lhs.SQL)) AND \(surround(rhs.SQL))", lhs.bindings + rhs.bindings)
 }
 public func &&(lhs: Expression<Bool>, rhs: Bool) -> Expression<Bool> { return lhs && Expression(value: rhs) }
 public func &&(lhs: Bool, rhs: Expression<Bool>) -> Expression<Bool> { return Expression(value: lhs) && rhs }
 
 public func ||(lhs: Expression<Bool>, rhs: Expression<Bool>) -> Expression<Bool> {
-    return Expression("(\(lhs.SQL)) OR (\(rhs.SQL))", lhs.bindings + rhs.bindings)
+    return Expression("\(surround(lhs.SQL)) OR \(surround(rhs.SQL))", lhs.bindings + rhs.bindings)
 }
 public func ||(lhs: Expression<Bool>, rhs: Bool) -> Expression<Bool> { return lhs || Expression(value: rhs) }
 public func ||(lhs: Bool, rhs: Expression<Bool>) -> Expression<Bool> { return Expression(value: lhs) || rhs }
@@ -522,9 +522,13 @@ internal func join(separator: String, expressions: [Expressible]) -> Expression<
 }
 
 private func wrap<T, U>(function: String, expression: Expression<T>) -> Expression<U> {
-    return Expression("\(function)(\(expression.SQL))", expression.bindings)
+    return Expression("\(function)\(surround(expression.SQL))", expression.bindings)
 }
 
 private func infix<T, U>(function: String, lhs: Expression<T>, rhs: Expression<T>) -> Expression<U> {
-    return Expression("\(lhs.SQL) \(function) \(rhs.SQL)", lhs.bindings + rhs.bindings)
+    return Expression(surround("\(lhs.SQL) \(function) \(rhs.SQL)"), lhs.bindings + rhs.bindings)
+}
+
+private func surround(expression: String) -> String {
+    return expression.hasPrefix("(") && expression.hasSuffix(")") ? expression : "(\(expression))"
 }

@@ -14,7 +14,7 @@ class ExpressionTests: XCTestCase {
 
     func test_stringExpressionPlusStringExpression_buildsConcatenatingStringExpression() {
         let string = Expression<String>(value: "Hello")
-        ExpectExecutions(db, ["SELECT 'Hello' || 'Hello' FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT ('Hello' || 'Hello') FROM users": 3]) { _ in
             for _ in self.users.select(string + string) {}
             for _ in self.users.select(string + "Hello") {}
             for _ in self.users.select("Hello" + string) {}
@@ -23,7 +23,7 @@ class ExpressionTests: XCTestCase {
 
     func test_integerExpression_plusIntegerExpression_buildsAdditiveIntegerExpression() {
         let int = Expression<Int>(value: 2)
-        ExpectExecutions(db, ["SELECT 2 + 2 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2 + 2) FROM users": 3]) { _ in
             for _ in self.users.select(int + int) {}
             for _ in self.users.select(int + 2) {}
             for _ in self.users.select(2 + int) {}
@@ -32,7 +32,7 @@ class ExpressionTests: XCTestCase {
 
     func test_doubleExpression_plusDoubleExpression_buildsAdditiveDoubleExpression() {
         let double = Expression<Double>(value: 2.0)
-        ExpectExecutions(db, ["SELECT 2.0 + 2.0 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2.0 + 2.0) FROM users": 3]) { _ in
             for _ in self.users.select(double + double) {}
             for _ in self.users.select(double + 2.0) {}
             for _ in self.users.select(2.0 + double) {}
@@ -41,7 +41,7 @@ class ExpressionTests: XCTestCase {
 
     func test_integerExpression_minusIntegerExpression_buildsSubtractiveIntegerExpression() {
         let int = Expression<Int>(value: 2)
-        ExpectExecutions(db, ["SELECT 2 - 2 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2 - 2) FROM users": 3]) { _ in
             for _ in self.users.select(int - int) {}
             for _ in self.users.select(int - 2) {}
             for _ in self.users.select(2 - int) {}
@@ -50,7 +50,7 @@ class ExpressionTests: XCTestCase {
 
     func test_doubleExpression_minusDoubleExpression_buildsSubtractiveDoubleExpression() {
         let double = Expression<Double>(value: 2.0)
-        ExpectExecutions(db, ["SELECT 2.0 - 2.0 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2.0 - 2.0) FROM users": 3]) { _ in
             for _ in self.users.select(double - double) {}
             for _ in self.users.select(double - 2.0) {}
             for _ in self.users.select(2.0 - double) {}
@@ -59,7 +59,7 @@ class ExpressionTests: XCTestCase {
 
     func test_integerExpression_timesIntegerExpression_buildsMultiplicativeIntegerExpression() {
         let int = Expression<Int>(value: 2)
-        ExpectExecutions(db, ["SELECT 2 * 2 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2 * 2) FROM users": 3]) { _ in
             for _ in self.users.select(int * int) {}
             for _ in self.users.select(int * 2) {}
             for _ in self.users.select(2 * int) {}
@@ -68,7 +68,7 @@ class ExpressionTests: XCTestCase {
 
     func test_doubleExpression_timesDoubleExpression_buildsMultiplicativeDoubleExpression() {
         let double = Expression<Double>(value: 2.0)
-        ExpectExecutions(db, ["SELECT 2.0 * 2.0 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2.0 * 2.0) FROM users": 3]) { _ in
             for _ in self.users.select(double * double) {}
             for _ in self.users.select(double * 2.0) {}
             for _ in self.users.select(2.0 * double) {}
@@ -77,7 +77,7 @@ class ExpressionTests: XCTestCase {
 
     func test_integerExpression_dividedByIntegerExpression_buildsDivisiveIntegerExpression() {
         let int = Expression<Int>(value: 2)
-        ExpectExecutions(db, ["SELECT 2 / 2 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2 / 2) FROM users": 3]) { _ in
             for _ in self.users.select(int / int) {}
             for _ in self.users.select(int / 2) {}
             for _ in self.users.select(2 / int) {}
@@ -86,7 +86,7 @@ class ExpressionTests: XCTestCase {
 
     func test_doubleExpression_dividedByDoubleExpression_buildsDivisiveDoubleExpression() {
         let double = Expression<Double>(value: 2.0)
-        ExpectExecutions(db, ["SELECT 2.0 / 2.0 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2.0 / 2.0) FROM users": 3]) { _ in
             for _ in self.users.select(double / double) {}
             for _ in self.users.select(double / 2.0) {}
             for _ in self.users.select(2.0 / double) {}
@@ -95,7 +95,7 @@ class ExpressionTests: XCTestCase {
 
     func test_integerExpression_moduloIntegerExpression_buildsModuloIntegerExpression() {
         let int = Expression<Int>(value: 2)
-        ExpectExecutions(db, ["SELECT 2 % 2 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2 % 2) FROM users": 3]) { _ in
             for _ in self.users.select(int % int) {}
             for _ in self.users.select(int % 2) {}
             for _ in self.users.select(2 % int) {}
@@ -104,7 +104,7 @@ class ExpressionTests: XCTestCase {
 
     func test_integerExpression_bitShiftLeftIntegerExpression_buildsLeftShiftedIntegerExpression() {
         let int = Expression<Int>(value: 2)
-        ExpectExecutions(db, ["SELECT 2 << 2 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2 << 2) FROM users": 3]) { _ in
             for _ in self.users.select(int << int) {}
             for _ in self.users.select(int << 2) {}
             for _ in self.users.select(2 << int) {}
@@ -113,7 +113,7 @@ class ExpressionTests: XCTestCase {
 
     func test_integerExpression_bitShiftRightIntegerExpression_buildsRightShiftedIntegerExpression() {
         let int = Expression<Int>(value: 2)
-        ExpectExecutions(db, ["SELECT 2 >> 2 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2 >> 2) FROM users": 3]) { _ in
             for _ in self.users.select(int >> int) {}
             for _ in self.users.select(int >> 2) {}
             for _ in self.users.select(2 >> int) {}
@@ -122,7 +122,7 @@ class ExpressionTests: XCTestCase {
 
     func test_integerExpression_bitwiseAndIntegerExpression_buildsAndedIntegerExpression() {
         let int = Expression<Int>(value: 2)
-        ExpectExecutions(db, ["SELECT 2 & 2 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2 & 2) FROM users": 3]) { _ in
             for _ in self.users.select(int & int) {}
             for _ in self.users.select(int & 2) {}
             for _ in self.users.select(2 & int) {}
@@ -131,7 +131,7 @@ class ExpressionTests: XCTestCase {
 
     func test_integerExpression_bitwiseOrIntegerExpression_buildsOredIntegerExpression() {
         let int = Expression<Int>(value: 2)
-        ExpectExecutions(db, ["SELECT 2 | 2 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2 | 2) FROM users": 3]) { _ in
             for _ in self.users.select(int | int) {}
             for _ in self.users.select(int | 2) {}
             for _ in self.users.select(2 | int) {}
@@ -145,7 +145,7 @@ class ExpressionTests: XCTestCase {
 
     func test_equalityOperator_withEquatableExpressions_buildsBooleanExpression() {
         let bool = Expression<Bool>(value: true)
-        ExpectExecutions(db, ["SELECT 1 = 1 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (1 = 1) FROM users": 3]) { _ in
             for _ in self.users.select(bool == bool) {}
             for _ in self.users.select(bool == true) {}
             for _ in self.users.select(true == bool) {}
@@ -154,7 +154,7 @@ class ExpressionTests: XCTestCase {
 
     func test_inequalityOperator_withEquatableExpressions_buildsBooleanExpression() {
         let bool = Expression<Bool>(value: true)
-        ExpectExecutions(db, ["SELECT 1 != 1 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (1 != 1) FROM users": 3]) { _ in
             for _ in self.users.select(bool != bool) {}
             for _ in self.users.select(bool != true) {}
             for _ in self.users.select(true != bool) {}
@@ -163,7 +163,7 @@ class ExpressionTests: XCTestCase {
 
     func test_greaterThanOperator_withComparableExpressions_buildsBooleanExpression() {
         let int = Expression<Int>(value: 2)
-        ExpectExecutions(db, ["SELECT 2 > 2 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2 > 2) FROM users": 3]) { _ in
             for _ in self.users.select(int > int) {}
             for _ in self.users.select(int > 2) {}
             for _ in self.users.select(2 > int) {}
@@ -172,7 +172,7 @@ class ExpressionTests: XCTestCase {
 
     func test_greaterThanOrEqualToOperator_withComparableExpressions_buildsBooleanExpression() {
         let int = Expression<Int>(value: 2)
-        ExpectExecutions(db, ["SELECT 2 >= 2 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2 >= 2) FROM users": 3]) { _ in
             for _ in self.users.select(int >= int) {}
             for _ in self.users.select(int >= 2) {}
             for _ in self.users.select(2 >= int) {}
@@ -181,7 +181,7 @@ class ExpressionTests: XCTestCase {
 
     func test_lessThanOperator_withComparableExpressions_buildsBooleanExpression() {
         let int = Expression<Int>(value: 2)
-        ExpectExecutions(db, ["SELECT 2 < 2 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2 < 2) FROM users": 3]) { _ in
             for _ in self.users.select(int < int) {}
             for _ in self.users.select(int < 2) {}
             for _ in self.users.select(2 < int) {}
@@ -190,7 +190,7 @@ class ExpressionTests: XCTestCase {
 
     func test_lessThanOrEqualToOperator_withComparableExpressions_buildsBooleanExpression() {
         let int = Expression<Int>(value: 2)
-        ExpectExecutions(db, ["SELECT 2 <= 2 FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (2 <= 2) FROM users": 3]) { _ in
             for _ in self.users.select(int <= int) {}
             for _ in self.users.select(int <= 2) {}
             for _ in self.users.select(2 <= int) {}
@@ -218,19 +218,19 @@ class ExpressionTests: XCTestCase {
     func test_likeOperator_withStringExpression_buildsLikeExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(like("%ello", string))
-        ExpectExecutionMatches(db, "'Hello' LIKE '%ello'", query)
+        ExpectExecutionMatches(db, "('Hello' LIKE '%ello')", query)
     }
 
     func test_globOperator_withStringExpression_buildsGlobExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(glob("*ello", string))
-        ExpectExecutionMatches(db, "'Hello' GLOB '*ello'", query)
+        ExpectExecutionMatches(db, "('Hello' GLOB '*ello')", query)
     }
 
     func test_matchOperator_withStringExpression_buildsMatchExpression() {
         let string = Expression<String>(value: "Hello")
         let query = users.select(match("ello", string))
-        ExpectExecutionMatches(db, "'Hello' MATCH 'ello'", query)
+        ExpectExecutionMatches(db, "('Hello' MATCH 'ello')", query)
     }
 
     func test_doubleAndOperator_withBooleanExpressions_buildsCompoundExpression() {
@@ -413,105 +413,105 @@ class ExpressionTests: XCTestCase {
     }
 
     func test_containsFunction_withValueExpressionAndValueArray_buildsInExpression() {
-        ExpectExecutionMatches(db, "id IN (1, 2, 3)", users.select(contains([1, 2, 3], id)))
+        ExpectExecutionMatches(db, "(id IN (1, 2, 3))", users.select(contains([1, 2, 3], id)))
     }
 
     func test_plusEquals_withStringExpression_buildsSetter() {
-        let SQL = "UPDATE users SET email = email || email"
+        let SQL = "UPDATE users SET email = (email || email)"
         ExpectExecution(db, SQL, users.update(email += email))
     }
 
     func test_plusEquals_withStringValue_buildsSetter() {
-        let SQL = "UPDATE users SET email = email || '.com'"
+        let SQL = "UPDATE users SET email = (email || '.com')"
         ExpectExecution(db, SQL, users.update(email += ".com"))
     }
 
     func test_plusEquals_withNumberExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age + age", users.update(age += age))
-        ExpectExecution(db, "UPDATE users SET salary = salary + salary", users.update(salary += salary))
+        ExpectExecution(db, "UPDATE users SET age = (age + age)", users.update(age += age))
+        ExpectExecution(db, "UPDATE users SET salary = (salary + salary)", users.update(salary += salary))
     }
 
     func test_plusEquals_withNumberValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age + 1", users.update(age += 1))
-        ExpectExecution(db, "UPDATE users SET salary = salary + 100.0", users.update(salary += 100))
+        ExpectExecution(db, "UPDATE users SET age = (age + 1)", users.update(age += 1))
+        ExpectExecution(db, "UPDATE users SET salary = (salary + 100.0)", users.update(salary += 100))
     }
 
     func test_minusEquals_withNumberExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age - age", users.update(age -= age))
-        ExpectExecution(db, "UPDATE users SET salary = salary - salary", users.update(salary -= salary))
+        ExpectExecution(db, "UPDATE users SET age = (age - age)", users.update(age -= age))
+        ExpectExecution(db, "UPDATE users SET salary = (salary - salary)", users.update(salary -= salary))
     }
 
     func test_minusEquals_withNumberValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age - 1", users.update(age -= 1))
-        ExpectExecution(db, "UPDATE users SET salary = salary - 100.0", users.update(salary -= 100))
+        ExpectExecution(db, "UPDATE users SET age = (age - 1)", users.update(age -= 1))
+        ExpectExecution(db, "UPDATE users SET salary = (salary - 100.0)", users.update(salary -= 100))
     }
 
     func test_timesEquals_withNumberExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age * age", users.update(age *= age))
-        ExpectExecution(db, "UPDATE users SET salary = salary * salary", users.update(salary *= salary))
+        ExpectExecution(db, "UPDATE users SET age = (age * age)", users.update(age *= age))
+        ExpectExecution(db, "UPDATE users SET salary = (salary * salary)", users.update(salary *= salary))
     }
 
     func test_timesEquals_withNumberValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age * 1", users.update(age *= 1))
-        ExpectExecution(db, "UPDATE users SET salary = salary * 100.0", users.update(salary *= 100))
+        ExpectExecution(db, "UPDATE users SET age = (age * 1)", users.update(age *= 1))
+        ExpectExecution(db, "UPDATE users SET salary = (salary * 100.0)", users.update(salary *= 100))
     }
 
     func test_divideEquals_withNumberExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age / age", users.update(age /= age))
-        ExpectExecution(db, "UPDATE users SET salary = salary / salary", users.update(salary /= salary))
+        ExpectExecution(db, "UPDATE users SET age = (age / age)", users.update(age /= age))
+        ExpectExecution(db, "UPDATE users SET salary = (salary / salary)", users.update(salary /= salary))
     }
 
     func test_divideEquals_withNumberValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age / 1", users.update(age /= 1))
-        ExpectExecution(db, "UPDATE users SET salary = salary / 100.0", users.update(salary /= 100))
+        ExpectExecution(db, "UPDATE users SET age = (age / 1)", users.update(age /= 1))
+        ExpectExecution(db, "UPDATE users SET salary = (salary / 100.0)", users.update(salary /= 100))
     }
 
     func test_moduloEquals_withIntegerExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age % age", users.update(age %= age))
+        ExpectExecution(db, "UPDATE users SET age = (age % age)", users.update(age %= age))
     }
 
     func test_moduloEquals_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age % 10", users.update(age %= 10))
+        ExpectExecution(db, "UPDATE users SET age = (age % 10)", users.update(age %= 10))
     }
 
     func test_rightShiftEquals_withIntegerExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age >> age", users.update(age >>= age))
+        ExpectExecution(db, "UPDATE users SET age = (age >> age)", users.update(age >>= age))
     }
 
     func test_rightShiftEquals_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age >> 1", users.update(age >>= 1))
+        ExpectExecution(db, "UPDATE users SET age = (age >> 1)", users.update(age >>= 1))
     }
 
     func test_leftShiftEquals_withIntegerExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age << age", users.update(age <<= age))
+        ExpectExecution(db, "UPDATE users SET age = (age << age)", users.update(age <<= age))
     }
 
     func test_leftShiftEquals_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age << 1", users.update(age <<= 1))
+        ExpectExecution(db, "UPDATE users SET age = (age << 1)", users.update(age <<= 1))
     }
 
     func test_bitwiseAndEquals_withIntegerExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age & age", users.update(age &= age))
+        ExpectExecution(db, "UPDATE users SET age = (age & age)", users.update(age &= age))
     }
 
     func test_bitwiseAndEquals_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age & 1", users.update(age &= 1))
+        ExpectExecution(db, "UPDATE users SET age = (age & 1)", users.update(age &= 1))
     }
 
     func test_bitwiseOrEquals_withIntegerExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age | age", users.update(age |= age))
+        ExpectExecution(db, "UPDATE users SET age = (age | age)", users.update(age |= age))
     }
 
     func test_bitwiseOrEquals_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age | 1", users.update(age |= 1))
+        ExpectExecution(db, "UPDATE users SET age = (age | 1)", users.update(age |= 1))
     }
 
     func test_postfixPlus_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age + 1", users.update(age++))
+        ExpectExecution(db, "UPDATE users SET age = (age + 1)", users.update(age++))
     }
 
     func test_postfixMinus_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = age - 1", users.update(age--))
+        ExpectExecution(db, "UPDATE users SET age = (age - 1)", users.update(age--))
     }
 
 }
