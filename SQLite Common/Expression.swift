@@ -164,6 +164,12 @@ public func |(lhs: Expression<Int>, rhs: Expression<Int>) -> Expression<Int> {
 public func |(lhs: Expression<Int>, rhs: Int) -> Expression<Int> { return lhs | Expression(value: rhs) }
 public func |(lhs: Int, rhs: Expression<Int>) -> Expression<Int> { return Expression(value: lhs) | rhs }
 
+public func ^(lhs: Expression<Int>, rhs: Expression<Int>) -> Expression<Int> {
+    return (~(lhs & rhs)) & (lhs | rhs)
+}
+public func ^(lhs: Expression<Int>, rhs: Int) -> Expression<Int> { return lhs ^ Expression(value: rhs) }
+public func ^(lhs: Int, rhs: Expression<Int>) -> Expression<Int> { return Expression(value: lhs) ^ rhs }
+
 public prefix func ~(rhs: Expression<Int>) -> Expression<Int> {
     return wrap(__FUNCTION__, rhs)
 }
@@ -504,6 +510,13 @@ public func |=(column: Expression<Int>, value: Int) -> Setter {
 }
 public func |=(column: Expression<Int>, value: Expression<Int>) -> Setter {
     return set(column, column | value)
+}
+
+public func ^=(column: Expression<Int>, value: Int) -> Setter {
+    return set(column, column ^ value)
+}
+public func ^=(column: Expression<Int>, value: Expression<Int>) -> Setter {
+    return set(column, column ^ value)
 }
 
 public postfix func ++(rhs: Expression<Int>) -> Setter { return rhs += 1 }
