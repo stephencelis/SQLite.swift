@@ -141,7 +141,7 @@ class ExpressionTests: XCTestCase {
     func test_integerExpression_bitwiseExclusiveOrIntegerExpression_buildsOredIntegerExpression() {
         let int1 = Expression<Int>(value: 1)
         let int2 = Expression<Int>(value: 2)
-        ExpectExecutions(db, ["SELECT (~(1 & 2) & (1 | 2)) FROM users": 3]) { _ in
+        ExpectExecutions(db, ["SELECT (~((1 & 2)) & (1 | 2)) FROM users": 3]) { _ in
             for _ in self.users.select(int1 ^ int2) {}
             for _ in self.users.select(int1 ^ 2) {}
             for _ in self.users.select(1 ^ int2) {}
@@ -517,11 +517,11 @@ class ExpressionTests: XCTestCase {
     }
 
     func test_bitwiseExclusiveOrEquals_withIntegerExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (~(age & age) & (age | age))", users.update(age ^= age))
+        ExpectExecution(db, "UPDATE users SET age = (~((age & age)) & (age | age))", users.update(age ^= age))
     }
 
     func test_bitwiseExclusiveOrEquals_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (~(age & 1) & (age | 1))", users.update(age ^= 1))
+        ExpectExecution(db, "UPDATE users SET age = (~((age & 1)) & (age | 1))", users.update(age ^= 1))
     }
 
     func test_postfixPlus_withIntegerValue_buildsSetter() {
@@ -530,6 +530,12 @@ class ExpressionTests: XCTestCase {
 
     func test_postfixMinus_withIntegerValue_buildsSetter() {
         ExpectExecution(db, "UPDATE users SET age = (age - 1)", users.update(age--))
+    }
+
+    func test_precedencePreserved() {
+        let n = Expression<Int>(value: 1)
+        ExpectExecutionMatches(db, "(((1 = 1)) AND ((1 = 1))) OR ((1 = 1))", users.select((n == n && n == n) || n == n))
+        ExpectExecutionMatches(db, "((1 = 1)) AND (((1 = 1)) OR ((1 = 1)))", users.select(n == n && (n == n || n == n)))
     }
 
 }

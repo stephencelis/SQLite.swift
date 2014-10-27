@@ -71,7 +71,7 @@ class QueryTests: XCTestCase {
 
         let SQL = "SELECT * FROM users " +
             "INNER JOIN users AS managers " +
-            "ON (managers.id = users.manager_id) " +
+            "ON ((managers.id = users.manager_id)) " +
             "AND (managers.admin)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
@@ -108,8 +108,8 @@ class QueryTests: XCTestCase {
             .filter(age >= 21)
 
         let SQL = "SELECT * FROM users " +
-            "WHERE (email = 'alice@example.com') " +
-            "AND (age >= 21)"
+            "WHERE ((email = 'alice@example.com')) " +
+            "AND ((age >= 21))"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
@@ -213,7 +213,7 @@ class QueryTests: XCTestCase {
             .limit(1, offset: 2)
 
         let SQL = "SELECT users.email, count(users.email) FROM users " +
-            "LEFT OUTER JOIN users AS managers ON (managers.id = users.manager_id) AND (managers.admin = 1) " +
+            "LEFT OUTER JOIN users AS managers ON ((managers.id = users.manager_id)) AND ((managers.admin = 1)) " +
             "WHERE users.age BETWEEN 21 AND 32 " +
             "GROUP BY users.age HAVING (count(users.email) > 1) " +
             "ORDER BY users.email DESC " +

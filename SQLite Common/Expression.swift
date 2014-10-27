@@ -542,6 +542,4 @@ private func infix<T, U>(function: String, lhs: Expression<T>, rhs: Expression<T
     return Expression(surround("\(lhs.SQL) \(function) \(rhs.SQL)"), lhs.bindings + rhs.bindings)
 }
 
-private func surround(expression: String) -> String {
-    return expression.hasPrefix("(") && expression.hasSuffix(")") ? expression : "(\(expression))"
-}
+private func surround(expression: String) -> String { return "(\(expression))" }
