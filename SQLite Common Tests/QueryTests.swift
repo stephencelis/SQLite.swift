@@ -36,13 +36,20 @@ class QueryTests: XCTestCase {
         let query = users.select(email)
 
         let SQL = "SELECT * FROM users"
-        ExpectExecutions(db, [SQL: 1]) { _ in for _ in query.select(*) {} }
+        ExpectExecutions(db, [SQL: 1]) { _ in for _ in query.select(all: *) {} }
     }
 
     func test_selectDistinct_withExpression_compilesSelectClause() {
         let query = users.select(distinct: age)
 
         let SQL = "SELECT DISTINCT age FROM users"
+        ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
+    }
+
+    func test_selectDistinct_withStar_compilesSelectClause() {
+        let query = users.select(distinct: *)
+
+        let SQL = "SELECT DISTINCT * FROM users"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 

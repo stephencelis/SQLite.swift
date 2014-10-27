@@ -61,23 +61,12 @@ public struct Query {
 
     /// Sets the SELECT clause on the query.
     ///
-    /// :param: columns A list of expressions to select.
+    /// :param: all A list of expressions to select.
     ///
     /// :returns A query with the given SELECT clause applied.
-    public func select(columns: Expressible...) -> Query {
+    public func select(all: Expressible...) -> Query {
         var query = self
-        query.columns = SQLite.join(", ", columns)
-        return query
-    }
-
-    /// Sets the SELECT clause on the query.
-    ///
-    /// :param: star A literal *.
-    ///
-    /// :returns A query with SELECT * applied.
-    public func select(star: Star) -> Query {
-        var query = self
-        query.columns = star(nil, nil)
+        query.columns = SQLite.join(", ", all)
         return query
     }
 
@@ -92,7 +81,24 @@ public struct Query {
         return query
     }
 
+    /// Sets the SELECT clause on the query.
+    ///
+    /// :param: star A literal *.
+    ///
+    /// :returns A query with SELECT * applied.
     // rdar://18778670 causes select(distinct: *) to make select(*) ambiguous
+    public func select(all star: Star) -> Query {
+        return select(star(nil, nil))
+    }
+
+    /// Sets the SELECT clause on the query.
+    ///
+    /// :param: star A literal *.
+    ///
+    /// :returns A query with SELECT * applied.
+    public func select(distinct star: Star) -> Query {
+        return select(distinct: star(nil, nil))
+    }
 
     /// Adds an INNER JOIN clause to the query.
     ///
