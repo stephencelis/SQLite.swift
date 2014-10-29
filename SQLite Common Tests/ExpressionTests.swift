@@ -243,6 +243,13 @@ class ExpressionTests: XCTestCase {
         ExpectExecutionMatches(db, "('Hello' MATCH 'ello')", query)
     }
 
+    func test_collateOperator_withStringExpression_buildsCollationExpression() {
+        let string = Expression<String>(value: "Hello ")
+        ExpectExecutionMatches(db, "('Hello ' COLLATE BINARY)", users.select(collate(.Binary, string)))
+        ExpectExecutionMatches(db, "('Hello ' COLLATE NOCASE)", users.select(collate(.NoCase, string)))
+        ExpectExecutionMatches(db, "('Hello ' COLLATE RTRIM)", users.select(collate(.RTrim, string)))
+    }
+
     func test_doubleAndOperator_withBooleanExpressions_buildsCompoundExpression() {
         let bool = Expression<Bool>(value: true)
         let query = users.select(bool && bool)

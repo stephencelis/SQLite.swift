@@ -174,6 +174,20 @@ public prefix func ~(rhs: Expression<Int>) -> Expression<Int> {
     return wrap(__FUNCTION__, rhs)
 }
 
+public enum Collation: String {
+
+    case Binary = "BINARY"
+
+    case NoCase = "NOCASE"
+
+    case RTrim = "RTRIM"
+
+}
+
+public func collate(collation: Collation, expression: Expression<String>) -> Expression<String> {
+    return infix("COLLATE", expression, Expression(collation.rawValue))
+}
+
 // MARK: - Predicates
 
 public func ==<T: protocol<Value, Equatable>>(lhs: Expression<T>, rhs: Expression<T>) -> Expression<Bool> {
