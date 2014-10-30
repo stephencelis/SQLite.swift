@@ -533,8 +533,14 @@ public func ^=(column: Expression<Int>, value: Expression<Int>) -> Setter {
     return set(column, column ^ value)
 }
 
-public postfix func ++(rhs: Expression<Int>) -> Setter { return rhs += 1 }
-public postfix func --(rhs: Expression<Int>) -> Setter { return rhs -= 1 }
+public postfix func ++(column: Expression<Int>) -> Setter {
+    // rdar://18825175 segfaults during archive: // column += 1
+    return (column, Expression<Int>("(\(column.SQL) + 1)", column.bindings))
+}
+public postfix func --(column: Expression<Int>) -> Setter {
+    // rdar://18825175 segfaults during archive: // column -= 1
+    return (column, Expression<Int>("(\(column.SQL) - 1)", column.bindings))
+}
 
 // MARK: - Internal
 
