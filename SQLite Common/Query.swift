@@ -63,7 +63,7 @@ public struct Query {
     ///
     /// :param: all A list of expressions to select.
     ///
-    /// :returns A query with the given SELECT clause applied.
+    /// :returns: A query with the given SELECT clause applied.
     public func select(all: Expressible...) -> Query {
         var query = self
         query.columns = SQLite.join(", ", all)
@@ -74,7 +74,7 @@ public struct Query {
     ///
     /// :param: columns A list of expressions to select.
     ///
-    /// :returns A query with the given SELECT DISTINCT clause applied.
+    /// :returns: A query with the given SELECT DISTINCT clause applied.
     public func select(distinct columns: Expressible...) -> Query {
         var query = self
         query.columns = SQLite.join(" ", [Expression<()>("DISTINCT"), SQLite.join(", ", columns)])
@@ -85,7 +85,7 @@ public struct Query {
     ///
     /// :param: star A literal *.
     ///
-    /// :returns A query with SELECT * applied.
+    /// :returns: A query with SELECT * applied.
     // rdar://18778670 causes select(distinct: *) to make select(*) ambiguous
     public func select(all star: Star) -> Query {
         return select(star(nil, nil))
@@ -95,7 +95,7 @@ public struct Query {
     ///
     /// :param: star A literal *.
     ///
-    /// :returns A query with SELECT * applied.
+    /// :returns: A query with SELECT * applied.
     public func select(distinct star: Star) -> Query {
         return select(distinct: star(nil, nil))
     }
@@ -106,7 +106,7 @@ public struct Query {
     ///
     /// :param: on    A boolean expression describing the join condition.
     ///
-    /// :returns A query with the given INNER JOIN clause applied.
+    /// :returns: A query with the given INNER JOIN clause applied.
     public func join(table: Query, on: Expression<Bool>) -> Query {
         return join(.Inner, table, on: on)
     }
@@ -119,7 +119,7 @@ public struct Query {
     ///
     /// :param: on    A boolean expression describing the join condition.
     ///
-    /// :returns A query with the given JOIN clause applied.
+    /// :returns: A query with the given JOIN clause applied.
     public func join(type: JoinType, _ table: Query, on: Expression<Bool>) -> Query {
         var query = self
         let condition = table.filter.map { on && $0 } ?? on
@@ -132,7 +132,7 @@ public struct Query {
     ///
     /// :param: condition A boolean expression to filter on.
     ///
-    /// :returns A query with the given WHERE clause applied.
+    /// :returns: A query with the given WHERE clause applied.
     public func filter(condition: Expression<Bool>) -> Query {
         var query = self
         query.filter = filter.map { $0 && condition } ?? condition
@@ -189,7 +189,7 @@ public struct Query {
     ///
     /// :param: to The maximum number of rows to return.
     ///
-    /// :returns A query with the given LIMIT clause applied.
+    /// :returns: A query with the given LIMIT clause applied.
     public func limit(to: Int?) -> Query {
         return limit(to: to, offset: nil)
     }
@@ -200,7 +200,7 @@ public struct Query {
     ///
     /// :param: offset The number of rows to skip.
     ///
-    /// :returns A query with the given LIMIT and OFFSET clauses applied.
+    /// :returns: A query with the given LIMIT and OFFSET clauses applied.
     public func limit(to: Int, offset: Int) -> Query {
         return limit(to: to, offset: offset)
     }
