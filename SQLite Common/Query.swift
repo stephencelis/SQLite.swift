@@ -81,12 +81,12 @@ public struct Query {
         return query
     }
 
+    // rdar://18778670 causes select(distinct: *) to make select(*) ambiguous
     /// Sets the SELECT clause on the query.
     ///
     /// :param: star A literal *.
     ///
     /// :returns: A query with SELECT * applied.
-    // rdar://18778670 causes select(distinct: *) to make select(*) ambiguous
     public func select(all star: Star) -> Query {
         return select(star(nil, nil))
     }
