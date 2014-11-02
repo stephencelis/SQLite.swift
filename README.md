@@ -75,10 +75,10 @@ let admin = Expression<Bool>("admin")
 let age = Expression<Int>("age")
 
 for user in users.filter(admin && age >= 30).order(age.desc) { /* ... */ }
-// SELECT * FROM users WHERE (admin) AND (age >= 30) ORDER BY age DESC
+// SELECT * FROM users WHERE (admin AND (age >= 30)) ORDER BY age DESC
 
 for user in users.group(age, having: count(age) == 1) { /* ... */ }
-// SELECT * FROM users GROUP BY age HAVING count(age) = 1
+// SELECT * FROM users GROUP BY age HAVING (count(age) = 1)
 
 users.count
 // SELECT count(*) FROM users
@@ -91,7 +91,7 @@ if let id = users.insert(email <- "fiona@example.com") { /* ... */ }
 
 let ageless = users.filter(admin && age == nil)
 let updates: Int = ageless.update(admin <- false)
-// UPDATE users SET admin = 0 WHERE (admin) AND (age IS NULL)
+// UPDATE users SET admin = 0 WHERE (admin AND (age IS NULL))
 ```
 
 
