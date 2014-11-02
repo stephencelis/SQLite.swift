@@ -4,7 +4,7 @@
 <meta id='xcode-display' name='xcode-display' content='render'>
 <section>
     <p>
-        You may notice that iteration works a little differently here. Rather than arrays of rows, we are given dictionaries of column names to row values. This gives us a little more powerful of a mapping to work with and pass around.
+        You may notice that iteration works a little differently here. Rather than arrays of raw values, we are given <code>Row</code> objects, which can be subscripted with the same expressions we prepared above. This gives us a little more powerful of a mapping to work with and pass around.
     </p>
     <p>
         Queries can be used and reused, and can quickly return rows, counts and other aggregate values.

@@ -362,7 +362,7 @@ public struct Query {
     // MARK: - Array
 
     /// The first result (or nil if the query has no results).
-    public var first: Values? { return limit(1).generate().next() }
+    public var first: Row? { return limit(1).generate().next() }
 
     /// Returns true if the query has no results.
     public var isEmpty: Bool { return first == nil }
@@ -508,6 +508,63 @@ public struct Query {
 
 }
 
+/// A row object. Returned by iterating over a Query. Provides typed subscript
+/// access to a row’s values.
+public struct Row {
+
+    private var values: Values
+
+    private init(_ values: Values) {
+        self.values = values
+    }
+
+    /// Returns a row’s value for the given column.
+    ///
+    /// :param: column An expression representing a column selected in a Query.
+    ///
+    /// returns The value for the given column.
+    public func get<T: Value>(column: Expression<T>) -> T? {
+        return values[column.SQL] as? T
+    }
+
+    /// Returns a row’s value for the given column.
+    ///
+    /// :param: column An expression representing a column selected in a Query.
+    ///
+    /// returns The value for the given column.
+    public subscript(column: Expression<Bool>) -> Bool? {
+        return get(column)
+    }
+
+    /// Returns a row’s value for the given column.
+    ///
+    /// :param: column An expression representing a column selected in a Query.
+    ///
+    /// returns The value for the given column.
+    public subscript(column: Expression<Double>) -> Double? {
+        return get(column)
+    }
+
+    /// Returns a row’s value for the given column.
+    ///
+    /// :param: column An expression representing a column selected in a Query.
+    ///
+    /// returns The value for the given column.
+    public subscript(column: Expression<Int>) -> Int? {
+        return get(column)
+    }
+
+    /// Returns a row’s value for the given column.
+    ///
+    /// :param: column An expression representing a column selected in a Query.
+    ///
+    /// returns The value for the given column.
+    public subscript(column: Expression<String>) -> String? {
+        return get(column)
+    }
+
+}
+
 // MARK: - SequenceType
 extension Query: SequenceType {
 
@@ -524,9 +581,9 @@ public struct QueryGenerator: GeneratorType {
 
     private init(_ statement: Statement) { self.statement = statement }
 
-    public func next() -> Values? {
+    public func next() -> Row? {
         statement.next()
-        return statement.values
+        return statement.values.map { Row($0) }
     }
 
 }

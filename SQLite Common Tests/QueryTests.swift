@@ -258,7 +258,7 @@ class QueryTests: XCTestCase {
     func test_first_returnsTheFirstRow() {
         InsertUsers(db, "alice", "betsy")
         ExpectExecutions(db, ["SELECT * FROM users LIMIT 1": 1]) { _ in
-            XCTAssertEqual(1, self.users.first!["id"] as Int)
+            XCTAssertEqual(1, self.users.first![self.id]!)
         }
     }
 
@@ -352,6 +352,11 @@ class QueryTests: XCTestCase {
         InsertUser(db, "alice", age: 20)
         InsertUser(db, "betsy", age: 30)
         XCTAssertEqual(50.0, users.total(age))
+    }
+
+    func test_row_withBoundColumn_returnsValue() {
+        InsertUser(db, "alice", age: 20)
+        XCTAssertEqual(21, users.select(age + 1).first![age + 1]!)
     }
 
 }
