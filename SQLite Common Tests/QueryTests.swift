@@ -281,7 +281,7 @@ class QueryTests: XCTestCase {
     }
 
     func test_replace_replaceRows() {
-        let SQL = "REPLACE INTO users (email, age) VALUES ('alice@example.com', 30)"
+        let SQL = "INSERT OR REPLACE INTO users (email, age) VALUES ('alice@example.com', 30)"
 
         ExpectExecutions(db, [SQL: 1]) { _ in
             XCTAssertEqual(1, self.users.replace(self.email <- "alice@example.com", self.age <- 30).ID!)
