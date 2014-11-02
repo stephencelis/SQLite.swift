@@ -225,6 +225,16 @@ public struct Query {
 
     // MARK: - Namespacing
 
+    /// Prefixes a column expression with the query’s table name or alias.
+    ///
+    /// :param: column A column expression.
+    ///
+    /// :returns: A column expression namespaced with the query’s table name or
+    ///           alias.
+    public func namespace<T>(column: Expression<T>) -> Expression<T> {
+        return Expression("\(alias ?? tableName).\(column.SQL)", column.bindings)
+    }
+
     // FIXME: rdar://18673897 subscript<T>(expression: Expression<T>) -> Expression<T>
 
     /// Prefixes a column expression with the query’s table name or alias.
@@ -234,7 +244,7 @@ public struct Query {
     /// :returns: A column expression namespaced with the query’s table name or
     ///           alias.
     public subscript(column: Expression<Bool>) -> Expression<Bool> {
-        return Expression("\(alias ?? tableName).\(column.SQL)", column.bindings)
+        return namespace(column)
     }
 
     /// Prefixes a column expression with the query’s table name or alias.
@@ -244,7 +254,7 @@ public struct Query {
     /// :returns: A column expression namespaced with the query’s table name or
     ///           alias.
     public subscript(column: Expression<Double>) -> Expression<Double> {
-        return Expression("\(alias ?? tableName).\(column.SQL)", column.bindings)
+        return namespace(column)
     }
 
     /// Prefixes a column expression with the query’s table name or alias.
@@ -254,7 +264,7 @@ public struct Query {
     /// :returns: A column expression namespaced with the query’s table name or
     ///           alias.
     public subscript(column: Expression<Int>) -> Expression<Int> {
-        return Expression("\(alias ?? tableName).\(column.SQL)", column.bindings)
+        return namespace(column)
     }
 
     /// Prefixes a column expression with the query’s table name or alias.
@@ -264,7 +274,7 @@ public struct Query {
     /// :returns: A column expression namespaced with the query’s table name or
     ///           alias.
     public subscript(column: Expression<String>) -> Expression<String> {
-        return Expression("\(alias ?? tableName).\(column.SQL)", column.bindings)
+        return namespace(column)
     }
 
     /// Prefixes a star with the query’s table name or alias.
@@ -274,7 +284,7 @@ public struct Query {
     /// :returns: A * expression namespaced with the query’s table name or
     ///           alias.
     public subscript(star: Star) -> Expression<()> {
-        return Expression("\(alias ?? tableName).*")
+        return namespace(star(nil, nil))
     }
 
     // MARK: - Compiling Statements
