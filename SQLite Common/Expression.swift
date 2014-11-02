@@ -46,6 +46,15 @@ public struct Expression<T> {
         return join(" ", [self, Expression("DESC")])
     }
 
+    // naïve compiler for statements that can't be bound, e.g., CREATE TABLE
+    internal func compile() -> String {
+        var idx = 0
+        return Array(SQL).reduce("") { SQL, character in
+            let string = String(character)
+            return SQL + (string == "?" ? transcode(self.bindings[idx++]) : string)
+        }
+    }
+
 }
 
 public protocol Expressible {
@@ -546,7 +555,16 @@ internal func join(separator: String, expressions: [Expressible]) -> Expression<
     return Expression(Swift.join(separator, SQL), bindings)
 }
 
-private func wrap<T, U>(function: String, expression: Expression<T>) -> Expression<U> {
+internal func transcode(literal: Value?) -> String {
+    if let literal = literal {
+        if let literal = literal as? String { return quote(literal: literal) }
+        if let literal = literal as? Bool { return literal ? "1" : "0" }
+        return "\(literal)"
+    }
+    return "NULL"
+}
+
+internal func wrap<T, U>(function: String, expression: Expression<T>) -> Expression<U> {
     return Expression("\(function)\(surround(expression.SQL))", expression.bindings)
 }
 

@@ -1,0 +1,213 @@
+import XCTest
+import SQLite
+
+private let id = Expression<Int>("id")
+private let email = Expression<String>("email")
+private let age = Expression<Int>("age")
+private let salary = Expression<Double>("salary")
+private let admin = Expression<Bool>("admin")
+private let manager_id = Expression<Int>("manager_id")
+
+class SchemaTests: XCTestCase {
+
+    let db = Database()
+    var users: Query { return db["users"] }
+
+    func test_createTable_column_buildsColumnDefinition() {
+        ExpectExecution(db, "CREATE TABLE users (email TEXT)",
+            db.create(table: users) { t in
+                t.column(email)
+            }
+        )
+    }
+
+    func test_createTable_column_withPrimaryKey_buildsPrimaryKeyClause() {
+        ExpectExecution(db, "CREATE TABLE users (id INTEGER PRIMARY KEY)",
+            db.create(table: users) { t in
+                t.column(id, primaryKey: true)
+            }
+        )
+    }
+
+    func test_createTable_column_withNullFalse_buildsNotNullClause() {
+        ExpectExecution(db, "CREATE TABLE users (email TEXT NOT NULL)",
+            db.create(table: users) { t in
+                t.column(email, null: false)
+            }
+        )
+    }
+
+    func test_createTable_column_withUnique_buildsUniqueClause() {
+        ExpectExecution(db, "CREATE TABLE users (email TEXT UNIQUE)",
+            db.create(table: users) { t in
+                t.column(email, unique: true)
+            }
+        )
+    }
+
+    func test_createTable_column_withCheck_buildsCheckClause() {
+        ExpectExecution(db, "CREATE TABLE users (admin BOOLEAN CHECK (admin IN (0, 1)))",
+            db.create(table: users) { t in
+                t.column(admin, check: contains([false, true], admin))
+            }
+        )
+    }
+
+    func test_createTable_column_withDefaultValue_buildsDefaultClause() {
+        ExpectExecution(db, "CREATE TABLE users (salary REAL DEFAULT 0.0)",
+            db.create(table: users) { t in
+                t.column(salary, defaultValue: 0.0)
+            }
+        )
+    }
+
+    func test_createTable_stringColumn_collation_buildsCollateClause() {
+        ExpectExecution(db, "CREATE TABLE users (email TEXT COLLATE NOCASE)",
+            db.create(table: users) { t in
+                t.column(email, collate: .NoCase)
+            }
+        )
+    }
+
+    func test_createTable_intColumn_referencingNamespacedColumn_buildsReferencesClause() {
+        let users = self.users
+        ExpectExecution(db, "CREATE TABLE users (id INTEGER PRIMARY KEY, manager_id INTEGER REFERENCES users(id))",
+            db.create(table: users) { t in
+                t.column(id, primaryKey: true)
+                t.column(manager_id, references: users[id])
+            }
+        )
+    }
+
+    func test_createTable_intColumn_referencingQuery_buildsReferencesClause() {
+        let users = self.users
+        ExpectExecution(db, "CREATE TABLE users (id INTEGER PRIMARY KEY, manager_id INTEGER REFERENCES users)",
+            db.create(table: users) { t in
+                t.column(id, primaryKey: true)
+                t.column(manager_id, references: users)
+            }
+        )
+    }
+
+    func test_createTable_primaryKey_buildsPrimaryKeyTableConstraint() {
+        let users = self.users
+        ExpectExecution(db, "CREATE TABLE users (email TEXT, PRIMARY KEY(email))",
+            db.create(table: users) { t in
+                t.column(email)
+                t.primaryKey(email)
+            }
+        )
+    }
+
+    func test_createTable_primaryKey_buildsCompositePrimaryKeyTableConstraint() {
+        let users = self.users
+        ExpectExecution(db, "CREATE TABLE users (id INTEGER, email TEXT, PRIMARY KEY(id, email))",
+            db.create(table: users) { t in
+                t.column(id)
+                t.column(email)
+                t.primaryKey(id, email)
+            }
+        )
+    }
+
+    func test_createTable_unique_buildsUniqueTableConstraint() {
+        let users = self.users
+        ExpectExecution(db, "CREATE TABLE users (email TEXT, UNIQUE(email))",
+            db.create(table: users) { t in
+                t.column(email)
+                t.unique(email)
+            }
+        )
+    }
+
+    func test_createTable_unique_buildsCompositeUniqueTableConstraint() {
+        let users = self.users
+        ExpectExecution(db, "CREATE TABLE users (id INTEGER, email TEXT, UNIQUE(id, email))",
+            db.create(table: users) { t in
+                t.column(id)
+                t.column(email)
+                t.unique(id, email)
+            }
+        )
+    }
+
+    func test_createTable_check_buildsCheckTableConstraint() {
+        let users = self.users
+        ExpectExecution(db, "CREATE TABLE users (admin BOOLEAN, CHECK (admin IN (0, 1)))",
+            db.create(table: users) { t in
+                t.column(admin)
+                t.check(contains([false, true], admin))
+            }
+        )
+    }
+
+    func test_createTable_foreignKey_referencingNamespacedColumn_buildsForeignKeyTableConstraint() {
+        let users = self.users
+        ExpectExecution(db,
+            "CREATE TABLE users (" +
+                "id INTEGER PRIMARY KEY, " +
+                "manager_id INTEGER, " +
+                "FOREIGN KEY(manager_id) REFERENCES users(id)" +
+            ")",
+            db.create(table: users) { t in
+                t.column(id, primaryKey: true)
+                t.column(manager_id)
+                t.foreignKey(manager_id, references: users[id])
+            }
+        )
+    }
+
+    func test_createTable_foreignKey_referencingTable_buildsForeignKeyTableConstraint() {
+        let users = self.users
+        ExpectExecution(db,
+            "CREATE TABLE users (" +
+                "id INTEGER PRIMARY KEY, " +
+                "manager_id INTEGER, " +
+                "FOREIGN KEY(manager_id) REFERENCES users" +
+            ")",
+            db.create(table: users) { t in
+                t.column(id, primaryKey: true)
+                t.column(manager_id)
+                t.foreignKey(manager_id, references: users)
+            }
+        )
+    }
+
+    func test_createTable_foreignKey_withUpdateDependency_buildsUpdateDependency() {
+        let users = self.users
+        ExpectExecution(db,
+            "CREATE TABLE users (" +
+                "id INTEGER PRIMARY KEY, " +
+                "manager_id INTEGER, " +
+                "FOREIGN KEY(manager_id) REFERENCES users ON UPDATE CASCADE" +
+            ")",
+            db.create(table: users) { t in
+                t.column(id, primaryKey: true)
+                t.column(manager_id)
+                t.foreignKey(manager_id, references: users, update: .Cascade)
+            }
+        )
+    }
+
+    func test_create_foreignKey_withDeleteDependency_buildsDeleteDependency() {
+        let users = self.users
+        ExpectExecution(db,
+            "CREATE TABLE users (" +
+                "id INTEGER PRIMARY KEY, " +
+                "manager_id INTEGER, " +
+                "FOREIGN KEY(manager_id) REFERENCES users ON DELETE CASCADE" +
+            ")",
+            db.create(table: users) { t in
+                t.column(id, primaryKey: true)
+                t.column(manager_id)
+                t.foreignKey(manager_id, references: users, delete: .Cascade)
+            }
+        )
+    }
+
+    func test_dropTable_dropsTable() {
+        CreateUsersTable(db)
+        ExpectExecution(db, "DROP TABLE users", db.drop(table: users) )
+    }
+
+}

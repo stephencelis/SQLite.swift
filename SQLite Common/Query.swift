@@ -28,7 +28,7 @@ public typealias Values = [String: Value?]
 /// helper functions.
 public struct Query {
 
-    private var database: Database
+    internal var database: Database
 
     internal init(_ database: Database, _ tableName: String) {
         self.database = database
@@ -48,21 +48,6 @@ public struct Query {
 
         /// A LEFT OUTER JOIN.
         case LeftOuter = "LEFT OUTER"
-
-    }
-
-    /// ON CONFLICT resolutions.
-    public enum OnConflict: String {
-
-        case Replace = "REPLACE"
-
-        case Rollback = "ROLLBACK"
-
-        case Abort = "ABORT"
-
-        case Fail = "FAIL"
-
-        case Ignore = "IGNORE"
 
     }
 
@@ -315,6 +300,21 @@ public struct Query {
         return database.prepare(expression.SQL, expression.bindings)
     }
 
+    /// ON CONFLICT resolutions.
+    public enum OnConflict: String {
+
+        case Replace = "REPLACE"
+
+        case Rollback = "ROLLBACK"
+
+        case Abort = "ABORT"
+
+        case Fail = "FAIL"
+
+        case Ignore = "IGNORE"
+
+    }
+
     private func insertStatement(values: [Setter], or: OnConflict? = nil) -> Statement {
         var insertClause = "INSERT"
         if let or = or { insertClause = "\(insertClause) OR \(or.rawValue)" }
@@ -353,7 +353,7 @@ public struct Query {
         return SQLite.join(" ", joins)
     }
 
-    private var whereClause: Expressible? {
+    internal var whereClause: Expressible? {
         if let filter = filter {
             return Expression<()>("WHERE \(filter.SQL)", filter.bindings)
         }

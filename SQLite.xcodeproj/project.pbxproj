@@ -13,6 +13,10 @@
 		DC0FA83819D87E0C009F3A35 /* SQLite-Bridging.c in Sources */ = {isa = PBXBuildFile; fileRef = DC0FA83519D87E0C009F3A35 /* SQLite-Bridging.c */; };
 		DC0FA83919D87E0C009F3A35 /* SQLite-Bridging.h in Headers */ = {isa = PBXBuildFile; fileRef = DC0FA83619D87E0C009F3A35 /* SQLite-Bridging.h */; settings = {ATTRIBUTES = (Private, ); }; };
 		DC0FA83A19D87E0C009F3A35 /* SQLite-Bridging.h in Headers */ = {isa = PBXBuildFile; fileRef = DC0FA83619D87E0C009F3A35 /* SQLite-Bridging.h */; settings = {ATTRIBUTES = (Private, ); }; };
+		DC109CE11A0C4D970070988E /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC109CE01A0C4D970070988E /* Schema.swift */; };
+		DC109CE21A0C4D970070988E /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC109CE01A0C4D970070988E /* Schema.swift */; };
+		DC109CE41A0C4F5D0070988E /* SchemaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC109CE31A0C4F5D0070988E /* SchemaTests.swift */; };
+		DC109CE51A0C4F5D0070988E /* SchemaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC109CE31A0C4F5D0070988E /* SchemaTests.swift */; };
 		DC3773F919C8CBB3004FCF85 /* SQLite iOS.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3773F819C8CBB3004FCF85 /* SQLite iOS.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DC3773FF19C8CBB3004FCF85 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DC3773F319C8CBB3004FCF85 /* SQLite.framework */; };
 		DC37741919C8CC2F004FCF85 /* SQLite Mac.h in Headers */ = {isa = PBXBuildFile; fileRef = DC37741819C8CC2F004FCF85 /* SQLite Mac.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -62,6 +66,8 @@
 		DC0FA83119D87CA3009F3A35 /* SQLite-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SQLite-Bridging-Header.h"; sourceTree = "<group>"; };
 		DC0FA83519D87E0C009F3A35 /* SQLite-Bridging.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "SQLite-Bridging.c"; sourceTree = "<group>"; };
 		DC0FA83619D87E0C009F3A35 /* SQLite-Bridging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SQLite-Bridging.h"; sourceTree = "<group>"; };
+		DC109CE01A0C4D970070988E /* Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Schema.swift; sourceTree = "<group>"; };
+		DC109CE31A0C4F5D0070988E /* SchemaTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaTests.swift; sourceTree = "<group>"; };
 		DC3773F319C8CBB3004FCF85 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC3773F719C8CBB3004FCF85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC3773F819C8CBB3004FCF85 /* SQLite iOS.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "SQLite iOS.h"; sourceTree = "<group>"; };
@@ -130,6 +136,7 @@
 			children = (
 				DC650B9519F0CDC3002FBE91 /* Expression.swift */,
 				DCAD429619E2E0F1004A51DF /* Query.swift */,
+				DC109CE01A0C4D970070988E /* Schema.swift */,
 			);
 			name = "Query Building";
 			sourceTree = "<group>";
@@ -152,6 +159,7 @@
 				DCF37F8419DDAF3F001534AA /* StatementTests.swift */,
 				DC475E9E19F2199900788FBD /* ExpressionTests.swift */,
 				DCAD429919E2EE50004A51DF /* QueryTests.swift */,
+				DC109CE31A0C4F5D0070988E /* SchemaTests.swift */,
 			);
 			name = "SQLite Tests";
 			path = "SQLite Common Tests";
@@ -463,6 +471,7 @@
 				DC650B9619F0CDC3002FBE91 /* Expression.swift in Sources */,
 				DC37743519C8D626004FCF85 /* Database.swift in Sources */,
 				DC37743819C8D693004FCF85 /* Value.swift in Sources */,
+				DC109CE11A0C4D970070988E /* Schema.swift in Sources */,
 				DC0FA83719D87E0C009F3A35 /* SQLite-Bridging.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -473,6 +482,7 @@
 			files = (
 				DC475EA219F219AF00788FBD /* ExpressionTests.swift in Sources */,
 				DCAD429A19E2EE50004A51DF /* QueryTests.swift in Sources */,
+				DC109CE41A0C4F5D0070988E /* SchemaTests.swift in Sources */,
 				DCF37F8219DDAC2D001534AA /* DatabaseTests.swift in Sources */,
 				DCF37F8519DDAF3F001534AA /* StatementTests.swift in Sources */,
 				DCF37F8819DDAF79001534AA /* TestHelper.swift in Sources */,
@@ -488,6 +498,7 @@
 				DC650B9719F0CDC3002FBE91 /* Expression.swift in Sources */,
 				DC37743619C8D626004FCF85 /* Database.swift in Sources */,
 				DC37743919C8D693004FCF85 /* Value.swift in Sources */,
+				DC109CE21A0C4D970070988E /* Schema.swift in Sources */,
 				DC0FA83819D87E0C009F3A35 /* SQLite-Bridging.c in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -498,6 +509,7 @@
 			files = (
 				DC475EA119F219AE00788FBD /* ExpressionTests.swift in Sources */,
 				DCAD429B19E2EE50004A51DF /* QueryTests.swift in Sources */,
+				DC109CE51A0C4F5D0070988E /* SchemaTests.swift in Sources */,
 				DCF37F8319DDAC2D001534AA /* DatabaseTests.swift in Sources */,
 				DCF37F8619DDAF3F001534AA /* StatementTests.swift in Sources */,
 				DCF37F8919DDAF79001534AA /* TestHelper.swift in Sources */,

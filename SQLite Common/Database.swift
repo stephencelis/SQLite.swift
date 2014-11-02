@@ -340,7 +340,7 @@ extension Database: DebugPrintable {
 
 }
 
-private func quote(#literal: String) -> String {
+internal func quote(#literal: String) -> String {
     let escaped = join("''", split(literal) { $0 == "'" })
     return "'\(escaped)'"
 }
