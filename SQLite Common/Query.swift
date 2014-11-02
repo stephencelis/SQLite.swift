@@ -51,10 +51,8 @@ public struct Query {
 
     }
 
-    // INSERT OR x (ON CONFLICT) clause values.
+    /// ON CONFLICT resolutions.
     public enum OnConflict: String {
-        // No ON CONFLICT clause.
-        case None = ""
 
         case Replace = "REPLACE"
 
@@ -65,6 +63,7 @@ public struct Query {
         case Fail = "FAIL"
 
         case Ignore = "IGNORE"
+
     }
 
     private var columns: Expressible = Expression<()>("*")
@@ -316,9 +315,10 @@ public struct Query {
         return database.prepare(expression.SQL, expression.bindings)
     }
 
-    private func insertStatement(values: [Setter], or: OnConflict = .None) -> Statement {
-        var onClause = (or == .None ? "" : " OR \(or.rawValue)")
-        var expressions: [Expressible] = [Expression<()>("INSERT\(onClause) INTO \(tableName)")]
+    private func insertStatement(values: [Setter], or: OnConflict? = nil) -> Statement {
+        var insertClause = "INSERT"
+        if let or = or { insertClause = "\(insertClause) OR \(or.rawValue)" }
+        var expressions: [Expressible] = [Expression<()>("\(insertClause) INTO \(tableName)")]
         println(expressions)
         let (c, v) = (SQLite.join(", ", values.map { $0.0 }), SQLite.join(", ", values.map { $0.1 }))
         expressions.append(Expression<()>("(\(c.SQL)) VALUES (\(v.SQL))", c.bindings + v.bindings))
@@ -633,23 +633,23 @@ public struct QueryGenerator: GeneratorType {
         statement.next()
         return statement.values.map { Row($0) }
     }
-    
+
 }
 
 // MARK: - Printable
 extension Query: Printable {
-    
+
     public var description: String {
         if let alias = alias { return "\(tableName) AS \(alias)" }
         return tableName
     }
-    
+
 }
 
 extension Database {
-    
+
     public subscript(tableName: String) -> Query {
         return Query(self, tableName)
     }
-    
+
 }
