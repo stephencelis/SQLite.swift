@@ -527,6 +527,8 @@ public struct Row {
         return values[column.SQL] as? T
     }
 
+    // FIXME: rdar://18673897 subscript<T>(expression: Expression<T>) -> Expression<T>
+
     /// Returns a row’s value for the given column.
     ///
     /// :param: column An expression representing a column selected in a Query.
