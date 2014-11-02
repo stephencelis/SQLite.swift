@@ -223,6 +223,50 @@ public struct Query {
         return query
     }
 
+    // MARK: - Namespacing
+
+    // FIXME: rdar://18673897 subscript<T>(expression: Expression<T>) -> Expression<T>
+
+    /// Prefixes a column expression with the query’s table name or alias.
+    ///
+    /// :param: column A column expression.
+    ///
+    /// :returns: A column expression namespaced with the query’s table name or
+    ///           alias.
+    public subscript(column: Expression<Bool>) -> Expression<Bool> {
+        return Expression("\(alias ?? tableName).\(column.SQL)", column.bindings)
+    }
+
+    /// Prefixes a column expression with the query’s table name or alias.
+    ///
+    /// :param: column A column expression.
+    ///
+    /// :returns: A column expression namespaced with the query’s table name or
+    ///           alias.
+    public subscript(column: Expression<Double>) -> Expression<Double> {
+        return Expression("\(alias ?? tableName).\(column.SQL)", column.bindings)
+    }
+
+    /// Prefixes a column expression with the query’s table name or alias.
+    ///
+    /// :param: column A column expression.
+    ///
+    /// :returns: A column expression namespaced with the query’s table name or
+    ///           alias.
+    public subscript(column: Expression<Int>) -> Expression<Int> {
+        return Expression("\(alias ?? tableName).\(column.SQL)", column.bindings)
+    }
+
+    /// Prefixes a column expression with the query’s table name or alias.
+    ///
+    /// :param: column A column expression.
+    ///
+    /// :returns: A column expression namespaced with the query’s table name or
+    ///           alias.
+    public subscript(column: Expression<String>) -> Expression<String> {
+        return Expression("\(alias ?? tableName).\(column.SQL)", column.bindings)
+    }
+
     // MARK: - Compiling Statements
 
     private var selectStatement: Statement {

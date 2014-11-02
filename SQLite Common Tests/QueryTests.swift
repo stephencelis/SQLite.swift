@@ -9,6 +9,7 @@ class QueryTests: XCTestCase {
     let id = Expression<Int>("id")
     let email = Expression<String>("email")
     let age = Expression<Int>("age")
+    let salary = Expression<Double>("salary")
     let admin = Expression<Bool>("admin")
     let manager_id = Expression<Int>("manager_id")
 
@@ -91,22 +92,17 @@ class QueryTests: XCTestCase {
     }
 
     func test_join_whenChained_compilesAggregateJoinClause() {
-        let managers = db["users AS managers"]
-        let managers_id = Expression<Int>("managers.id")
-        let users_manager_id = Expression<Int>("users.manager_id")
+        let managers = users.alias("managers")
+        let managed = users.alias("managed")
 
-        let managed = db["users AS managed"]
-        let managed_manager_id = Expression<Int>("users.id")
-        let users_id = Expression<Int>("managed.manager_id")
-
-        let query = users
-            .join(managers, on: managers_id == users_manager_id)
-            .join(managed, on: managed_manager_id == users_id)
+        let middleManagers = users
+            .join(managers, on: managers[id] == users[manager_id])
+            .join(managed, on: managed[manager_id] == users[id])
 
         let SQL = "SELECT * FROM users " +
             "INNER JOIN users AS managers ON (managers.id = users.manager_id) " +
-            "INNER JOIN users AS managed ON (users.id = managed.manager_id)"
-        ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
+            "INNER JOIN users AS managed ON (managed.manager_id = users.id)"
+        ExpectExecutions(db, [SQL: 1]) { _ in for _ in middleManagers {} }
     }
 
     func test_filter_compilesWhereClause() {
@@ -210,20 +206,38 @@ class QueryTests: XCTestCase {
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query.limit(nil) {} }
     }
 
+    func test_alias_compilesAliasInSelectClause() {
+        let managers = users.alias("managers")
+        var SQL = "SELECT * FROM users AS managers"
+        ExpectExecutions(db, [SQL: 1]) { _ in for _ in managers {} }
+    }
+
+    func test_subscript_withExpression_returnsNamespacedExpression() {
+        XCTAssertEqual("users.admin", users[admin].SQL)
+        XCTAssertEqual("users.salary", users[salary].SQL)
+        XCTAssertEqual("users.age", users[age].SQL)
+        XCTAssertEqual("users.email", users[email].SQL)
+    }
+
+    func test_subscript_withAliasAndExpression_returnsAliasedExpression() {
+        let managers = users.alias("managers")
+        XCTAssertEqual("managers.admin", managers[admin].SQL)
+        XCTAssertEqual("managers.salary", managers[salary].SQL)
+        XCTAssertEqual("managers.age", managers[age].SQL)
+        XCTAssertEqual("managers.email", managers[email].SQL)
+    }
+
     func test_SQL_compilesProperly() {
-        let admin = Expression<Bool>("managers.admin")
-        let managers = users.alias("managers").filter(admin == true)
-        let managers_id = Expression<Int>("managers.id")
-        let users_manager_id = Expression<Int>("users.manager_id")
-        let email = Expression<String>("users.email")
-        let age = Expression<Int>("users.age")
+        var managers = users.alias("managers")
+        // TODO: automatically namespace in the future?
+        managers = managers.filter(managers[admin] == true)
 
         let query = users
-            .select(email, count(email))
-            .join(.LeftOuter, managers, on: managers_id == users_manager_id)
-            .filter(21..<32 ~= age)
-            .group(age, having: count(email) > 1)
-            .order(email.desc)
+            .select(users[email], count(users[email]))
+            .join(.LeftOuter, managers, on: managers[id] == users[manager_id])
+            .filter(21..<32 ~= users[age])
+            .group(users[age], having: count(users[email]) > 1)
+            .order(users[email].desc)
             .limit(1, offset: 2)
 
         let SQL = "SELECT users.email, count(users.email) FROM users " +

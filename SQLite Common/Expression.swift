@@ -23,8 +23,8 @@
 
 public struct Expression<T> {
 
-    internal var SQL: String
-    internal var bindings: [Value?]
+    public let SQL: String
+    public let bindings: [Value?]
 
     public init(_ SQL: String = "", _ bindings: [Value?] = []) {
         (self.SQL, self.bindings) = (SQL, bindings)
