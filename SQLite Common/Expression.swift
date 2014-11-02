@@ -86,14 +86,6 @@ extension String: Expressible {
 
 }
 
-extension Query: Expressible {
-
-    public var expression: Expression<()> {
-        return Expression(tableName)
-    }
-
-}
-
 extension Expression: Expressible {
 
     public var expression: Expression<()> {
