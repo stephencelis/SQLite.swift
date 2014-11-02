@@ -267,6 +267,16 @@ public struct Query {
         return Expression("\(alias ?? tableName).\(column.SQL)", column.bindings)
     }
 
+    /// Prefixes a star with the query’s table name or alias.
+    ///
+    /// :param: star A literal *.
+    ///
+    /// :returns: A * expression namespaced with the query’s table name or
+    ///           alias.
+    public subscript(star: Star) -> Expression<()> {
+        return Expression("\(alias ?? tableName).*")
+    }
+
     // MARK: - Compiling Statements
 
     private var selectStatement: Statement {

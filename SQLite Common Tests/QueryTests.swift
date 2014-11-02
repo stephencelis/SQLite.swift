@@ -217,6 +217,7 @@ class QueryTests: XCTestCase {
         XCTAssertEqual("users.salary", users[salary].SQL)
         XCTAssertEqual("users.age", users[age].SQL)
         XCTAssertEqual("users.email", users[email].SQL)
+        XCTAssertEqual("users.*", users[*].SQL)
     }
 
     func test_subscript_withAliasAndExpression_returnsAliasedExpression() {
@@ -224,7 +225,7 @@ class QueryTests: XCTestCase {
         XCTAssertEqual("managers.admin", managers[admin].SQL)
         XCTAssertEqual("managers.salary", managers[salary].SQL)
         XCTAssertEqual("managers.age", managers[age].SQL)
-        XCTAssertEqual("managers.email", managers[email].SQL)
+        XCTAssertEqual("managers.*", managers[*].SQL)
     }
 
     func test_SQL_compilesProperly() {
