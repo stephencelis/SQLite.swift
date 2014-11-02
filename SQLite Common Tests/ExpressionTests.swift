@@ -300,6 +300,17 @@ class ExpressionTests: XCTestCase {
         ExpectExecutionMatches("('A' COLLATE RTRIM)", collate(.RTrim, stringA))
     }
 
+    func test_cast_buildsCastingExpressions() {
+        let string1 = Expression<String>(value: "10")
+        let string2 = Expression<String?>(value: "10")
+        ExpectExecutionMatches("CAST ('10' AS REAL)", cast(string1) as Expression<Double>)
+        ExpectExecutionMatches("CAST ('10' AS INTEGER)", cast(string1) as Expression<Int>)
+        ExpectExecutionMatches("CAST ('10' AS TEXT)", cast(string1) as Expression<String>)
+        ExpectExecutionMatches("CAST ('10' AS REAL)", cast(string2) as Expression<Double?>)
+        ExpectExecutionMatches("CAST ('10' AS INTEGER)", cast(string2) as Expression<Int?>)
+        ExpectExecutionMatches("CAST ('10' AS TEXT)", cast(string2) as Expression<String?>)
+    }
+
     func test_doubleAndOperator_withBooleanExpressions_buildsCompoundExpression() {
         ExpectExecutionMatches("(0 AND 0)", bool0 && bool0)
         ExpectExecutionMatches("(0 AND 1)", bool0 && bool1)

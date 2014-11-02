@@ -252,6 +252,13 @@ public func collate(collation: Collation, expression: Expression<String?>) -> Ex
     return infix("COLLATE", expression, Expression<String>(literal: collation.rawValue))
 }
 
+public func cast<T: Value, U: Value>(expression: Expression<T>) -> Expression<U> {
+    return Expression(literal: "CAST (\(expression.SQL) AS \(U.declaredDatatype))", expression.bindings)
+}
+public func cast<T: Value, U: Value>(expression: Expression<T?>) -> Expression<U?> {
+    return Expression(literal: "CAST (\(expression.SQL) AS \(U.declaredDatatype))", expression.bindings)
+}
+
 // MARK: - Predicates
 
 public func == <V: Value where V.Datatype: Equatable>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
