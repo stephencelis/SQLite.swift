@@ -53,11 +53,18 @@ public struct Query {
 
     private var columns: Expressible = Expression<()>("*")
     internal var tableName: String
+    private var alias: String?
     private var joins = [Expressible]()
     private var filter: Expression<Bool>?
     private var group: Expressible?
     private var order = [Expressible]()
     private var limit: (to: Int, offset: Int?)? = nil
+
+    public func alias(alias: String?) -> Query {
+        var query = self
+        query.alias = alias
+        return query
+    }
 
     /// Sets the SELECT clause on the query.
     ///
@@ -123,7 +130,7 @@ public struct Query {
     public func join(type: JoinType, _ table: Query, on: Expression<Bool>) -> Query {
         var query = self
         let condition = table.filter.map { on && $0 } ?? on
-        let expression = Expression<()>("\(type.rawValue) JOIN \(table.tableName) ON \(condition.SQL)", condition.bindings)
+        let expression = Expression<()>("\(type.rawValue) JOIN \(table) ON \(condition.SQL)", condition.bindings)
         query.joins.append(expression)
         return query
     }
@@ -256,7 +263,7 @@ public struct Query {
     // MARK: -
 
     private var selectClause: Expressible {
-        return SQLite.join(" ", [Expression<()>("SELECT"), columns, Expression<()>("FROM \(tableName)")])
+        return SQLite.join(" ", [Expression<()>("SELECT"), columns, Expression<()>("FROM \(self)")])
     }
 
     private var joinClause: Expressible? {
@@ -456,6 +463,16 @@ public struct QueryGenerator: GeneratorType {
     public func next() -> Values? {
         statement.next()
         return statement.values
+    }
+
+}
+
+// MARK: - Printable
+extension Query: Printable {
+
+    public var description: String {
+        if let alias = alias { return "\(tableName) AS \(alias)" }
+        return tableName
     }
 
 }

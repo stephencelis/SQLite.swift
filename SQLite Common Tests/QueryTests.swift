@@ -212,7 +212,7 @@ class QueryTests: XCTestCase {
 
     func test_SQL_compilesProperly() {
         let admin = Expression<Bool>("managers.admin")
-        let managers = db["users AS managers"].filter(admin == true)
+        let managers = users.alias("managers").filter(admin == true)
         let managers_id = Expression<Int>("managers.id")
         let users_manager_id = Expression<Int>("users.manager_id")
         let email = Expression<String>("users.email")
