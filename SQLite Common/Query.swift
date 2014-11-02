@@ -51,6 +51,22 @@ public struct Query {
 
     }
 
+    // INSERT OR x (ON CONFLICT) clause values.
+    public enum OnConflict: String {
+        // No ON CONFLICT clause.
+        case None = ""
+
+        case Replace = "REPLACE"
+
+        case Rollback = "ROLLBACK"
+
+        case Abort = "ABORT"
+
+        case Fail = "FAIL"
+
+        case Ignore = "IGNORE"
+    }
+
     private var columns: Expressible = Expression<()>("*")
     internal var tableName: String
     private var alias: String?
@@ -300,8 +316,10 @@ public struct Query {
         return database.prepare(expression.SQL, expression.bindings)
     }
 
-    private func insertStatement(values: [Setter]) -> Statement {
-        var expressions: [Expressible] = [Expression<()>("INSERT INTO \(tableName)")]
+    private func insertStatement(values: [Setter], or: OnConflict = .None) -> Statement {
+        var onClause = (or == .None ? "" : " OR \(or.rawValue)")
+        var expressions: [Expressible] = [Expression<()>("INSERT\(onClause) INTO \(tableName)")]
+        println(expressions)
         let (c, v) = (SQLite.join(", ", values.map { $0.0 }), SQLite.join(", ", values.map { $0.1 }))
         expressions.append(Expression<()>("(\(c.SQL)) VALUES (\(v.SQL))", c.bindings + v.bindings))
         whereClause.map(expressions.append)
@@ -423,6 +441,34 @@ public struct Query {
     private func update(values: [Setter]) -> (changes: Int, statement: Statement) {
         let statement = updateStatement(values).run()
         return (statement.failed ? 0 : database.lastChanges ?? 0, statement)
+    }
+
+    /// Runs a REPLACE statement against the query.
+    ///
+    /// :param: values A list of values to set.
+    ///
+    /// :returns: The statement.
+    public func replace(values: Setter...) -> Statement { return replace(values).statement }
+
+    /// Runs a REPLACE statement against the query.
+    ///
+    /// :param: values A list of values to set.
+    ///
+    /// :returns: The row ID.
+    public func replace(values: Setter...) -> Int? { return replace(values).ID }
+
+    /// Runs a REPLACE statement against the query.
+    ///
+    /// :param: values A list of values to set.
+    ///
+    /// :returns: The row ID and statement.
+    public func replace(values: Setter...) -> (ID: Int?, statement: Statement) {
+        return replace(values)
+    }
+
+    private func replace(values: [Setter]) -> (ID: Int?, statement: Statement) {
+        let statement = insertStatement(values, or: .Replace).run()
+        return (statement.failed ? nil : database.lastID, statement)
     }
 
     /// Runs a DELETE statement against the query.
@@ -587,23 +633,23 @@ public struct QueryGenerator: GeneratorType {
         statement.next()
         return statement.values.map { Row($0) }
     }
-
+    
 }
 
 // MARK: - Printable
 extension Query: Printable {
-
+    
     public var description: String {
         if let alias = alias { return "\(tableName) AS \(alias)" }
         return tableName
     }
-
+    
 }
 
 extension Database {
-
+    
     public subscript(tableName: String) -> Query {
         return Query(self, tableName)
     }
-
+    
 }
