@@ -309,6 +309,15 @@ public struct Query {
         return database.prepare(expression.SQL, expression.bindings)
     }
 
+    private func replaceStatement(values: [Setter]) -> Statement {
+        var expressions: [Expressible] = [Expression<()>("REPLACE INTO \(tableName)")]
+        let (c, v) = (SQLite.join(", ", values.map { $0.0 }), SQLite.join(", ", values.map { $0.1 }))
+        expressions.append(Expression<()>("(\(c.SQL)) VALUES (\(v.SQL))", c.bindings + v.bindings))
+        whereClause.map(expressions.append)
+        let expression = SQLite.join(" ", expressions)
+        return database.prepare(expression.SQL, expression.bindings)
+    }
+
     private func updateStatement(values: [Setter]) -> Statement {
         var expressions: [Expressible] = [Expression<()>("UPDATE \(tableName) SET")]
         expressions.append(SQLite.join(", ", values.map { SQLite.join(" = ", [$0, $1]) }))
@@ -425,6 +434,34 @@ public struct Query {
         return (statement.failed ? 0 : database.lastChanges ?? 0, statement)
     }
 
+    /// Runs a REPLACE statement against the query.
+    ///
+    /// :param: values A list of values to set.
+    ///
+    /// :returns: The statement.
+    public func replace(values: Setter...) -> Statement { return replace(values).statement }
+
+    /// Runs a REPLACE statement against the query.
+    ///
+    /// :param: values A list of values to set.
+    ///
+    /// :returns: The row ID.
+    public func replace(values: Setter...) -> Int? { return replace(values).ID }
+
+    /// Runs a REPLACE statement against the query.
+    ///
+    /// :param: values A list of values to set.
+    ///
+    /// :returns: The row ID and statement.
+    public func replace(values: Setter...) -> (ID: Int?, statement: Statement) {
+        return replace(values)
+    }
+
+    private func replace(values: [Setter]) -> (ID: Int?, statement: Statement) {
+        let statement = replaceStatement(values).run()
+        return (statement.failed ? nil : database.lastID, statement)
+    }
+    
     /// Runs a DELETE statement against the query.
     ///
     /// :returns: The statement.
