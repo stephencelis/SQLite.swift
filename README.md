@@ -77,7 +77,10 @@ let age = Expression<Int>("age")
 for user in users.filter(admin && age >= 30).order(age.desc) { /* ... */ }
 // SELECT * FROM users WHERE (admin AND (age >= 30)) ORDER BY age DESC
 
-for user in users.group(age, having: count(age) == 1) { /* ... */ }
+for user in users.group(age, having: count(age) == 1) {
+  println("email: ", user["email"] as String)
+  println("age:  ", user["age"] as Int)
+}
 // SELECT * FROM users GROUP BY age HAVING (count(age) = 1)
 
 users.count
