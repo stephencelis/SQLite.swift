@@ -33,6 +33,28 @@ public extension Database {
         return run("DROP TABLE \(table.tableName)")
     }
 
+    public func create(index table: Query, unique: Bool = false, on columns: Expressible...) -> Statement {
+        var parts: [Expressible] = [Expression<()>("CREATE")]
+        if unique { parts.append(Expression<()>("UNIQUE")) }
+        parts.append(Expression<()>("INDEX \(indexName(table, on: columns))"))
+        let joined = SQLite.join(", ", columns)
+        parts.append(Expression<()>("ON \(table.tableName) (\(joined.SQL))", joined.bindings))
+        if SQLITE_VERSION >= "3.8" { table.whereClause.map(parts.append) } // partial indexes
+        return run(SQLite.join(" ", parts).compile())
+    }
+
+    public func drop(index table: Query, on columns: Expressible...) -> Statement {
+        return run("DROP INDEX \(indexName(table, on: columns))")
+    }
+
+    private func indexName(table: Query, on columns: [Expressible]) -> String {
+        let string = join(" ", ["index", table.tableName, "on"] + columns.map { $0.expression.SQL })
+        return Array(string).reduce("") { underscored, character in
+            if "A"..."Z" ~= character || "a"..."z" ~= character { return underscored + String(character) }
+            return underscored + "_"
+        }
+    }
+
 }
 
 public final class SchemaBuilder {

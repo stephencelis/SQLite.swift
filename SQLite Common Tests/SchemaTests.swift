@@ -210,4 +210,45 @@ class SchemaTests: XCTestCase {
         ExpectExecution(db, "DROP TABLE users", db.drop(table: users) )
     }
 
+    func test_index_executesIndexStatement() {
+        CreateUsersTable(db)
+        ExpectExecution(db,
+            "CREATE INDEX index_users_on_email ON users (email)",
+            db.create(index: users, on: email)
+        )
+    }
+
+    func test_index_withUniqueness_executesUniqueIndexStatement() {
+        CreateUsersTable(db)
+        ExpectExecution(db,
+            "CREATE UNIQUE INDEX index_users_on_email ON users (email)",
+            db.create(index: users, unique: true, on: email)
+        )
+    }
+
+    func test_index_withMultipleColumns_executesCompoundIndexStatement() {
+        CreateUsersTable(db)
+        ExpectExecution(db,
+            "CREATE INDEX index_users_on_age_DESC_email ON users (age DESC, email)",
+            db.create(index: users, on: age.desc, email)
+        )
+    }
+
+    func test_index_withFilter_executesPartialIndexStatementWithWhereClause() {
+        if SQLITE_VERSION >= "3.8" {
+            CreateUsersTable(db)
+            ExpectExecution(db,
+                "CREATE INDEX index_users_on_age ON users (age) WHERE admin",
+                db.create(index: users.filter(admin), on: age)
+            )
+        }
+    }
+
+    func test_dropIndex_dropsIndex() {
+        CreateUsersTable(db)
+        db.create(index: users, on: email)
+
+        ExpectExecution(db, "DROP INDEX index_users_on_email", db.drop(index: users, on: email))
+    }
+
 }
