@@ -39,7 +39,7 @@ public extension Database {
         parts.append(Expression<()>("INDEX \(indexName(table, on: columns))"))
         let joined = SQLite.join(", ", columns)
         parts.append(Expression<()>("ON \(table.tableName) (\(joined.SQL))", joined.bindings))
-        if SQLITE_VERSION >= "3.8" { table.whereClause.map(parts.append) } // partial indexes
+        // if SQLITE_VERSION >= "3.8" { table.whereClause.map(parts.append) } // partial indexes
         return run(SQLite.join(" ", parts).compile())
     }
 

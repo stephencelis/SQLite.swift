@@ -234,15 +234,15 @@ class SchemaTests: XCTestCase {
         )
     }
 
-    func test_index_withFilter_executesPartialIndexStatementWithWhereClause() {
-        if SQLITE_VERSION >= "3.8" {
-            CreateUsersTable(db)
-            ExpectExecution(db,
-                "CREATE INDEX index_users_on_age ON users (age) WHERE admin",
-                db.create(index: users.filter(admin), on: age)
-            )
-        }
-    }
+//    func test_index_withFilter_executesPartialIndexStatementWithWhereClause() {
+//        if SQLITE_VERSION >= "3.8" {
+//            CreateUsersTable(db)
+//            ExpectExecution(db,
+//                "CREATE INDEX index_users_on_age ON users (age) WHERE admin",
+//                db.create(index: users.filter(admin), on: age)
+//            )
+//        }
+//    }
 
     func test_dropIndex_dropsIndex() {
         CreateUsersTable(db)
