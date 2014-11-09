@@ -13,6 +13,11 @@ class SchemaTests: XCTestCase {
     let db = Database()
     var users: Query { return db["users"] }
 
+    override func setUp() {
+        super.setUp()
+        db.run("PRAGMA foreign_keys = ON")
+    }
+
     func test_createTable_column_buildsColumnDefinition() {
         ExpectExecution(db, "CREATE TABLE users (email TEXT)",
             db.create(table: users) { t in

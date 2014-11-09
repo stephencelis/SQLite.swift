@@ -99,6 +99,7 @@ public final class SchemaBuilder {
         defaultValue: Int? = nil,
         references: Expression<Int>
     ) {
+        assertForeignKeysEnabled()
         let expressions: [Expressible] = [Expression<()>("REFERENCES"), namespace(references)]
         column(name, primaryKey, null, unique, check, defaultValue, expressions)
     }
@@ -175,6 +176,7 @@ public final class SchemaBuilder {
         update: Dependency? = nil,
         delete: Dependency? = nil
     ) {
+        assertForeignKeysEnabled()
         var parts: [Expressible] = [Expression<()>("FOREIGN KEY(\(column.SQL)) REFERENCES", column.bindings)]
         parts.append(namespace(references))
         if let update = update { parts.append(Expression<()>("ON UPDATE \(update.rawValue)")) }
@@ -204,6 +206,10 @@ public final class SchemaBuilder {
             return SQL + (string == "." ? "(" : string)
         }
         return Expression("\(reference))", expression.bindings)
+    }
+
+    private func assertForeignKeysEnabled() {
+        assert(table.database.scalar("PRAGMA foreign_keys") as Int == 1, "foreign key constraints are disabled")
     }
 
 }
