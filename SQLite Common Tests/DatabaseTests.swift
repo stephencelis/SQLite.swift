@@ -187,4 +187,10 @@ class DatabaseTests: XCTestCase {
         }
     }
 
+    func test_userVersion_getsAndSetsUserVersion() {
+        XCTAssertEqual(0, db.userVersion)
+        db.userVersion = 1
+        XCTAssertEqual(1, db.userVersion)
+    }
+
 }

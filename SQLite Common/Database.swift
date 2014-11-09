@@ -281,6 +281,13 @@ public final class Database {
         return savepoint
     }
 
+    // MARK: - Configuration
+
+    public var userVersion: Int {
+        get { return scalar("PRAGMA user_version") as Int }
+        set { run("PRAGMA user_version = \(transcode(newValue))") }
+    }
+
     // MARK: - Handlers
 
     /// Sets a busy timeout to retry after encountering a busy signal (lock).
