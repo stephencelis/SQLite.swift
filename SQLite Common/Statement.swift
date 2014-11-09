@@ -182,7 +182,10 @@ public final class Statement {
     private func try(block: @autoclosure () -> Int32) {
         if failed { return }
         status = block()
-        if failed { reason = String.fromCString(sqlite3_errmsg(database)) }
+        if failed {
+            reason = String.fromCString(sqlite3_errmsg(database))
+            assert(status == SQLITE_CONSTRAINT, "\(reason!)")
+        }
     }
 
 }
