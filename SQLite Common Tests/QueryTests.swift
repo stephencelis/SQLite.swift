@@ -55,34 +55,28 @@ class QueryTests: XCTestCase {
     }
 
     func test_join_compilesJoinClause() {
-        let managers = db["users AS managers"]
-        let managers_id = Expression<Int>("managers.id")
-        let users_manager_id = Expression<Int>("users.manager_id")
+        let managers = db["users"].alias("managers")
 
-        let query = users.join(managers, on: managers_id == users_manager_id)
+        let query = users.join(managers, on: managers[id] == users[manager_id])
 
         let SQL = "SELECT * FROM users INNER JOIN users AS managers ON (managers.id = users.manager_id)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_join_withExplicitType_compilesJoinClauseWithType() {
-        let managers = db["users AS managers"]
-        let managers_id = Expression<Int>("managers.id")
-        let users_manager_id = Expression<Int>("users.manager_id")
+        let managers = db["users"].alias("managers")
 
-        let query = users.join(.LeftOuter, managers, on: managers_id == users_manager_id)
+        let query = users.join(.LeftOuter, managers, on: managers[id] == users[manager_id])
 
         let SQL = "SELECT * FROM users LEFT OUTER JOIN users AS managers ON (managers.id = users.manager_id)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_join_withTableCondition_compilesJoinClauseWithTableCondition() {
-        let admin = Expression<Bool>("managers.admin")
-        let managers = db["users AS managers"].filter(admin)
-        let managers_id = Expression<Int>("managers.id")
-        let users_manager_id = Expression<Int>("users.manager_id")
+        var managers = db["users"].alias("managers")
+        managers = managers.filter(managers[admin])
 
-        let query = users.join(managers, on: managers_id == users_manager_id)
+        let query = users.join(managers, on: managers[id] == users[manager_id])
 
         let SQL = "SELECT * FROM users " +
             "INNER JOIN users AS managers " +
