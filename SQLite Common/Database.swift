@@ -58,9 +58,8 @@ public final class Database {
 
     /// The last number of changes (inserts, updates, or deletes) made to the
     /// database via this connection.
-    public var lastChanges: Int? {
-        let lastChanges = Int(sqlite3_changes(handle))
-        return lastChanges == 0 ? nil : lastChanges
+    public var lastChanges: Int {
+        return Int(sqlite3_changes(handle))
     }
 
     /// The total number of changes (inserts, updates, or deletes) made to the

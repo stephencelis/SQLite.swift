@@ -288,17 +288,17 @@ class QueryTests: XCTestCase {
         InsertUsers(db, "alice", "betsy")
         InsertUser(db, "dolly", admin: true)
 
-        XCTAssertEqual(2, users.filter(!admin).update(age <- 30, admin <- true).changes)
-        XCTAssertEqual(0, users.filter(!admin).update(age <- 30, admin <- true).changes)
+        XCTAssertEqual(2, users.filter(!admin).update(age <- 30, admin <- true).changes!)
+        XCTAssertEqual(0, users.filter(!admin).update(age <- 30, admin <- true).changes!)
     }
 
     func test_delete_deletesRows() {
         InsertUser(db, "alice", age: 20)
-        XCTAssertEqual(0, users.filter(email == "betsy@example.com").delete().changes)
+        XCTAssertEqual(0, users.filter(email == "betsy@example.com").delete().changes!)
 
         InsertUser(db, "betsy", age: 30)
-        XCTAssertEqual(2, users.delete().changes)
-        XCTAssertEqual(0, users.delete().changes)
+        XCTAssertEqual(2, users.delete().changes!)
+        XCTAssertEqual(0, users.delete().changes!)
     }
 
     func test_count_returnsCount() {

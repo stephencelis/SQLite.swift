@@ -29,23 +29,23 @@ class DatabaseTests: XCTestCase {
         XCTAssert(db.lastID! == 1)
     }
 
-    func test_lastChanges_returnsNilOnNewConnections() {
-        XCTAssert(db.lastChanges == nil)
+    func test_lastChanges_returnsZeroOnNewConnections() {
+        XCTAssertEqual(0, db.lastChanges)
     }
 
     func test_lastChanges_returnsNumberOfChanges() {
         InsertUser(db, "alice")
-        XCTAssert(db.lastChanges! == 1)
+        XCTAssertEqual(1, db.lastChanges)
         InsertUser(db, "betsy")
-        XCTAssert(db.lastChanges! == 1)
+        XCTAssertEqual(1, db.lastChanges)
     }
 
     func test_totalChanges_returnsTotalNumberOfChanges() {
-        XCTAssert(db.totalChanges == 0)
+        XCTAssertEqual(0, db.totalChanges)
         InsertUser(db, "alice")
-        XCTAssert(db.totalChanges == 1)
+        XCTAssertEqual(1, db.totalChanges)
         InsertUser(db, "betsy")
-        XCTAssert(db.totalChanges == 2)
+        XCTAssertEqual(2, db.totalChanges)
     }
 
     func test_prepare_preparesAndReturnsStatements() {

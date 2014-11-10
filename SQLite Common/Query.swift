@@ -415,34 +415,6 @@ public struct Query {
         return (statement.failed ? nil : database.lastID, statement)
     }
 
-    /// Runs an UPDATE statement against the query.
-    ///
-    /// :param: values A list of values to set.
-    ///
-    /// :returns: The statement.
-    public func update(values: Setter...) -> Statement { return update(values).statement }
-
-    /// Runs an UPDATE statement against the query.
-    ///
-    /// :param: values A list of values to set.
-    ///
-    /// :returns: The number of updated rows.
-    public func update(values: Setter...) -> Int { return update(values).changes }
-
-    /// Runs an UPDATE statement against the query.
-    ///
-    /// :param: values A list of values to set.
-    ///
-    /// :returns: The number of updated rows and statement.
-    public func update(values: Setter...) -> (changes: Int, statement: Statement) {
-        return update(values)
-    }
-
-    private func update(values: [Setter]) -> (changes: Int, statement: Statement) {
-        let statement = updateStatement(values).run()
-        return (statement.failed ? 0 : database.lastChanges ?? 0, statement)
-    }
-
     /// Runs a REPLACE statement against the query.
     ///
     /// :param: values A list of values to set.
@@ -471,6 +443,34 @@ public struct Query {
         return (statement.failed ? nil : database.lastID, statement)
     }
 
+    /// Runs an UPDATE statement against the query.
+    ///
+    /// :param: values A list of values to set.
+    ///
+    /// :returns: The statement.
+    public func update(values: Setter...) -> Statement { return update(values).statement }
+
+    /// Runs an UPDATE statement against the query.
+    ///
+    /// :param: values A list of values to set.
+    ///
+    /// :returns: The number of updated rows.
+    public func update(values: Setter...) -> Int? { return update(values).changes }
+
+    /// Runs an UPDATE statement against the query.
+    ///
+    /// :param: values A list of values to set.
+    ///
+    /// :returns: The number of updated rows and statement.
+    public func update(values: Setter...) -> (changes: Int?, statement: Statement) {
+        return update(values)
+    }
+
+    private func update(values: [Setter]) -> (changes: Int?, statement: Statement) {
+        let statement = updateStatement(values).run()
+        return (statement.failed ? nil : database.lastChanges, statement)
+    }
+
     /// Runs a DELETE statement against the query.
     ///
     /// :returns: The statement.
@@ -479,14 +479,14 @@ public struct Query {
     /// Runs a DELETE statement against the query.
     ///
     /// :returns: The number of deleted rows.
-    public func delete() -> Int { return delete().changes }
+    public func delete() -> Int? { return delete().changes }
 
     /// Runs a DELETE statement against the query.
     ///
     /// :returns: The number of deleted rows and statement.
-    public func delete() -> (changes: Int, statement: Statement) {
+    public func delete() -> (changes: Int?, statement: Statement) {
         let statement = deleteStatement.run()
-        return (statement.failed ? 0 : database.lastChanges ?? 0, statement)
+        return (statement.failed ? nil : database.lastChanges, statement)
     }
 
     // MARK: - Aggregate Functions

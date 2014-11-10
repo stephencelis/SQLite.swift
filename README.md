@@ -37,8 +37,7 @@ db.execute(
     "CREATE TABLE users (" +
         "id INTEGER PRIMARY KEY, " +
         "email TEXT NOT NULL UNIQUE, " +
-        "manager_id INTEGER, " +
-        "FOREIGN KEY(manager_id) REFERENCES users(id)" +
+        "manager_id INTEGER REFERENCES users"
     ")"
 )
 
@@ -48,7 +47,7 @@ for email in ["alice@example.com", "betsy@example.com"] {
 }
 
 db.totalChanges // 2
-db.lastChanges  // {Some 1}
+db.lastChanges  // 1
 db.lastID       // {Some 2}
 
 for row in db.prepare("SELECT id, email FROM users") {
@@ -74,7 +73,9 @@ let email = Expression<String>("email")
 let admin = Expression<Bool>("admin")
 let age = Expression<Int>("age")
 
-for user in users.filter(admin && age >= 30).order(age.desc) { /* ... */ }
+for user in users.filter(admin && age >= 30).order(age.desc) {
+    println("id: \(user[id]), email: \(user[email])")
+}
 // SELECT * FROM users WHERE (admin AND (age >= 30)) ORDER BY age DESC
 
 for user in users.group(age, having: count(age) == 1) { /* ... */ }
@@ -86,11 +87,11 @@ users.count
 users.filter(admin).average(age)
 // SELECT average(age) FROM users WHERE admin
 
-if let id = users.insert(email <- "fiona@example.com") { /* ... */ }
+users.insert(email <- "fiona@example.com")?
 // INSERT INTO users (email) VALUES ('fiona@example.com')
 
 let ageless = users.filter(admin && age == nil)
-let updates: Int = ageless.update(admin <- false)
+ageless.update(admin <- false)?
 // UPDATE users SET admin = 0 WHERE (admin AND (age IS NULL))
 ```
 
