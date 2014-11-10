@@ -8,7 +8,7 @@ class QueryTests: XCTestCase {
 
     let id = Expression<Int>("id")
     let email = Expression<String>("email")
-    let age = Expression<Int>("age")
+    let age = Expression<Int?>("age")
     let salary = Expression<Double>("salary")
     let admin = Expression<Bool>("admin")
     let manager_id = Expression<Int>("manager_id")
@@ -252,7 +252,7 @@ class QueryTests: XCTestCase {
     func test_first_returnsTheFirstRow() {
         InsertUsers(db, "alice", "betsy")
         ExpectExecutions(db, ["SELECT * FROM users LIMIT 1": 1]) { _ in
-            XCTAssertEqual(1, self.users.first![self.id]!)
+            XCTAssertEqual(1, self.users.first![self.id])
         }
     }
 

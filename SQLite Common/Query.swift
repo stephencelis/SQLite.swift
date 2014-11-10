@@ -118,6 +118,17 @@ public struct Query {
         return join(.Inner, table, on: on)
     }
 
+    /// Adds an INNER JOIN clause to the query.
+    ///
+    /// :param: table A query representing the other table.
+    ///
+    /// :param: on    A boolean expression describing the join condition.
+    ///
+    /// :returns: A query with the given INNER JOIN clause applied.
+    public func join(table: Query, on: Expression<Bool?>) -> Query {
+        return join(.Inner, table, on: on)
+    }
+
     /// Adds a JOIN clause to the query.
     ///
     /// :param: type  The JOIN operator.
@@ -135,7 +146,20 @@ public struct Query {
         return query
     }
 
-    /// Adds a condition the the query’s WHERE clause.
+    /// Adds a JOIN clause to the query.
+    ///
+    /// :param: type  The JOIN operator.
+    ///
+    /// :param: table A query representing the other table.
+    ///
+    /// :param: on    A boolean expression describing the join condition.
+    ///
+    /// :returns: A query with the given JOIN clause applied.
+    public func join(type: JoinType, _ table: Query, on: Expression<Bool?>) -> Query {
+        return join(type, table, on: Expression<Bool>(on))
+    }
+
+    /// Adds a condition to the query’s WHERE clause.
     ///
     /// :param: condition A boolean expression to filter on.
     ///
@@ -144,6 +168,15 @@ public struct Query {
         var query = self
         query.filter = filter.map { $0 && condition } ?? condition
         return query
+    }
+
+    /// Adds a condition to the query’s WHERE clause.
+    ///
+    /// :param: condition A boolean expression to filter on.
+    ///
+    /// :returns: A query with the given WHERE clause applied.
+    public func filter(condition: Expression<Bool?>) -> Query {
+        return filter(Expression<Bool>(condition))
     }
 
     /// Sets a GROUP BY clause on the query.
@@ -166,6 +199,17 @@ public struct Query {
         return group([by], having: having)
     }
 
+    /// Sets a GROUP BY clause (with optional HAVING) on the query.
+    ///
+    /// :param: by       A column to group by.
+    ///
+    /// :param: having   A condition determining which groups are returned.
+    ///
+    /// :returns: A query with the given GROUP BY clause applied.
+    public func group(by: Expressible, having: Expression<Bool?>) -> Query {
+        return group([by], having: having)
+    }
+
     /// Sets a GROUP BY-HAVING clause on the query.
     ///
     /// :param: by       A list of columns to group by.
@@ -179,6 +223,17 @@ public struct Query {
         if let having = having { group = SQLite.join(" ", [group, Expression<()>("HAVING"), having]) }
         query.group = group
         return query
+    }
+
+    /// Sets a GROUP BY-HAVING clause on the query.
+    ///
+    /// :param: by       A list of columns to group by.
+    ///
+    /// :param: having   A condition determining which groups are returned.
+    ///
+    /// :returns: A query with the given GROUP BY clause applied.
+    public func group(by: [Expressible], having: Expression<Bool?>) -> Query {
+        return group(by, having: Expression<Bool>(having))
     }
 
     /// Sets an ORDER BY clause on the query.
@@ -237,45 +292,17 @@ public struct Query {
 
     // FIXME: rdar://18673897 subscript<T>(expression: Expression<T>) -> Expression<T>
 
-    /// Prefixes a column expression with the query’s table name or alias.
-    ///
-    /// :param: column A column expression.
-    ///
-    /// :returns: A column expression namespaced with the query’s table name or
-    ///           alias.
-    public subscript(column: Expression<Bool>) -> Expression<Bool> {
-        return namespace(column)
-    }
+    public subscript(column: Expression<Bool>) -> Expression<Bool> { return namespace(column) }
+    public subscript(column: Expression<Bool?>) -> Expression<Bool?> { return namespace(column) }
 
-    /// Prefixes a column expression with the query’s table name or alias.
-    ///
-    /// :param: column A column expression.
-    ///
-    /// :returns: A column expression namespaced with the query’s table name or
-    ///           alias.
-    public subscript(column: Expression<Double>) -> Expression<Double> {
-        return namespace(column)
-    }
+    public subscript(column: Expression<Double>) -> Expression<Double> { return namespace(column) }
+    public subscript(column: Expression<Double?>) -> Expression<Double?> { return namespace(column) }
 
-    /// Prefixes a column expression with the query’s table name or alias.
-    ///
-    /// :param: column A column expression.
-    ///
-    /// :returns: A column expression namespaced with the query’s table name or
-    ///           alias.
-    public subscript(column: Expression<Int>) -> Expression<Int> {
-        return namespace(column)
-    }
+    public subscript(column: Expression<Int>) -> Expression<Int> { return namespace(column) }
+    public subscript(column: Expression<Int?>) -> Expression<Int?> { return namespace(column) }
 
-    /// Prefixes a column expression with the query’s table name or alias.
-    ///
-    /// :param: column A column expression.
-    ///
-    /// :returns: A column expression namespaced with the query’s table name or
-    ///           alias.
-    public subscript(column: Expression<String>) -> Expression<String> {
-        return namespace(column)
-    }
+    public subscript(column: Expression<String>) -> Expression<String> { return namespace(column) }
+    public subscript(column: Expression<String?>) -> Expression<String?> { return namespace(column) }
 
     /// Prefixes a star with the query’s table name or alias.
     ///
@@ -511,6 +538,9 @@ public struct Query {
     public func max<T: Value>(column: Expression<T>) -> T? {
         return calculate(SQLite.max(column))
     }
+    public func max<T: Value>(column: Expression<T?>) -> T? {
+        return calculate(SQLite.max(column))
+    }
 
     /// Runs min() against the query.
     ///
@@ -518,6 +548,9 @@ public struct Query {
     ///
     /// :returns: The smallest value of the given column.
     public func min<T: Value>(column: Expression<T>) -> T? {
+        return calculate(SQLite.min(column))
+    }
+    public func min<T: Value>(column: Expression<T?>) -> T? {
         return calculate(SQLite.min(column))
     }
 
@@ -529,6 +562,9 @@ public struct Query {
     public func average<T: Number>(column: Expression<T>) -> Double? {
         return calculate(SQLite.average(column))
     }
+    public func average<T: Number>(column: Expression<T?>) -> Double? {
+        return calculate(SQLite.average(column))
+    }
 
     /// Runs sum() against the query.
     ///
@@ -538,6 +574,9 @@ public struct Query {
     public func sum<T: Number>(column: Expression<T>) -> T? {
         return calculate(SQLite.sum(column))
     }
+    public func sum<T: Number>(column: Expression<T?>) -> T? {
+        return calculate(SQLite.sum(column))
+    }
 
     /// Runs total() against the query.
     ///
@@ -545,6 +584,9 @@ public struct Query {
     ///
     /// :returns: The total of the given column’s values.
     public func total<T: Number>(column: Expression<T>) -> Double {
+        return calculate(SQLite.total(column))!
+    }
+    public func total<T: Number>(column: Expression<T?>) -> Double {
         return calculate(SQLite.total(column))!
     }
 
@@ -569,9 +611,8 @@ public struct Row {
     /// :param: column An expression representing a column selected in a Query.
     ///
     /// returns The value for the given column.
-    public func get<T: Value>(column: Expression<T>) -> T? {
-        return values[column.SQL] as? T
-    }
+    public func get<T: Value>(column: Expression<T>) -> T { return values[column.SQL] as T }
+    public func get<T: Value>(column: Expression<T?>) -> T? { return values[column.SQL] as? T }
 
     // FIXME: rdar://18673897 subscript<T>(expression: Expression<T>) -> Expression<T>
 
@@ -580,36 +621,32 @@ public struct Row {
     /// :param: column An expression representing a column selected in a Query.
     ///
     /// returns The value for the given column.
-    public subscript(column: Expression<Bool>) -> Bool? {
-        return get(column)
-    }
+    public subscript(column: Expression<Bool>) -> Bool { return get(column) }
+    public subscript(column: Expression<Bool?>) -> Bool? { return get(column) }
 
     /// Returns a row’s value for the given column.
     ///
     /// :param: column An expression representing a column selected in a Query.
     ///
     /// returns The value for the given column.
-    public subscript(column: Expression<Double>) -> Double? {
-        return get(column)
-    }
+    public subscript(column: Expression<Double>) -> Double { return get(column) }
+    public subscript(column: Expression<Double?>) -> Double? { return get(column) }
 
     /// Returns a row’s value for the given column.
     ///
     /// :param: column An expression representing a column selected in a Query.
     ///
     /// returns The value for the given column.
-    public subscript(column: Expression<Int>) -> Int? {
-        return get(column)
-    }
+    public subscript(column: Expression<Int>) -> Int { return get(column) }
+    public subscript(column: Expression<Int?>) -> Int? { return get(column) }
 
     /// Returns a row’s value for the given column.
     ///
     /// :param: column An expression representing a column selected in a Query.
     ///
     /// returns The value for the given column.
-    public subscript(column: Expression<String>) -> String? {
-        return get(column)
-    }
+    public subscript(column: Expression<String>) -> String { return get(column) }
+    public subscript(column: Expression<String?>) -> String? { return get(column) }
 
 }
 
