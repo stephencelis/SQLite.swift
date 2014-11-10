@@ -250,6 +250,13 @@ extension Statement: GeneratorType {
 
 }
 
+// MARK: - BooleanType
+extension Statement: BooleanType {
+
+    public var boolValue: Bool { return status == SQLITE_DONE }
+
+}
+
 // MARK: - DebugPrintable
 extension Statement: DebugPrintable {
 
