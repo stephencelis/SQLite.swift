@@ -14,7 +14,8 @@ syntax _and_ intent.
 
 ## Features
 
- - A powerful interface for building type-safe SQL expressions
+ - A powerful interface for building type-safe, optional-aware SQL
+   expressions
  - A flexible, chainable, lazy-executing query layer
  - Automatically-typed data access
  - A lightweight, uncomplicated query and parameter binding interface
@@ -33,14 +34,17 @@ let db = Database("path/to/db.sqlite3")
 
 let users = db["users"]
 let id = Expression<Int>("id")
+let name = Expression<String?>("name")
 let email = Expression<String>("email")
 
 db.create(table: users) { t in
     t.column(id, primaryKey: true)
-    t.column(email, null: false, unique: true)
+    t.column(name)
+    t.column(email, unique: true)
 }
 // CREATE TABLE users (
-//     id INTEGER PRIMARY KEY,
+//     id INTEGER PRIMARY KEY NOT NULL,
+//     name TEXT,
 //     email TEXT NOT NULL UNIQUE
 // )
 
