@@ -346,7 +346,6 @@ public struct Query {
         var insertClause = "INSERT"
         if let or = or { insertClause = "\(insertClause) OR \(or.rawValue)" }
         var expressions: [Expressible] = [Expression<()>("\(insertClause) INTO \(tableName)")]
-        println(expressions)
         let (c, v) = (SQLite.join(", ", values.map { $0.0 }), SQLite.join(", ", values.map { $0.1 }))
         expressions.append(Expression<()>("(\(c.SQL)) VALUES (\(v.SQL))", c.bindings + v.bindings))
         whereClause.map(expressions.append)
