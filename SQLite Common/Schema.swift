@@ -71,18 +71,39 @@ public final class SchemaBuilder {
         primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue: T? = nil
+        defaultValue value: Expression<T>? = nil
     ) {
-        column(name, primaryKey, false, unique, check, defaultValue)
+        column(name, primaryKey, false, unique, check, value)
     }
+
+    public func column<T: Value>(
+        name: Expression<T>,
+        primaryKey: Bool = false,
+        unique: Bool = false,
+        check: Expression<Bool>? = nil,
+        defaultValue value: T
+    ) {
+        column(name, primaryKey, false, unique, check, Expression(value: value))
+    }
+
     public func column<T: Value>(
         name: Expression<T?>,
         primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue: T? = nil
+        defaultValue value: Expression<T>? = nil
     ) {
-        column(Expression<T>(name.SQL, name.bindings), primaryKey, true, unique, check, defaultValue)
+        column(Expression<T>(name), primaryKey, true, unique, check, value)
+    }
+
+    public func column<T: Value>(
+        name: Expression<T?>,
+        primaryKey: Bool = false,
+        unique: Bool = false,
+        check: Expression<Bool>? = nil,
+        defaultValue value: T?
+    ) {
+        column(Expression<T>(name), primaryKey, true, unique, check, value.map { Expression(value: $0) })
     }
 
     public func column(
@@ -90,22 +111,47 @@ public final class SchemaBuilder {
         primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue: String? = nil,
+        defaultValue value: Expression<String>? = nil,
         collate: Collation
     ) {
         let expressions: [Expressible] = [Expression<()>("COLLATE \(collate.rawValue)")]
-        column(name, primaryKey, false, unique, check, defaultValue, expressions)
+        column(name, primaryKey, false, unique, check, value, expressions)
     }
+
+    public func column(
+        name: Expression<String>,
+        primaryKey: Bool = false,
+        unique: Bool = false,
+        check: Expression<Bool>? = nil,
+        defaultValue value: String,
+        collate: Collation
+    ) {
+        let expressions: [Expressible] = [Expression<()>("COLLATE \(collate.rawValue)")]
+        column(name, primaryKey, false, unique, check, Expression(value: value), expressions)
+    }
+
     public func column(
         name: Expression<String?>,
         primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue: String? = nil,
+        defaultValue value: Expression<String>? = nil,
         collate: Collation
     ) {
         let expressions: [Expressible] = [Expression<()>("COLLATE \(collate.rawValue)")]
-        column(Expression<String>(name.SQL, name.bindings), primaryKey, true, unique, check, defaultValue, expressions)
+        column(Expression<String>(name), primaryKey, true, unique, check, value, expressions)
+    }
+
+    public func column(
+        name: Expression<String?>,
+        primaryKey: Bool = false,
+        unique: Bool = false,
+        check: Expression<Bool>? = nil,
+        defaultValue value: String?,
+        collate: Collation
+    ) {
+        let expressions: [Expressible] = [Expression<()>("COLLATE \(collate.rawValue)")]
+        column(Expression<String>(name), primaryKey, true, unique, check, Expression(value: value), expressions)
     }
 
     public func column(
@@ -113,24 +159,51 @@ public final class SchemaBuilder {
         primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue: Int? = nil,
+        defaultValue value: Expression<Int>? = nil,
         references: Expression<Int>
     ) {
         assertForeignKeysEnabled()
         let expressions: [Expressible] = [Expression<()>("REFERENCES"), namespace(references)]
-        column(name, primaryKey, false, unique, check, defaultValue, expressions)
+        column(name, primaryKey, false, unique, check, value, expressions)
     }
+
+    public func column(
+        name: Expression<Int>,
+        primaryKey: Bool = false,
+        unique: Bool = false,
+        check: Expression<Bool>? = nil,
+        defaultValue value: Int,
+        references: Expression<Int>
+    ) {
+        assertForeignKeysEnabled()
+        let expressions: [Expressible] = [Expression<()>("REFERENCES"), namespace(references)]
+        column(name, primaryKey, false, unique, check, Expression(value: value), expressions)
+    }
+
     public func column(
         name: Expression<Int?>,
         primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue: Int? = nil,
+        defaultValue value: Expression<Int>? = nil,
         references: Expression<Int>
     ) {
         assertForeignKeysEnabled()
         let expressions: [Expressible] = [Expression<()>("REFERENCES"), namespace(references)]
-        column(Expression<Int>(name.SQL, name.bindings), primaryKey, true, unique, check, defaultValue, expressions)
+        column(Expression<Int>(name), primaryKey, true, unique, check, value, expressions)
+    }
+
+    public func column(
+        name: Expression<Int?>,
+        primaryKey: Bool = false,
+        unique: Bool = false,
+        check: Expression<Bool>? = nil,
+        defaultValue value: Int?,
+        references: Expression<Int>
+    ) {
+        assertForeignKeysEnabled()
+        let expressions: [Expressible] = [Expression<()>("REFERENCES"), namespace(references)]
+        column(Expression<Int>(name), primaryKey, true, unique, check, Expression(value: value), expressions)
     }
 
     public func column(
@@ -138,7 +211,7 @@ public final class SchemaBuilder {
         primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue: Int? = nil,
+        defaultValue: Expression<Int>? = nil,
         references: Query
     ) {
         return column(
@@ -150,12 +223,49 @@ public final class SchemaBuilder {
             references: Expression(references.tableName)
         )
     }
+
+    public func column(
+        name: Expression<Int>,
+        primaryKey: Bool = false,
+        unique: Bool = false,
+        check: Expression<Bool>? = nil,
+        defaultValue: Int,
+        references: Query
+    ) {
+        return column(
+            name,
+            primaryKey: primaryKey,
+            unique: unique,
+            check: check,
+            defaultValue: defaultValue,
+            references: Expression(references.tableName)
+        )
+    }
+
     public func column(
         name: Expression<Int?>,
         primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue: Int? = nil,
+        defaultValue: Expression<Int>? = nil,
+        references: Query
+    ) {
+        return column(
+            name,
+            primaryKey: primaryKey,
+            unique: unique,
+            check: check,
+            defaultValue: defaultValue,
+            references: Expression(references.tableName)
+        )
+    }
+
+    public func column(
+        name: Expression<Int?>,
+        primaryKey: Bool = false,
+        unique: Bool = false,
+        check: Expression<Bool>? = nil,
+        defaultValue: Int?,
         references: Query
     ) {
         return column(
@@ -174,15 +284,15 @@ public final class SchemaBuilder {
         _ null: Bool,
         _ unique: Bool,
         _ check: Expression<Bool>?,
-        _ defaultValue: T?,
+        _ defaultValue: Expression<T>?,
         _ expressions: [Expressible]? = nil
     ) {
-        var parts: [Expressible] = [name, Expression<()>(T.datatype)]
+        var parts: [Expressible] = [Expression<()>(name), Expression<()>(T.datatype)]
         if primaryKey { parts.append(Expression<()>("PRIMARY KEY")) }
         if !null { parts.append(Expression<()>("NOT NULL")) }
         if unique { parts.append(Expression<()>("UNIQUE")) }
         if let check = check { parts.append(Expression<()>("CHECK \(check.SQL)", check.bindings)) }
-        if let defaultValue = defaultValue { parts.append(Expression<()>("DEFAULT ?", [defaultValue])) }
+        if let value = defaultValue { parts.append(Expression<()>("DEFAULT \(value.SQL)", value.bindings)) }
         if let expressions = expressions { parts += expressions }
         columns.append(SQLite.join(" ", parts))
     }
