@@ -58,7 +58,7 @@ if let insertedID = users.insert(name <- "Alice", email <- "alice@mac.com") {
 
 for user in users {
     println("id: \(user[id]), name: \(user[name]), email: \(user[email])"
-    // id: 1, name: Optional("Alice"), email: "alice@mac.com"
+    // id: 1, name: Optional("Alice"), email: alice@mac.com
 }
 // SELECT * FROM users
 
