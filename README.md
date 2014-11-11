@@ -74,7 +74,7 @@ API.
 
 ``` swift
 let stmt = db.prepare("INSERT INTO users (email) VALUES (?)")
-for email in ["betty@me.com", "cathy@me.com"] {
+for email in ["betty@icloud.com", "cathy@icloud.com"] {
     stmt.run(email)
 }
 
@@ -84,8 +84,8 @@ db.lastID       // {Some 3}
 
 for row in db.prepare("SELECT id, email FROM users") {
     println("id: \(row[0]), email: \(row[1])")
-    // id: Optional(2), email: Optional("betty@example.com")
-    // id: Optional(3), email: Optional("cathy@example.com")
+    // id: Optional(2), email: Optional("betty@icloud.com")
+    // id: Optional(3), email: Optional("cathy@icloud.com")
 }
 
 db.scalar("SELECT count(*) FROM users") // {Some 2}
