@@ -19,5 +19,10 @@ endif
 clean:
 	$(BUILD_TOOL) $(BUILD_ARGUMENTS) clean
 
+repl:
+	@$(BUILD_TOOL) $(BUILD_ARGUMENTS) -derivedDataPath $(TMPDIR)/SQLite.swift > /dev/null 2>&1 && \
+		swift -F '$(TMPDIR)/SQLite.swift/Build/Products/Debug'
+
 sloc:
 	@zsh -c "grep -vE '^ *//|^$$' SQLite\ Common/*.{swift,h,c} | wc -l"
+
