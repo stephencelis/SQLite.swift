@@ -274,6 +274,14 @@ class QueryTests: XCTestCase {
         XCTAssert(self.users.insert(self.email <- "alice@example.com", self.age <- 30).ID == nil)
     }
 
+    func test_insert_withQuery_insertsRows() {
+        db.execute("CREATE TABLE emails (email TEXT)")
+        let emails = db["emails"]
+        let admins = users.select(email).filter(admin == true)
+
+        ExpectExecution(db, "INSERT INTO emails SELECT email FROM users WHERE (admin = 1)", emails.insert(admins))
+    }
+
     func test_insert_insertsDefaultRow() {
         db.execute("CREATE TABLE timestamps (id INTEGER PRIMARY KEY, timestamp TEXT DEFAULT CURRENT_DATETIME)")
         let table = db["timestamps"]

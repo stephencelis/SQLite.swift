@@ -445,6 +445,16 @@ public struct Query {
         return (statement.failed ? nil : database.lastID, statement)
     }
 
+    public func insert(query: Query) -> Int? { return insert(query).changes }
+
+    public func insert(query: Query) -> Statement { return insert(query).statement }
+
+    public func insert(query: Query) -> (changes: Int?, statement: Statement) {
+        let expression = query.selectExpression
+        let statement = database.run("INSERT INTO \(tableName) \(expression.SQL)", expression.bindings)
+        return (statement.failed ? nil : database.lastChanges, statement)
+    }
+
     public func insert() -> Int? { return insert().ID }
 
     public func insert() -> Statement { return insert().statement }
