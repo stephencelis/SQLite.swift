@@ -29,6 +29,11 @@ public extension Database {
         return builder.statement.run()
     }
 
+    public func create(#table: Query, from: Query) -> Statement {
+        let selectExpression = from.selectExpression
+        return run("CREATE TABLE \(table.tableName) AS \(selectExpression.SQL)", selectExpression.bindings)
+    }
+
     public func alter(#table: Query, rename to: String) -> Statement {
         return run("ALTER TABLE \(table.tableName) RENAME TO \(to)")
     }

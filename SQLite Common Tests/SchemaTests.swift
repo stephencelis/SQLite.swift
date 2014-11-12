@@ -210,6 +210,14 @@ class SchemaTests: XCTestCase {
         )
     }
 
+    func test_create_withQuery_createsTableWithQuery() {
+        CreateUsersTable(db)
+        ExpectExecution(db,
+            "CREATE TABLE emails AS SELECT email FROM users",
+            db.create(table: db["emails"], from: users.select(email))
+        )
+    }
+
     func test_alterTable_renamesTable() {
         CreateUsersTable(db)
         ExpectExecution(db, "ALTER TABLE users RENAME TO people", db.alter(table: users, rename: "people") )

@@ -316,15 +316,19 @@ public struct Query {
 
     // MARK: - Compiling Statements
 
-    private var selectStatement: Statement {
+    internal var selectStatement: Statement {
+        let expression = selectExpression
+        return database.prepare(expression.SQL, expression.bindings)
+    }
+
+    internal var selectExpression: Expression<()> {
         var expressions = [selectClause]
         joinClause.map(expressions.append)
         whereClause.map(expressions.append)
         group.map(expressions.append)
         orderClause.map(expressions.append)
         limitClause.map(expressions.append)
-        let expression = SQLite.join(" ", expressions)
-        return database.prepare(expression.SQL, expression.bindings)
+        return SQLite.join(" ", expressions)
     }
 
     /// ON CONFLICT resolutions.
