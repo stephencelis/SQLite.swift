@@ -18,6 +18,24 @@ class SchemaTests: XCTestCase {
         db.run("PRAGMA foreign_keys = ON")
     }
 
+    func test_createTable_createsTable() {
+        ExpectExecution(db, "CREATE TABLE users (age INTEGER)",
+            db.create(table: users) { t in t.column(age) }
+        )
+    }
+
+    func test_createTable_temporary_createsTemporaryTable() {
+        ExpectExecution(db, "CREATE TEMPORARY TABLE users (age INTEGER)",
+            db.create(table: users, temporary: true) { t in t.column(age) }
+        )
+    }
+
+    func test_createTable_ifNotExists_createsTableIfNotExists() {
+        ExpectExecution(db, "CREATE TABLE IF NOT EXISTS users (age INTEGER)",
+            db.create(table: users, ifNotExists: true) { t in t.column(age) }
+        )
+    }
+
     func test_createTable_column_buildsColumnDefinition() {
         ExpectExecution(db, "CREATE TABLE users (email TEXT NOT NULL)",
             db.create(table: users) { t in
@@ -210,11 +228,15 @@ class SchemaTests: XCTestCase {
         )
     }
 
-    func test_create_withQuery_createsTableWithQuery() {
+    func test_createTable_withQuery_createsTableWithQuery() {
         CreateUsersTable(db)
         ExpectExecution(db,
             "CREATE TABLE emails AS SELECT email FROM users",
             db.create(table: db["emails"], from: users.select(email))
+        )
+        ExpectExecution(db,
+            "CREATE TEMPORARY TABLE IF NOT EXISTS emails AS SELECT email FROM users",
+            db.create(table: db["emails"], temporary: true, ifNotExists: true, from: users.select(email))
         )
     }
 
@@ -262,6 +284,7 @@ class SchemaTests: XCTestCase {
     func test_dropTable_dropsTable() {
         CreateUsersTable(db)
         ExpectExecution(db, "DROP TABLE users", db.drop(table: users) )
+        ExpectExecution(db, "DROP TABLE IF EXISTS users", db.drop(table: users, ifExists: true) )
     }
 
     func test_index_executesIndexStatement() {
@@ -277,6 +300,14 @@ class SchemaTests: XCTestCase {
         ExpectExecution(db,
             "CREATE UNIQUE INDEX index_users_on_email ON users (email)",
             db.create(index: users, unique: true, on: email)
+        )
+    }
+
+    func test_index_ifNotExists_executesIndexStatement() {
+        CreateUsersTable(db)
+        ExpectExecution(db,
+            "CREATE INDEX IF NOT EXISTS index_users_on_email ON users (email)",
+            db.create(index: users, ifNotExists: true, on: email)
         )
     }
 
@@ -303,6 +334,7 @@ class SchemaTests: XCTestCase {
         db.create(index: users, on: email)
 
         ExpectExecution(db, "DROP INDEX index_users_on_email", db.drop(index: users, on: email))
+        ExpectExecution(db, "DROP INDEX IF EXISTS index_users_on_email", db.drop(index: users, ifExists: true, on: email))
     }
 
 }

@@ -23,15 +23,23 @@
 
 public extension Database {
 
-    public func create(#table: Query, _ block: SchemaBuilder -> ()) -> Statement {
+    public func create(
+        #table: Query,
+        temporary: Bool = false,
+        ifNotExists: Bool = false,
+        _ block: SchemaBuilder -> ()
+    ) -> Statement {
         var builder = SchemaBuilder(table)
         block(builder)
-        return builder.statement.run()
+        let create = createSQL("TABLE", temporary, false, ifNotExists, table.tableName)
+        let columns = SQLite.join(", ", builder.columns).compile()
+        return run("\(create) (\(columns))")
     }
 
-    public func create(#table: Query, from: Query) -> Statement {
+    public func create(#table: Query, temporary: Bool = false, ifNotExists: Bool = false, from: Query) -> Statement {
+        let create = createSQL("TABLE", temporary, false, ifNotExists, table.tableName)
         let expression = from.selectExpression
-        return run("CREATE TABLE \(table.tableName) AS \(expression.SQL)", expression.bindings)
+        return run("\(create) AS \(expression.SQL)", expression.bindings)
     }
 
     public func rename(#table: Query, to tableName: String) -> Statement {
@@ -71,22 +79,23 @@ public extension Database {
         return run("ALTER TABLE \(table.tableName) ADD COLUMN \(definition.expression.compile())")
     }
 
-    public func drop(#table: Query) -> Statement {
-        return run("DROP TABLE \(table.tableName)")
+    public func drop(#table: Query, ifExists: Bool = false) -> Statement {
+        return run(dropSQL("TABLE", ifExists, table.tableName))
     }
 
-    public func create(index table: Query, unique: Bool = false, on columns: Expressible...) -> Statement {
-        var parts: [Expressible] = [Expression<()>("CREATE")]
-        if unique { parts.append(Expression<()>("UNIQUE")) }
-        parts.append(Expression<()>("INDEX \(indexName(table, on: columns))"))
+    public func create(
+        index table: Query,
+        unique: Bool = false,
+        ifNotExists: Bool = false,
+        on columns: Expressible...
+    ) -> Statement {
+        let create = createSQL("INDEX", false, unique, ifNotExists, indexName(table, on: columns))
         let joined = SQLite.join(", ", columns)
-        parts.append(Expression<()>("ON \(table.tableName) (\(joined.SQL))", joined.bindings))
-        // if SQLITE_VERSION >= "3.8" { table.whereClause.map(parts.append) } // partial indexes
-        return run(SQLite.join(" ", parts).compile())
+        return run("\(create) ON \(table.tableName) (\(joined.compile()))")
     }
 
-    public func drop(index table: Query, on columns: Expressible...) -> Statement {
-        return run("DROP INDEX \(indexName(table, on: columns))")
+    public func drop(index table: Query, ifExists: Bool = false, on columns: Expressible...) -> Statement {
+        return run(dropSQL("INDEX", ifExists, indexName(table, on: columns)))
     }
 
     private func indexName(table: Query, on columns: [Expressible]) -> String {
@@ -404,12 +413,6 @@ public final class SchemaBuilder {
         foreignKey(column, references: Expression(references.tableName), update: update, delete: delete)
     }
 
-    private var statement: Statement {
-        let expression = SQLite.join(", ", columns)
-        let SQL = "CREATE TABLE \(table.tableName) (\(expression.compile()))"
-        return table.database.prepare(SQL)
-    }
-
     private func assertForeignKeysEnabled() {
         assert(table.database.scalar("PRAGMA foreign_keys") as Int == 1, "foreign key constraints are disabled")
     }
@@ -443,4 +446,27 @@ private func define<T: Value>(
     if let value = defaultValue { parts.append(Expression<()>("DEFAULT \(value.SQL)", value.bindings)) }
     if let expressions = expressions { parts += expressions }
     return SQLite.join(" ", parts)
+}
+
+private func createSQL(
+    type: String,
+    temporary: Bool,
+    unique: Bool,
+    ifNotExists: Bool,
+    name: String
+) -> String {
+    var parts: [String] = ["CREATE"]
+    if temporary { parts.append("TEMPORARY") }
+    if unique { parts.append("UNIQUE") }
+    parts.append(type)
+    if ifNotExists { parts.append("IF NOT EXISTS") }
+    parts.append(name)
+    return Swift.join(" ", parts)
+}
+
+private func dropSQL(type: String, ifExists: Bool, name: String) -> String {
+    var parts: [String] = ["DROP \(type)"]
+    if ifExists { parts.append("IF EXISTS") }
+    parts.append(name)
+    return Swift.join(" ", parts)
 }
