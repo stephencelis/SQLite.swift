@@ -30,8 +30,8 @@ public extension Database {
     }
 
     public func create(#table: Query, from: Query) -> Statement {
-        let selectExpression = from.selectExpression
-        return run("CREATE TABLE \(table.tableName) AS \(selectExpression.SQL)", selectExpression.bindings)
+        let expression = from.selectExpression
+        return run("CREATE TABLE \(table.tableName) AS \(expression.SQL)", expression.bindings)
     }
 
     public func rename(#table: Query, to tableName: String) -> Statement {
