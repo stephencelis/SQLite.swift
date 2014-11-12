@@ -337,4 +337,24 @@ class SchemaTests: XCTestCase {
         ExpectExecution(db, "DROP INDEX IF EXISTS index_users_on_email", db.drop(index: users, ifExists: true, on: email))
     }
 
+    func test_createView_withQuery_createsViewWithQuery() {
+        CreateUsersTable(db)
+        ExpectExecution(db,
+            "CREATE VIEW emails AS SELECT email FROM users",
+            db.create(view: db["emails"], from: users.select(email))
+        )
+        ExpectExecution(db,
+            "CREATE TEMPORARY VIEW IF NOT EXISTS emails AS SELECT email FROM users",
+            db.create(view: db["emails"], temporary: true, ifNotExists: true, from: users.select(email))
+        )
+    }
+
+    func test_dropView_dropsView() {
+        CreateUsersTable(db)
+        db.create(view: db["emails"], from: users.select(email))
+
+        ExpectExecution(db, "DROP VIEW emails", db.drop(view: db["emails"]))
+        ExpectExecution(db, "DROP VIEW IF EXISTS emails", db.drop(view: db["emails"], ifExists: true))
+    }
+
 }

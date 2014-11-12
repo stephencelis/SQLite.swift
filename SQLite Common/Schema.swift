@@ -106,6 +106,16 @@ public extension Database {
         }
     }
 
+    public func create(#view: Query, temporary: Bool = false, ifNotExists: Bool = false, from: Query) -> Statement {
+        let create = createSQL("VIEW", temporary, false, ifNotExists, view.tableName)
+        let expression = from.selectExpression
+        return run("\(create) AS \(expression.SQL)", expression.bindings)
+    }
+
+    public func drop(#view: Query, ifExists: Bool = false) -> Statement {
+        return run(dropSQL("VIEW", ifExists, view.tableName))
+    }
+
 }
 
 public final class SchemaBuilder {
