@@ -34,8 +34,8 @@ public extension Database {
         return run("CREATE TABLE \(table.tableName) AS \(selectExpression.SQL)", selectExpression.bindings)
     }
 
-    public func alter(#table: Query, rename to: String) -> Statement {
-        return run("ALTER TABLE \(table.tableName) RENAME TO \(to)")
+    public func rename(#table: Query, to tableName: String) -> Statement {
+        return run("ALTER TABLE \(table.tableName) RENAME TO \(tableName)")
     }
 
     public func alter<T: Value>(
