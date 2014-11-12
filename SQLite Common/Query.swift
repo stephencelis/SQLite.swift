@@ -422,26 +422,35 @@ public struct Query {
     /// :param: values A list of values to set.
     ///
     /// :returns: The statement.
-    public func insert(values: Setter...) -> Statement { return insert(values).statement }
+    public func insert(value: Setter, _ more: Setter...) -> Statement { return insert([value] + more).statement }
 
     /// Runs an INSERT statement against the query.
     ///
     /// :param: values A list of values to set.
     ///
     /// :returns: The row ID.
-    public func insert(values: Setter...) -> Int? { return insert(values).ID }
+    public func insert(value: Setter, _ more: Setter...) -> Int? { return insert([value] + more).ID }
 
     /// Runs an INSERT statement against the query.
     ///
     /// :param: values A list of values to set.
     ///
     /// :returns: The row ID and statement.
-    public func insert(values: Setter...) -> (ID: Int?, statement: Statement) {
-        return insert(values)
+    public func insert(value: Setter, _ more: Setter...) -> (ID: Int?, statement: Statement) {
+        return insert([value] + more)
     }
 
     private func insert(values: [Setter]) -> (ID: Int?, statement: Statement) {
         let statement = insertStatement(values).run()
+        return (statement.failed ? nil : database.lastID, statement)
+    }
+
+    public func insert() -> Int? { return insert().ID }
+
+    public func insert() -> Statement { return insert().statement }
+
+    public func insert() -> (ID: Int?, statement: Statement) {
+        let statement = database.run("INSERT INTO \(tableName) DEFAULT VALUES")
         return (statement.failed ? nil : database.lastID, statement)
     }
 
