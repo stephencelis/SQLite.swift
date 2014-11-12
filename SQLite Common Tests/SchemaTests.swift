@@ -210,6 +210,47 @@ class SchemaTests: XCTestCase {
         )
     }
 
+    func test_alterTable_renamesTable() {
+        CreateUsersTable(db)
+        ExpectExecution(db, "ALTER TABLE users RENAME TO people", db.alter(table: users, rename: "people") )
+    }
+
+    func test_alterTable_addsNotNullColumn() {
+        CreateUsersTable(db)
+        let column = Expression<Double>("bonus")
+
+        ExpectExecution(db, "ALTER TABLE users ADD COLUMN bonus REAL NOT NULL DEFAULT 0.0",
+            db.alter(table: users, add: column, defaultValue: 0)
+        )
+    }
+
+    func test_alterTable_addsRegularColumn() {
+        CreateUsersTable(db)
+        let column = Expression<Double?>("bonus")
+
+        ExpectExecution(db, "ALTER TABLE users ADD COLUMN bonus REAL",
+            db.alter(table: users, add: column)
+        )
+    }
+
+    func test_alterTable_withDefaultValue_addsRegularColumn() {
+        CreateUsersTable(db)
+        let column = Expression<Double?>("bonus")
+
+        ExpectExecution(db, "ALTER TABLE users ADD COLUMN bonus REAL DEFAULT 0.0",
+            db.alter(table: users, add: column, defaultValue: 0)
+        )
+    }
+
+    func test_alterTable_withForeignKey_addsRegularColumn() {
+        CreateUsersTable(db)
+        let column = Expression<Int?>("parent_id")
+
+        ExpectExecution(db, "ALTER TABLE users ADD COLUMN parent_id INTEGER REFERENCES users(id)",
+            db.alter(table: users, add: column, references: users[id])
+        )
+    }
+
     func test_dropTable_dropsTable() {
         CreateUsersTable(db)
         ExpectExecution(db, "DROP TABLE users", db.drop(table: users) )

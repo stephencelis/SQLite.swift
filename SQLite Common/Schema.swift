@@ -29,6 +29,43 @@ public extension Database {
         return builder.statement.run()
     }
 
+    public func alter(#table: Query, rename to: String) -> Statement {
+        return run("ALTER TABLE \(table.tableName) RENAME TO \(to)")
+    }
+
+    public func alter<T: Value>(
+        #table: Query,
+        add column: Expression<T>,
+        check: Expression<Bool>? = nil,
+        defaultValue: T
+    ) -> Statement {
+        return alter(table, define(column, false, false, false, check, Expression(value: defaultValue), nil))
+    }
+
+    public func alter<T: Value>(
+        #table: Query,
+        add column: Expression<T?>,
+        check: Expression<Bool>? = nil,
+        defaultValue: T? = nil
+    ) -> Statement {
+        let value = defaultValue.map { Expression<T>(value: $0) }
+        return alter(table, define(Expression<T>(column), false, true, false, check, value, nil))
+    }
+
+    public func alter<T: Value>(
+        #table: Query,
+        add column: Expression<T?>,
+        check: Expression<Bool>? = nil,
+        references: Expression<T>
+    ) -> Statement {
+        let expressions = [Expression<()>("REFERENCES"), namespace(references)]
+        return alter(table, define(Expression<T>(column), false, true, false, check, nil, expressions))
+    }
+
+    private func alter(table: Query, _ definition: Expressible) -> Statement {
+        return run("ALTER TABLE \(table.tableName) ADD COLUMN \(definition.expression.compile())")
+    }
+
     public func drop(#table: Query) -> Statement {
         return run("DROP TABLE \(table.tableName)")
     }
@@ -287,14 +324,7 @@ public final class SchemaBuilder {
         _ defaultValue: Expression<T>?,
         _ expressions: [Expressible]? = nil
     ) {
-        var parts: [Expressible] = [Expression<()>(name), Expression<()>(T.datatype)]
-        if primaryKey { parts.append(Expression<()>("PRIMARY KEY")) }
-        if !null { parts.append(Expression<()>("NOT NULL")) }
-        if unique { parts.append(Expression<()>("UNIQUE")) }
-        if let check = check { parts.append(Expression<()>("CHECK \(check.SQL)", check.bindings)) }
-        if let value = defaultValue { parts.append(Expression<()>("DEFAULT \(value.SQL)", value.bindings)) }
-        if let expressions = expressions { parts += expressions }
-        columns.append(SQLite.join(" ", parts))
+        columns.append(define(name, primaryKey, null, unique, check, defaultValue, expressions))
     }
 
     public func primaryKey(column: Expressible...) {
@@ -375,18 +405,37 @@ public final class SchemaBuilder {
         return table.database.prepare(SQL)
     }
 
-    private func namespace(column: Expressible) -> Expressible {
-        let expression = column.expression
-        if !contains(expression.SQL, ".") { return expression }
-        let reference = Array(expression.SQL).reduce("") { SQL, character in
-            let string = String(character)
-            return SQL + (string == "." ? "(" : string)
-        }
-        return Expression<()>("\(reference))", expression.bindings)
-    }
-
     private func assertForeignKeysEnabled() {
         assert(table.database.scalar("PRAGMA foreign_keys") as Int == 1, "foreign key constraints are disabled")
     }
 
+}
+
+private func namespace(column: Expressible) -> Expressible {
+    let expression = column.expression
+    if !contains(expression.SQL, ".") { return expression }
+    let reference = Array(expression.SQL).reduce("") { SQL, character in
+        let string = String(character)
+        return SQL + (string == "." ? "(" : string)
+    }
+    return Expression<()>("\(reference))", expression.bindings)
+}
+
+private func define<T: Value>(
+    column: Expression<T>,
+    primaryKey: Bool,
+    null: Bool,
+    unique: Bool,
+    check: Expression<Bool>?,
+    defaultValue: Expression<T>?,
+    expressions: [Expressible]?
+) -> Expressible {
+    var parts: [Expressible] = [Expression<()>(column), Expression<()>(T.datatype)]
+    if primaryKey { parts.append(Expression<()>("PRIMARY KEY")) }
+    if !null { parts.append(Expression<()>("NOT NULL")) }
+    if unique { parts.append(Expression<()>("UNIQUE")) }
+    if let check = check { parts.append(Expression<()>("CHECK \(check.SQL)", check.bindings)) }
+    if let value = defaultValue { parts.append(Expression<()>("DEFAULT \(value.SQL)", value.bindings)) }
+    if let expressions = expressions { parts += expressions }
+    return SQLite.join(" ", parts)
 }
