@@ -21,7 +21,11 @@
 // THE SOFTWARE.
 //
 
+import Foundation
+
 public protocol Binding {}
+
+public protocol Number: Binding {}
 
 public protocol Value {
 
@@ -37,7 +41,39 @@ public protocol Value {
 
 }
 
-public protocol Number: Binding {}
+public struct Blob {
+
+    public let data: NSData
+
+    public var bytes: UnsafePointer<()> {
+        return data.bytes
+    }
+
+    public var length: Int {
+        return data.length
+    }
+
+    public init(bytes: UnsafePointer<()>, length: Int) {
+        data = NSData(bytes: bytes, length: length)
+    }
+
+}
+
+extension Blob: Binding, Value {
+
+    public typealias Datatype = Blob
+
+    public static var declaredDatatype = "BLOB"
+
+    public static func fromDatatypeValue(datatypeValue: Datatype) -> Blob {
+        return datatypeValue
+    }
+
+    public var datatypeValue: Datatype {
+        return self
+    }
+
+}
 
 extension Bool: Binding, Value {
 
@@ -46,7 +82,7 @@ extension Bool: Binding, Value {
     public static var declaredDatatype = "BOOLEAN"
 
     public static func fromDatatypeValue(datatypeValue: Datatype) -> Bool {
-        return self(datatypeValue)
+        return datatypeValue
     }
 
     public var datatypeValue: Datatype {
@@ -62,7 +98,7 @@ extension Double: Number, Value {
     public static var declaredDatatype = "REAL"
 
     public static func fromDatatypeValue(datatypeValue: Datatype) -> Double {
-        return self(datatypeValue)
+        return datatypeValue
     }
 
     public var datatypeValue: Datatype {
@@ -78,7 +114,7 @@ extension Int: Number, Value {
     public static var declaredDatatype = "INTEGER"
 
     public static func fromDatatypeValue(datatypeValue: Datatype) -> Int {
-        return self(datatypeValue)
+        return datatypeValue
     }
 
     public var datatypeValue: Datatype {
@@ -94,7 +130,7 @@ extension String: Binding, Value {
     public static var declaredDatatype = "TEXT"
 
     public static func fromDatatypeValue(datatypeValue: Datatype) -> String {
-        return self(datatypeValue)
+        return datatypeValue
     }
 
     public var datatypeValue: Datatype {

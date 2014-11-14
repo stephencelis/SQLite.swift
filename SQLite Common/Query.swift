@@ -289,6 +289,9 @@ public struct Query {
 
     // FIXME: rdar://18673897 subscript<T>(expression: Expression<V>) -> Expression<V>
 
+    public subscript(column: Expression<Blob>) -> Expression<Blob> { return namespace(column) }
+    public subscript(column: Expression<Blob?>) -> Expression<Blob?> { return namespace(column) }
+
     public subscript(column: Expression<Bool>) -> Expression<Bool> { return namespace(column) }
     public subscript(column: Expression<Bool?>) -> Expression<Bool?> { return namespace(column) }
 
@@ -642,35 +645,18 @@ public struct Row {
 
     // FIXME: rdar://18673897 subscript<T>(expression: Expression<V>) -> Expression<V>
 
-    /// Returns a row’s value for the given column.
-    ///
-    /// :param: column An expression representing a column selected in a Query.
-    ///
-    /// returns The value for the given column.
+    public subscript(column: Expression<Blob>) -> Blob { return get(column) }
+    public subscript(column: Expression<Blob?>) -> Blob? { return get(column) }
+
     public subscript(column: Expression<Bool>) -> Bool { return get(column) }
     public subscript(column: Expression<Bool?>) -> Bool? { return get(column) }
 
-    /// Returns a row’s value for the given column.
-    ///
-    /// :param: column An expression representing a column selected in a Query.
-    ///
-    /// returns The value for the given column.
     public subscript(column: Expression<Double>) -> Double { return get(column) }
     public subscript(column: Expression<Double?>) -> Double? { return get(column) }
 
-    /// Returns a row’s value for the given column.
-    ///
-    /// :param: column An expression representing a column selected in a Query.
-    ///
-    /// returns The value for the given column.
     public subscript(column: Expression<Int>) -> Int { return get(column) }
     public subscript(column: Expression<Int?>) -> Int? { return get(column) }
 
-    /// Returns a row’s value for the given column.
-    ///
-    /// :param: column An expression representing a column selected in a Query.
-    ///
-    /// returns The value for the given column.
     public subscript(column: Expression<String>) -> String { return get(column) }
     public subscript(column: Expression<String?>) -> String? { return get(column) }
 

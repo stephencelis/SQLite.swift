@@ -84,7 +84,9 @@ public final class Statement {
     }
 
     private func bind(value: Binding?, atIndex idx: Int) {
-        if let value = value as? Bool {
+        if let value = value as? Blob {
+            try(sqlite3_bind_blob(handle, Int32(idx), value.bytes, Int32(value.length), SQLITE_TRANSIENT))
+        } else if let value = value as? Bool {
             bind(value ? 1 : 0, atIndex: idx)
         } else if let value = value as? Double {
             try(sqlite3_bind_double(handle, Int32(idx), value))
@@ -213,6 +215,10 @@ extension Statement: GeneratorType {
         var row = Element()
         for idx in 0..<columnNames.count {
             switch sqlite3_column_type(handle, Int32(idx)) {
+            case SQLITE_BLOB:
+                let bytes = sqlite3_column_blob(handle, Int32(idx))
+                let length = sqlite3_column_bytes(handle, Int32(idx))
+                row.append(Blob(bytes: bytes, length: Int(length)))
             case SQLITE_FLOAT:
                 row.append(Double(sqlite3_column_double(handle, Int32(idx))))
             case SQLITE_INTEGER:

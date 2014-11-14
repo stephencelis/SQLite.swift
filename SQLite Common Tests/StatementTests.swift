@@ -12,26 +12,42 @@ class StatementTests: XCTestCase {
     }
 
     func test_bind_withVariadicParameters_bindsParameters() {
-        let stmt = db.prepare("SELECT ?, ?, ?, ?")
-        ExpectExecutions(db, ["SELECT 0, 1, 2.0, '3'": 1]) { _ in
-            stmt.bind(false, 1, 2.0, "3").run()
-            return
+        let stmt = db.prepare("SELECT ?, ?, ?, ?, ?")
+        ExpectExecutions(db, ["SELECT 0, 1, 2.0, '3', x'34'": 1]) { _ in
+            withBlob { blob in
+                stmt.bind(false, 1, 2.0, "3", blob).run()
+                return
+            }
         }
     }
 
     func test_bind_withArrayOfParameters_bindsParameters() {
-        let stmt = db.prepare("SELECT ?, ?, ?, ?")
-        ExpectExecutions(db, ["SELECT 0, 1, 2.0, '3'": 1]) { _ in
-            stmt.bind([false, 1, 2.0, "3"]).run()
-            return
+        let stmt = db.prepare("SELECT ?, ?, ?, ?, ?")
+        ExpectExecutions(db, ["SELECT 0, 1, 2.0, '3', x'34'": 1]) { _ in
+            withBlob { blob in
+                stmt.bind([false, 1, 2.0, "3", blob]).run()
+                return
+            }
         }
     }
 
     func test_bind_withNamedParameters_bindsParameters() {
-        let stmt = db.prepare("SELECT ?1, ?2, ?3, ?4")
-        ExpectExecutions(db, ["SELECT 0, 1, 2.0, '3'": 1]) { _ in
-            stmt.bind(["?1": false, "?2": 1, "?3": 2.0, "?4": "3"]).run()
-            return
+        let stmt = db.prepare("SELECT ?1, ?2, ?3, ?4, ?5")
+        ExpectExecutions(db, ["SELECT 0, 1, 2.0, '3', x'34'": 1]) { _ in
+            withBlob { blob in
+                stmt.bind(["?1": false, "?2": 1, "?3": 2.0, "?4": "3", "?5": blob]).run()
+                return
+            }
+        }
+    }
+
+    func test_bind_withBlob_bindsBlob() {
+        let stmt = db.prepare("SELECT ?")
+        ExpectExecutions(db, ["SELECT x'34'": 1]) { _ in
+            withBlob { blob in
+                stmt.bind(blob).run()
+                return
+            }
         }
     }
 
@@ -182,4 +198,13 @@ class StatementTests: XCTestCase {
         XCTAssertEqual("alice@example.com", values["email"] as String)
     }
 
+}
+
+func withBlob(block: Blob -> ()) {
+    let length = 1
+    let buflen = Int(length) + 1
+    let buffer = UnsafeMutablePointer<()>.alloc(buflen)
+    memcpy(buffer, "4", UInt(length))
+    block(Blob(bytes: buffer, length: length))
+    buffer.dealloc(buflen)
 }
