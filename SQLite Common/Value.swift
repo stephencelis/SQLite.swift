@@ -21,52 +21,14 @@
 // THE SOFTWARE.
 //
 
-public protocol Value {
-
-    class var datatype: String { get }
-
-    func bindTo(statement: Statement, atIndex idx: Int)
-
-}
+public protocol Value {}
 
 public protocol Number: Value {}
 
-extension Bool: Value {
+extension Bool: Value {}
 
-    public static var datatype: String { return "BOOLEAN" }
+extension Double: Number {}
 
-    public func bindTo(statement: Statement, atIndex idx: Int) {
-        statement.bind(bool: self, atIndex: idx)
-    }
+extension Int: Number {}
 
-}
-
-extension Double: Number {
-
-    public static var datatype: String { return "REAL" }
-
-    public func bindTo(statement: Statement, atIndex idx: Int) {
-        statement.bind(double: self, atIndex: idx)
-    }
-
-}
-
-extension Int: Number {
-
-    public static var datatype: String { return "INTEGER" }
-
-    public func bindTo(statement: Statement, atIndex idx: Int) {
-        statement.bind(int: self, atIndex: idx)
-    }
-
-}
-
-extension String: Value {
-
-    public static var datatype: String { return "TEXT" }
-
-    public func bindTo(statement: Statement, atIndex idx: Int) {
-        statement.bind(text: self, atIndex: idx)
-    }
-
-}
+extension String: Value {}

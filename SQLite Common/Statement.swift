@@ -80,25 +80,15 @@ public final class Statement {
         return self
     }
 
-    internal func bind(#bool: Bool, atIndex idx: Int) {
-        bind(int: bool ? 1 : 0, atIndex: idx)
-    }
-
-    internal func bind(#double: Double, atIndex idx: Int) {
-        try(sqlite3_bind_double(handle, Int32(idx), double))
-    }
-
-    internal func bind(#int: Int, atIndex idx: Int) {
-        try(sqlite3_bind_int64(handle, Int32(idx), Int64(int)))
-    }
-
-    internal func bind(#text: String, atIndex idx: Int) {
-        try(sqlite3_bind_text(handle, Int32(idx), text, -1, SQLITE_TRANSIENT))
-    }
-
     private func bind(value: Value?, atIndex idx: Int) {
-        if let Value = value {
-            Value.bindTo(self, atIndex: idx)
+        if let value = value as? Bool {
+            bind(value ? 1 : 0, atIndex: idx)
+        } else if let value = value as? Double {
+            try(sqlite3_bind_double(handle, Int32(idx), value))
+        } else if let value = value as? Int {
+            try(sqlite3_bind_int64(handle, Int32(idx), Int64(value)))
+        } else if let value = value as? String {
+            try(sqlite3_bind_text(handle, Int32(idx), value, -1, SQLITE_TRANSIENT))
         } else {
             try(sqlite3_bind_null(handle, Int32(idx)))
         }

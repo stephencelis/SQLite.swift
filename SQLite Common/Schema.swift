@@ -448,7 +448,7 @@ private func define<T: Value>(
     defaultValue: Expression<T>?,
     expressions: [Expressible]?
 ) -> Expressible {
-    var parts: [Expressible] = [Expression<()>(column), Expression<()>(T.datatype)]
+    var parts: [Expressible] = [Expression<()>(column), Expression<()>(datatype(T))]
     if primaryKey { parts.append(Expression<()>("PRIMARY KEY")) }
     if !null { parts.append(Expression<()>("NOT NULL")) }
     if unique { parts.append(Expression<()>("UNIQUE")) }
@@ -456,6 +456,19 @@ private func define<T: Value>(
     if let value = defaultValue { parts.append(Expression<()>("DEFAULT \(value.SQL)", value.bindings)) }
     if let expressions = expressions { parts += expressions }
     return SQLite.join(" ", parts)
+}
+
+private func datatype<T: Value>(type: T.Type) -> String {
+    if type is Bool.Type {
+        return "BOOLEAN"
+    } else if type is Double.Type {
+        return "REAL"
+    } else if type is Int.Type {
+        return "INTEGER"
+    } else if type is String.Type {
+        return "TEXT"
+    }
+    return "NONE"
 }
 
 private func createSQL(
