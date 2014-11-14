@@ -21,10 +21,12 @@
 // THE SOFTWARE.
 //
 
+import Foundation
+
 /// A connection (handle) to a SQLite database.
 public final class Database {
 
-    private let handle: COpaquePointer = nil
+    internal let handle: COpaquePointer = nil
 
     /// Whether or not the database was opened in a read-only state.
     public var readonly: Bool { return sqlite3_db_readonly(handle, nil) == 1 }
@@ -46,7 +48,7 @@ public final class Database {
         try(sqlite3_open_v2(path ?? "", &handle, flags, nil))
     }
 
-    deinit { sqlite3_close(handle) } // sqlite3_close_v2 in Yosemite/iOS 8?
+    deinit { try(sqlite3_close(handle)) } // sqlite3_close_v2 in Yosemite/iOS 8?
 
     // MARK: -
 
@@ -86,10 +88,7 @@ public final class Database {
     /// :returns: A prepared statement.
     public func prepare(statement: String, _ bindings: Binding?...) -> Statement {
         if !bindings.isEmpty { return prepare(statement, bindings) }
-
-        var statementHandle: COpaquePointer = nil
-        try(sqlite3_prepare_v2(handle, statement, -1, &statementHandle, nil))
-        return Statement(statementHandle)
+        return Statement(self, statement)
     }
 
     /// Prepares a single SQL statement and binds parameters to it.
@@ -332,9 +331,15 @@ public final class Database {
         return String.fromCString(sqlite3_errmsg(handle))!
     }
 
-    private func try(block: @autoclosure () -> Int32) {
-        if block() != SQLITE_OK { assertionFailure("\(lastError)") }
+    internal func try(block: @autoclosure () -> Int32) {
+        perform { if block() != SQLITE_OK { assertionFailure("\(self.lastError)") } }
     }
+
+    // MARK: - Threading
+
+    private let queue = dispatch_queue_create("SQLite.Database", DISPATCH_QUEUE_SERIAL)
+
+    internal func perform(block: () -> ()) { dispatch_sync(queue, block) }
 
 }
 

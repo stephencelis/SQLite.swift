@@ -27,11 +27,14 @@ private let SQLITE_TRANSIENT = sqlite3_destructor_type(COpaquePointer(bitPattern
 /// A single SQL statement.
 public final class Statement {
 
-    private let handle: COpaquePointer
+    private let handle: COpaquePointer = nil
 
-    private var database: COpaquePointer { return sqlite3_db_handle(handle) }
+    private var database: Database
 
-    internal init(_ handle: COpaquePointer) { self.handle = handle }
+    internal init(_ database: Database, _ SQL: String) {
+        self.database = database
+        database.try(sqlite3_prepare_v2(database.handle, SQL, -1, &handle, nil))
+    }
 
     deinit { sqlite3_finalize(handle) }
 
@@ -171,10 +174,12 @@ public final class Statement {
 
     private func try(block: @autoclosure () -> Int32) {
         if failed { return }
-        status = block()
-        if failed {
-            reason = String.fromCString(sqlite3_errmsg(database))
-            assert(status == SQLITE_CONSTRAINT, "\(reason!)")
+        database.perform {
+            self.status = block()
+            if self.failed {
+                self.reason = String.fromCString(sqlite3_errmsg(self.database.handle))
+                assert(self.status == SQLITE_CONSTRAINT, "\(self.reason!)")
+            }
         }
     }
 
