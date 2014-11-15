@@ -84,7 +84,7 @@ public final class Database {
     /// :param: bindings  A list of parameters to bind to the statement.
     ///
     /// :returns: A prepared statement.
-    public func prepare(statement: String, _ bindings: Value?...) -> Statement {
+    public func prepare(statement: String, _ bindings: Binding?...) -> Statement {
         if !bindings.isEmpty { return prepare(statement, bindings) }
 
         var statementHandle: COpaquePointer = nil
@@ -99,7 +99,7 @@ public final class Database {
     /// :param: bindings  A list of parameters to bind to the statement.
     ///
     /// :returns: A prepared statement.
-    public func prepare(statement: String, _ bindings: [Value?]) -> Statement {
+    public func prepare(statement: String, _ bindings: [Binding?]) -> Statement {
         return prepare(statement).bind(bindings)
     }
 
@@ -111,7 +111,7 @@ public final class Database {
     ///                   statement.
     ///
     /// :returns: A prepared statement.
-    public func prepare(statement: String, _ bindings: [String: Value?]) -> Statement {
+    public func prepare(statement: String, _ bindings: [String: Binding?]) -> Statement {
         return prepare(statement).bind(bindings)
     }
 
@@ -124,7 +124,7 @@ public final class Database {
     /// :param: bindings  A list of parameters to bind to the statement.
     ///
     /// :returns: The statement.
-    public func run(statement: String, _ bindings: Value?...) -> Statement {
+    public func run(statement: String, _ bindings: Binding?...) -> Statement {
         return run(statement, bindings)
     }
 
@@ -135,7 +135,7 @@ public final class Database {
     /// :param: bindings  A list of parameters to bind to the statement.
     ///
     /// :returns: The statement.
-    public func run(statement: String, _ bindings: [Value?]) -> Statement {
+    public func run(statement: String, _ bindings: [Binding?]) -> Statement {
         return prepare(statement).run(bindings)
     }
 
@@ -147,7 +147,7 @@ public final class Database {
     ///                   statement.
     ///
     /// :returns: The statement.
-    public func run(statement: String, _ bindings: [String: Value?]) -> Statement {
+    public func run(statement: String, _ bindings: [String: Binding?]) -> Statement {
         return prepare(statement).run(bindings)
     }
 
@@ -161,7 +161,7 @@ public final class Database {
     /// :param: bindings  A list of parameters to bind to the statement.
     ///
     /// :returns: The first value of the first row returned.
-    public func scalar(statement: String, _ bindings: Value?...) -> Value? {
+    public func scalar(statement: String, _ bindings: Binding?...) -> Binding? {
         return scalar(statement, bindings)
     }
 
@@ -173,7 +173,7 @@ public final class Database {
     /// :param: bindings  A list of parameters to bind to the statement.
     ///
     /// :returns: The first value of the first row returned.
-    public func scalar(statement: String, _ bindings: [Value?]) -> Value? {
+    public func scalar(statement: String, _ bindings: [Binding?]) -> Binding? {
         return prepare(statement).scalar(bindings)
     }
 
@@ -186,7 +186,7 @@ public final class Database {
     ///                   statement.
     ///
     /// :returns: The first value of the first row returned.
-    public func scalar(statement: String, _ bindings: [String: Value?]) -> Value? {
+    public func scalar(statement: String, _ bindings: [String: Binding?]) -> Binding? {
         return prepare(statement).scalar(bindings)
     }
 

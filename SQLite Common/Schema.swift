@@ -46,33 +46,33 @@ public extension Database {
         return run("ALTER TABLE \(table.tableName) RENAME TO \(tableName)")
     }
 
-    public func alter<T: Value>(
+    public func alter<V: Value where V.Datatype: Binding>(
         #table: Query,
-        add column: Expression<T>,
+        add column: Expression<V>,
         check: Expression<Bool>? = nil,
-        defaultValue: T
+        defaultValue: V
     ) -> Statement {
-        return alter(table, define(column, false, false, false, check, Expression(value: defaultValue), nil))
+        return alter(table, define(column, false, false, false, check, Expression(value: defaultValue.datatypeValue), nil))
     }
 
-    public func alter<T: Value>(
+    public func alter<V: Value where V.Datatype: Binding>(
         #table: Query,
-        add column: Expression<T?>,
+        add column: Expression<V?>,
         check: Expression<Bool>? = nil,
-        defaultValue: T? = nil
+        defaultValue: V? = nil
     ) -> Statement {
-        let value = defaultValue.map { Expression<T>(value: $0) }
-        return alter(table, define(Expression<T>(column), false, true, false, check, value, nil))
+        let value = defaultValue.map { Expression<V>(value: $0.datatypeValue) }
+        return alter(table, define(Expression<V>(column), false, true, false, check, value, nil))
     }
 
-    public func alter<T: Value>(
+    public func alter<V: Value where V.Datatype: Binding>(
         #table: Query,
-        add column: Expression<T?>,
+        add column: Expression<V?>,
         check: Expression<Bool>? = nil,
-        references: Expression<T>
+        references: Expression<V>
     ) -> Statement {
         let expressions = [Expression<()>("REFERENCES"), namespace(references)]
-        return alter(table, define(Expression<T>(column), false, true, false, check, nil, expressions))
+        return alter(table, define(Expression<V>(column), false, true, false, check, nil, expressions))
     }
 
     private func alter(table: Query, _ definition: Expressible) -> Statement {
@@ -127,44 +127,44 @@ public final class SchemaBuilder {
         self.table = table
     }
 
-    public func column<T: Value>(
-        name: Expression<T>,
+    public func column<V: Value where V.Datatype: Binding>(
+        name: Expression<V>,
         primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: Expression<T>? = nil
+        defaultValue value: Expression<V>? = nil
     ) {
         column(name, primaryKey, false, unique, check, value)
     }
 
-    public func column<T: Value>(
-        name: Expression<T>,
+    public func column<V: Value where V.Datatype: Binding>(
+        name: Expression<V>,
         primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: T
+        defaultValue value: V
     ) {
-        column(name, primaryKey, false, unique, check, Expression(value: value))
+        column(name, primaryKey, false, unique, check, Expression(value: value.datatypeValue))
     }
 
-    public func column<T: Value>(
-        name: Expression<T?>,
+    public func column<V: Value where V.Datatype: Binding>(
+        name: Expression<V?>,
         primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: Expression<T>? = nil
+        defaultValue value: Expression<V>? = nil
     ) {
-        column(Expression<T>(name), primaryKey, true, unique, check, value)
+        column(Expression<V>(name), primaryKey, true, unique, check, value)
     }
 
-    public func column<T: Value>(
-        name: Expression<T?>,
+    public func column<V: Value where V.Datatype: Binding>(
+        name: Expression<V?>,
         primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: T?
+        defaultValue value: V?
     ) {
-        column(Expression<T>(name), primaryKey, true, unique, check, value.map { Expression(value: $0) })
+        column(Expression<V>(name), primaryKey, true, unique, check, value.map { Expression(value: $0.datatypeValue) })
     }
 
     public func column(
@@ -339,13 +339,13 @@ public final class SchemaBuilder {
         )
     }
 
-    private func column<T: Value>(
-        name: Expression<T>,
+    private func column<V: Value where V.Datatype: Binding>(
+        name: Expression<V>,
         _ primaryKey: Bool,
         _ null: Bool,
         _ unique: Bool,
         _ check: Expression<Bool>?,
-        _ defaultValue: Expression<T>?,
+        _ defaultValue: Expression<V>?,
         _ expressions: [Expressible]? = nil
     ) {
         columns.append(define(name, primaryKey, null, unique, check, defaultValue, expressions))
@@ -379,9 +379,9 @@ public final class SchemaBuilder {
 
     }
 
-    public func foreignKey<T: Value>(
-        column: Expression<T>,
-        references: Expression<T>,
+    public func foreignKey<V: Value where V.Datatype: Binding>(
+        column: Expression<V>,
+        references: Expression<V>,
         update: Dependency? = nil,
         delete: Dependency? = nil
     ) {
@@ -392,9 +392,9 @@ public final class SchemaBuilder {
         if let delete = delete { parts.append(Expression<()>("ON DELETE \(delete.rawValue)")) }
         columns.append(SQLite.join(" ", parts))
     }
-    public func foreignKey<T: Value>(
-        column: Expression<T?>,
-        references: Expression<T>,
+    public func foreignKey<V: Value where V.Datatype: Binding>(
+        column: Expression<V?>,
+        references: Expression<V>,
         update: Dependency? = nil,
         delete: Dependency? = nil
     ) {
@@ -406,16 +406,16 @@ public final class SchemaBuilder {
         columns.append(SQLite.join(" ", parts))
     }
 
-    public func foreignKey<T: Value>(
-        column: Expression<T>,
+    public func foreignKey<V: Value where V.Datatype: Binding>(
+        column: Expression<V>,
         references: Query,
         update: Dependency? = nil,
         delete: Dependency? = nil
     ) {
         foreignKey(column, references: Expression(references.tableName), update: update, delete: delete)
     }
-    public func foreignKey<T: Value>(
-        column: Expression<T?>,
+    public func foreignKey<V: Value where V.Datatype: Binding>(
+        column: Expression<V?>,
         references: Query,
         update: Dependency? = nil,
         delete: Dependency? = nil
@@ -439,16 +439,16 @@ private func namespace(column: Expressible) -> Expressible {
     return Expression<()>("\(reference))", expression.bindings)
 }
 
-private func define<T: Value>(
-    column: Expression<T>,
+private func define<V: Value where V.Datatype: Binding>(
+    column: Expression<V>,
     primaryKey: Bool,
     null: Bool,
     unique: Bool,
     check: Expression<Bool>?,
-    defaultValue: Expression<T>?,
+    defaultValue: Expression<V>?,
     expressions: [Expressible]?
 ) -> Expressible {
-    var parts: [Expressible] = [Expression<()>(column), Expression<()>(datatype(T))]
+    var parts: [Expressible] = [Expression<()>(column), Expression<()>(V.declaredDatatype)]
     if primaryKey { parts.append(Expression<()>("PRIMARY KEY")) }
     if !null { parts.append(Expression<()>("NOT NULL")) }
     if unique { parts.append(Expression<()>("UNIQUE")) }
@@ -456,19 +456,6 @@ private func define<T: Value>(
     if let value = defaultValue { parts.append(Expression<()>("DEFAULT \(value.SQL)", value.bindings)) }
     if let expressions = expressions { parts += expressions }
     return SQLite.join(" ", parts)
-}
-
-private func datatype<T: Value>(type: T.Type) -> String {
-    if type is Bool.Type {
-        return "BOOLEAN"
-    } else if type is Double.Type {
-        return "REAL"
-    } else if type is Int.Type {
-        return "INTEGER"
-    } else if type is String.Type {
-        return "TEXT"
-    }
-    return "NONE"
 }
 
 private func createSQL(

@@ -380,4 +380,45 @@ class QueryTests: XCTestCase {
         XCTAssertEqual(21, users.select(age + 1).first![age + 1]!)
     }
 
+    func test_valueExtension_serializesAndDeserializes() {
+        let id = Expression<Int>("id")
+        let timestamp = Expression<NSDate?>("timestamp")
+        let touches = db["touches"]
+        db.create(table: touches) { t in
+            t.column(id, primaryKey: true)
+            t.column(timestamp)
+        }
+
+        let date = NSDate(timeIntervalSince1970: 0)
+        touches.insert(timestamp <- date)!
+        XCTAssertEqual(touches.first!.get(timestamp)!, date)
+
+        XCTAssertNil(touches.filter(id == touches.insert()!).first!.get(timestamp))
+
+        XCTAssert(touches.filter(timestamp < NSDate()).first != nil)
+    }
+
+}
+
+private let formatter: NSDateFormatter = {
+    let formatter = NSDateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
+    formatter.timeZone = NSTimeZone(abbreviation: "UTC")
+    return formatter
+}()
+
+extension NSDate: Value {
+
+    public typealias Datatype = String
+
+    public class var declaredDatatype: String { return Datatype.declaredDatatype }
+
+    public class func fromDatatypeValue(datatypeValue: Datatype) -> NSDate {
+        return formatter.dateFromString(datatypeValue)!
+    }
+
+    public var datatypeValue: Datatype {
+        return formatter.stringFromDate(self)
+    }
+
 }

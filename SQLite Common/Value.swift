@@ -21,14 +21,84 @@
 // THE SOFTWARE.
 //
 
-public protocol Value {}
+public protocol Binding {}
 
-public protocol Number: Value {}
+public protocol Value {
 
-extension Bool: Value {}
+    typealias ValueType = Self
 
-extension Double: Number {}
+    typealias Datatype
 
-extension Int: Number {}
+    class var declaredDatatype: String { get }
 
-extension String: Value {}
+    class func fromDatatypeValue(datatypeValue: Datatype) -> ValueType
+
+    var datatypeValue: Datatype { get }
+
+}
+
+public protocol Number: Binding {}
+
+extension Bool: Binding, Value {
+
+    public typealias Datatype = Bool
+
+    public static var declaredDatatype = "BOOLEAN"
+
+    public static func fromDatatypeValue(datatypeValue: Datatype) -> Bool {
+        return self(datatypeValue)
+    }
+
+    public var datatypeValue: Datatype {
+        return self
+    }
+
+}
+
+extension Double: Number, Value {
+
+    public typealias Datatype = Double
+
+    public static var declaredDatatype = "REAL"
+
+    public static func fromDatatypeValue(datatypeValue: Datatype) -> Double {
+        return self(datatypeValue)
+    }
+
+    public var datatypeValue: Datatype {
+        return self
+    }
+
+}
+
+extension Int: Number, Value {
+
+    public typealias Datatype = Int
+
+    public static var declaredDatatype = "INTEGER"
+
+    public static func fromDatatypeValue(datatypeValue: Datatype) -> Int {
+        return self(datatypeValue)
+    }
+
+    public var datatypeValue: Datatype {
+        return self
+    }
+
+}
+
+extension String: Binding, Value {
+
+    public typealias Datatype = String
+
+    public static var declaredDatatype = "TEXT"
+
+    public static func fromDatatypeValue(datatypeValue: Datatype) -> String {
+        return self(datatypeValue)
+    }
+
+    public var datatypeValue: Datatype {
+        return self
+    }
+
+}

@@ -283,11 +283,11 @@ public struct Query {
     ///
     /// :returns: A column expression namespaced with the query’s table name or
     ///           alias.
-    public func namespace<T>(column: Expression<T>) -> Expression<T> {
+    public func namespace<V>(column: Expression<V>) -> Expression<V> {
         return Expression("\(alias ?? tableName).\(column.SQL)", column.bindings)
     }
 
-    // FIXME: rdar://18673897 subscript<T>(expression: Expression<T>) -> Expression<T>
+    // FIXME: rdar://18673897 subscript<T>(expression: Expression<V>) -> Expression<V>
 
     public subscript(column: Expression<Bool>) -> Expression<Bool> { return namespace(column) }
     public subscript(column: Expression<Bool?>) -> Expression<Bool?> { return namespace(column) }
@@ -545,7 +545,7 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The number of rows matching the given column.
-    public func count<T>(column: Expression<T>) -> Int {
+    public func count<V>(column: Expression<V>) -> Int {
         return calculate(SQLite.count(column))!
     }
 
@@ -554,10 +554,10 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The largest value of the given column.
-    public func max<T: Value>(column: Expression<T>) -> T? {
+    public func max<V: Value where V.Datatype: Binding>(column: Expression<V>) -> V? {
         return calculate(SQLite.max(column))
     }
-    public func max<T: Value>(column: Expression<T?>) -> T? {
+    public func max<V: Value where V.Datatype: Binding>(column: Expression<V?>) -> V? {
         return calculate(SQLite.max(column))
     }
 
@@ -566,10 +566,10 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The smallest value of the given column.
-    public func min<T: Value>(column: Expression<T>) -> T? {
+    public func min<V: Value where V.Datatype: Binding>(column: Expression<V>) -> V? {
         return calculate(SQLite.min(column))
     }
-    public func min<T: Value>(column: Expression<T?>) -> T? {
+    public func min<V: Value where V.Datatype: Binding>(column: Expression<V?>) -> V? {
         return calculate(SQLite.min(column))
     }
 
@@ -578,10 +578,10 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The average value of the given column.
-    public func average<T: Number>(column: Expression<T>) -> Double? {
+    public func average<V: Number>(column: Expression<V>) -> Double? {
         return calculate(SQLite.average(column))
     }
-    public func average<T: Number>(column: Expression<T?>) -> Double? {
+    public func average<V: Number>(column: Expression<V?>) -> Double? {
         return calculate(SQLite.average(column))
     }
 
@@ -590,10 +590,10 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The sum of the given column’s values.
-    public func sum<T: Number>(column: Expression<T>) -> T? {
+    public func sum<V: Number>(column: Expression<V>) -> V? {
         return calculate(SQLite.sum(column))
     }
-    public func sum<T: Number>(column: Expression<T?>) -> T? {
+    public func sum<V: Number>(column: Expression<V?>) -> V? {
         return calculate(SQLite.sum(column))
     }
 
@@ -602,10 +602,10 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The total of the given column’s values.
-    public func total<T: Number>(column: Expression<T>) -> Double {
+    public func total<V: Number>(column: Expression<V>) -> Double {
         return calculate(SQLite.total(column))!
     }
-    public func total<T: Number>(column: Expression<T?>) -> Double {
+    public func total<V: Number>(column: Expression<V?>) -> Double {
         return calculate(SQLite.total(column))!
     }
 
@@ -619,9 +619,9 @@ public struct Query {
 /// access to a row’s values.
 public struct Row {
 
-    private var values: [String: Value?]
+    private var values: [String: Binding?]
 
-    private init(_ values: [String: Value?]) {
+    private init(_ values: [String: Binding?]) {
         self.values = values
     }
 
@@ -630,10 +630,17 @@ public struct Row {
     /// :param: column An expression representing a column selected in a Query.
     ///
     /// returns The value for the given column.
-    public func get<T: Value>(column: Expression<T>) -> T { return values[column.SQL] as T }
-    public func get<T: Value>(column: Expression<T?>) -> T? { return values[column.SQL] as? T }
+    public func get<V: Value where V.Datatype: Binding>(column: Expression<V>) -> V {
+        return V.fromDatatypeValue(values[column.SQL] as V.Datatype) as V
+    }
+    public func get<V: Value where V.Datatype: Binding>(column: Expression<V?>) -> V? {
+        if let datatypeValue = values[column.SQL] as? V.Datatype {
+            return (V.fromDatatypeValue(datatypeValue) as V)
+        }
+        return nil
+    }
 
-    // FIXME: rdar://18673897 subscript<T>(expression: Expression<T>) -> Expression<T>
+    // FIXME: rdar://18673897 subscript<T>(expression: Expression<V>) -> Expression<V>
 
     /// Returns a row’s value for the given column.
     ///
