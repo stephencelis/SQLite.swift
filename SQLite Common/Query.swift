@@ -21,9 +21,6 @@
 // THE SOFTWARE.
 //
 
-/// A dictionary mapping column names to values.
-public typealias Values = [String: Value?]
-
 /// A query object. Used to build SQL statements with a collection of chainable
 /// helper functions.
 public struct Query {
@@ -622,9 +619,9 @@ public struct Query {
 /// access to a row’s values.
 public struct Row {
 
-    private var values: Values
+    private var values: [String: Value?]
 
-    private init(_ values: Values) {
+    private init(_ values: [String: Value?]) {
         self.values = values
     }
 
