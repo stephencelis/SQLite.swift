@@ -52,7 +52,7 @@ public struct Query {
     private var distinct: Bool = false
     internal var tableName: String
     private var alias: String?
-    private var joins = [Expressible]()
+    private var joins: [(type: JoinType, table: Query, condition: Expression<Bool>)] = []
     private var filter: Expression<Bool>?
     private var group: Expressible?
     private var order = [Expressible]()
@@ -138,9 +138,8 @@ public struct Query {
     /// :returns: A query with the given JOIN clause applied.
     public func join(type: JoinType, _ table: Query, on: Expression<Bool>) -> Query {
         var query = self
-        let condition = table.filter.map { on && $0 } ?? on
-        let expression = Expression<()>("\(type.rawValue) JOIN \(table) ON \(condition.SQL)", condition.bindings)
-        query.joins.append(expression)
+        let join = (type: type, table: table, condition: table.filter.map { on && $0 } ?? on)
+        query.joins.append(join)
         return query
     }
 
@@ -385,7 +384,9 @@ public struct Query {
 
     private var joinClause: Expressible? {
         if joins.count == 0 { return nil }
-        return SQLite.join(" ", joins)
+        return SQLite.join(" ", joins.map { type, table, condition in
+            Expression<()>("\(type.rawValue) JOIN \(table) ON \(condition.SQL)", condition.bindings)
+        })
     }
 
     internal var whereClause: Expressible? {
