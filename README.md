@@ -67,6 +67,9 @@ alice?.update(email <- replace(email, "mac.com", "me.com"))?
 
 alice?.delete()?
 // DELETE FROM users WHERE (id = 1)
+
+users.count
+// SELECT count(*) FROM users
 ```
 
 SQLite.swift also works as a lightweight, Swift-friendly wrapper over the C
