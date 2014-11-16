@@ -1,6 +1,6 @@
 # SQLite.swift [![Build Status][0.1]][0.2]
 
-A pure-[Swift][1.1], type-safe layer over [SQLite3][1.2].
+A type-safe, [Swift][1.1]-language layer over [SQLite3][1.2].
 
 [SQLite.swift][1.3] provides compile-time confidence in SQL statement
 syntax _and_ intent.
