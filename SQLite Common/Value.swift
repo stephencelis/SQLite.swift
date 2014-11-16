@@ -59,6 +59,12 @@ public struct Blob {
 
 }
 
+extension Blob: Equatable {}
+
+public func ==(lhs: Blob, rhs: Blob) -> Bool {
+    return lhs.data == rhs.data
+}
+
 extension Blob: Binding, Value {
 
     public typealias Datatype = Blob
