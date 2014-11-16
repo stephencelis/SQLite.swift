@@ -54,7 +54,7 @@ if let insertedID = users.insert(name <- "Alice", email <- "alice@mac.com") {
 	// inserted id: 1
 	alice = users.filter(id == insertedID)
 }
-// INSERT INTO users (email) VALUES 'alice@mac.com'
+// INSERT INTO users (name, email) VALUES ('Alice', 'alice@mac.com')
 
 for user in users {
     println("id: \(user[id]), name: \(user[name]), email: \(user[email])"
