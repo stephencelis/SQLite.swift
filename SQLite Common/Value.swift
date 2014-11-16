@@ -43,7 +43,7 @@ public protocol Value {
 
 public struct Blob {
 
-    public let data: NSData
+    private let data: NSData
 
     public var bytes: UnsafePointer<()> {
         return data.bytes
