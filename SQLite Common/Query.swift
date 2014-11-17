@@ -694,13 +694,23 @@ public struct Row {
     ///
     /// returns The value for the given column.
     public func get<V: Value where V.Datatype: Binding>(column: Expression<V>) -> V {
-        return V.fromDatatypeValue(values[column.SQL] as V.Datatype) as V
+        return get(Expression<V?>(column))!
     }
     public func get<V: Value where V.Datatype: Binding>(column: Expression<V?>) -> V? {
-        if let datatypeValue = values[column.SQL] as? V.Datatype {
-            return (V.fromDatatypeValue(datatypeValue) as V)
+        func bindingToValue(binding: Binding?) -> V? {
+            if let value = binding as? V.Datatype { return (V.fromDatatypeValue(value) as V) }
+            return nil
         }
-        return nil
+
+        if let binding = values[column.SQL] { return bindingToValue(binding) }
+
+        let similar = filter(values.keys) { $0.hasSuffix(".\(column.SQL)") }
+        if similar.count == 1 { return bindingToValue(values[similar[0]]!) }
+
+        if similar.count > 1 {
+            fatalError("ambiguous column \(quote(literal: column.SQL)) (please disambiguate: \(similar))")
+        }
+        fatalError("no such column \(quote(literal: column.SQL)) in columns: \(Array(values.keys))")
     }
 
     // FIXME: rdar://18673897 subscript<T>(expression: Expression<V>) -> Expression<V>
