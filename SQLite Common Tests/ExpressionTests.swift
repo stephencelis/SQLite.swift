@@ -447,6 +447,14 @@ class ExpressionTests: XCTestCase {
         ExpectExecutionMatches("count(salary)", count(salary2))
         ExpectExecutionMatches("count(admin)", count(admin))
         ExpectExecutionMatches("count(admin)", count(admin2))
+        ExpectExecutionMatches("count(DISTINCT id)", count(distinct: id))
+        ExpectExecutionMatches("count(DISTINCT age)", count(distinct: age))
+        ExpectExecutionMatches("count(DISTINCT email)", count(distinct: email))
+        ExpectExecutionMatches("count(DISTINCT email)", count(distinct: email2))
+        ExpectExecutionMatches("count(DISTINCT salary)", count(distinct: salary))
+        ExpectExecutionMatches("count(DISTINCT salary)", count(distinct: salary2))
+        ExpectExecutionMatches("count(DISTINCT admin)", count(distinct: admin))
+        ExpectExecutionMatches("count(DISTINCT admin)", count(distinct: admin2))
     }
 
     func test_countFunction_withStar_buildsCountExpression() {
@@ -476,6 +484,10 @@ class ExpressionTests: XCTestCase {
         ExpectExecutionMatches("avg(age)", average(age))
         ExpectExecutionMatches("avg(salary)", average(salary))
         ExpectExecutionMatches("avg(salary)", average(salary2))
+        ExpectExecutionMatches("avg(DISTINCT id)", average(distinct: id))
+        ExpectExecutionMatches("avg(DISTINCT age)", average(distinct: age))
+        ExpectExecutionMatches("avg(DISTINCT salary)", average(distinct: salary))
+        ExpectExecutionMatches("avg(DISTINCT salary)", average(distinct: salary2))
     }
 
     func test_sumFunction_withExpression_buildsSumExpression() {
@@ -483,6 +495,10 @@ class ExpressionTests: XCTestCase {
         ExpectExecutionMatches("sum(age)", sum(age))
         ExpectExecutionMatches("sum(salary)", sum(salary))
         ExpectExecutionMatches("sum(salary)", sum(salary2))
+        ExpectExecutionMatches("sum(DISTINCT id)", sum(distinct: id))
+        ExpectExecutionMatches("sum(DISTINCT age)", sum(distinct: age))
+        ExpectExecutionMatches("sum(DISTINCT salary)", sum(distinct: salary))
+        ExpectExecutionMatches("sum(DISTINCT salary)", sum(distinct: salary2))
     }
 
     func test_totalFunction_withExpression_buildsTotalExpression() {
@@ -490,6 +506,10 @@ class ExpressionTests: XCTestCase {
         ExpectExecutionMatches("total(age)", total(age))
         ExpectExecutionMatches("total(salary)", total(salary))
         ExpectExecutionMatches("total(salary)", total(salary2))
+        ExpectExecutionMatches("total(DISTINCT id)", total(distinct: id))
+        ExpectExecutionMatches("total(DISTINCT age)", total(distinct: age))
+        ExpectExecutionMatches("total(DISTINCT salary)", total(distinct: salary))
+        ExpectExecutionMatches("total(DISTINCT salary)", total(distinct: salary2))
     }
 
     func test_containsFunction_withValueExpressionAndValueArray_buildsInExpression() {

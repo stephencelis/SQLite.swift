@@ -534,6 +534,9 @@ public func upper(expression: Expression<String?>) -> Expression<String?> { retu
 public func count<V>(expression: Expression<V>) -> Expression<Int> { return wrap(__FUNCTION__, expression) }
 public func count<V>(expression: Expression<V?>) -> Expression<Int?> { return wrap(__FUNCTION__, expression) }
 
+public func count<V>(#distinct: Expression<V>) -> Expression<Int> { return wrapDistinct("count", distinct) }
+public func count<V>(#distinct: Expression<V?>) -> Expression<Int> { return wrapDistinct("count", distinct) }
+
 public func count(star: Star) -> Expression<Int> { return count(star(nil, nil)) }
 
 public func max<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V> {
@@ -553,11 +556,24 @@ public func min<V: Value where V.Datatype: Comparable>(expression: Expression<V?
 public func average<V: Number>(expression: Expression<V>) -> Expression<Double> { return wrap("avg", expression) }
 public func average<V: Number>(expression: Expression<V?>) -> Expression<Double?> { return wrap("avg", expression) }
 
+public func average<V: Number>(#distinct: Expression<V>) -> Expression<Double> { return wrapDistinct("avg", distinct) }
+public func average<V: Number>(#distinct: Expression<V?>) -> Expression<Double?> { return wrapDistinct("avg", distinct) }
+
 public func sum<V: Number>(expression: Expression<V>) -> Expression<V> { return wrap(__FUNCTION__, expression) }
 public func sum<V: Number>(expression: Expression<V?>) -> Expression<V?> { return wrap(__FUNCTION__, expression) }
 
+public func sum<V: Number>(#distinct: Expression<V>) -> Expression<V> { return wrapDistinct("sum", distinct) }
+public func sum<V: Number>(#distinct: Expression<V?>) -> Expression<V?> { return wrapDistinct("sum", distinct) }
+
 public func total<V: Number>(expression: Expression<V>) -> Expression<Double> { return wrap(__FUNCTION__, expression) }
 public func total<V: Number>(expression: Expression<V?>) -> Expression<Double?> { return wrap(__FUNCTION__, expression) }
+
+public func total<V: Number>(#distinct: Expression<V>) -> Expression<Double> { return wrapDistinct("total", distinct) }
+public func total<V: Number>(#distinct: Expression<V?>) -> Expression<Double?> { return wrapDistinct("total", distinct) }
+
+private func wrapDistinct<V, U>(function: String, expression: Expression<V>) -> Expression<U> {
+    return wrap(function, SQLite.join(" ", [Expression<()>("DISTINCT"), expression]))
+}
 
 // MARK: - Helper
 

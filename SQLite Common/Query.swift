@@ -96,7 +96,7 @@ public struct Query {
         return select(star(nil, nil))
     }
 
-    /// Sets the SELECT clause on the query.
+    /// Sets the SELECT DISTINCT * clause on the query.
     ///
     /// :param: star A literal *.
     ///
@@ -558,6 +558,24 @@ public struct Query {
         return calculate(SQLite.count(column))!
     }
 
+    /// Runs count() with DISTINCT against the query.
+    ///
+    /// :param: column The column used for the calculation.
+    ///
+    /// :returns: The number of rows matching the given column.
+    public func count<V>(distinct column: Expression<V>) -> Int {
+        return calculate(SQLite.count(distinct: column))!
+    }
+
+    /// Runs count(DISTINCT *) against the query.
+    ///
+    /// :param: star A literal *.
+    ///
+    /// :returns: The number of rows matching the given column.
+    public func count<V>(distinct star: Star) -> Int {
+        return calculate(SQLite.count(distinct: star(nil, nil)))!
+    }
+
     /// Runs max() against the query.
     ///
     /// :param: column The column used for the calculation.
@@ -594,6 +612,18 @@ public struct Query {
         return calculate(SQLite.average(column))
     }
 
+    /// Runs avg() with DISTINCT against the query.
+    ///
+    /// :param: column The column used for the calculation.
+    ///
+    /// :returns: The average value of the given column.
+    public func average<V: Number>(distinct column: Expression<V>) -> Double? {
+        return calculate(SQLite.average(distinct: column))
+    }
+    public func average<V: Number>(distinct column: Expression<V?>) -> Double? {
+        return calculate(SQLite.average(distinct: column))
+    }
+
     /// Runs sum() against the query.
     ///
     /// :param: column The column used for the calculation.
@@ -606,6 +636,18 @@ public struct Query {
         return calculate(SQLite.sum(column))
     }
 
+    /// Runs sum() with DISTINCT against the query.
+    ///
+    /// :param: column The column used for the calculation.
+    ///
+    /// :returns: The sum of the given column’s values.
+    public func sum<V: Number>(distinct column: Expression<V>) -> V? {
+        return calculate(SQLite.sum(distinct: column))
+    }
+    public func sum<V: Number>(distinct column: Expression<V?>) -> V? {
+        return calculate(SQLite.sum(distinct: column))
+    }
+
     /// Runs total() against the query.
     ///
     /// :param: column The column used for the calculation.
@@ -616,6 +658,18 @@ public struct Query {
     }
     public func total<V: Number>(column: Expression<V?>) -> Double {
         return calculate(SQLite.total(column))!
+    }
+
+    /// Runs total() with DISTINCT against the query.
+    ///
+    /// :param: column The column used for the calculation.
+    ///
+    /// :returns: The total of the given column’s values.
+    public func total<V: Number>(distinct column: Expression<V>) -> Double {
+        return calculate(SQLite.total(distinct: column))!
+    }
+    public func total<V: Number>(distinct column: Expression<V?>) -> Double {
+        return calculate(SQLite.total(distinct: column))!
     }
 
     private func calculate<T, U>(expression: Expression<T>) -> U? {

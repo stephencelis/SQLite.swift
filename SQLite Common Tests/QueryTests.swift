@@ -347,7 +347,7 @@ class QueryTests: XCTestCase {
         InsertUser(db, "cindy")
 
         XCTAssertEqual(2, users.count(age))
-        XCTAssertEqual(1, users.count(Expression<Int>("DISTINCT age")))
+        XCTAssertEqual(1, users.count(distinct: age))
     }
 
     func test_max_withInt_returnsMaximumInt() {
@@ -370,8 +370,10 @@ class QueryTests: XCTestCase {
         XCTAssert(users.average(age) == nil)
 
         InsertUser(db, "alice", age: 20)
-        InsertUser(db, "betsy", age: 30)
-        XCTAssertEqual(25.0, users.average(age)!)
+        InsertUser(db, "betsy", age: 50)
+        InsertUser(db, "cindy", age: 50)
+        XCTAssertEqual(40.0, users.average(age)!)
+        XCTAssertEqual(35.0, users.average(distinct: age)!)
     }
 
     func test_sum_returnsSum() {
@@ -379,7 +381,9 @@ class QueryTests: XCTestCase {
 
         InsertUser(db, "alice", age: 20)
         InsertUser(db, "betsy", age: 30)
-        XCTAssertEqual(50, users.sum(age)!)
+        InsertUser(db, "cindy", age: 30)
+        XCTAssertEqual(80, users.sum(age)!)
+        XCTAssertEqual(50, users.sum(distinct: age)!)
     }
 
     func test_total_returnsTotal() {
@@ -387,7 +391,9 @@ class QueryTests: XCTestCase {
 
         InsertUser(db, "alice", age: 20)
         InsertUser(db, "betsy", age: 30)
-        XCTAssertEqual(50.0, users.total(age))
+        InsertUser(db, "cindy", age: 30)
+        XCTAssertEqual(80.0, users.total(age))
+        XCTAssertEqual(50.0, users.total(distinct: age))
     }
 
     func test_row_withBoundColumn_returnsValue() {
