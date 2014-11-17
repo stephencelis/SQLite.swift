@@ -187,17 +187,6 @@ class StatementTests: XCTestCase {
         XCTAssertEqual("alice@example.com", row[1] as String)
     }
 
-    func test_values_returnsDictionaryOfExpressionsToValues() {
-        InsertUser(db, "alice")
-        let stmt = db.prepare("SELECT id, \"email\" FROM users")
-        stmt.next()
-
-        let values = stmt.values!
-
-        XCTAssertEqual(1, values["id"] as Int)
-        XCTAssertEqual("alice@example.com", values["email"] as String)
-    }
-
 }
 
 func withBlob(block: Blob -> ()) {

@@ -38,7 +38,7 @@ public final class Statement {
 
     deinit { sqlite3_finalize(handle) }
 
-    private lazy var columnNames: [String] = { [unowned self] in
+    internal lazy var columnNames: [String] = { [unowned self] in
         let count = sqlite3_column_count(self.handle)
         return (0..<count).map { String.fromCString(sqlite3_column_name(self.handle, $0))! }
     }()
@@ -237,16 +237,6 @@ extension Statement: GeneratorType {
             }
         }
         return row
-    }
-
-    /// :returns: A dictionary of column name to row value.
-    public var values: [String: Binding?]? {
-        if let row = row {
-            var values = [String: Binding?]()
-            for idx in 0..<row.count { values[columnNames[idx]] = row[idx] }
-            return values
-        }
-        return nil
     }
 
 }

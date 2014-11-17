@@ -673,20 +673,57 @@ extension Query: SequenceType {
 
     public typealias Generator = QueryGenerator
 
-    public func generate() -> Generator { return Generator(selectStatement) }
+    public func generate() -> Generator { return Generator(self) }
+
+    public var columnNames: [String] {
+        var columnNames = [String]()
+        for each in columns {
+            let pair = split(each.expression.SQL) { $0 == "." }
+            let (tableName, column) = (pair.count > 1 ? pair.first : nil, pair.last!)
+
+            func expandGlob(namespace: Bool) -> Query -> () {
+                return { table in
+                    var names = self.database[table.tableName].selectStatement.columnNames
+                    if namespace { names = names.map { "\(table.alias ?? table.tableName).\($0)" } }
+                    columnNames.extend(names)
+                }
+            }
+
+            if column == "*" {
+                if let tableName = tableName {
+                    expandGlob(true)(database[tableName])
+                    continue
+                }
+                let tables = [self] + joins.map { $0.table }
+                tables.map(expandGlob(joins.count > 0))
+                continue
+            }
+
+            columnNames.append(each.expression.SQL)
+        }
+        return columnNames
+    }
 
 }
 
 // MARK: - GeneratorType
 public struct QueryGenerator: GeneratorType {
 
-    private var statement: Statement
+    private let query: Query
+    private let statement: Statement
 
-    private init(_ statement: Statement) { self.statement = statement }
+    private init(_ query: Query) {
+        (self.query, self.statement) = (query, query.selectStatement)
+    }
 
     public func next() -> Row? {
-        statement.next()
-        return statement.values.map { Row($0) }
+        if let row = statement.next() {
+            var values = [String: Binding?]()
+            let columnNames = query.columnNames
+            for idx in 0..<row.count { values[columnNames[idx]] = row[idx] }
+            return Row(values)
+        }
+        return nil
     }
 
 }

@@ -99,6 +99,20 @@ class QueryTests: XCTestCase {
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in middleManagers {} }
     }
 
+    func test_namespacedColumnRowValueAccess() {
+        let aliceID = users.insert(email <- "alice@example.com")!
+        let bettyID = users.insert(email <- "betty@example.com", manager_id <- aliceID)!
+
+        let alice = users.first!
+        XCTAssertEqual(aliceID, alice[id])
+
+        let managers = db["users"].alias("managers")
+        let query = users.join(managers, on: managers[id] == users[manager_id])
+
+        let betty = query.first!
+        XCTAssertEqual(alice[email], betty[managers[email]])
+    }
+
     func test_filter_compilesWhereClause() {
         let query = users.filter(admin == true)
 
