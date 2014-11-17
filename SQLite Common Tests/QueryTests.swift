@@ -207,19 +207,20 @@ class QueryTests: XCTestCase {
     }
 
     func test_subscript_withExpression_returnsNamespacedExpression() {
-        XCTAssertEqual("users.admin", users[admin].SQL)
-        XCTAssertEqual("users.salary", users[salary].SQL)
-        XCTAssertEqual("users.age", users[age].SQL)
-        XCTAssertEqual("users.email", users[email].SQL)
-        XCTAssertEqual("users.*", users[*].SQL)
+        ExpectExecution(db, "SELECT users.admin FROM users", users.select(users[admin]))
+        ExpectExecution(db, "SELECT users.salary FROM users", users.select(users[salary]))
+        ExpectExecution(db, "SELECT users.age FROM users", users.select(users[age]))
+        ExpectExecution(db, "SELECT users.email FROM users", users.select(users[email]))
+        ExpectExecution(db, "SELECT users.* FROM users", users.select(users[*]))
     }
 
     func test_subscript_withAliasAndExpression_returnsAliasedExpression() {
         let managers = users.alias("managers")
-        XCTAssertEqual("managers.admin", managers[admin].SQL)
-        XCTAssertEqual("managers.salary", managers[salary].SQL)
-        XCTAssertEqual("managers.age", managers[age].SQL)
-        XCTAssertEqual("managers.*", managers[*].SQL)
+        ExpectExecution(db, "SELECT managers.admin FROM users AS managers", managers.select(managers[admin]))
+        ExpectExecution(db, "SELECT managers.salary FROM users AS managers", managers.select(managers[salary]))
+        ExpectExecution(db, "SELECT managers.age FROM users AS managers", managers.select(managers[age]))
+        ExpectExecution(db, "SELECT managers.email FROM users AS managers", managers.select(managers[email]))
+        ExpectExecution(db, "SELECT managers.* FROM users AS managers", managers.select(managers[*]))
     }
 
     func test_SQL_compilesProperly() {
