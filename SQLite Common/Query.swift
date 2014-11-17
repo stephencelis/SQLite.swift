@@ -563,10 +563,10 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The largest value of the given column.
-    public func max<V: Value where V.Datatype: Binding>(column: Expression<V>) -> V? {
+    public func max<V: Value where V.Datatype: Comparable>(column: Expression<V>) -> V? {
         return calculate(SQLite.max(column))
     }
-    public func max<V: Value where V.Datatype: Binding>(column: Expression<V?>) -> V? {
+    public func max<V: Value where V.Datatype: Comparable>(column: Expression<V?>) -> V? {
         return calculate(SQLite.max(column))
     }
 
@@ -575,10 +575,10 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The smallest value of the given column.
-    public func min<V: Value where V.Datatype: Binding>(column: Expression<V>) -> V? {
+    public func min<V: Value where V.Datatype: Comparable>(column: Expression<V>) -> V? {
         return calculate(SQLite.min(column))
     }
-    public func min<V: Value where V.Datatype: Binding>(column: Expression<V?>) -> V? {
+    public func min<V: Value where V.Datatype: Comparable>(column: Expression<V?>) -> V? {
         return calculate(SQLite.min(column))
     }
 

@@ -460,8 +460,6 @@ class ExpressionTests: XCTestCase {
         ExpectExecutionMatches("max(email)", max(email2))
         ExpectExecutionMatches("max(salary)", max(salary))
         ExpectExecutionMatches("max(salary)", max(salary2))
-        ExpectExecutionMatches("max(admin)", max(admin))
-        ExpectExecutionMatches("max(admin)", max(admin2))
     }
 
     func test_minFunction_withExpression_buildsMinExpression() {
@@ -471,8 +469,6 @@ class ExpressionTests: XCTestCase {
         ExpectExecutionMatches("min(email)", min(email2))
         ExpectExecutionMatches("min(salary)", min(salary))
         ExpectExecutionMatches("min(salary)", min(salary2))
-        ExpectExecutionMatches("min(admin)", min(admin))
-        ExpectExecutionMatches("min(admin)", min(admin2))
     }
 
     func test_averageFunction_withExpression_buildsAverageExpression() {

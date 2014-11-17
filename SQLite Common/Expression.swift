@@ -536,17 +536,17 @@ public func count<V>(expression: Expression<V?>) -> Expression<Int?> { return wr
 
 public func count(star: Star) -> Expression<Int> { return count(star(nil, nil)) }
 
-public func max<V: Value where V.Datatype: Binding>(expression: Expression<V>) -> Expression<V> {
+public func max<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V> {
     return wrap(__FUNCTION__, expression)
 }
-public func max<V: Value where V.Datatype: Binding>(expression: Expression<V?>) -> Expression<V?> {
+public func max<V: Value where V.Datatype: Comparable>(expression: Expression<V?>) -> Expression<V?> {
     return wrap(__FUNCTION__, expression)
 }
 
-public func min<V: Value where V.Datatype: Binding>(expression: Expression<V>) -> Expression<V> {
+public func min<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V> {
     return wrap(__FUNCTION__, expression)
 }
-public func min<V: Value where V.Datatype: Binding>(expression: Expression<V?>) -> Expression<V?> {
+public func min<V: Value where V.Datatype: Comparable>(expression: Expression<V?>) -> Expression<V?> {
     return wrap(__FUNCTION__, expression)
 }
 
