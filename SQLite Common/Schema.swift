@@ -52,7 +52,7 @@ public extension Database {
         check: Expression<Bool>? = nil,
         defaultValue: V
     ) -> Statement {
-        return alter(table, define(column, false, false, false, check, Expression(value: defaultValue.datatypeValue), nil))
+        return alter(table, define(column, false, false, false, check, Expression(value: defaultValue), nil))
     }
 
     public func alter<V: Value where V.Datatype: Binding>(
@@ -61,7 +61,7 @@ public extension Database {
         check: Expression<Bool>? = nil,
         defaultValue: V? = nil
     ) -> Statement {
-        let value = defaultValue.map { Expression<V>(value: $0.datatypeValue) }
+        let value = defaultValue.map { Expression<V>(value: $0) }
         return alter(table, define(Expression<V>(column), false, true, false, check, value, nil))
     }
 
@@ -144,7 +144,7 @@ public final class SchemaBuilder {
         check: Expression<Bool>? = nil,
         defaultValue value: V
     ) {
-        column(name, primaryKey, false, unique, check, Expression(value: value.datatypeValue))
+        column(name, primaryKey, false, unique, check, Expression(value: value))
     }
 
     public func column<V: Value where V.Datatype: Binding>(
@@ -164,7 +164,7 @@ public final class SchemaBuilder {
         check: Expression<Bool>? = nil,
         defaultValue value: V?
     ) {
-        column(Expression<V>(name), primaryKey, true, unique, check, value.map { Expression(value: $0.datatypeValue) })
+        column(Expression<V>(name), primaryKey, true, unique, check, value.map { Expression(value: $0) })
     }
 
     public func column(

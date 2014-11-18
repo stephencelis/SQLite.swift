@@ -336,15 +336,15 @@ class ExpressionTests: XCTestCase {
     }
 
     func test_coalesceFunction_withValueExpressions_buildsCoalesceExpression() {
-        let int1 = Expression<Int?>(value: nil)
-        let int2 = Expression<Int?>(value: nil)
+        let int1 = Expression<Int?>(value: nil as Int?)
+        let int2 = Expression<Int?>(value: nil as Int?)
         let int3 = Expression<Int?>(value: 3)
 
         ExpectExecutionMatches("coalesce(NULL, NULL, 3)", coalesce(int1, int2, int3))
     }
 
     func test_ifNullFunction_withValueExpressionAndValue_buildsIfNullExpression() {
-        let int = Expression<Int?>(value: nil)
+        let int = Expression<Int?>(value: nil as Int?)
 
         ExpectExecutionMatches("ifnull(NULL, 1)", ifnull(int, 1))
         ExpectExecutionMatches("ifnull(NULL, 1)", int ?? 1)
