@@ -31,7 +31,7 @@ public protocol Value {
 
     typealias ValueType = Self
 
-    typealias Datatype
+    typealias Datatype: Binding
 
     class var declaredDatatype: String { get }
 
