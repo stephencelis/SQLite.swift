@@ -739,7 +739,7 @@ extension Query: SequenceType {
 
     public func generate() -> Generator { return Generator(self) }
 
-    public var columnNames: [String] {
+    private var columnNames: [String] {
         var columnNames = [String]()
         for each in columns {
             let pair = split(each.expression.SQL) { $0 == "." }
