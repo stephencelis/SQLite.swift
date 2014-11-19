@@ -149,22 +149,20 @@ public final class SchemaBuilder {
 
     public func column<V: Value where V.Datatype: Binding>(
         name: Expression<V?>,
-        primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
         defaultValue value: Expression<V>? = nil
     ) {
-        column(Expression<V>(name), primaryKey, true, unique, check, value)
+        column(Expression<V>(name), false, true, unique, check, value)
     }
 
     public func column<V: Value where V.Datatype: Binding>(
         name: Expression<V?>,
-        primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
         defaultValue value: V?
     ) {
-        column(Expression<V>(name), primaryKey, true, unique, check, value.map { Expression(value: $0) })
+        column(Expression<V>(name), false, true, unique, check, value.map { Expression(value: $0) })
     }
 
     public func column(
@@ -193,26 +191,24 @@ public final class SchemaBuilder {
 
     public func column(
         name: Expression<String?>,
-        primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
         defaultValue value: Expression<String>? = nil,
         collate: Collation
     ) {
         let expressions: [Expressible] = [Expression<()>("COLLATE \(collate.rawValue)")]
-        column(Expression<String>(name), primaryKey, true, unique, check, value, expressions)
+        column(Expression<String>(name), false, true, unique, check, value, expressions)
     }
 
     public func column(
         name: Expression<String?>,
-        primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
         defaultValue value: String?,
         collate: Collation
     ) {
         let expressions: [Expressible] = [Expression<()>("COLLATE \(collate.rawValue)")]
-        column(Expression<String>(name), primaryKey, true, unique, check, Expression(value: value), expressions)
+        column(Expression<String>(name), false, true, unique, check, Expression(value: value), expressions)
     }
 
     public func column(
@@ -243,7 +239,6 @@ public final class SchemaBuilder {
 
     public func column(
         name: Expression<Int?>,
-        primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
         defaultValue value: Expression<Int>? = nil,
@@ -251,12 +246,11 @@ public final class SchemaBuilder {
     ) {
         assertForeignKeysEnabled()
         let expressions: [Expressible] = [Expression<()>("REFERENCES"), namespace(references)]
-        column(Expression<Int>(name), primaryKey, true, unique, check, value, expressions)
+        column(Expression<Int>(name), false, true, unique, check, value, expressions)
     }
 
     public func column(
         name: Expression<Int?>,
-        primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
         defaultValue value: Int?,
@@ -264,7 +258,7 @@ public final class SchemaBuilder {
     ) {
         assertForeignKeysEnabled()
         let expressions: [Expressible] = [Expression<()>("REFERENCES"), namespace(references)]
-        column(Expression<Int>(name), primaryKey, true, unique, check, Expression(value: value), expressions)
+        column(Expression<Int>(name), false, true, unique, check, Expression(value: value), expressions)
     }
 
     public func column(
@@ -305,7 +299,6 @@ public final class SchemaBuilder {
 
     public func column(
         name: Expression<Int?>,
-        primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
         defaultValue: Expression<Int>? = nil,
@@ -313,7 +306,6 @@ public final class SchemaBuilder {
     ) {
         return column(
             name,
-            primaryKey: primaryKey,
             unique: unique,
             check: check,
             defaultValue: defaultValue,
@@ -323,7 +315,6 @@ public final class SchemaBuilder {
 
     public func column(
         name: Expression<Int?>,
-        primaryKey: Bool = false,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
         defaultValue: Int?,
@@ -331,7 +322,6 @@ public final class SchemaBuilder {
     ) {
         return column(
             name,
-            primaryKey: primaryKey,
             unique: unique,
             check: check,
             defaultValue: defaultValue,
