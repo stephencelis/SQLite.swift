@@ -21,8 +21,10 @@ syntax _and_ intent.
  - A lightweight, uncomplicated query and parameter binding interface
  - Transactions with implicit commit/rollback
  - Developer-friendly error handling and debugging
- - Well-documented
+ - [Well-documented][See Documentation]
  - Extensively tested
+
+[See Documentation]: Documentation/Index.md#sqliteswift-documentation
 
 
 ## Usage
@@ -94,7 +96,8 @@ for row in db.prepare("SELECT id, email FROM users") {
 db.scalar("SELECT count(*) FROM users") // {Some 2}
 ```
 
-Explore more, interactively, from the Xcode project’s playground.
+[Read the documentation][See Documentation] or explore more,
+interactively, from the Xcode project’s playground.
 
 ![SQLite.playground Screen Shot](Documentation/Resources/playground@2x.png)
 
