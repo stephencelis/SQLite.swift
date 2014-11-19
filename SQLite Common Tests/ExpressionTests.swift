@@ -344,10 +344,16 @@ class ExpressionTests: XCTestCase {
     }
 
     func test_ifNullFunction_withValueExpressionAndValue_buildsIfNullExpression() {
-        let int = Expression<Int?>(value: nil as Int?)
+        let int1 = Expression<Int?>(value: nil as Int?)
+        let int2 = Expression<Int?>(value: 2)
+        let int3 = Expression<Int>(value: 3)
 
-        ExpectExecutionMatches("ifnull(NULL, 1)", ifnull(int, 1))
-        ExpectExecutionMatches("ifnull(NULL, 1)", int ?? 1)
+        ExpectExecutionMatches("ifnull(NULL, 1)", ifnull(int1, 1))
+        ExpectExecutionMatches("ifnull(NULL, 1)", int1 ?? 1)
+        ExpectExecutionMatches("ifnull(NULL, 2)", ifnull(int1, int2))
+        ExpectExecutionMatches("ifnull(NULL, 2)", int1 ?? int2)
+        ExpectExecutionMatches("ifnull(NULL, 3)", ifnull(int1, int3))
+        ExpectExecutionMatches("ifnull(NULL, 3)", int1 ?? int3)
     }
 
     func test_lengthFunction_withValueExpression_buildsLengthIntExpression() {

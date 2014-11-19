@@ -453,7 +453,19 @@ public func coalesce<V>(expressions: Expression<V?>...) -> Expression<V?> {
 public func ifnull<V: Expressible>(expression: Expression<V?>, defaultValue: V) -> Expression<V> {
     return wrap(__FUNCTION__, join(", ", [expression, defaultValue]))
 }
+public func ifnull<V: Expressible>(expression: Expression<V?>, defaultValue: Expression<V>) -> Expression<V> {
+    return wrap(__FUNCTION__, join(", ", [expression, defaultValue]))
+}
+public func ifnull<V: Expressible>(expression: Expression<V?>, defaultValue: Expression<V?>) -> Expression<V> {
+    return wrap(__FUNCTION__, join(", ", [expression, defaultValue]))
+}
 public func ??<V: Expressible>(expression: Expression<V?>, defaultValue: V) -> Expression<V> {
+    return ifnull(expression, defaultValue)
+}
+public func ??<V: Expressible>(expression: Expression<V?>, defaultValue: Expression<V>) -> Expression<V> {
+    return ifnull(expression, defaultValue)
+}
+public func ??<V: Expressible>(expression: Expression<V?>, defaultValue: Expression<V?>) -> Expression<V> {
     return ifnull(expression, defaultValue)
 }
 
