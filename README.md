@@ -14,6 +14,7 @@ syntax _and_ intent.
 
 ## Features
 
+ - A pure-Swift interface
  - A powerful interface for building type-safe, optional-aware SQL
    expressions
  - A flexible, chainable, lazy-executing query layer
