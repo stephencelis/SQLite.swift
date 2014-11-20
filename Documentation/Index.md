@@ -16,6 +16,7 @@
     - [Column Constraints](#column-constraints)
     - [Table Constraints](#table-constraints)
   - [Inserting Rows](#inserting-rows)
+    - [Setters](#setters)
   - [Selecting Rows](#selecting-rows)
     - [Iterating and Accessing Values](#iterating-and-accessing-values)
     - [Plucking Rows](#plucking-rows)
@@ -342,7 +343,7 @@ Additional constraints may be provided outside the scope of a single column usin
 
 ## Inserting Rows
 
-We can insert rows into a table by calling a [query’s](#queries) `insert` function with a list of [typed column expressions](#expressions) and values (which can also be expressions), each joined by the `<-` operator.
+We can insert rows into a table by calling a [query’s](#queries) `insert` function with a list of [setters](#setters), typically [typed column expressions](#expressions) and values (which can also be expressions), each joined by the `<-` operator.
 
 ``` swift
 users.insert(email <- "alice@mac.com", name <- "Alice")?
@@ -401,6 +402,65 @@ The [`update`](#updating-rows) and [`delete`](#deleting-rows) functions follow s
 > timestamps.insert()!
 > // INSERT INTO timestamps DEFAULT VALUES
 > ```
+
+
+### Setters
+
+SQLite.swift typically uses the `<-` operator to set values during [inserts](#inserting-rows) and [updates](#updating-rows).
+
+``` swift
+views.update(count <- 0)
+// UPDATE views SET count = 0 WHERE (id = 1)
+```
+
+There are also a number of convenience setters that take the existing value into account using native Swift operators.
+
+For example, to atomically increment a column, we can use `++`:
+
+``` swift
+views.update(count++) // equivalent to views.update(count -> count + 1)
+// UPDATE views SET count = count + 1 WHERE (id = 1)
+```
+
+To take an amount and “move” it via transaction, we can use `-=` and `+=`:
+
+``` swift
+let amount = 100.0
+db.transaction(
+    alice.update(balance -= amount),
+    betty.update(balance += amount)
+)
+// BEGIN DEFERRED TRANSACTION;
+// UPDATE users SET balance = balance - 100.0 WHERE (id = 1);
+// UPDATE users SET balance = balance + 100.0 WHERE (id = 2);
+// COMMIT TRANSACTION;
+```
+
+
+###### Infix Setters
+
+| Operator | Types              |
+| -------- | ------------------ |
+| `<-`     | `Value -> Value`   |
+| `+=`     | `Number -> Number` |
+| `-=`     | `Number -> Number` |
+| `*=`     | `Number -> Number` |
+| `/=`     | `Number -> Number` |
+| `%=`     | `Int -> Int`       |
+| `<<=`    | `Int -> Int`       |
+| `>>=`    | `Int -> Int`       |
+| `&=`     | `Int -> Int`       |
+| `||=`    | `Int -> Int`       |
+| `^=`     | `Int -> Int`       |
+| `+=`     | `String -> String` |
+
+
+###### Postfix Setters
+
+| Operator | Types        |
+| -------- | ------------ |
+| `++`     | `Int -> Int` |
+| `--`     | `Int -> Int` |
 
 
 ## Selecting Rows
@@ -692,7 +752,7 @@ users.filter(name != nil).count
 
 ## Updating Rows
 
-We can update a table’s rows by calling a [query’s](#queries) `update` function with a list of [typed column expressions](#expressions) and values (which can also be expressions), each joined by the `<-` operator.
+We can update a table’s rows by calling a [query’s](#queries) `update` function with a list of [setters](#setters), typically [typed column expressions](#expressions) and values (which can also be expressions), each joined by the `<-` operator.
 
 When an unscoped query calls `update`, it will update _every_ row in the table.
 
