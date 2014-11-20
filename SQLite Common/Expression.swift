@@ -113,10 +113,10 @@ public func +(lhs: Expression<String>, rhs: Expression<String>) -> Expression<St
 public func +(lhs: Expression<String>, rhs: Expression<String?>) -> Expression<String?> { return infix("||", lhs, rhs) }
 public func +(lhs: Expression<String?>, rhs: Expression<String>) -> Expression<String?> { return infix("||", lhs, rhs) }
 public func +(lhs: Expression<String?>, rhs: Expression<String?>) -> Expression<String?> { return infix("||", lhs, rhs) }
-public func +(lhs: Expression<String>, rhs: String) -> Expression<String> { return lhs + Expression(value: rhs) }
-public func +(lhs: Expression<String?>, rhs: String) -> Expression<String?> { return lhs + Expression(value: rhs) }
-public func +(lhs: String, rhs: Expression<String>) -> Expression<String> { return Expression(value: lhs) + rhs }
-public func +(lhs: String, rhs: Expression<String?>) -> Expression<String?> { return Expression(value: lhs) + rhs }
+public func +(lhs: Expression<String>, rhs: String) -> Expression<String> { return lhs + Expression(binding: rhs) }
+public func +(lhs: Expression<String?>, rhs: String) -> Expression<String?> { return lhs + Expression(binding: rhs) }
+public func +(lhs: String, rhs: Expression<String>) -> Expression<String> { return Expression(binding: lhs) + rhs }
+public func +(lhs: String, rhs: Expression<String?>) -> Expression<String?> { return Expression(binding: lhs) + rhs }
 
 public func +<V: Number>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return infix(__FUNCTION__, lhs, rhs) }
 public func +<V: Number>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
@@ -397,24 +397,24 @@ public func ~=<I: IntervalType, V: Value where V: protocol<Binding, Comparable>,
 // MARK: Operators
 
 public func like(string: String, expression: Expression<String>) -> Expression<Bool> {
-    return infix("LIKE", expression, Expression<String>(value: string))
+    return infix("LIKE", expression, Expression<String>(binding: string))
 }
 public func like(string: String, expression: Expression<String?>) -> Expression<Bool?> {
-    return infix("LIKE", expression, Expression<String>(value: string))
+    return infix("LIKE", expression, Expression<String>(binding: string))
 }
 
 public func glob(string: String, expression: Expression<String>) -> Expression<Bool> {
-    return infix("GLOB", expression, Expression<String>(value: string))
+    return infix("GLOB", expression, Expression<String>(binding: string))
 }
 public func glob(string: String, expression: Expression<String?>) -> Expression<Bool?> {
-    return infix("GLOB", expression, Expression<String>(value: string))
+    return infix("GLOB", expression, Expression<String>(binding: string))
 }
 
 public func match(string: String, expression: Expression<String>) -> Expression<Bool> {
-    return infix("MATCH", expression, Expression<String>(value: string))
+    return infix("MATCH", expression, Expression<String>(binding: string))
 }
 public func match(string: String, expression: Expression<String?>) -> Expression<Bool?> {
-    return infix("MATCH", expression, Expression<String>(value: string))
+    return infix("MATCH", expression, Expression<String>(binding: string))
 }
 
 // MARK: Compound
@@ -423,19 +423,19 @@ public func &&(lhs: Expression<Bool>, rhs: Expression<Bool>) -> Expression<Bool>
 public func &&(lhs: Expression<Bool>, rhs: Expression<Bool?>) -> Expression<Bool?> { return infix("AND", lhs, rhs) }
 public func &&(lhs: Expression<Bool?>, rhs: Expression<Bool>) -> Expression<Bool?> { return infix("AND", lhs, rhs) }
 public func &&(lhs: Expression<Bool?>, rhs: Expression<Bool?>) -> Expression<Bool?> { return infix("AND", lhs, rhs) }
-public func &&(lhs: Expression<Bool>, rhs: Bool) -> Expression<Bool> { return lhs && Expression(value: rhs) }
-public func &&(lhs: Expression<Bool?>, rhs: Bool) -> Expression<Bool?> { return lhs && Expression(value: rhs) }
-public func &&(lhs: Bool, rhs: Expression<Bool>) -> Expression<Bool> { return Expression(value: lhs) && rhs }
-public func &&(lhs: Bool, rhs: Expression<Bool?>) -> Expression<Bool?> { return Expression(value: lhs) && rhs }
+public func &&(lhs: Expression<Bool>, rhs: Bool) -> Expression<Bool> { return lhs && Expression(binding: rhs) }
+public func &&(lhs: Expression<Bool?>, rhs: Bool) -> Expression<Bool?> { return lhs && Expression(binding: rhs) }
+public func &&(lhs: Bool, rhs: Expression<Bool>) -> Expression<Bool> { return Expression(binding: lhs) && rhs }
+public func &&(lhs: Bool, rhs: Expression<Bool?>) -> Expression<Bool?> { return Expression(binding: lhs) && rhs }
 
 public func ||(lhs: Expression<Bool>, rhs: Expression<Bool>) -> Expression<Bool> { return infix("OR", lhs, rhs) }
 public func ||(lhs: Expression<Bool>, rhs: Expression<Bool?>) -> Expression<Bool?> { return infix("OR", lhs, rhs) }
 public func ||(lhs: Expression<Bool?>, rhs: Expression<Bool>) -> Expression<Bool?> { return infix("OR", lhs, rhs) }
 public func ||(lhs: Expression<Bool?>, rhs: Expression<Bool?>) -> Expression<Bool?> { return infix("OR", lhs, rhs) }
-public func ||(lhs: Expression<Bool>, rhs: Bool) -> Expression<Bool> { return lhs || Expression(value: rhs) }
-public func ||(lhs: Expression<Bool?>, rhs: Bool) -> Expression<Bool?> { return lhs || Expression(value: rhs) }
-public func ||(lhs: Bool, rhs: Expression<Bool>) -> Expression<Bool> { return Expression(value: lhs) || rhs }
-public func ||(lhs: Bool, rhs: Expression<Bool?>) -> Expression<Bool?> { return Expression(value: lhs) || rhs }
+public func ||(lhs: Expression<Bool>, rhs: Bool) -> Expression<Bool> { return lhs || Expression(binding: rhs) }
+public func ||(lhs: Expression<Bool?>, rhs: Bool) -> Expression<Bool?> { return lhs || Expression(binding: rhs) }
+public func ||(lhs: Bool, rhs: Expression<Bool>) -> Expression<Bool> { return Expression(binding: lhs) || rhs }
+public func ||(lhs: Bool, rhs: Expression<Bool?>) -> Expression<Bool?> { return Expression(binding: lhs) || rhs }
 
 public prefix func !(rhs: Expression<Bool>) -> Expression<Bool> { return wrap("NOT ", rhs) }
 public prefix func !(rhs: Expression<Bool?>) -> Expression<Bool?> { return wrap("NOT ", rhs) }
