@@ -105,7 +105,8 @@ interactively, from the Xcode project’s playground.
 
 ## Installation
 
-_Note: SQLite.swift requires Swift 1.1 (available in [Xcode 6.1][4.1])._
+> _Note:_ SQLite.swift requires Swift 1.1 (and [Xcode
+> 6.1](https://developer.apple.com/xcode/downloads/)) or greater.
 
 To install SQLite.swift:
 
