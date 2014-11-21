@@ -139,7 +139,7 @@ let db = Database(path, readonly: true)
 If you omit the path, SQLite.swift will provision an [in-memory database](https://www.sqlite.org/inmemorydb.html).
 
 ``` swift
-let db = Database() // equivalent to Database(":memory:")
+let db = Database() // equivalent to `Database(":memory:")`
 ```
 
 To create a temporary, disk-backed database, pass an empty file name.
@@ -418,7 +418,7 @@ There are also a number of convenience setters that take the existing value into
 For example, to atomically increment a column, we can use `++`:
 
 ``` swift
-views.update(count++) // equivalent to views.update(count -> count + 1)
+views.update(count++) // equivalent to `views.update(count -> count + 1)`
 // UPDATE views SET count = count + 1 WHERE (id = 1)
 ```
 
@@ -769,7 +769,7 @@ alice.update(email <- "alice@me.com")?
 // UPDATE users SET email = 'alice@me.com' WHERE (id = 1)
 ```
 
-[Like `insert`](#inserting-rows) (and [`delete`](#updating-rows)), `update` can return several different types that are useful in different contexts.
+Like [`insert`](#inserting-rows) (and [`delete`](#updating-rows)), `update` can return several different types that are useful in different contexts.
 
   - An `Int?` representing the number of updated rows (or `nil` on failure), for simplicity.
 
@@ -1014,7 +1014,7 @@ SQLite.swift supports serializing and deserializing any custom type as long as i
 > }
 > ```
 
-`Datatype` refers to a one of the basic Swift types that values are bridged through before serialization and deserialization (see [Building Type-Safe SQL](#building-type-safe-sql) for a list of types).
+`Datatype` is one of the basic Swift types that values are bridged through before serialization and deserialization (see [Building Type-Safe SQL](#building-type-safe-sql) for a list of types).
 
 > _Note:_ `Binding` is a protocol that SQLite.swift uses internally to directly map SQLite types to Swift types. **Do _not_** conform custom types to the `Binding` protocol.
 
@@ -1164,10 +1164,10 @@ extension Row {
 
 ## Other Operators
 
-
-### Other Infix Operators
-
 In addition to [filter operators](#filtering-infix-operators), SQLite.swift defines a number of operators that can modify expression values with arithmetic, bitwise operations, and concatenation.
+
+
+###### Other Infix Operators
 
 | Swift | Types                            | SQLite   |
 | ----- | -------------------------------- | -------- |
@@ -1185,7 +1185,7 @@ In addition to [filter operators](#filtering-infix-operators), SQLite.swift defi
 > _Note:_ SQLite.swift also defines a bitwise XOR operator, `^`, which expands the expression `lhs ^ rhs` to `~(lhs & rhs) & (lhs | rhs)`.
 
 
-### Other Prefix Operators
+###### Other Prefix Operators
 
 | Swift | Types              | SQLite |
 | ----- | ------------------ | ------ |
