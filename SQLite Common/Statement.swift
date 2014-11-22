@@ -38,7 +38,7 @@ public final class Statement {
 
     deinit { sqlite3_finalize(handle) }
 
-    internal lazy var columnNames: [String] = { [unowned self] in
+    public lazy var columnNames: [String] = { [unowned self] in
         let count = sqlite3_column_count(self.handle)
         return (0..<count).map { String.fromCString(sqlite3_column_name(self.handle, $0))! }
     }()
