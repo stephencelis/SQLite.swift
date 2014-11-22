@@ -7,7 +7,7 @@ func Trace(SQL: String) {
 
 func CreateUsersTable(db: Database) {
     db.execute(
-        "CREATE TABLE users (" +
+        "CREATE TABLE \"users\" (" +
             "id INTEGER PRIMARY KEY, " +
             "email TEXT NOT NULL UNIQUE, " +
             "age INTEGER, " +
@@ -22,7 +22,7 @@ func CreateUsersTable(db: Database) {
 
 func InsertUser(db: Database, name: String, age: Int? = nil, admin: Bool? = false) -> Statement {
     return db.run(
-        "INSERT INTO users (email, age, admin) values (?, ?, ?)",
+        "INSERT INTO \"users\" (email, age, admin) values (?, ?, ?)",
         ["\(name)@example.com", age, admin]
     )
 }

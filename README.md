@@ -44,7 +44,7 @@ db.create(table: users) { t in
     t.column(name)
     t.column(email, unique: true)
 }
-// CREATE TABLE users (
+// CREATE TABLE "users" (
 //     id INTEGER PRIMARY KEY NOT NULL,
 //     name TEXT,
 //     email TEXT NOT NULL UNIQUE
@@ -56,22 +56,22 @@ if let insertedID = users.insert(name <- "Alice", email <- "alice@mac.com") {
 	// inserted id: 1
 	alice = users.filter(id == insertedID)
 }
-// INSERT INTO users (name, email) VALUES ('Alice', 'alice@mac.com')
+// INSERT INTO "users" (name, email) VALUES ('Alice', 'alice@mac.com')
 
 for user in users {
     println("id: \(user[id]), name: \(user[name]), email: \(user[email])"
     // id: 1, name: Optional("Alice"), email: alice@mac.com
 }
-// SELECT * FROM users
+// SELECT * FROM "users"
 
 alice?.update(email <- replace(email, "mac.com", "me.com"))?
-// UPDATE users SET email = replace(email, "mac.com", "me.com") WHERE (id = 1)
+// UPDATE "users" SET email = replace(email, "mac.com", "me.com") WHERE (id = 1)
 
 alice?.delete()?
-// DELETE FROM users WHERE (id = 1)
+// DELETE FROM "users" WHERE (id = 1)
 
 users.count
-// SELECT count(*) FROM users
+// SELECT count(*) FROM "users"
 ```
 
 SQLite.swift also works as a lightweight, Swift-friendly wrapper over the C

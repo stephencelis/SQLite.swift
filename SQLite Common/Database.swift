@@ -352,6 +352,14 @@ extension Database: DebugPrintable {
 }
 
 internal func quote(#literal: String) -> String {
-    let escaped = join("''", split(literal) { $0 == "'" })
-    return "'\(escaped)'"
+    return quote(literal, "'")
+}
+
+internal func quote(#identifier: String) -> String {
+    return quote(identifier, "\"")
+}
+
+private func quote(string: String, character: Character) -> String {
+    let escaped = join("\(character)\(character)", split(string) { $0 == character })
+    return "\(character)\(escaped)\(character)"
 }

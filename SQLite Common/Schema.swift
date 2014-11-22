@@ -43,7 +43,7 @@ public extension Database {
     }
 
     public func rename(#table: Query, to tableName: String) -> Statement {
-        return run("ALTER TABLE \(table.tableName) RENAME TO \(tableName)")
+        return run("ALTER TABLE \(table.tableName) RENAME TO \(quote(identifier: tableName))")
     }
 
     public func alter<V: Value where V.Datatype: Binding>(
@@ -102,7 +102,7 @@ public extension Database {
         let string = join(" ", ["index", table.tableName, "on"] + columns.map { $0.expression.SQL })
         return Array(string).reduce("") { underscored, character in
             if "A"..."Z" ~= character || "a"..."z" ~= character { return underscored + String(character) }
-            return underscored + "_"
+            return underscored.hasSuffix("_") ? underscored : underscored + "_"
         }
     }
 

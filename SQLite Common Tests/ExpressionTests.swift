@@ -7,7 +7,7 @@ class ExpressionTests: XCTestCase {
     var users: Query { return db["users"] }
 
     func ExpectExecutionMatches(SQL: String, _ expression: Expressible) {
-        ExpectExecution(db, "SELECT \(SQL) FROM users", users.select(expression))
+        ExpectExecution(db, "SELECT \(SQL) FROM \"users\"", users.select(expression))
     }
 
     let stringA = Expression<String>(value: "A")
@@ -524,7 +524,7 @@ class ExpressionTests: XCTestCase {
     }
 
     func test_plusEquals_withStringExpression_buildsSetter() {
-        let SQL = "UPDATE users SET email = (email || email)"
+        let SQL = "UPDATE \"users\" SET email = (email || email)"
         ExpectExecution(db, SQL, users.update(email += email))
         ExpectExecution(db, SQL, users.update(email += email2))
         ExpectExecution(db, SQL, users.update(email2 += email))
@@ -532,167 +532,167 @@ class ExpressionTests: XCTestCase {
     }
 
     func test_plusEquals_withStringValue_buildsSetter() {
-        let SQL = "UPDATE users SET email = (email || '.com')"
+        let SQL = "UPDATE \"users\" SET email = (email || '.com')"
         ExpectExecution(db, SQL, users.update(email += ".com"))
         ExpectExecution(db, SQL, users.update(email2 += ".com"))
     }
 
     func test_plusEquals_withNumberExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age + age)", users.update(age += age))
-        ExpectExecution(db, "UPDATE users SET age = (age + id)", users.update(age += id))
-        ExpectExecution(db, "UPDATE users SET id = (id + age)", users.update(id += age))
-        ExpectExecution(db, "UPDATE users SET id = (id + id)", users.update(id += id))
-        ExpectExecution(db, "UPDATE users SET salary = (salary + salary)", users.update(salary += salary))
-        ExpectExecution(db, "UPDATE users SET salary = (salary + salary)", users.update(salary += salary2))
-        ExpectExecution(db, "UPDATE users SET salary = (salary + salary)", users.update(salary2 += salary))
-        ExpectExecution(db, "UPDATE users SET salary = (salary + salary)", users.update(salary2 += salary2))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age + age)", users.update(age += age))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age + id)", users.update(age += id))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id + age)", users.update(id += age))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id + id)", users.update(id += id))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary + salary)", users.update(salary += salary))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary + salary)", users.update(salary += salary2))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary + salary)", users.update(salary2 += salary))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary + salary)", users.update(salary2 += salary2))
     }
 
     func test_plusEquals_withNumberValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET id = (id + 1)", users.update(id += 1))
-        ExpectExecution(db, "UPDATE users SET age = (age + 1)", users.update(age += 1))
-        ExpectExecution(db, "UPDATE users SET salary = (salary + 100.0)", users.update(salary += 100))
-        ExpectExecution(db, "UPDATE users SET salary = (salary + 100.0)", users.update(salary2 += 100))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id + 1)", users.update(id += 1))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age + 1)", users.update(age += 1))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary + 100.0)", users.update(salary += 100))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary + 100.0)", users.update(salary2 += 100))
     }
 
     func test_minusEquals_withNumberExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age - age)", users.update(age -= age))
-        ExpectExecution(db, "UPDATE users SET age = (age - id)", users.update(age -= id))
-        ExpectExecution(db, "UPDATE users SET id = (id - age)", users.update(id -= age))
-        ExpectExecution(db, "UPDATE users SET id = (id - id)", users.update(id -= id))
-        ExpectExecution(db, "UPDATE users SET salary = (salary - salary)", users.update(salary -= salary))
-        ExpectExecution(db, "UPDATE users SET salary = (salary - salary)", users.update(salary -= salary2))
-        ExpectExecution(db, "UPDATE users SET salary = (salary - salary)", users.update(salary2 -= salary))
-        ExpectExecution(db, "UPDATE users SET salary = (salary - salary)", users.update(salary2 -= salary2))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age - age)", users.update(age -= age))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age - id)", users.update(age -= id))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id - age)", users.update(id -= age))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id - id)", users.update(id -= id))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary - salary)", users.update(salary -= salary))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary - salary)", users.update(salary -= salary2))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary - salary)", users.update(salary2 -= salary))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary - salary)", users.update(salary2 -= salary2))
     }
 
     func test_minusEquals_withNumberValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET id = (id - 1)", users.update(id -= 1))
-        ExpectExecution(db, "UPDATE users SET age = (age - 1)", users.update(age -= 1))
-        ExpectExecution(db, "UPDATE users SET salary = (salary - 100.0)", users.update(salary -= 100))
-        ExpectExecution(db, "UPDATE users SET salary = (salary - 100.0)", users.update(salary2 -= 100))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id - 1)", users.update(id -= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age - 1)", users.update(age -= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary - 100.0)", users.update(salary -= 100))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary - 100.0)", users.update(salary2 -= 100))
     }
 
     func test_timesEquals_withNumberExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age * age)", users.update(age *= age))
-        ExpectExecution(db, "UPDATE users SET age = (age * id)", users.update(age *= id))
-        ExpectExecution(db, "UPDATE users SET id = (id * age)", users.update(id *= age))
-        ExpectExecution(db, "UPDATE users SET id = (id * id)", users.update(id *= id))
-        ExpectExecution(db, "UPDATE users SET salary = (salary * salary)", users.update(salary *= salary))
-        ExpectExecution(db, "UPDATE users SET salary = (salary * salary)", users.update(salary *= salary2))
-        ExpectExecution(db, "UPDATE users SET salary = (salary * salary)", users.update(salary2 *= salary))
-        ExpectExecution(db, "UPDATE users SET salary = (salary * salary)", users.update(salary2 *= salary2))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age * age)", users.update(age *= age))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age * id)", users.update(age *= id))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id * age)", users.update(id *= age))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id * id)", users.update(id *= id))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary * salary)", users.update(salary *= salary))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary * salary)", users.update(salary *= salary2))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary * salary)", users.update(salary2 *= salary))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary * salary)", users.update(salary2 *= salary2))
     }
 
     func test_timesEquals_withNumberValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET id = (id * 1)", users.update(id *= 1))
-        ExpectExecution(db, "UPDATE users SET age = (age * 1)", users.update(age *= 1))
-        ExpectExecution(db, "UPDATE users SET salary = (salary * 100.0)", users.update(salary *= 100))
-        ExpectExecution(db, "UPDATE users SET salary = (salary * 100.0)", users.update(salary2 *= 100))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id * 1)", users.update(id *= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age * 1)", users.update(age *= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary * 100.0)", users.update(salary *= 100))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary * 100.0)", users.update(salary2 *= 100))
     }
 
     func test_divideEquals_withNumberExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age / age)", users.update(age /= age))
-        ExpectExecution(db, "UPDATE users SET age = (age / id)", users.update(age /= id))
-        ExpectExecution(db, "UPDATE users SET id = (id / age)", users.update(id /= age))
-        ExpectExecution(db, "UPDATE users SET id = (id / id)", users.update(id /= id))
-        ExpectExecution(db, "UPDATE users SET salary = (salary / salary)", users.update(salary /= salary))
-        ExpectExecution(db, "UPDATE users SET salary = (salary / salary)", users.update(salary /= salary2))
-        ExpectExecution(db, "UPDATE users SET salary = (salary / salary)", users.update(salary2 /= salary))
-        ExpectExecution(db, "UPDATE users SET salary = (salary / salary)", users.update(salary2 /= salary2))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age / age)", users.update(age /= age))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age / id)", users.update(age /= id))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id / age)", users.update(id /= age))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id / id)", users.update(id /= id))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary / salary)", users.update(salary /= salary))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary / salary)", users.update(salary /= salary2))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary / salary)", users.update(salary2 /= salary))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary / salary)", users.update(salary2 /= salary2))
     }
 
     func test_divideEquals_withNumberValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET id = (id / 1)", users.update(id /= 1))
-        ExpectExecution(db, "UPDATE users SET age = (age / 1)", users.update(age /= 1))
-        ExpectExecution(db, "UPDATE users SET salary = (salary / 100.0)", users.update(salary /= 100))
-        ExpectExecution(db, "UPDATE users SET salary = (salary / 100.0)", users.update(salary2 /= 100))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id / 1)", users.update(id /= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age / 1)", users.update(age /= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary / 100.0)", users.update(salary /= 100))
+        ExpectExecution(db, "UPDATE \"users\" SET salary = (salary / 100.0)", users.update(salary2 /= 100))
     }
 
     func test_moduloEquals_withIntegerExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age % age)", users.update(age %= age))
-        ExpectExecution(db, "UPDATE users SET age = (age % id)", users.update(age %= id))
-        ExpectExecution(db, "UPDATE users SET id = (id % age)", users.update(id %= age))
-        ExpectExecution(db, "UPDATE users SET id = (id % id)", users.update(id %= id))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age % age)", users.update(age %= age))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age % id)", users.update(age %= id))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id % age)", users.update(id %= age))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id % id)", users.update(id %= id))
     }
 
     func test_moduloEquals_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age % 10)", users.update(age %= 10))
-        ExpectExecution(db, "UPDATE users SET id = (id % 10)", users.update(id %= 10))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age % 10)", users.update(age %= 10))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id % 10)", users.update(id %= 10))
     }
 
     func test_rightShiftEquals_withIntegerExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age >> age)", users.update(age >>= age))
-        ExpectExecution(db, "UPDATE users SET age = (age >> id)", users.update(age >>= id))
-        ExpectExecution(db, "UPDATE users SET id = (id >> age)", users.update(id >>= age))
-        ExpectExecution(db, "UPDATE users SET id = (id >> id)", users.update(id >>= id))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age >> age)", users.update(age >>= age))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age >> id)", users.update(age >>= id))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id >> age)", users.update(id >>= age))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id >> id)", users.update(id >>= id))
     }
 
     func test_rightShiftEquals_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age >> 1)", users.update(age >>= 1))
-        ExpectExecution(db, "UPDATE users SET id = (id >> 1)", users.update(id >>= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age >> 1)", users.update(age >>= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id >> 1)", users.update(id >>= 1))
     }
 
     func test_leftShiftEquals_withIntegerExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age << age)", users.update(age <<= age))
-        ExpectExecution(db, "UPDATE users SET age = (age << id)", users.update(age <<= id))
-        ExpectExecution(db, "UPDATE users SET id = (id << age)", users.update(id <<= age))
-        ExpectExecution(db, "UPDATE users SET id = (id << id)", users.update(id <<= id))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age << age)", users.update(age <<= age))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age << id)", users.update(age <<= id))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id << age)", users.update(id <<= age))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id << id)", users.update(id <<= id))
     }
 
     func test_leftShiftEquals_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age << 1)", users.update(age <<= 1))
-        ExpectExecution(db, "UPDATE users SET id = (id << 1)", users.update(id <<= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age << 1)", users.update(age <<= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id << 1)", users.update(id <<= 1))
     }
 
     func test_bitwiseAndEquals_withIntegerExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age & age)", users.update(age &= age))
-        ExpectExecution(db, "UPDATE users SET age = (age & id)", users.update(age &= id))
-        ExpectExecution(db, "UPDATE users SET id = (id & age)", users.update(id &= age))
-        ExpectExecution(db, "UPDATE users SET id = (id & id)", users.update(id &= id))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age & age)", users.update(age &= age))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age & id)", users.update(age &= id))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id & age)", users.update(id &= age))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id & id)", users.update(id &= id))
     }
 
     func test_bitwiseAndEquals_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age & 1)", users.update(age &= 1))
-        ExpectExecution(db, "UPDATE users SET id = (id & 1)", users.update(id &= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age & 1)", users.update(age &= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id & 1)", users.update(id &= 1))
     }
 
     func test_bitwiseOrEquals_withIntegerExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age | age)", users.update(age |= age))
-        ExpectExecution(db, "UPDATE users SET age = (age | id)", users.update(age |= id))
-        ExpectExecution(db, "UPDATE users SET id = (id | age)", users.update(id |= age))
-        ExpectExecution(db, "UPDATE users SET id = (id | id)", users.update(id |= id))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age | age)", users.update(age |= age))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age | id)", users.update(age |= id))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id | age)", users.update(id |= age))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id | id)", users.update(id |= id))
     }
 
     func test_bitwiseOrEquals_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age | 1)", users.update(age |= 1))
-        ExpectExecution(db, "UPDATE users SET id = (id | 1)", users.update(id |= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age | 1)", users.update(age |= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id | 1)", users.update(id |= 1))
     }
 
     func test_bitwiseExclusiveOrEquals_withIntegerExpression_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (~((age & age)) & (age | age))", users.update(age ^= age))
-        ExpectExecution(db, "UPDATE users SET age = (~((age & id)) & (age | id))", users.update(age ^= id))
-        ExpectExecution(db, "UPDATE users SET id = (~((id & age)) & (id | age))", users.update(id ^= age))
-        ExpectExecution(db, "UPDATE users SET id = (~((id & id)) & (id | id))", users.update(id ^= id))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (~((age & age)) & (age | age))", users.update(age ^= age))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (~((age & id)) & (age | id))", users.update(age ^= id))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (~((id & age)) & (id | age))", users.update(id ^= age))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (~((id & id)) & (id | id))", users.update(id ^= id))
     }
 
     func test_bitwiseExclusiveOrEquals_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (~((age & 1)) & (age | 1))", users.update(age ^= 1))
-        ExpectExecution(db, "UPDATE users SET id = (~((id & 1)) & (id | 1))", users.update(id ^= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (~((age & 1)) & (age | 1))", users.update(age ^= 1))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (~((id & 1)) & (id | 1))", users.update(id ^= 1))
     }
 
     func test_postfixPlus_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age + 1)", users.update(age++))
-        ExpectExecution(db, "UPDATE users SET age = (age + 1)", users.update(age++))
-        ExpectExecution(db, "UPDATE users SET id = (id + 1)", users.update(id++))
-        ExpectExecution(db, "UPDATE users SET id = (id + 1)", users.update(id++))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age + 1)", users.update(age++))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age + 1)", users.update(age++))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id + 1)", users.update(id++))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id + 1)", users.update(id++))
     }
 
     func test_postfixMinus_withIntegerValue_buildsSetter() {
-        ExpectExecution(db, "UPDATE users SET age = (age - 1)", users.update(age--))
-        ExpectExecution(db, "UPDATE users SET age = (age - 1)", users.update(age--))
-        ExpectExecution(db, "UPDATE users SET id = (id - 1)", users.update(id--))
-        ExpectExecution(db, "UPDATE users SET id = (id - 1)", users.update(id--))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age - 1)", users.update(age--))
+        ExpectExecution(db, "UPDATE \"users\" SET age = (age - 1)", users.update(age--))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id - 1)", users.update(id--))
+        ExpectExecution(db, "UPDATE \"users\" SET id = (id - 1)", users.update(id--))
     }
 
     func test_precedencePreserved() {

@@ -22,35 +22,35 @@ class QueryTests: XCTestCase {
     func test_select_withExpression_compilesSelectClause() {
         let query = users.select(email)
 
-        let SQL = "SELECT email FROM users"
+        let SQL = "SELECT email FROM \"users\""
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_select_withVariadicExpressions_compilesSelectClause() {
         let query = users.select(email, count(*))
 
-        let SQL = "SELECT email, count(*) FROM users"
+        let SQL = "SELECT email, count(*) FROM \"users\""
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_select_withStar_resetsSelectClause() {
         let query = users.select(email)
 
-        let SQL = "SELECT * FROM users"
+        let SQL = "SELECT * FROM \"users\""
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query.select(all: *) {} }
     }
 
     func test_selectDistinct_withExpression_compilesSelectClause() {
         let query = users.select(distinct: age)
 
-        let SQL = "SELECT DISTINCT age FROM users"
+        let SQL = "SELECT DISTINCT age FROM \"users\""
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_selectDistinct_withStar_compilesSelectClause() {
         let query = users.select(distinct: *)
 
-        let SQL = "SELECT DISTINCT * FROM users"
+        let SQL = "SELECT DISTINCT * FROM \"users\""
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
@@ -59,7 +59,8 @@ class QueryTests: XCTestCase {
 
         let query = users.join(managers, on: managers[id] == users[manager_id])
 
-        let SQL = "SELECT * FROM users INNER JOIN users AS managers ON (managers.id = users.manager_id)"
+        let SQL = "SELECT * FROM \"users\" " +
+            "INNER JOIN \"users\" AS \"managers\" ON (\"managers\".id = \"users\".manager_id)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
@@ -68,7 +69,8 @@ class QueryTests: XCTestCase {
 
         let query = users.join(.LeftOuter, managers, on: managers[id] == users[manager_id])
 
-        let SQL = "SELECT * FROM users LEFT OUTER JOIN users AS managers ON (managers.id = users.manager_id)"
+        let SQL = "SELECT * FROM \"users\" " +
+            "LEFT OUTER JOIN \"users\" AS \"managers\" ON (\"managers\".id = \"users\".manager_id)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
@@ -78,10 +80,10 @@ class QueryTests: XCTestCase {
 
         let query = users.join(managers, on: managers[id] == users[manager_id])
 
-        let SQL = "SELECT * FROM users " +
-            "INNER JOIN users AS managers " +
-            "ON ((managers.id = users.manager_id) " +
-            "AND managers.admin)"
+        let SQL = "SELECT * FROM \"users\" " +
+            "INNER JOIN \"users\" AS \"managers\" " +
+            "ON ((\"managers\".id = \"users\".manager_id) " +
+            "AND \"managers\".admin)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
@@ -93,9 +95,9 @@ class QueryTests: XCTestCase {
             .join(managers, on: managers[id] == users[manager_id])
             .join(managed, on: managed[manager_id] == users[id])
 
-        let SQL = "SELECT * FROM users " +
-            "INNER JOIN users AS managers ON (managers.id = users.manager_id) " +
-            "INNER JOIN users AS managed ON (managed.manager_id = users.id)"
+        let SQL = "SELECT * FROM \"users\" " +
+            "INNER JOIN \"users\" AS \"managers\" ON (\"managers\".id = \"users\".manager_id) " +
+            "INNER JOIN \"users\" AS \"managed\" ON (\"managed\".manager_id = \"users\".id)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in middleManagers {} }
     }
 
@@ -116,7 +118,7 @@ class QueryTests: XCTestCase {
     func test_filter_compilesWhereClause() {
         let query = users.filter(admin == true)
 
-        let SQL = "SELECT * FROM users WHERE (admin = 1)"
+        let SQL = "SELECT * FROM \"users\" WHERE (admin = 1)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
@@ -125,7 +127,7 @@ class QueryTests: XCTestCase {
             .filter(email == "alice@example.com")
             .filter(age >= 21)
 
-        let SQL = "SELECT * FROM users " +
+        let SQL = "SELECT * FROM \"users\" " +
             "WHERE ((email = 'alice@example.com') " +
             "AND (age >= 21))"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
@@ -134,107 +136,107 @@ class QueryTests: XCTestCase {
     func test_group_withSingleExpressionName_compilesGroupClause() {
         let query = users.group(age)
 
-        let SQL = "SELECT * FROM users GROUP BY age"
+        let SQL = "SELECT * FROM \"users\" GROUP BY age"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_group_withVariadicExpressionNames_compilesGroupClause() {
         let query = users.group(age, admin)
 
-        let SQL = "SELECT * FROM users GROUP BY age, admin"
+        let SQL = "SELECT * FROM \"users\" GROUP BY age, admin"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_group_withExpressionNameAndHavingBindings_compilesGroupClause() {
         let query = users.group(age, having: age >= 30)
 
-        let SQL = "SELECT * FROM users GROUP BY age HAVING (age >= 30)"
+        let SQL = "SELECT * FROM \"users\" GROUP BY age HAVING (age >= 30)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_group_withExpressionNamesAndHavingBindings_compilesGroupClause() {
         let query = users.group([age, admin], having: age >= 30)
 
-        let SQL = "SELECT * FROM users GROUP BY age, admin HAVING (age >= 30)"
+        let SQL = "SELECT * FROM \"users\" GROUP BY age, admin HAVING (age >= 30)"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_order_withSingleExpressionName_compilesOrderClause() {
         let query = users.order(age)
 
-        let SQL = "SELECT * FROM users ORDER BY age"
+        let SQL = "SELECT * FROM \"users\" ORDER BY age"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_order_withVariadicExpressionNames_compilesOrderClause() {
         let query = users.order(age, email)
 
-        let SQL = "SELECT * FROM users ORDER BY age, email"
+        let SQL = "SELECT * FROM \"users\" ORDER BY age, email"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_order_withExpressionAndSortDirection_compilesOrderClause() {
         let query = users.order(age.desc, email.asc)
 
-        let SQL = "SELECT * FROM users ORDER BY age DESC, email ASC"
+        let SQL = "SELECT * FROM \"users\" ORDER BY age DESC, email ASC"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_limit_compilesLimitClause() {
         let query = users.limit(5)
 
-        let SQL = "SELECT * FROM users LIMIT 5"
+        let SQL = "SELECT * FROM \"users\" LIMIT 5"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_limit_withOffset_compilesOffsetClause() {
         let query = users.limit(5, offset: 5)
 
-        let SQL = "SELECT * FROM users LIMIT 5 OFFSET 5"
+        let SQL = "SELECT * FROM \"users\" LIMIT 5 OFFSET 5"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
     func test_limit_whenChained_overridesLimit() {
         let query = users.limit(5).limit(10)
 
-        var SQL = "SELECT * FROM users LIMIT 10"
+        var SQL = "SELECT * FROM \"users\" LIMIT 10"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
 
-        SQL = "SELECT * FROM users"
+        SQL = "SELECT * FROM \"users\""
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query.limit(nil) {} }
     }
 
     func test_limit_whenChained_withOffset_overridesOffset() {
         let query = users.limit(5, offset: 5).limit(10, offset: 10)
 
-        var SQL = "SELECT * FROM users LIMIT 10 OFFSET 10"
+        var SQL = "SELECT * FROM \"users\" LIMIT 10 OFFSET 10"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
 
-        SQL = "SELECT * FROM users"
+        SQL = "SELECT * FROM \"users\""
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query.limit(nil) {} }
     }
 
     func test_alias_compilesAliasInSelectClause() {
         let managers = users.alias("managers")
-        var SQL = "SELECT * FROM users AS managers"
+        var SQL = "SELECT * FROM \"users\" AS \"managers\""
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in managers {} }
     }
 
     func test_subscript_withExpression_returnsNamespacedExpression() {
-        ExpectExecution(db, "SELECT users.admin FROM users", users.select(users[admin]))
-        ExpectExecution(db, "SELECT users.salary FROM users", users.select(users[salary]))
-        ExpectExecution(db, "SELECT users.age FROM users", users.select(users[age]))
-        ExpectExecution(db, "SELECT users.email FROM users", users.select(users[email]))
-        ExpectExecution(db, "SELECT users.* FROM users", users.select(users[*]))
+        ExpectExecution(db, "SELECT \"users\".admin FROM \"users\"", users.select(users[admin]))
+        ExpectExecution(db, "SELECT \"users\".salary FROM \"users\"", users.select(users[salary]))
+        ExpectExecution(db, "SELECT \"users\".age FROM \"users\"", users.select(users[age]))
+        ExpectExecution(db, "SELECT \"users\".email FROM \"users\"", users.select(users[email]))
+        ExpectExecution(db, "SELECT \"users\".* FROM \"users\"", users.select(users[*]))
     }
 
     func test_subscript_withAliasAndExpression_returnsAliasedExpression() {
         let managers = users.alias("managers")
-        ExpectExecution(db, "SELECT managers.admin FROM users AS managers", managers.select(managers[admin]))
-        ExpectExecution(db, "SELECT managers.salary FROM users AS managers", managers.select(managers[salary]))
-        ExpectExecution(db, "SELECT managers.age FROM users AS managers", managers.select(managers[age]))
-        ExpectExecution(db, "SELECT managers.email FROM users AS managers", managers.select(managers[email]))
-        ExpectExecution(db, "SELECT managers.* FROM users AS managers", managers.select(managers[*]))
+        ExpectExecution(db, "SELECT \"managers\".admin FROM \"users\" AS \"managers\"", managers.select(managers[admin]))
+        ExpectExecution(db, "SELECT \"managers\".salary FROM \"users\" AS \"managers\"", managers.select(managers[salary]))
+        ExpectExecution(db, "SELECT \"managers\".age FROM \"users\" AS \"managers\"", managers.select(managers[age]))
+        ExpectExecution(db, "SELECT \"managers\".email FROM \"users\" AS \"managers\"", managers.select(managers[email]))
+        ExpectExecution(db, "SELECT \"managers\".* FROM \"users\" AS \"managers\"", managers.select(managers[*]))
     }
 
     func test_SQL_compilesProperly() {
@@ -250,11 +252,12 @@ class QueryTests: XCTestCase {
             .order(users[email].desc)
             .limit(1, offset: 2)
 
-        let SQL = "SELECT users.email, count(users.email) FROM users " +
-            "LEFT OUTER JOIN users AS managers ON ((managers.id = users.manager_id) AND (managers.admin = 1)) " +
-            "WHERE users.age BETWEEN 21 AND 32 " +
-            "GROUP BY users.age HAVING (count(users.email) > 1) " +
-            "ORDER BY users.email DESC " +
+        let SQL = "SELECT \"users\".email, count(\"users\".email) FROM \"users\" " +
+            "LEFT OUTER JOIN \"users\" AS \"managers\" " +
+            "ON ((\"managers\".id = \"users\".manager_id) AND (\"managers\".admin = 1)) " +
+            "WHERE \"users\".age BETWEEN 21 AND 32 " +
+            "GROUP BY \"users\".age HAVING (count(\"users\".email) > 1) " +
+            "ORDER BY \"users\".email DESC " +
             "LIMIT 1 " +
             "OFFSET 2"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
@@ -266,13 +269,13 @@ class QueryTests: XCTestCase {
 
     func test_first_returnsTheFirstRow() {
         InsertUsers(db, "alice", "betsy")
-        ExpectExecutions(db, ["SELECT * FROM users LIMIT 1": 1]) { _ in
+        ExpectExecutions(db, ["SELECT * FROM \"users\" LIMIT 1": 1]) { _ in
             XCTAssertEqual(1, self.users.first![self.id])
         }
     }
 
     func test_isEmpty_returnsWhetherOrNotTheQueryIsEmpty() {
-        ExpectExecutions(db, ["SELECT * FROM users LIMIT 1": 2]) { _ in
+        ExpectExecutions(db, ["SELECT * FROM \"users\" LIMIT 1": 2]) { _ in
             XCTAssertTrue(self.users.isEmpty)
             InsertUser(self.db, "alice")
             XCTAssertFalse(self.users.isEmpty)
@@ -280,7 +283,7 @@ class QueryTests: XCTestCase {
     }
 
     func test_insert_insertsRows() {
-        let SQL = "INSERT INTO users (email, age) VALUES ('alice@example.com', 30)"
+        let SQL = "INSERT INTO \"users\" (email, age) VALUES ('alice@example.com', 30)"
 
         ExpectExecutions(db, [SQL: 1]) { _ in
             XCTAssertEqual(1, self.users.insert(self.email <- "alice@example.com", self.age <- 30).ID!)
@@ -290,24 +293,24 @@ class QueryTests: XCTestCase {
     }
 
     func test_insert_withQuery_insertsRows() {
-        db.execute("CREATE TABLE emails (email TEXT)")
+        db.execute("CREATE TABLE \"emails\" (email TEXT)")
         let emails = db["emails"]
         let admins = users.select(email).filter(admin == true)
 
-        ExpectExecution(db, "INSERT INTO emails SELECT email FROM users WHERE (admin = 1)", emails.insert(admins))
+        ExpectExecution(db, "INSERT INTO \"emails\" SELECT email FROM \"users\" WHERE (admin = 1)", emails.insert(admins))
     }
 
     func test_insert_insertsDefaultRow() {
-        db.execute("CREATE TABLE timestamps (id INTEGER PRIMARY KEY, timestamp TEXT DEFAULT CURRENT_DATETIME)")
+        db.execute("CREATE TABLE \"timestamps\" (id INTEGER PRIMARY KEY, timestamp TEXT DEFAULT CURRENT_DATETIME)")
         let table = db["timestamps"]
 
-        ExpectExecutions(db, ["INSERT INTO timestamps DEFAULT VALUES": 1]) { _ in
+        ExpectExecutions(db, ["INSERT INTO \"timestamps\" DEFAULT VALUES": 1]) { _ in
             XCTAssertEqual(1, table.insert().ID!)
         }
     }
 
     func test_replace_replaceRows() {
-        let SQL = "INSERT OR REPLACE INTO users (email, age) VALUES ('alice@example.com', 30)"
+        let SQL = "INSERT OR REPLACE INTO \"users\" (email, age) VALUES ('alice@example.com', 30)"
 
         ExpectExecutions(db, [SQL: 1]) { _ in
             XCTAssertEqual(1, self.users.replace(self.email <- "alice@example.com", self.age <- 30).ID!)

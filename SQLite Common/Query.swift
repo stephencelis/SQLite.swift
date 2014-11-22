@@ -60,7 +60,7 @@ public struct Query {
 
     public func alias(alias: String?) -> Query {
         var query = self
-        query.alias = alias
+        query.alias = alias.map { quote(identifier: $0) }
         return query
     }
 
@@ -805,7 +805,7 @@ extension Query: Printable {
 extension Database {
 
     public subscript(tableName: String) -> Query {
-        return Query(self, tableName)
+        return Query(self, quote(identifier: tableName))
     }
 
 }
