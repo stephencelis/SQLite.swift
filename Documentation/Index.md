@@ -193,6 +193,8 @@ Use optional generics for expressions that can evaluate to `NULL`.
 let name = Expression<String?>("name")
 ```
 
+> _Note:_ The default `Expression` initializer is for [quoted identifiers](https://www.sqlite.org/lang_keywords.html) (_i.e._, column names). To build a literal SQL expression, use `init(literal:)`.
+
 
 ### Compound Expressions
 
