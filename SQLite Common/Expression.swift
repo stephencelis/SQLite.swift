@@ -26,12 +26,16 @@ public struct Expression<T> {
     public let SQL: String
     public let bindings: [Binding?]
 
-    public init(_ SQL: String = "", _ bindings: [Binding?] = []) {
+    public init(literal SQL: String = "", _ bindings: [Binding?] = []) {
         (self.SQL, self.bindings) = (SQL, bindings)
     }
 
+    public init(_ identifier: String) {
+        self.init(literal: quote(identifier: identifier))
+    }
+
     public init<V>(_ expression: Expression<V>) {
-        self.init(expression.SQL, expression.bindings)
+        self.init(literal: expression.SQL, expression.bindings)
     }
 
     public init<V: Value where V.Datatype: Binding>(value: V?) {
@@ -39,15 +43,15 @@ public struct Expression<T> {
     }
 
     private init(binding: Binding?) {
-        self.init("?", [binding])
+        self.init(literal: "?", [binding])
     }
 
     public var asc: Expression<()> {
-        return join(" ", [self, Expression("ASC")])
+        return join(" ", [self, Expression(literal: "ASC")])
     }
 
     public var desc: Expression<()> {
-        return join(" ", [self, Expression("DESC")])
+        return join(" ", [self, Expression(literal: "DESC")])
     }
 
     // naïve compiler for statements that can't be bound, e.g., CREATE TABLE
@@ -222,10 +226,10 @@ public enum Collation: String {
 }
 
 public func collate(collation: Collation, expression: Expression<String>) -> Expression<String> {
-    return infix("COLLATE", expression, Expression<String>(collation.rawValue))
+    return infix("COLLATE", expression, Expression<String>(literal: collation.rawValue))
 }
 public func collate(collation: Collation, expression: Expression<String?>) -> Expression<String?> {
-    return infix("COLLATE", expression, Expression<String>(collation.rawValue))
+    return infix("COLLATE", expression, Expression<String>(literal: collation.rawValue))
 }
 
 // MARK: - Predicates
@@ -247,14 +251,14 @@ public func ==<V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Exp
 }
 public func ==<V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V?>, rhs: V?) -> Expression<Bool?> {
     if let rhs = rhs { return lhs == Expression(value: rhs) }
-    return Expression("\(lhs.SQL) IS ?", lhs.bindings + [nil])
+    return Expression(literal: "\(lhs.SQL) IS ?", lhs.bindings + [nil])
 }
 public func ==<V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
     return Expression(value: lhs) == rhs
 }
 public func ==<V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> {
     if let lhs = lhs { return Expression(value: lhs) == rhs }
-    return Expression("? IS \(rhs.SQL)", [nil] + rhs.bindings)
+    return Expression(literal: "? IS \(rhs.SQL)", [nil] + rhs.bindings)
 }
 
 public func !=<V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
@@ -274,14 +278,14 @@ public func !=<V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Exp
 }
 public func !=<V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V?>, rhs: V?) -> Expression<Bool?> {
     if let rhs = rhs { return lhs != Expression(value: rhs) }
-    return Expression("\(lhs.SQL) IS NOT ?", lhs.bindings + [nil])
+    return Expression(literal: "\(lhs.SQL) IS NOT ?", lhs.bindings + [nil])
 }
 public func !=<V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
     return Expression(value: lhs) != rhs
 }
 public func !=<V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> {
     if let lhs = lhs { return Expression(value: lhs) != rhs }
-    return Expression("? IS NOT \(rhs.SQL)", [nil] + rhs.bindings)
+    return Expression(literal: "? IS NOT \(rhs.SQL)", [nil] + rhs.bindings)
 }
 
 public func ><V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
@@ -388,7 +392,7 @@ public prefix func -<V: Number>(rhs: Expression<V>) -> Expression<V> { return wr
 public prefix func -<V: Number>(rhs: Expression<V?>) -> Expression<V?> { return wrap(__FUNCTION__, rhs) }
 
 public func ~=<I: IntervalType, V: Value where V: protocol<Binding, Comparable>, V == I.Bound>(lhs: I, rhs: Expression<V>) -> Expression<Bool> {
-    return Expression("\(rhs.SQL) BETWEEN ? AND ?", rhs.bindings + [lhs.start, lhs.end])
+    return Expression(literal: "\(rhs.SQL) BETWEEN ? AND ?", rhs.bindings + [lhs.start, lhs.end])
 }
 public func ~=<I: IntervalType, V: Value where V: protocol<Binding, Comparable>, V == I.Bound>(lhs: I, rhs: Expression<V?>) -> Expression<Bool?> {
     return Expression<Bool?>(lhs ~= Expression<V>(rhs))
@@ -588,7 +592,7 @@ public func total<V: Number>(#distinct: Expression<V>) -> Expression<Double> { r
 public func total<V: Number>(#distinct: Expression<V?>) -> Expression<Double?> { return wrapDistinct("total", distinct) }
 
 private func wrapDistinct<V, U>(function: String, expression: Expression<V>) -> Expression<U> {
-    return wrap(function, SQLite.join(" ", [Expression<()>("DISTINCT"), expression]))
+    return wrap(function, SQLite.join(" ", [Expression<()>(literal: "DISTINCT"), expression]))
 }
 
 // MARK: - Helper
@@ -596,16 +600,16 @@ private func wrapDistinct<V, U>(function: String, expression: Expression<V>) -> 
 public typealias Star = (Expression<Binding>?, Expression<Binding>?) -> Expression<()>
 
 public func *(Expression<Binding>?, Expression<Binding>?) -> Expression<()> {
-    return Expression<()>("*")
+    return Expression<()>(literal: "*")
 }
 
 public func contains<V: Value where V.Datatype: Binding>(values: [V.Datatype], column: Expression<V>) -> Expression<Bool> {
     let templates = join(", ", [String](count: values.count, repeatedValue: "?"))
-    return infix("IN", column, Expression<V>("(\(templates))", values.map { $0 }))
+    return infix("IN", column, Expression<V>(literal: "(\(templates))", values.map { $0 }))
 }
 public func contains<V: Value where V.Datatype: Binding>(values: [V.Datatype?], column: Expression<V?>) -> Expression<Bool> {
     let templates = join(", ", [String](count: values.count, repeatedValue: "?"))
-    return infix("IN", column, Expression<V>("(\(templates))", values.map { $0 }))
+    return infix("IN", column, Expression<V>(literal: "(\(templates))", values.map { $0 }))
 }
 
 // MARK: - Modifying
@@ -755,19 +759,19 @@ public func ^=(column: Expression<Int?>, value: Int) -> Setter { return set(colu
 
 public postfix func ++(column: Expression<Int>) -> Setter {
     // rdar://18825175 segfaults during archive: // column += 1
-    return (column, Expression<Int>("(\(column.SQL) + 1)", column.bindings))
+    return (column, Expression<Int>(literal: "(\(column.SQL) + 1)", column.bindings))
 }
 public postfix func ++(column: Expression<Int?>) -> Setter {
     // rdar://18825175 segfaults during archive: // column += 1
-    return (column, Expression<Int>("(\(column.SQL) + 1)", column.bindings))
+    return (column, Expression<Int>(literal: "(\(column.SQL) + 1)", column.bindings))
 }
 public postfix func --(column: Expression<Int>) -> Setter {
     // rdar://18825175 segfaults during archive: // column -= 1
-    return (column, Expression<Int>("(\(column.SQL) - 1)", column.bindings))
+    return (column, Expression<Int>(literal: "(\(column.SQL) - 1)", column.bindings))
 }
 public postfix func --(column: Expression<Int?>) -> Setter {
     // rdar://18825175 segfaults during archive: // column -= 1
-    return (column, Expression<Int>("(\(column.SQL) - 1)", column.bindings))
+    return (column, Expression<Int>(literal: "(\(column.SQL) - 1)", column.bindings))
 }
 
 // MARK: - Internal
@@ -779,7 +783,7 @@ internal func join(separator: String, expressions: [Expressible]) -> Expression<
         SQL.append(expression.SQL)
         bindings.extend(expression.bindings)
     }
-    return Expression(Swift.join(separator, SQL), bindings)
+    return Expression(literal: Swift.join(separator, SQL), bindings)
 }
 
 internal func transcode(literal: Binding?) -> String {
@@ -792,11 +796,11 @@ internal func transcode(literal: Binding?) -> String {
 }
 
 internal func wrap<T, U>(function: String, expression: Expression<T>) -> Expression<U> {
-    return Expression("\(function)\(surround(expression.SQL))", expression.bindings)
+    return Expression(literal: "\(function)\(surround(expression.SQL))", expression.bindings)
 }
 
 private func infix<T, U, V>(function: String, lhs: Expression<T>, rhs: Expression<U>) -> Expression<V> {
-    return Expression(surround("\(lhs.SQL) \(function) \(rhs.SQL)"), lhs.bindings + rhs.bindings)
+    return Expression(literal: surround("\(lhs.SQL) \(function) \(rhs.SQL)"), lhs.bindings + rhs.bindings)
 }
 
 private func surround(expression: String) -> String { return "(\(expression))" }

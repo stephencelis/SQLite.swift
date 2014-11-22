@@ -48,7 +48,7 @@ public struct Query {
 
     }
 
-    private var columns: [Expressible] = [Expression<()>("*")]
+    private var columns: [Expressible] = [Expression<()>(literal: "*")]
     private var distinct: Bool = false
     internal var tableName: String
     private var alias: String?
@@ -216,8 +216,8 @@ public struct Query {
     /// :returns: A query with the given GROUP BY clause applied.
     public func group(by: [Expressible], having: Expression<Bool>? = nil) -> Query {
         var query = self
-        var group = SQLite.join(" ", [Expression<()>("GROUP BY"), SQLite.join(", ", by)])
-        if let having = having { group = SQLite.join(" ", [group, Expression<()>("HAVING"), having]) }
+        var group = SQLite.join(" ", [Expression<()>(literal: "GROUP BY"), SQLite.join(", ", by)])
+        if let having = having { group = SQLite.join(" ", [group, Expression<()>(literal: "HAVING"), having]) }
         query.group = group
         return query
     }
@@ -284,7 +284,7 @@ public struct Query {
     /// :returns: A column expression namespaced with the query’s table name or
     ///           alias.
     public func namespace<V>(column: Expression<V>) -> Expression<V> {
-        return Expression("\(alias ?? tableName).\(column.SQL)", column.bindings)
+        return Expression(literal: "\(alias ?? tableName).\(column.SQL)", column.bindings)
     }
 
     // FIXME: rdar://18673897 subscript<T>(expression: Expression<V>) -> Expression<V>
@@ -349,16 +349,16 @@ public struct Query {
     private func insertStatement(values: [Setter], or: OnConflict? = nil) -> Statement {
         var insertClause = "INSERT"
         if let or = or { insertClause = "\(insertClause) OR \(or.rawValue)" }
-        var expressions: [Expressible] = [Expression<()>("\(insertClause) INTO \(tableName)")]
+        var expressions: [Expressible] = [Expression<()>(literal: "\(insertClause) INTO \(tableName)")]
         let (c, v) = (SQLite.join(", ", values.map { $0.0 }), SQLite.join(", ", values.map { $0.1 }))
-        expressions.append(Expression<()>("(\(c.SQL)) VALUES (\(v.SQL))", c.bindings + v.bindings))
+        expressions.append(Expression<()>(literal: "(\(c.SQL)) VALUES (\(v.SQL))", c.bindings + v.bindings))
         whereClause.map(expressions.append)
         let expression = SQLite.join(" ", expressions)
         return database.prepare(expression.SQL, expression.bindings)
     }
 
     private func updateStatement(values: [Setter]) -> Statement {
-        var expressions: [Expressible] = [Expression<()>("UPDATE \(tableName) SET")]
+        var expressions: [Expressible] = [Expression<()>(literal: "UPDATE \(tableName) SET")]
         expressions.append(SQLite.join(", ", values.map { SQLite.join(" = ", [$0, $1]) }))
         whereClause.map(expressions.append)
         let expression = SQLite.join(" ", expressions)
@@ -366,7 +366,7 @@ public struct Query {
     }
 
     private var deleteStatement: Statement {
-        var expressions: [Expressible] = [Expression<()>("DELETE FROM \(tableName)")]
+        var expressions: [Expressible] = [Expression<()>(literal: "DELETE FROM \(tableName)")]
         whereClause.map(expressions.append)
         let expression = SQLite.join(" ", expressions)
         return database.prepare(expression.SQL, expression.bindings)
@@ -375,23 +375,23 @@ public struct Query {
     // MARK: -
 
     private var selectClause: Expressible {
-        var expressions: [Expressible] = [Expression<()>("SELECT")]
-        if distinct { expressions.append(Expression<()>("DISTINCT")) }
+        var expressions: [Expressible] = [Expression<()>(literal: "SELECT")]
+        if distinct { expressions.append(Expression<()>(literal: "DISTINCT")) }
         expressions.append(SQLite.join(", ", columns))
-        expressions.append(Expression<()>("FROM \(self)"))
+        expressions.append(Expression<()>(literal: "FROM \(self)"))
         return SQLite.join(" ", expressions)
     }
 
     private var joinClause: Expressible? {
         if joins.count == 0 { return nil }
         return SQLite.join(" ", joins.map { type, table, condition in
-            Expression<()>("\(type.rawValue) JOIN \(table) ON \(condition.SQL)", condition.bindings)
+            Expression<()>(literal: "\(type.rawValue) JOIN \(table) ON \(condition.SQL)", condition.bindings)
         })
     }
 
     internal var whereClause: Expressible? {
         if let filter = filter {
-            return Expression<()>("WHERE \(filter.SQL)", filter.bindings)
+            return Expression<()>(literal: "WHERE \(filter.SQL)", filter.bindings)
         }
         return nil
     }
@@ -399,14 +399,14 @@ public struct Query {
     private var orderClause: Expressible? {
         if order.count == 0 { return nil }
         let clause = SQLite.join(", ", order)
-        return Expression<()>("ORDER BY \(clause.SQL)", clause.bindings)
+        return Expression<()>(literal: "ORDER BY \(clause.SQL)", clause.bindings)
     }
 
     private var limitClause: Expressible? {
         if let limit = limit {
-            var clause = Expression<()>("LIMIT \(limit.to)")
+            var clause = Expression<()>(literal: "LIMIT \(limit.to)")
             if let offset = limit.offset {
-                clause = SQLite.join(" ", [clause, Expression<()>("OFFSET \(offset)")])
+                clause = SQLite.join(" ", [clause, Expression<()>(literal: "OFFSET \(offset)")])
             }
             return clause
         }
@@ -547,7 +547,7 @@ public struct Query {
     // MARK: - Aggregate Functions
 
     /// Runs count(*) against the query and returns it.
-    public var count: Int { return count(Expression<()>("*")) }
+    public var count: Int { return count(Expression<()>(literal: "*")) }
 
     /// Runs count() against the query.
     ///
@@ -747,7 +747,7 @@ extension Query: SequenceType {
 
             func expandGlob(namespace: Bool) -> Query -> () {
                 return { table in
-                    var names = self.database[table.tableName].selectStatement.columnNames
+                    var names = self.database[table.tableName].selectStatement.columnNames.map { quote(identifier: $0) }
                     if namespace { names = names.map { "\(table.alias ?? table.tableName).\($0)" } }
                     columnNames.extend(names)
                 }

@@ -215,10 +215,10 @@ Assuming [the table exists](#creating-a-table), we can immediately [insert](#ins
 We can run [`CREATE TABLE` statements](https://www.sqlite.org/lang_createtable.html) by calling the `create(table:)` function on a database connection. The following is a basic example of SQLite.swift code (using the [expressions](#expressions) and [query](#queries) above) and the corresponding SQL it generates.
 
 ``` swift
-db.create(table: users) { t in     // CREATE TABLE users (
-    t.column(id, primaryKey: true) //     id INTEGER PRIMARY KEY NOT NULL,
-    t.column(email, unique: true)  //     email TEXT UNIQUE NOT NULL,
-    t.column(name)                 //     name TEXT
+db.create(table: users) { t in     // CREATE TABLE "users" (
+    t.column(id, primaryKey: true) //     "id" INTEGER PRIMARY KEY NOT NULL,
+    t.column(email, unique: true)  //     "email" TEXT UNIQUE NOT NULL,
+    t.column(name)                 //     "name" TEXT
 }                                  // )
 ```
 
@@ -233,14 +233,14 @@ The `create(table:)` function has several default parameters we can override.
 
     ``` swift
     db.create(table: users, temporary: true) { t in /* ... */ }
-    // CREATE TEMPORARY TABLE users -- ...
+    // CREATE TEMPORARY TABLE "users" -- ...
     ```
  
   - `ifNotExists` adds an `IF NOT EXISTS` clause to the `CREATE TABLE` statement (which will bail out gracefully if the table already exists). Default: `false`.
 
     ``` swift
     db.create(table: users, ifNotExists: true) { t in /* ... */ }
-    // CREATE TABLE users IF NOT EXISTS -- ...
+    // CREATE TABLE "users" IF NOT EXISTS -- ...
     ```
 
 ### Column Constraints
@@ -262,21 +262,21 @@ The `column` function is used for a single column definition. It takes an [expre
 
     ``` swift
     t.column(email, unique: true)
-    // email TEXT UNIQUE NOT NULL
+    // "email" TEXT UNIQUE NOT NULL
     ```
  
   - `check` attaches a `CHECK` constraint to a column definition in the form of a boolean expression (`Expression<Bool>`). Boolean expressions can be easily built using [filter operators and functions](#filter-operators-and-functions). (See also the `check` function under [Table Constraints](#table-constraints).)
 
     ``` swift
     t.column(email, check: like("%@%", email))
-    // email TEXT NOT NULL CHECK (email LIKE '%@%')
+    // "email" TEXT NOT NULL CHECK ("email" LIKE '%@%')
     ```
  
   - `defaultValue` adds a `DEFAULT` clause to a column definition and _only_ accepts a value (or expression) matching the column’s type. This value is used if none is explicitly provided during [an `INSERT`](#inserting-rows).
 
     ``` swift
     t.column(name, defaultValue: "Anonymous")
-    // name TEXT DEFAULT 'Anonymous'
+    // "name" TEXT DEFAULT 'Anonymous'
     ```
  
     > _Note:_ The `defaultValue` parameter cannot be used alongside `primaryKey` and `references`. If you need to create a column that has a default value and is also a primary and/or foreign key, use the `primaryKey` and `foreignKey` functions mentioned under [Table Constraints](#table-constraints).
@@ -285,17 +285,17 @@ The `column` function is used for a single column definition. It takes an [expre
 
     ``` swift
     t.column(email, collate: .NoCase)
-    // email TEXT NOT NULL COLLATE NOCASE
+    // "email" TEXT NOT NULL COLLATE NOCASE
     ```
  
   - `references` adds a `REFERENCES` clause to `Expression<Int>` (and `Expression<Int?>`) column definitions and accepts a table (`Query`) or namespaced column expression. (See the `foreignKey` function under [Table Constraints](#table-constraints) for non-integer foreign key support.)
 
     ``` swift
     t.column(user_id, references: users[id])
-    // user_id INTEGER REFERENCES users(id)
+    // "user_id" INTEGER REFERENCES "users"("id")
 
     t.column(user_id, references: users)
-    // user_id INTEGER REFERENCES users
+    // "user_id" INTEGER REFERENCES "users"
     // -- assumes "users" has a PRIMARY KEY
     ```
 
@@ -310,28 +310,28 @@ Additional constraints may be provided outside the scope of a single column usin
 
     ``` swift
     t.primaryKey(email.asc, name)
-    // PRIMARY KEY(email ASC, name)
+    // PRIMARY KEY("email" ASC, "name")
     ```
  
   - `unique` adds a `UNIQUE` constraint to the table. Unlike [the column constraint, above](#column-constraints), it supports composite (multiple column) constraints.
 
     ``` swift
     t.unique(local, domain)
-    // UNIQUE(local, domain)
+    // UNIQUE("local", "domain")
     ```
  
   - `check` adds a `CHECK` constraint to the table in the form of a boolean expression (`Expression<Bool>`). Boolean expressions can be easily built using [filter operators and functions](#filter-operators-and-functions). (See also the `check` parameter under [Column Constraints](#column-constraints).)
 
     ``` swift
     t.check(balance >= 0)
-    // CHECK (balance >= 0.0)
+    // CHECK ("balance" >= 0.0)
     ```
 
   - `foreignKey` adds a `FOREIGN KEY` constraint to the table. Unlike [the `references` constraint, above](#column-constraints), it supports all SQLite types, and both [`ON UPDATE` and `ON DELETE` actions](https://www.sqlite.org/foreignkeys.html#fk_actions).
 
     ``` swift
     t.foreignKey(user_id, on: users[id], delete: .SetNull)
-    // FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE SET NULL
+    // FOREIGN KEY("user_id") REFERENCES "users"("id") ON DELETE SET NULL
     ```
 
     > _Note:_ Composite foreign keys are not supported at this time. If you add support, please [submit a pull request](https://github.com/stephencelis/SQLite.swift/fork).
@@ -347,7 +347,7 @@ We can insert rows into a table by calling a [query’s](#queries) `insert` func
 
 ``` swift
 users.insert(email <- "alice@mac.com", name <- "Alice")?
-// INSERT INTO users (email, name) VALUES ('alice@mac.com', 'Alice')
+// INSERT INTO "users" ("email", "name") VALUES ('alice@mac.com', 'Alice')
 ```
 
 The `insert` function can return several different types that are useful in different contexts.
@@ -378,8 +378,8 @@ The `insert` function can return several different types that are useful in diff
         users.insert(email <- "betty@mac.com")
     )
     // BEGIN DEFERRED TRANSACTION;
-    // INSERT INTO users (email) VALUES ('alice@mac.com');
-    // INSERT INTO users (email) VALUES ('betty@mac.com');
+    // INSERT INTO "users" ("email") VALUES ('alice@mac.com');
+    // INSERT INTO "users" ("email") VALUES ('betty@mac.com');
     // COMMIT TRANSACTION;
     ``` 
 
@@ -400,7 +400,7 @@ The [`update`](#updating-rows) and [`delete`](#deleting-rows) functions follow s
 > 
 > ``` swift
 > timestamps.insert()!
-> // INSERT INTO timestamps DEFAULT VALUES
+> // INSERT INTO "timestamps" DEFAULT VALUES
 > ```
 
 
@@ -410,7 +410,7 @@ SQLite.swift typically uses the `<-` operator to set values during [inserts](#in
 
 ``` swift
 views.update(count <- 0)
-// UPDATE views SET count = 0 WHERE (id = 1)
+// UPDATE "views" SET "count" = 0 WHERE ("id" = 1)
 ```
 
 There are also a number of convenience setters that take the existing value into account using native Swift operators.
@@ -419,7 +419,7 @@ For example, to atomically increment a column, we can use `++`:
 
 ``` swift
 views.update(count++) // equivalent to `views.update(count -> count + 1)`
-// UPDATE views SET count = count + 1 WHERE (id = 1)
+// UPDATE "views" SET "count" = "count" + 1 WHERE ("id" = 1)
 ```
 
 To take an amount and “move” it via transaction, we can use `-=` and `+=`:
@@ -431,8 +431,8 @@ db.transaction(
     betty.update(balance += amount)
 )
 // BEGIN DEFERRED TRANSACTION;
-// UPDATE users SET balance = balance - 100.0 WHERE (id = 1);
-// UPDATE users SET balance = balance + 100.0 WHERE (id = 2);
+// UPDATE "users" SET "balance" = "balance" - 100.0 WHERE ("id" = 1);
+// UPDATE "users" SET "balance" = "balance" + 100.0 WHERE ("id" = 2);
 // COMMIT TRANSACTION;
 ```
 
@@ -477,7 +477,7 @@ for user in users {
     println("id: \(user[id]), email: \(user[email]), name: \(user[name])")
     // id: 1, email: alice@mac.com, name: Optional("Alice")
 }
-// SELECT * FROM users
+// SELECT * FROM "users"
 ```
 
 `Expression<T>` column values are _automatically unwrapped_ (we’ve made a promise to the compiler that they’ll never be `NULL`), while `Expression<T?>` values remain wrapped.
@@ -489,14 +489,14 @@ We can pluck the first row by calling the `first` computed property on [`Query`]
 
 ``` swift
 if let user = users.first { /* ... */ } // Row
-// SELECT * FROM users LIMIT 1
+// SELECT * FROM "users" LIMIT 1
 ```
 
 To collect all rows into an array, we can simply wrap the sequence (though this is not always the most memory-efficient idea).
 
 ``` swift
 let all = Array(users)
-// SELECT * FROM users
+// SELECT * FROM "users"
 ```
 
 
@@ -505,9 +505,9 @@ let all = Array(users)
 [`Query`](#queries) structures have a number of chainable functions that can be used (with [expressions](#expressions)) to add and modify [a number of clauses](https://www.sqlite.org/lang_select.html) to the underlying statement.
 
 ``` swift
-let query = users.select(email)           // SELECT email FROM users
-                 .filter(name != nil)     // WHERE name IS NOT NULL
-                 .order(email.desc, name) // ORDER BY email DESC, name
+let query = users.select(email)           // SELECT "email" FROM "users"
+                 .filter(name != nil)     // WHERE "name" IS NOT NULL
+                 .order(email.desc, name) // ORDER BY "email" DESC, "name"
                  .limit(5, offset: 1)     // LIMIT 5 OFFSET 1
 ```
 
@@ -518,7 +518,7 @@ By default, [`Query`](#queries) objects select every column of the result set (u
 
 ``` swift
 let query = users.select(id, email)
-// SELECT id, email FROM users
+// SELECT "id", "email" FROM "users"
 ```
 
 <!-- TODO
@@ -526,7 +526,7 @@ We can select aggregate values using [aggregate functions](#aggregate-sqlite-fun
 
 ``` swift
 let query = users.select(count(*))
-// SELECT count(*) FROM users
+// SELECT count(*) FROM "users"
 ```
 -->
 
@@ -537,7 +537,7 @@ We can join tables using a [query’s](#queries) `join` function.
 
 ``` swift
 users.join(posts, on: user_id == users[id])
-// SELECT * FROM users INNER JOIN posts ON (user_id = users.id)
+// SELECT * FROM "users" INNER JOIN "posts" ON ("user_id" = "users"."id")
 ```
 
 The `join` function takes a [query](#queries) object (for the table being joined on), a join condition (`on`), and is prefixed with an optional join type (default: `.Inner`). Join conditions can be built using [filter operators and functions](#filter-operators-and-functions), generally require [namespacing](#column-namespacing), and sometimes require [aliasing](#table-aliasing).
@@ -556,7 +556,7 @@ We can disambiguate by namespacing `id`.
 
 ``` swift
 let query = users.join(posts, on: user_id == users[id])
-// SELECT * FROM users INNER JOIN posts ON (user_id = users.id)
+// SELECT * FROM "users" INNER JOIN "posts" ON ("user_id" = "users"."id")
 ```
 
 Namespacing is achieved by subscripting a [query](#queries) with a [column expression](#expressions) (_e.g._, `users[id]` above becomes `users.id`).
@@ -565,7 +565,7 @@ Namespacing is achieved by subscripting a [query](#queries) with a [column expre
 >
 > ``` swift
 > let query = users.select(users[*])
-> // SELECT users.* FROM users
+> // SELECT "users".* FROM "users"
 > ```
 
 
@@ -577,8 +577,8 @@ Occasionally, we need to join a table to itself, in which case we must alias the
 let managers = users.alias("managers")
 
 let query = users.join(managers, on: managers[id] == users[manager_id])
-// SELECT * FROM users
-// INNER JOIN users AS managers ON (managers.id = users.manager_id)
+// SELECT * FROM "users"
+// INNER JOIN "users" AS "managers" ON ("managers"."id" = "users"."manager_id")
 ```
 
 If query results can have ambiguous column names, row values should be accessed with namespaced [column expressions](#expressions). In the above case, `SELECT *` immediately namespaces all columns of the result set.
@@ -586,10 +586,10 @@ If query results can have ambiguous column names, row values should be accessed 
 ``` swift
 let user = query.first!
 user[id]           // fatal error: ambiguous column 'id'
-                   // (please disambiguate: [users.id, managers.id])
+                   // (please disambiguate: ["users"."id", "managers"."id"])
 
-user[users[id]]    // returns users.id
-user[managers[id]] // returns managers.id
+user[users[id]]    // returns "users"."id"
+user[managers[id]] // returns "managers"."id"
 ```
 
 
@@ -599,7 +599,7 @@ SQLite.swift filters rows using a [query’s](#queries) `filter` function with a
 
 ``` swift
 users.filter(id == 1)
-// SELECT * FROM users WHERE (id = 1)
+// SELECT * FROM "users" WHERE ("id" = 1)
 ```
 
 You can build your own boolean expressions by using one of the many [filter operators and functions](#filter-operators-and-functions).
@@ -656,7 +656,7 @@ _E.g._, to return users sorted by `email`, then `name`, in ascending order:
 
 ``` swift
 users.order(email, name)
-// SELECT * FROM users ORDER BY email, name
+// SELECT * FROM "users" ORDER BY "email", "name"
 ```
 
 The `order` function takes a list of [column expressions](#expressions).
@@ -665,7 +665,7 @@ The `order` function takes a list of [column expressions](#expressions).
 
 ``` swift
 users.order(email.desc, name.asc)
-// SELECT * FROM users ORDER BY email DESC, name ASC
+// SELECT * FROM "users" ORDER BY "email" DESC, "name" ASC
 ```
 
 
@@ -675,10 +675,10 @@ We can limit and skip returned rows using a [query’s](#queries) `limit` functi
 
 ``` swift
 users.limit(5)
-// SELECT * FROM users LIMIT 5
+// SELECT * FROM "users" LIMIT 5
 
 users.limit(5, offset: 5)
-// SELECT * FROM users LIMIT 5 OFFSET 5
+// SELECT * FROM "users" LIMIT 5 OFFSET 5
 ```
 
 
@@ -688,14 +688,14 @@ users.limit(5, offset: 5)
 
 ``` swift
 users.count
-// SELECT count(*) FROM users
+// SELECT count(*) FROM "users"
 ```
 
 Filtered queries will appropriately filter aggregate values.
 
 ``` swift
 users.filter(name != nil).count
-// SELECT count(*) FROM users WHERE name IS NOT NULL
+// SELECT count(*) FROM "users" WHERE "name" IS NOT NULL
 ```
 
   - `count` as a computed property (see examples above) returns the total number of rows matching the query.
@@ -704,49 +704,49 @@ users.filter(name != nil).count
 
     ``` swift
     users.count(name) // -> Int
-    // SELECT count(name) FROM users
+    // SELECT count("name") FROM "users"
     ```
 
   - `max` takes a comparable column expression and returns the largest value if any exists.
 
     ``` swift
     users.max(id) // -> Int?
-    // SELECT max(id) FROM users
+    // SELECT max("id") FROM "users"
     ```
 
   - `min` takes a comparable column expression and returns the smallest value if any exists.
 
     ``` swift
     users.min(id) // -> Int?
-    // SELECT min(id) FROM users
+    // SELECT min("id") FROM "users"
     ```
 
   - `average` takes a numeric column expression and returns the average row value (as a `Double`) if any exists.
 
     ``` swift
     users.average(balance) // -> Double?
-    // SELECT avg(balance) FROM users
+    // SELECT avg("balance") FROM "users"
     ```
 
   - `sum` takes a numeric column expression and returns the sum total of all rows if any exist.
 
     ``` swift
     users.sum(balance) // -> Double?
-    // SELECT sum(balance) FROM users
+    // SELECT sum("balance") FROM "users"
     ```
 
   - `total`, like `sum`, takes a numeric column expression and returns the sum total of all rows, but in this case always returns a `Double`, and returns `0.0` for an empty query.
 
     ``` swift
     users.total(balance) // -> Double
-    // SELECT total(balance) FROM users
+    // SELECT total("balance") FROM "users"
     ```
 
 > _Note:_ Most of the above aggregate functions (except `max` and `min`) can be called with a `distinct` parameter to aggregate `DISTINCT` values only.
 >
 > ``` swift
 > users.count(distinct: name)
-> // SELECT count(DISTINCT name) FROM users
+> // SELECT count(DISTINCT "name") FROM "users"
 > ```
 
 
@@ -758,7 +758,7 @@ When an unscoped query calls `update`, it will update _every_ row in the table.
 
 ``` swift
 users.update(email <- "alice@me.com")?
-// UPDATE users SET email = 'alice@me.com'
+// UPDATE "users" SET "email" = 'alice@me.com'
 ```
 
 Be sure to scope `UPDATE` statements beforehand using [the `filter` function](#filtering-rows).
@@ -766,7 +766,7 @@ Be sure to scope `UPDATE` statements beforehand using [the `filter` function](#f
 ``` swift
 let alice = users.filter(id == 1)
 alice.update(email <- "alice@me.com")?
-// UPDATE users SET email = 'alice@me.com' WHERE (id = 1)
+// UPDATE "users" SET "email" = 'alice@me.com' WHERE ("id" = 1)
 ```
 
 Like [`insert`](#inserting-rows) (and [`delete`](#updating-rows)), `update` can return several different types that are useful in different contexts.
@@ -802,7 +802,7 @@ When an unscoped query calls `delete`, it will delete _every_ row in the table.
 
 ``` swift
 users.delete()?
-// DELETE FROM users
+// DELETE FROM "users"
 ```
 
 Be sure to scope `DELETE` statements beforehand using [the `filter` function](#filtering-rows).
@@ -810,7 +810,7 @@ Be sure to scope `DELETE` statements beforehand using [the `filter` function](#f
 ``` swift
 let alice = users.filter(id == 1)
 alice.delete()?
-// DELETE FROM users WHERE (id = 1)
+// DELETE FROM "users" WHERE ("id" = 1)
 ```
 
 Like [`insert`](#inserting-rows) and [`update`](#updating-rows), `delete` can return several different types that are useful in different contexts.
@@ -863,7 +863,7 @@ We can rename a table by calling the `rename(table:to:)` function on a database 
 
 ``` swift
 db.rename(users, to: "users_old")
-// ALTER TABLE users RENAME TO users_old
+// ALTER TABLE "users" RENAME TO "users_old"
 ```
 
 
@@ -873,7 +873,7 @@ We can add columns to a table by calling `alter` function on a database connecti
 
 ``` swift
 db.alter(table: users, add: suffix)
-// ALTER TABLE users ADD COLUMN suffix TEXT
+// ALTER TABLE "users" ADD COLUMN "suffix" TEXT
 ```
 
 
@@ -886,15 +886,15 @@ The `alter` function shares several of the same [`column` function parameters](#
     ``` swift
     let check = contains(["JR", "SR"], suffix)
     db.alter(table: users, add: suffix, check: check)
-    // ALTER TABLE users
-    // ADD COLUMN suffix TEXT CHECK (suffix IN ('JR', 'SR'))
+    // ALTER TABLE "users"
+    // ADD COLUMN "suffix" TEXT CHECK ("suffix" IN ('JR', 'SR'))
     ```
  
   - `defaultValue` adds a `DEFAULT` clause to a column definition and _only_ accepts a value matching the column’s type. This value is used if none is explicitly provided during [an `INSERT`](#inserting-rows).
 
     ``` swift
     db.alter(table: users, add: suffix, defaultValue: "SR")
-    // ALTER TABLE users ADD COLUMN suffix TEXT DEFAULT 'SR'
+    // ALTER TABLE "users" ADD COLUMN "suffix" TEXT DEFAULT 'SR'
     ```
  
     > _Note:_ Unlike the [`CREATE TABLE` constraint](#table-constraints), default values may not be expression structures (including `CURRENT_TIME`, `CURRENT_DATE`, or `CURRENT_TIMESTAMP`).
@@ -912,10 +912,10 @@ The `alter` function shares several of the same [`column` function parameters](#
 
     ``` swift
     db.alter(table: posts, add: user_id, references: users[id])
-    // ALTER TABLE posts ADD COLUMN user_id INTEGER REFERENCES users(id)
+    // ALTER TABLE "posts" ADD COLUMN "user_id" INTEGER REFERENCES "users"("id")
 
     db.alter(table: posts, add: user_id, references: users)
-    // ALTER TABLE posts ADD COLUMN user_id INTEGER REFERENCES users
+    // ALTER TABLE "posts" ADD COLUMN "user_id" INTEGER REFERENCES "users"
     // -- assumes "users" has a PRIMARY KEY
     ```
 
@@ -929,7 +929,7 @@ We can run [`CREATE INDEX` statements](https://www.sqlite.org/lang_createindex.h
 
 ``` swift
 db.create(index: users, on: email)
-// CREATE INDEX index_users_on_email ON users (email)
+// CREATE INDEX index_users_on_email ON "users" ("email")
 ```
 
 The index name is generated automatically based on the table and column names.
@@ -940,14 +940,14 @@ The `create(index:)` function has a couple default parameters we can override.
 
     ``` swift
     db.create(index: users, on: email, unique: true)
-    // CREATE UNIQUE INDEX index_users_on_email ON users (email)
+    // CREATE UNIQUE INDEX index_users_on_email ON "users" ("email")
     ```
 
   - `ifNotExists` adds an `IF NOT EXISTS` clause to the `CREATE TABLE` statement (which will bail out gracefully if the table already exists). Default: `false`.
 
     ``` swift
     db.create(index: users, on: email, ifNotExists: true)
-    // CREATE INDEX IF NOT EXISTS index_users_on_email ON users (email)
+    // CREATE INDEX IF NOT EXISTS index_users_on_email ON "users" ("email")
     ```
 
 
@@ -974,14 +974,14 @@ We can run [`DROP TABLE` statements](https://www.sqlite.org/lang_droptable.html)
 
 ``` swift
 db.drop(table: users)
-// DROP TABLE users
+// DROP TABLE "users"
 ```
 
 The `drop(table:)` function has one additional parameter, `ifExists`, which (when `true`) adds an `IF EXISTS` clause to the statement.
 
 ``` swift
 db.drop(table: users, ifExists: true)
-// DROP TABLE IF EXISTS users
+// DROP TABLE IF EXISTS "users"
 ```
 
 
@@ -1073,9 +1073,9 @@ let published_at = Expression<NSDate>("published_at")
 
 let published = posts.filter(published_at <= Date())
 // extension where Datatype == String:
-//     SELECT * FROM posts WHERE published_at <= '2014-11-18 12:45:30'
+//     SELECT * FROM "posts" WHERE "published_at" <= '2014-11-18 12:45:30'
 // extension where Datatype == Int:
-//     SELECT * FROM posts WHERE published_at <= 1416314730
+//     SELECT * FROM "posts" WHERE "published_at" <= 1416314730
 ```
 
 
@@ -1128,7 +1128,7 @@ Swift does _not_ currently support generic subscripting, which means we cannot, 
     ``` swift
     let avatar = Expression<UIImage?>("avatar")
     users[avatar]           // fails to compile
-    users.namespace(avatar) // Expression<UIImage?>("users.avatar")
+    users.namespace(avatar) // "users"."avatar"
     ```
 
  2. **Access column data**. Use the `get` function, instead:
@@ -1200,7 +1200,7 @@ Many of SQLite’s [core functions](https://www.sqlite.org/lang_corefunc.html) h
 > _Note:_ SQLite.swift aliases the `??` operator to the `ifnull` function.
 >
 > ``` swift
-> name ?? email // ifnull(name, email)
+> name ?? email // ifnull("name", "email")
 > ```
 
 

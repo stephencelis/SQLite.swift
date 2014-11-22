@@ -19,25 +19,25 @@ class SchemaTests: XCTestCase {
     }
 
     func test_createTable_createsTable() {
-        ExpectExecution(db, "CREATE TABLE \"users\" (age INTEGER)",
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"age\" INTEGER)",
             db.create(table: users) { t in t.column(age) }
         )
     }
 
     func test_createTable_temporary_createsTemporaryTable() {
-        ExpectExecution(db, "CREATE TEMPORARY TABLE \"users\" (age INTEGER)",
+        ExpectExecution(db, "CREATE TEMPORARY TABLE \"users\" (\"age\" INTEGER)",
             db.create(table: users, temporary: true) { t in t.column(age) }
         )
     }
 
     func test_createTable_ifNotExists_createsTableIfNotExists() {
-        ExpectExecution(db, "CREATE TABLE IF NOT EXISTS \"users\" (age INTEGER)",
+        ExpectExecution(db, "CREATE TABLE IF NOT EXISTS \"users\" (\"age\" INTEGER)",
             db.create(table: users, ifNotExists: true) { t in t.column(age) }
         )
     }
 
     func test_createTable_column_buildsColumnDefinition() {
-        ExpectExecution(db, "CREATE TABLE \"users\" (email TEXT NOT NULL)",
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"email\" TEXT NOT NULL)",
             db.create(table: users) { t in
                 t.column(email)
             }
@@ -45,7 +45,7 @@ class SchemaTests: XCTestCase {
     }
 
     func test_createTable_column_withPrimaryKey_buildsPrimaryKeyClause() {
-        ExpectExecution(db, "CREATE TABLE \"users\" (id INTEGER PRIMARY KEY NOT NULL)",
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"id\" INTEGER PRIMARY KEY NOT NULL)",
             db.create(table: users) { t in
                 t.column(id, primaryKey: true)
             }
@@ -53,7 +53,7 @@ class SchemaTests: XCTestCase {
     }
 
     func test_createTable_column_withNullFalse_buildsNotNullClause() {
-        ExpectExecution(db, "CREATE TABLE \"users\" (email TEXT NOT NULL)",
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"email\" TEXT NOT NULL)",
             db.create(table: users) { t in
                 t.column(email)
             }
@@ -61,7 +61,7 @@ class SchemaTests: XCTestCase {
     }
 
     func test_createTable_column_withUnique_buildsUniqueClause() {
-        ExpectExecution(db, "CREATE TABLE \"users\" (email TEXT NOT NULL UNIQUE)",
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"email\" TEXT NOT NULL UNIQUE)",
             db.create(table: users) { t in
                 t.column(email, unique: true)
             }
@@ -69,7 +69,7 @@ class SchemaTests: XCTestCase {
     }
 
     func test_createTable_column_withCheck_buildsCheckClause() {
-        ExpectExecution(db, "CREATE TABLE \"users\" (admin BOOLEAN NOT NULL CHECK (admin IN (0, 1)))",
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"admin\" BOOLEAN NOT NULL CHECK (\"admin\" IN (0, 1)))",
             db.create(table: users) { t in
                 t.column(admin, check: contains([false, true], admin))
             }
@@ -77,7 +77,7 @@ class SchemaTests: XCTestCase {
     }
 
     func test_createTable_column_withDefaultValue_buildsDefaultClause() {
-        ExpectExecution(db, "CREATE TABLE \"users\" (salary REAL NOT NULL DEFAULT 0.0)",
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"salary\" REAL NOT NULL DEFAULT 0.0)",
             db.create(table: users) { t in
                 t.column(salary, defaultValue: 0.0)
             }
@@ -85,7 +85,7 @@ class SchemaTests: XCTestCase {
     }
 
     func test_createTable_stringColumn_collation_buildsCollateClause() {
-        ExpectExecution(db, "CREATE TABLE \"users\" (email TEXT NOT NULL COLLATE NOCASE)",
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"email\" TEXT NOT NULL COLLATE NOCASE)",
             db.create(table: users) { t in
                 t.column(email, collate: .NoCase)
             }
@@ -95,8 +95,8 @@ class SchemaTests: XCTestCase {
     func test_createTable_intColumn_referencingNamespacedColumn_buildsReferencesClause() {
         let users = self.users
         ExpectExecution(db, "CREATE TABLE \"users\" (" +
-            "id INTEGER PRIMARY KEY NOT NULL, " +
-            "manager_id INTEGER REFERENCES \"users\"(id)" +
+            "\"id\" INTEGER PRIMARY KEY NOT NULL, " +
+            "\"manager_id\" INTEGER REFERENCES \"users\"(\"id\")" +
         ")",
             db.create(table: users) { t in
                 t.column(id, primaryKey: true)
@@ -108,8 +108,8 @@ class SchemaTests: XCTestCase {
     func test_createTable_intColumn_referencingQuery_buildsReferencesClause() {
         let users = self.users
         ExpectExecution(db, "CREATE TABLE \"users\" (" +
-            "id INTEGER PRIMARY KEY NOT NULL, " +
-            "manager_id INTEGER REFERENCES \"users\"" +
+            "\"id\" INTEGER PRIMARY KEY NOT NULL, " +
+            "\"manager_id\" INTEGER REFERENCES \"users\"" +
         ")",
             db.create(table: users) { t in
                 t.column(id, primaryKey: true)
@@ -120,7 +120,7 @@ class SchemaTests: XCTestCase {
 
     func test_createTable_primaryKey_buildsPrimaryKeyTableConstraint() {
         let users = self.users
-        ExpectExecution(db, "CREATE TABLE \"users\" (email TEXT NOT NULL, PRIMARY KEY(email))",
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"email\" TEXT NOT NULL, PRIMARY KEY(\"email\"))",
             db.create(table: users) { t in
                 t.column(email)
                 t.primaryKey(email)
@@ -130,7 +130,9 @@ class SchemaTests: XCTestCase {
 
     func test_createTable_primaryKey_buildsCompositePrimaryKeyTableConstraint() {
         let users = self.users
-        ExpectExecution(db, "CREATE TABLE \"users\" (id INTEGER NOT NULL, email TEXT NOT NULL, PRIMARY KEY(id, email))",
+        ExpectExecution(db, "CREATE TABLE \"users\" (" +
+            "\"id\" INTEGER NOT NULL, \"email\" TEXT NOT NULL, PRIMARY KEY(\"id\", \"email\")" +
+        ")",
             db.create(table: users) { t in
                 t.column(id)
                 t.column(email)
@@ -141,7 +143,7 @@ class SchemaTests: XCTestCase {
 
     func test_createTable_unique_buildsUniqueTableConstraint() {
         let users = self.users
-        ExpectExecution(db, "CREATE TABLE \"users\" (email TEXT NOT NULL, UNIQUE(email))",
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"email\" TEXT NOT NULL, UNIQUE(\"email\"))",
             db.create(table: users) { t in
                 t.column(email)
                 t.unique(email)
@@ -151,7 +153,9 @@ class SchemaTests: XCTestCase {
 
     func test_createTable_unique_buildsCompositeUniqueTableConstraint() {
         let users = self.users
-        ExpectExecution(db, "CREATE TABLE \"users\" (id INTEGER NOT NULL, email TEXT NOT NULL, UNIQUE(id, email))",
+        ExpectExecution(db, "CREATE TABLE \"users\" (" +
+            "\"id\" INTEGER NOT NULL, \"email\" TEXT NOT NULL, UNIQUE(\"id\", \"email\")" +
+        ")",
             db.create(table: users) { t in
                 t.column(id)
                 t.column(email)
@@ -162,7 +166,7 @@ class SchemaTests: XCTestCase {
 
     func test_createTable_check_buildsCheckTableConstraint() {
         let users = self.users
-        ExpectExecution(db, "CREATE TABLE \"users\" (admin BOOLEAN NOT NULL, CHECK (admin IN (0, 1)))",
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"admin\" BOOLEAN NOT NULL, CHECK (\"admin\" IN (0, 1)))",
             db.create(table: users) { t in
                 t.column(admin)
                 t.check(contains([false, true], admin))
@@ -174,9 +178,9 @@ class SchemaTests: XCTestCase {
         let users = self.users
         ExpectExecution(db,
             "CREATE TABLE \"users\" (" +
-                "id INTEGER PRIMARY KEY NOT NULL, " +
-                "manager_id INTEGER, " +
-                "FOREIGN KEY(manager_id) REFERENCES \"users\"(id)" +
+                "\"id\" INTEGER PRIMARY KEY NOT NULL, " +
+                "\"manager_id\" INTEGER, " +
+                "FOREIGN KEY(\"manager_id\") REFERENCES \"users\"(\"id\")" +
             ")",
             db.create(table: users) { t in
                 t.column(id, primaryKey: true)
@@ -190,9 +194,9 @@ class SchemaTests: XCTestCase {
         let users = self.users
         ExpectExecution(db,
             "CREATE TABLE \"users\" (" +
-                "id INTEGER PRIMARY KEY NOT NULL, " +
-                "manager_id INTEGER, " +
-                "FOREIGN KEY(manager_id) REFERENCES \"users\"" +
+                "\"id\" INTEGER PRIMARY KEY NOT NULL, " +
+                "\"manager_id\" INTEGER, " +
+                "FOREIGN KEY(\"manager_id\") REFERENCES \"users\"" +
             ")",
             db.create(table: users) { t in
                 t.column(id, primaryKey: true)
@@ -206,9 +210,9 @@ class SchemaTests: XCTestCase {
         let users = self.users
         ExpectExecution(db,
             "CREATE TABLE \"users\" (" +
-                "id INTEGER PRIMARY KEY NOT NULL, " +
-                "manager_id INTEGER, " +
-                "FOREIGN KEY(manager_id) REFERENCES \"users\" ON UPDATE CASCADE" +
+                "\"id\" INTEGER PRIMARY KEY NOT NULL, " +
+                "\"manager_id\" INTEGER, " +
+                "FOREIGN KEY(\"manager_id\") REFERENCES \"users\" ON UPDATE CASCADE" +
             ")",
             db.create(table: users) { t in
                 t.column(id, primaryKey: true)
@@ -222,9 +226,9 @@ class SchemaTests: XCTestCase {
         let users = self.users
         ExpectExecution(db,
             "CREATE TABLE \"users\" (" +
-                "id INTEGER PRIMARY KEY NOT NULL, " +
-                "manager_id INTEGER, " +
-                "FOREIGN KEY(manager_id) REFERENCES \"users\" ON DELETE CASCADE" +
+                "\"id\" INTEGER PRIMARY KEY NOT NULL, " +
+                "\"manager_id\" INTEGER, " +
+                "FOREIGN KEY(\"manager_id\") REFERENCES \"users\" ON DELETE CASCADE" +
             ")",
             db.create(table: users) { t in
                 t.column(id, primaryKey: true)
@@ -237,11 +241,11 @@ class SchemaTests: XCTestCase {
     func test_createTable_withQuery_createsTableWithQuery() {
         CreateUsersTable(db)
         ExpectExecution(db,
-            "CREATE TABLE \"emails\" AS SELECT email FROM \"users\"",
+            "CREATE TABLE \"emails\" AS SELECT \"email\" FROM \"users\"",
             db.create(table: db["emails"], from: users.select(email))
         )
         ExpectExecution(db,
-            "CREATE TEMPORARY TABLE IF NOT EXISTS \"emails\" AS SELECT email FROM \"users\"",
+            "CREATE TEMPORARY TABLE IF NOT EXISTS \"emails\" AS SELECT \"email\" FROM \"users\"",
             db.create(table: db["emails"], temporary: true, ifNotExists: true, from: users.select(email))
         )
     }
@@ -255,7 +259,7 @@ class SchemaTests: XCTestCase {
         CreateUsersTable(db)
         let column = Expression<Double>("bonus")
 
-        ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN bonus REAL NOT NULL DEFAULT 0.0",
+        ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN \"bonus\" REAL NOT NULL DEFAULT 0.0",
             db.alter(table: users, add: column, defaultValue: 0)
         )
     }
@@ -264,7 +268,7 @@ class SchemaTests: XCTestCase {
         CreateUsersTable(db)
         let column = Expression<Double?>("bonus")
 
-        ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN bonus REAL",
+        ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN \"bonus\" REAL",
             db.alter(table: users, add: column)
         )
     }
@@ -273,7 +277,7 @@ class SchemaTests: XCTestCase {
         CreateUsersTable(db)
         let column = Expression<Double?>("bonus")
 
-        ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN bonus REAL DEFAULT 0.0",
+        ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN \"bonus\" REAL DEFAULT 0.0",
             db.alter(table: users, add: column, defaultValue: 0)
         )
     }
@@ -282,7 +286,7 @@ class SchemaTests: XCTestCase {
         CreateUsersTable(db)
         let column = Expression<Int?>("parent_id")
 
-        ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN parent_id INTEGER REFERENCES \"users\"(id)",
+        ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN \"parent_id\" INTEGER REFERENCES \"users\"(\"id\")",
             db.alter(table: users, add: column, references: users[id])
         )
     }
@@ -296,7 +300,7 @@ class SchemaTests: XCTestCase {
     func test_index_executesIndexStatement() {
         CreateUsersTable(db)
         ExpectExecution(db,
-            "CREATE INDEX index_users_on_email ON \"users\" (email)",
+            "CREATE INDEX index_users_on_email ON \"users\" (\"email\")",
             db.create(index: users, on: email)
         )
     }
@@ -304,7 +308,7 @@ class SchemaTests: XCTestCase {
     func test_index_withUniqueness_executesUniqueIndexStatement() {
         CreateUsersTable(db)
         ExpectExecution(db,
-            "CREATE UNIQUE INDEX index_users_on_email ON \"users\" (email)",
+            "CREATE UNIQUE INDEX index_users_on_email ON \"users\" (\"email\")",
             db.create(index: users, unique: true, on: email)
         )
     }
@@ -312,7 +316,7 @@ class SchemaTests: XCTestCase {
     func test_index_ifNotExists_executesIndexStatement() {
         CreateUsersTable(db)
         ExpectExecution(db,
-            "CREATE INDEX IF NOT EXISTS index_users_on_email ON \"users\" (email)",
+            "CREATE INDEX IF NOT EXISTS index_users_on_email ON \"users\" (\"email\")",
             db.create(index: users, ifNotExists: true, on: email)
         )
     }
@@ -320,7 +324,7 @@ class SchemaTests: XCTestCase {
     func test_index_withMultipleColumns_executesCompoundIndexStatement() {
         CreateUsersTable(db)
         ExpectExecution(db,
-            "CREATE INDEX index_users_on_age_DESC_email ON \"users\" (age DESC, email)",
+            "CREATE INDEX index_users_on_age_DESC_email ON \"users\" (\"age\" DESC, \"email\")",
             db.create(index: users, on: age.desc, email)
         )
     }
@@ -346,11 +350,11 @@ class SchemaTests: XCTestCase {
     func test_createView_withQuery_createsViewWithQuery() {
         CreateUsersTable(db)
         ExpectExecution(db,
-            "CREATE VIEW \"emails\" AS SELECT email FROM \"users\"",
+            "CREATE VIEW \"emails\" AS SELECT \"email\" FROM \"users\"",
             db.create(view: db["emails"], from: users.select(email))
         )
         ExpectExecution(db,
-            "CREATE TEMPORARY VIEW IF NOT EXISTS \"emails\" AS SELECT email FROM \"users\"",
+            "CREATE TEMPORARY VIEW IF NOT EXISTS \"emails\" AS SELECT \"email\" FROM \"users\"",
             db.create(view: db["emails"], temporary: true, ifNotExists: true, from: users.select(email))
         )
     }

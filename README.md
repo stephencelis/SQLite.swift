@@ -45,18 +45,18 @@ db.create(table: users) { t in
     t.column(email, unique: true)
 }
 // CREATE TABLE "users" (
-//     id INTEGER PRIMARY KEY NOT NULL,
-//     name TEXT,
-//     email TEXT NOT NULL UNIQUE
+//     "id" INTEGER PRIMARY KEY NOT NULL,
+//     "name" TEXT,
+//     "email" TEXT NOT NULL UNIQUE
 // )
 
 var alice: Query?
 if let insertedID = users.insert(name <- "Alice", email <- "alice@mac.com") {
-	println("inserted id: \(insertedID)")
-	// inserted id: 1
-	alice = users.filter(id == insertedID)
+    println("inserted id: \(insertedID)")
+    // inserted id: 1
+    alice = users.filter(id == insertedID)
 }
-// INSERT INTO "users" (name, email) VALUES ('Alice', 'alice@mac.com')
+// INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
 
 for user in users {
     println("id: \(user[id]), name: \(user[name]), email: \(user[email])"
@@ -65,10 +65,10 @@ for user in users {
 // SELECT * FROM "users"
 
 alice?.update(email <- replace(email, "mac.com", "me.com"))?
-// UPDATE "users" SET email = replace(email, "mac.com", "me.com") WHERE (id = 1)
+// UPDATE "users" SET "email" = replace("email", 'mac.com', 'me.com') WHERE ("id" = 1)
 
 alice?.delete()?
-// DELETE FROM "users" WHERE (id = 1)
+// DELETE FROM "users" WHERE ("id" = 1)
 
 users.count
 // SELECT count(*) FROM "users"

@@ -71,7 +71,7 @@ public extension Database {
         check: Expression<Bool>? = nil,
         references: Expression<V>
     ) -> Statement {
-        let expressions = [Expression<()>("REFERENCES"), namespace(references)]
+        let expressions = [Expression<()>(literal: "REFERENCES"), namespace(references)]
         return alter(table, define(Expression<V>(column), false, true, false, check, nil, expressions))
     }
 
@@ -101,8 +101,9 @@ public extension Database {
     private func indexName(table: Query, on columns: [Expressible]) -> String {
         let string = join(" ", ["index", table.tableName, "on"] + columns.map { $0.expression.SQL })
         return Array(string).reduce("") { underscored, character in
+            if character == "\"" { return underscored }
             if "A"..."Z" ~= character || "a"..."z" ~= character { return underscored + String(character) }
-            return underscored.hasSuffix("_") ? underscored : underscored + "_"
+            return underscored + "_"
         }
     }
 
@@ -223,7 +224,7 @@ public final class SchemaBuilder {
         references: Expression<Int>
     ) {
         assertForeignKeysEnabled()
-        let expressions: [Expressible] = [Expression<()>("REFERENCES"), namespace(references)]
+        let expressions: [Expressible] = [Expression<()>(literal: "REFERENCES"), namespace(references)]
         column(name, false, false, unique, check, nil, expressions)
     }
 
@@ -237,7 +238,7 @@ public final class SchemaBuilder {
             name,
             unique: unique,
             check: check,
-            references: Expression(references.tableName)
+            references: Expression(literal: references.tableName)
         )
     }
 
@@ -248,7 +249,7 @@ public final class SchemaBuilder {
         references: Expression<Int>
     ) {
         assertForeignKeysEnabled()
-        let expressions: [Expressible] = [Expression<()>("REFERENCES"), namespace(references)]
+        let expressions: [Expressible] = [Expression<()>(literal: "REFERENCES"), namespace(references)]
         column(Expression<Int>(name), false, true, unique, check, nil, expressions)
     }
 
@@ -262,7 +263,7 @@ public final class SchemaBuilder {
             name,
             unique: unique,
             check: check,
-            references: Expression(references.tableName)
+            references: Expression(literal: references.tableName)
         )
     }
 
@@ -275,7 +276,7 @@ public final class SchemaBuilder {
         defaultValue value: Expression<String>? = nil,
         collate: Collation
     ) {
-        let expressions: [Expressible] = [Expression<()>("COLLATE \(collate.rawValue)")]
+        let expressions: [Expressible] = [Expression<()>(literal: "COLLATE \(collate.rawValue)")]
         column(name, false, false, unique, check, value, expressions)
     }
 
@@ -286,8 +287,7 @@ public final class SchemaBuilder {
         defaultValue value: String,
         collate: Collation
     ) {
-        let expressions: [Expressible] = [Expression<()>("COLLATE \(collate.rawValue)")]
-        column(name, false, false, unique, check, Expression(value: value), expressions)
+        column(name, unique: unique, check: check, defaultValue: Expression(value: value), collate: collate)
     }
 
     public func column(
@@ -297,19 +297,18 @@ public final class SchemaBuilder {
         defaultValue value: Expression<String>? = nil,
         collate: Collation
     ) {
-        let expressions: [Expressible] = [Expression<()>("COLLATE \(collate.rawValue)")]
-        column(Expression<String>(name), false, true, unique, check, value, expressions)
+        column(Expression<String>(name), unique: unique, check: check, defaultValue: value, collate: collate)
     }
 
     public func column(
         name: Expression<String?>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: String?,
+        defaultValue: String?,
         collate: Collation
     ) {
-        let expressions: [Expressible] = [Expression<()>("COLLATE \(collate.rawValue)")]
-        column(Expression<String>(name), false, true, unique, check, Expression(value: value), expressions)
+        let value = defaultValue.map { Expression<String>(value: $0) }
+        column(Expression<String>(name), unique: unique, check: check, defaultValue: value, collate: collate)
     }
 
     private func column<V: Value where V.Datatype: Binding>(
@@ -326,16 +325,16 @@ public final class SchemaBuilder {
 
     public func primaryKey(column: Expressible...) {
         let primaryKey = SQLite.join(", ", column)
-        columns.append(Expression<()>("PRIMARY KEY(\(primaryKey.SQL))", primaryKey.bindings))
+        columns.append(Expression<()>(literal: "PRIMARY KEY(\(primaryKey.SQL))", primaryKey.bindings))
     }
 
     public func unique(column: Expressible...) {
         let unique = SQLite.join(", ", column)
-        columns.append(Expression<()>("UNIQUE(\(unique.SQL))", unique.bindings))
+        columns.append(Expression<()>(literal: "UNIQUE(\(unique.SQL))", unique.bindings))
     }
 
     public func check(condition: Expression<Bool>) {
-        columns.append(Expression<()>("CHECK \(condition.SQL)", condition.bindings))
+        columns.append(Expression<()>(literal: "CHECK \(condition.SQL)", condition.bindings))
     }
 
     public enum Dependency: String {
@@ -359,10 +358,10 @@ public final class SchemaBuilder {
         delete: Dependency? = nil
     ) {
         assertForeignKeysEnabled()
-        var parts: [Expressible] = [Expression<()>("FOREIGN KEY(\(column.SQL)) REFERENCES", column.bindings)]
+        var parts: [Expressible] = [Expression<()>(literal: "FOREIGN KEY(\(column.SQL)) REFERENCES", column.bindings)]
         parts.append(namespace(references))
-        if let update = update { parts.append(Expression<()>("ON UPDATE \(update.rawValue)")) }
-        if let delete = delete { parts.append(Expression<()>("ON DELETE \(delete.rawValue)")) }
+        if let update = update { parts.append(Expression<()>(literal: "ON UPDATE \(update.rawValue)")) }
+        if let delete = delete { parts.append(Expression<()>(literal: "ON DELETE \(delete.rawValue)")) }
         columns.append(SQLite.join(" ", parts))
     }
     public func foreignKey<V: Value where V.Datatype: Binding>(
@@ -372,11 +371,7 @@ public final class SchemaBuilder {
         delete: Dependency? = nil
     ) {
         assertForeignKeysEnabled()
-        var parts: [Expressible] = [Expression<()>("FOREIGN KEY(\(column.SQL)) REFERENCES", column.bindings)]
-        parts.append(namespace(references))
-        if let update = update { parts.append(Expression<()>("ON UPDATE \(update.rawValue)")) }
-        if let delete = delete { parts.append(Expression<()>("ON DELETE \(delete.rawValue)")) }
-        columns.append(SQLite.join(" ", parts))
+        foreignKey(Expression<V>(column), references: references, update: update, delete: delete)
     }
 
     public func foreignKey<V: Value where V.Datatype: Binding>(
@@ -385,7 +380,7 @@ public final class SchemaBuilder {
         update: Dependency? = nil,
         delete: Dependency? = nil
     ) {
-        foreignKey(column, references: Expression(references.tableName), update: update, delete: delete)
+        foreignKey(column, references: Expression(literal: references.tableName), update: update, delete: delete)
     }
     public func foreignKey<V: Value where V.Datatype: Binding>(
         column: Expression<V?>,
@@ -393,7 +388,7 @@ public final class SchemaBuilder {
         update: Dependency? = nil,
         delete: Dependency? = nil
     ) {
-        foreignKey(column, references: Expression(references.tableName), update: update, delete: delete)
+        foreignKey(column, references: Expression(literal: references.tableName), update: update, delete: delete)
     }
 
     private func assertForeignKeysEnabled() {
@@ -409,7 +404,7 @@ private func namespace(column: Expressible) -> Expressible {
         let string = String(character)
         return SQL + (string == "." ? "(" : string)
     }
-    return Expression<()>("\(reference))", expression.bindings)
+    return Expression<()>(literal: "\(reference))", expression.bindings)
 }
 
 private func define<V: Value where V.Datatype: Binding>(
@@ -421,12 +416,12 @@ private func define<V: Value where V.Datatype: Binding>(
     defaultValue: Expression<V>?,
     expressions: [Expressible]?
 ) -> Expressible {
-    var parts: [Expressible] = [Expression<()>(column), Expression<()>(V.declaredDatatype)]
-    if primaryKey { parts.append(Expression<()>("PRIMARY KEY")) }
-    if !null { parts.append(Expression<()>("NOT NULL")) }
-    if unique { parts.append(Expression<()>("UNIQUE")) }
-    if let check = check { parts.append(Expression<()>("CHECK \(check.SQL)", check.bindings)) }
-    if let value = defaultValue { parts.append(Expression<()>("DEFAULT \(value.SQL)", value.bindings)) }
+    var parts: [Expressible] = [Expression<()>(column), Expression<()>(literal: V.declaredDatatype)]
+    if primaryKey { parts.append(Expression<()>(literal: "PRIMARY KEY")) }
+    if !null { parts.append(Expression<()>(literal: "NOT NULL")) }
+    if unique { parts.append(Expression<()>(literal: "UNIQUE")) }
+    if let check = check { parts.append(Expression<()>(literal: "CHECK \(check.SQL)", check.bindings)) }
+    if let value = defaultValue { parts.append(Expression<()>(literal: "DEFAULT \(value.SQL)", value.bindings)) }
     if let expressions = expressions { parts += expressions }
     return SQLite.join(" ", parts)
 }
