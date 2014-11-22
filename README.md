@@ -65,7 +65,8 @@ for user in users {
 // SELECT * FROM "users"
 
 alice?.update(email <- replace(email, "mac.com", "me.com"))?
-// UPDATE "users" SET "email" = replace("email", 'mac.com', 'me.com') WHERE ("id" = 1)
+// UPDATE "users" SET "email" = replace("email", 'mac.com', 'me.com')
+// WHERE ("id" = 1)
 
 alice?.delete()?
 // DELETE FROM "users" WHERE ("id" = 1)
