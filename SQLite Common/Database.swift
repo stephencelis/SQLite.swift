@@ -359,7 +359,9 @@ internal func quote(#identifier: String) -> String {
     return quote(identifier, "\"")
 }
 
-private func quote(string: String, character: Character) -> String {
-    let escaped = join("\(character)\(character)", split(string) { $0 == character })
-    return "\(character)\(escaped)\(character)"
+private func quote(string: String, mark: Character) -> String {
+    let escaped = Array(string).reduce("") { string, character in
+        string + (character == mark ? "\(mark)\(mark)" : "\(character)")
+    }
+    return "\(mark)\(escaped)\(mark)"
 }

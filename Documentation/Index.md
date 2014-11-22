@@ -931,7 +931,7 @@ We can run [`CREATE INDEX` statements](https://www.sqlite.org/lang_createindex.h
 
 ``` swift
 db.create(index: users, on: email)
-// CREATE INDEX index_users_on_email ON "users" ("email")
+// CREATE INDEX "index_users_on_email" ON "users" ("email")
 ```
 
 The index name is generated automatically based on the table and column names.
@@ -942,14 +942,14 @@ The `create(index:)` function has a couple default parameters we can override.
 
     ``` swift
     db.create(index: users, on: email, unique: true)
-    // CREATE UNIQUE INDEX index_users_on_email ON "users" ("email")
+    // CREATE UNIQUE INDEX "index_users_on_email" ON "users" ("email")
     ```
 
   - `ifNotExists` adds an `IF NOT EXISTS` clause to the `CREATE TABLE` statement (which will bail out gracefully if the table already exists). Default: `false`.
 
     ``` swift
     db.create(index: users, on: email, ifNotExists: true)
-    // CREATE INDEX IF NOT EXISTS index_users_on_email ON "users" ("email")
+    // CREATE INDEX IF NOT EXISTS "index_users_on_email" ON "users" ("email")
     ```
 
 
@@ -959,14 +959,14 @@ We can run [`DROP INDEX` statements](https://www.sqlite.org/lang_dropindex.html)
 
 ``` swift
 db.drop(index: users, on: email)
-// DROP INDEX index_users_on_email
+// DROP INDEX "index_users_on_email"
 ```
 
 The `drop(table:)` function has one additional parameter, `ifExists`, which (when `true`) adds an `IF EXISTS` clause to the statement.
 
 ``` swift
 db.drop(index: users, on: email, ifExists: true)
-// DROP INDEX IF EXISTS index_users_on_email
+// DROP INDEX IF EXISTS "index_users_on_email"
 ```
 
 

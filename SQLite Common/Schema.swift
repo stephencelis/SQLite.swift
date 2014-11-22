@@ -43,7 +43,7 @@ public extension Database {
     }
 
     public func rename(#table: Query, to tableName: String) -> Statement {
-        return run("ALTER TABLE \(table.tableName) RENAME TO \(quote(identifier: tableName))")
+        return run("ALTER TABLE \(quote(identifier: table.tableName)) RENAME TO \(quote(identifier: tableName))")
     }
 
     public func alter<V: Value where V.Datatype: Binding>(
@@ -76,7 +76,7 @@ public extension Database {
     }
 
     private func alter(table: Query, _ definition: Expressible) -> Statement {
-        return run("ALTER TABLE \(table.tableName) ADD COLUMN \(definition.expression.compile())")
+        return run("ALTER TABLE \(quote(identifier: table.tableName)) ADD COLUMN \(definition.expression.compile())")
     }
 
     public func drop(#table: Query, ifExists: Bool = false) -> Statement {
@@ -91,7 +91,7 @@ public extension Database {
     ) -> Statement {
         let create = createSQL("INDEX", false, unique, ifNotExists, indexName(table, on: columns))
         let joined = SQLite.join(", ", columns)
-        return run("\(create) ON \(table.tableName) (\(joined.compile()))")
+        return run("\(create) ON \(quote(identifier: table.tableName)) (\(joined.compile()))")
     }
 
     public func drop(index table: Query, ifExists: Bool = false, on columns: Expressible...) -> Statement {
@@ -263,7 +263,7 @@ public final class SchemaBuilder {
             name,
             unique: unique,
             check: check,
-            references: Expression(literal: references.tableName)
+            references: Expression(references.tableName)
         )
     }
 
@@ -380,7 +380,7 @@ public final class SchemaBuilder {
         update: Dependency? = nil,
         delete: Dependency? = nil
     ) {
-        foreignKey(column, references: Expression(literal: references.tableName), update: update, delete: delete)
+        foreignKey(column, references: Expression(references.tableName), update: update, delete: delete)
     }
     public func foreignKey<V: Value where V.Datatype: Binding>(
         column: Expression<V?>,
@@ -388,7 +388,7 @@ public final class SchemaBuilder {
         update: Dependency? = nil,
         delete: Dependency? = nil
     ) {
-        foreignKey(column, references: Expression(literal: references.tableName), update: update, delete: delete)
+        foreignKey(column, references: Expression(references.tableName), update: update, delete: delete)
     }
 
     private func assertForeignKeysEnabled() {
@@ -438,13 +438,13 @@ private func createSQL(
     if unique { parts.append("UNIQUE") }
     parts.append(type)
     if ifNotExists { parts.append("IF NOT EXISTS") }
-    parts.append(name)
+    parts.append(quote(identifier: name))
     return Swift.join(" ", parts)
 }
 
 private func dropSQL(type: String, ifExists: Bool, name: String) -> String {
     var parts: [String] = ["DROP \(type)"]
     if ifExists { parts.append("IF EXISTS") }
-    parts.append(name)
+    parts.append(quote(identifier: name))
     return Swift.join(" ", parts)
 }

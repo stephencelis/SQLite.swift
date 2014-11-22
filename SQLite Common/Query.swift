@@ -60,7 +60,7 @@ public struct Query {
 
     public func alias(alias: String?) -> Query {
         var query = self
-        query.alias = alias.map { quote(identifier: $0) }
+        query.alias = alias
         return query
     }
 
@@ -284,7 +284,7 @@ public struct Query {
     /// :returns: A column expression namespaced with the query’s table name or
     ///           alias.
     public func namespace<V>(column: Expression<V>) -> Expression<V> {
-        return Expression(literal: "\(alias ?? tableName).\(column.SQL)", column.bindings)
+        return Expression(literal: "\(quote(identifier: alias ?? tableName)).\(column.SQL)", column.bindings)
     }
 
     // FIXME: rdar://18673897 subscript<T>(expression: Expression<V>) -> Expression<V>
@@ -349,7 +349,7 @@ public struct Query {
     private func insertStatement(values: [Setter], or: OnConflict? = nil) -> Statement {
         var insertClause = "INSERT"
         if let or = or { insertClause = "\(insertClause) OR \(or.rawValue)" }
-        var expressions: [Expressible] = [Expression<()>(literal: "\(insertClause) INTO \(tableName)")]
+        var expressions: [Expressible] = [Expression<()>(literal: "\(insertClause) INTO \(quote(identifier: tableName))")]
         let (c, v) = (SQLite.join(", ", values.map { $0.0 }), SQLite.join(", ", values.map { $0.1 }))
         expressions.append(Expression<()>(literal: "(\(c.SQL)) VALUES (\(v.SQL))", c.bindings + v.bindings))
         whereClause.map(expressions.append)
@@ -358,7 +358,7 @@ public struct Query {
     }
 
     private func updateStatement(values: [Setter]) -> Statement {
-        var expressions: [Expressible] = [Expression<()>(literal: "UPDATE \(tableName) SET")]
+        var expressions: [Expressible] = [Expression<()>(literal: "UPDATE \(quote(identifier: tableName)) SET")]
         expressions.append(SQLite.join(", ", values.map { SQLite.join(" = ", [$0, $1]) }))
         whereClause.map(expressions.append)
         let expression = SQLite.join(" ", expressions)
@@ -366,7 +366,7 @@ public struct Query {
     }
 
     private var deleteStatement: Statement {
-        var expressions: [Expressible] = [Expression<()>(literal: "DELETE FROM \(tableName)")]
+        var expressions: [Expressible] = [Expression<()>(literal: "DELETE FROM \(quote(identifier: tableName))")]
         whereClause.map(expressions.append)
         let expression = SQLite.join(" ", expressions)
         return database.prepare(expression.SQL, expression.bindings)
@@ -457,7 +457,7 @@ public struct Query {
 
     public func insert(query: Query) -> (changes: Int?, statement: Statement) {
         let expression = query.selectExpression
-        let statement = database.run("INSERT INTO \(tableName) \(expression.SQL)", expression.bindings)
+        let statement = database.run("INSERT INTO \(quote(identifier: tableName)) \(expression.SQL)", expression.bindings)
         return (statement.failed ? nil : database.lastChanges, statement)
     }
 
@@ -466,7 +466,7 @@ public struct Query {
     public func insert() -> Statement { return insert().statement }
 
     public func insert() -> (ID: Int?, statement: Statement) {
-        let statement = database.run("INSERT INTO \(tableName) DEFAULT VALUES")
+        let statement = database.run("INSERT INTO \(quote(identifier: tableName)) DEFAULT VALUES")
         return (statement.failed ? nil : database.lastID, statement)
     }
 
@@ -748,7 +748,7 @@ extension Query: SequenceType {
             func expandGlob(namespace: Bool) -> Query -> () {
                 return { table in
                     var names = self.database[table.tableName].selectStatement.columnNames.map { quote(identifier: $0) }
-                    if namespace { names = names.map { "\(table.alias ?? table.tableName).\($0)" } }
+                    if namespace { names = names.map { "\(quote(identifier: table.alias ?? table.tableName)).\($0)" } }
                     columnNames.extend(names)
                 }
             }
@@ -796,8 +796,8 @@ public struct QueryGenerator: GeneratorType {
 extension Query: Printable {
 
     public var description: String {
-        if let alias = alias { return "\(tableName) AS \(alias)" }
-        return tableName
+        if let alias = alias { return "\(quote(identifier: tableName)) AS \(quote(identifier: alias))" }
+        return quote(identifier: tableName)
     }
 
 }
@@ -805,7 +805,7 @@ extension Query: Printable {
 extension Database {
 
     public subscript(tableName: String) -> Query {
-        return Query(self, quote(identifier: tableName))
+        return Query(self, tableName)
     }
 
 }

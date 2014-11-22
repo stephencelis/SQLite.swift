@@ -16,6 +16,7 @@ class SchemaTests: XCTestCase {
     override func setUp() {
         super.setUp()
         db.run("PRAGMA foreign_keys = ON")
+        db.trace(println)
     }
 
     func test_createTable_createsTable() {
@@ -300,7 +301,7 @@ class SchemaTests: XCTestCase {
     func test_index_executesIndexStatement() {
         CreateUsersTable(db)
         ExpectExecution(db,
-            "CREATE INDEX index_users_on_email ON \"users\" (\"email\")",
+            "CREATE INDEX \"index_users_on_email\" ON \"users\" (\"email\")",
             db.create(index: users, on: email)
         )
     }
@@ -308,7 +309,7 @@ class SchemaTests: XCTestCase {
     func test_index_withUniqueness_executesUniqueIndexStatement() {
         CreateUsersTable(db)
         ExpectExecution(db,
-            "CREATE UNIQUE INDEX index_users_on_email ON \"users\" (\"email\")",
+            "CREATE UNIQUE INDEX \"index_users_on_email\" ON \"users\" (\"email\")",
             db.create(index: users, unique: true, on: email)
         )
     }
@@ -316,7 +317,7 @@ class SchemaTests: XCTestCase {
     func test_index_ifNotExists_executesIndexStatement() {
         CreateUsersTable(db)
         ExpectExecution(db,
-            "CREATE INDEX IF NOT EXISTS index_users_on_email ON \"users\" (\"email\")",
+            "CREATE INDEX IF NOT EXISTS \"index_users_on_email\" ON \"users\" (\"email\")",
             db.create(index: users, ifNotExists: true, on: email)
         )
     }
@@ -324,7 +325,7 @@ class SchemaTests: XCTestCase {
     func test_index_withMultipleColumns_executesCompoundIndexStatement() {
         CreateUsersTable(db)
         ExpectExecution(db,
-            "CREATE INDEX index_users_on_age_DESC_email ON \"users\" (\"age\" DESC, \"email\")",
+            "CREATE INDEX \"index_users_on_age_DESC_email\" ON \"users\" (\"age\" DESC, \"email\")",
             db.create(index: users, on: age.desc, email)
         )
     }
@@ -343,8 +344,8 @@ class SchemaTests: XCTestCase {
         CreateUsersTable(db)
         db.create(index: users, on: email)
 
-        ExpectExecution(db, "DROP INDEX index_users_on_email", db.drop(index: users, on: email))
-        ExpectExecution(db, "DROP INDEX IF EXISTS index_users_on_email", db.drop(index: users, ifExists: true, on: email))
+        ExpectExecution(db, "DROP INDEX \"index_users_on_email\"", db.drop(index: users, on: email))
+        ExpectExecution(db, "DROP INDEX IF EXISTS \"index_users_on_email\"", db.drop(index: users, ifExists: true, on: email))
     }
 
     func test_createView_withQuery_createsViewWithQuery() {
@@ -365,6 +366,15 @@ class SchemaTests: XCTestCase {
 
         ExpectExecution(db, "DROP VIEW \"emails\"", db.drop(view: db["emails"]))
         ExpectExecution(db, "DROP VIEW IF EXISTS \"emails\"", db.drop(view: db["emails"], ifExists: true))
+    }
+
+    func test_quotedIdentifiers() {
+        let table = db["table"]
+        let column = Expression<Int>("My lil' primary key, \"Kiwi\"")
+
+        ExpectExecution(db, "CREATE TABLE \"table\" (\"My lil' primary key, \"\"Kiwi\"\"\" INTEGER NOT NULL)",
+            db.create(table: db["table"]) { $0.column(column) }
+        )
     }
 
 }
