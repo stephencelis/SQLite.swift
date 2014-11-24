@@ -638,11 +638,12 @@ SQLite.swift defines a number of operators for building filtering predicates. Op
 
 ###### Filtering Functions
 
-| Swift   | Types            | SQLite  |
-| ------- | ---------------- | ------- |
-| `like`  | `String -> Bool` | `LIKE`  |
-| `glob`  | `String -> Bool` | `GLOB`  |
-| `match` | `String -> Bool` | `MATCH` |
+| Swift      | Types                   | SQLite  |
+| ---------- | ----------------------- | ------- |
+| `like`     | `String -> Bool`        | `LIKE`  |
+| `glob`     | `String -> Bool`        | `GLOB`  |
+| `match`    | `String -> Bool`        | `MATCH` |
+| `contains` | `(Array<T>, T) -> Bool` | `IN`    |
 
 
 <!-- TODO
