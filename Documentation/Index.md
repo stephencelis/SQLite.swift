@@ -602,6 +602,18 @@ SQLite.swift filters rows using a [query’s](#queries) `filter` function with a
 ``` swift
 users.filter(id == 1)
 // SELECT * FROM "users" WHERE ("id" = 1)
+
+users.filter(contains([1, 2, 3, 4, 5], id))
+// SELECT * FROM "users" WHERE (id IN (1, 2, 3, 4, 5))
+
+users.filter(like("%@mac.com", email))
+// SELECT * FROM "users" WHERE ("email" LIKE '%@mac.com')
+
+users.filter(verified && lower(name) == "alice")
+// SELECT * FROM "users" WHERE ("verified" AND (lower("name") == 'alice'))
+
+users.filter(verified || balance >= 10_000)
+// SELECT * FROM "users" WHERE ("verified" OR ("balance" >= 10000.0))
 ```
 
 You can build your own boolean expressions by using one of the many [filter operators and functions](#filter-operators-and-functions).
