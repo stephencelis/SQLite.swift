@@ -604,7 +604,7 @@ users.filter(id == 1)
 // SELECT * FROM "users" WHERE ("id" = 1)
 
 users.filter(contains([1, 2, 3, 4, 5], id))
-// SELECT * FROM "users" WHERE (id IN (1, 2, 3, 4, 5))
+// SELECT * FROM "users" WHERE ("id" IN (1, 2, 3, 4, 5))
 
 users.filter(like("%@mac.com", email))
 // SELECT * FROM "users" WHERE ("email" LIKE '%@mac.com')
