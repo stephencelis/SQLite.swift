@@ -1029,7 +1029,7 @@ SQLite.swift supports serializing and deserializing any custom type as long as i
 > }
 > ```
 
-`Datatype` is one of the basic Swift types that values are bridged through before serialization and deserialization (see [Building Type-Safe SQL](#building-type-safe-sql) for a list of types).
+The `Datatype` must be one of the basic Swift types that values are bridged through before serialization and deserialization (see [Building Type-Safe SQL](#building-type-safe-sql) for a list of types).
 
 > _Note:_ `Binding` is a protocol that SQLite.swift uses internally to directly map SQLite types to Swift types. **Do _not_** conform custom types to the `Binding` protocol.
 
