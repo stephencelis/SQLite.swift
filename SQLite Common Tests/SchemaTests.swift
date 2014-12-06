@@ -53,6 +53,14 @@ class SchemaTests: XCTestCase {
         )
     }
 
+    func test_createTable_column_withPrimaryKey_buildsPrimaryKeyAutoincrementClause() {
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
+            db.create(table: users) { t in
+                t.column(id, primaryKey: .Autoincrement)
+            }
+        )
+    }
+
     func test_createTable_column_withNullFalse_buildsNotNullClause() {
         ExpectExecution(db, "CREATE TABLE \"users\" (\"email\" TEXT NOT NULL)",
             db.create(table: users) { t in

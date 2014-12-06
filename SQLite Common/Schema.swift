@@ -52,7 +52,7 @@ public extension Database {
         check: Expression<Bool>? = nil,
         defaultValue: V
     ) -> Statement {
-        return alter(table, define(column, false, false, false, check, Expression(value: defaultValue), nil))
+        return alter(table, define(column, nil, false, false, check, Expression(value: defaultValue), nil))
     }
 
     public func alter<V: Value where V.Datatype: Binding>(
@@ -62,7 +62,7 @@ public extension Database {
         defaultValue: V? = nil
     ) -> Statement {
         let value = defaultValue.map { Expression<V>(value: $0) }
-        return alter(table, define(Expression<V>(column), false, true, false, check, value, nil))
+        return alter(table, define(Expression<V>(column), nil, true, false, check, value, nil))
     }
 
     public func alter<V: Value where V.Datatype: Binding>(
@@ -72,7 +72,7 @@ public extension Database {
         references: Expression<V>
     ) -> Statement {
         let expressions = [Expression<()>(literal: "REFERENCES"), namespace(references)]
-        return alter(table, define(Expression<V>(column), false, true, false, check, nil, expressions))
+        return alter(table, define(Expression<V>(column), nil, true, false, check, nil, expressions))
     }
 
     private func alter(table: Query, _ definition: Expressible) -> Statement {
@@ -128,40 +128,42 @@ public final class SchemaBuilder {
         self.table = table
     }
 
+    // MARK: - Column Constraints
+
     public func column<V: Value where V.Datatype: Binding>(
         name: Expression<V>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: Expression<V>? = nil
+        defaultValue value: Expression<V>?
     ) {
-        column(name, false, false, unique, check, value)
+        column(name, nil, false, unique, check, value)
     }
 
     public func column<V: Value where V.Datatype: Binding>(
         name: Expression<V>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: V
+        defaultValue value: V? = nil
     ) {
-        column(name, false, false, unique, check, Expression(value: value))
+        column(name, nil, false, unique, check, value.map { Expression(value: $0) })
     }
 
     public func column<V: Value where V.Datatype: Binding>(
         name: Expression<V?>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: Expression<V>? = nil
+        defaultValue value: Expression<V>?
     ) {
-        column(Expression<V>(name), false, true, unique, check, value)
+        column(Expression<V>(name), nil, true, unique, check, value)
     }
 
     public func column<V: Value where V.Datatype: Binding>(
         name: Expression<V?>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: V?
+        defaultValue value: V? = nil
     ) {
-        column(Expression<V>(name), false, true, unique, check, value.map { Expression(value: $0) })
+        column(Expression<V>(name), nil, true, unique, check, value.map { Expression(value: $0) })
     }
 
     // MARK: - INTEGER Columns
@@ -174,45 +176,24 @@ public final class SchemaBuilder {
         unique: Bool = false,
         check: Expression<Bool>? = nil
     ) {
+        column(name, primaryKey ? .Default : nil, false, unique, check, nil, nil)
+    }
+
+    public enum PrimaryKey {
+
+        case Default
+
+        case Autoincrement
+
+    }
+
+    public func column(
+        name: Expression<Int>,
+        primaryKey: PrimaryKey?,
+        unique: Bool = false,
+        check: Expression<Bool>? = nil
+    ) {
         column(name, primaryKey, false, unique, check, nil, nil)
-    }
-
-    // MARK: DEFAULT
-
-    public func column(
-        name: Expression<Int>,
-        unique: Bool = false,
-        check: Expression<Bool>? = nil,
-        defaultValue value: Expression<Int>
-    ) {
-        column(name, false, false, unique, check, value, nil)
-    }
-
-    public func column(
-        name: Expression<Int>,
-        unique: Bool = false,
-        check: Expression<Bool>? = nil,
-        defaultValue value: Int
-    ) {
-        column(name, false, false, unique, check, Expression(value: value), nil)
-    }
-
-    public func column(
-        name: Expression<Int?>,
-        unique: Bool = false,
-        check: Expression<Bool>? = nil,
-        defaultValue value: Expression<Int?>
-    ) {
-        column(Expression<Int>(name), false, false, unique, check, Expression<Int>(value), nil)
-    }
-
-    public func column(
-        name: Expression<Int?>,
-        unique: Bool = false,
-        check: Expression<Bool>? = nil,
-        defaultValue value: Int?
-    ) {
-        column(Expression<Int>(name), false, false, unique, check, Expression(value: value), nil)
     }
 
     // MARK: REFERENCES
@@ -225,7 +206,7 @@ public final class SchemaBuilder {
     ) {
         assertForeignKeysEnabled()
         let expressions: [Expressible] = [Expression<()>(literal: "REFERENCES"), namespace(references)]
-        column(name, false, false, unique, check, nil, expressions)
+        column(name, nil, false, unique, check, nil, expressions)
     }
 
     public func column(
@@ -250,7 +231,7 @@ public final class SchemaBuilder {
     ) {
         assertForeignKeysEnabled()
         let expressions: [Expressible] = [Expression<()>(literal: "REFERENCES"), namespace(references)]
-        column(Expression<Int>(name), false, true, unique, check, nil, expressions)
+        column(Expression<Int>(name), nil, true, unique, check, nil, expressions)
     }
 
     public func column(
@@ -273,28 +254,28 @@ public final class SchemaBuilder {
         name: Expression<String>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: Expression<String>? = nil,
+        defaultValue value: Expression<String>?,
         collate: Collation
     ) {
         let expressions: [Expressible] = [Expression<()>(literal: "COLLATE \(collate.rawValue)")]
-        column(name, false, false, unique, check, value, expressions)
+        column(name, nil, false, unique, check, value, expressions)
     }
 
     public func column(
         name: Expression<String>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: String,
+        defaultValue value: String? = nil,
         collate: Collation
     ) {
-        column(name, unique: unique, check: check, defaultValue: Expression(value: value), collate: collate)
+        column(name, unique: unique, check: check, defaultValue: value.map { Expression(value: $0) }, collate: collate)
     }
 
     public func column(
         name: Expression<String?>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: Expression<String>? = nil,
+        defaultValue value: Expression<String>?,
         collate: Collation
     ) {
         column(Expression<String>(name), unique: unique, check: check, defaultValue: value, collate: collate)
@@ -304,16 +285,18 @@ public final class SchemaBuilder {
         name: Expression<String?>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue: String?,
+        defaultValue: String? = nil,
         collate: Collation
     ) {
         let value = defaultValue.map { Expression<String>(value: $0) }
         column(Expression<String>(name), unique: unique, check: check, defaultValue: value, collate: collate)
     }
 
+    // MARK: -
+
     private func column<V: Value where V.Datatype: Binding>(
         name: Expression<V>,
-        _ primaryKey: Bool,
+        _ primaryKey: PrimaryKey?,
         _ null: Bool,
         _ unique: Bool,
         _ check: Expression<Bool>?,
@@ -322,6 +305,8 @@ public final class SchemaBuilder {
     ) {
         columns.append(define(name, primaryKey, null, unique, check, defaultValue, expressions))
     }
+
+    // MARK: - Table Constraints
 
     public func primaryKey(column: Expressible...) {
         let primaryKey = SQLite.join(", ", column)
@@ -409,7 +394,7 @@ private func namespace(column: Expressible) -> Expressible {
 
 private func define<V: Value where V.Datatype: Binding>(
     column: Expression<V>,
-    primaryKey: Bool,
+    primaryKey: SchemaBuilder.PrimaryKey?,
     null: Bool,
     unique: Bool,
     check: Expression<Bool>?,
@@ -417,7 +402,10 @@ private func define<V: Value where V.Datatype: Binding>(
     expressions: [Expressible]?
 ) -> Expressible {
     var parts: [Expressible] = [Expression<()>(column), Expression<()>(literal: V.declaredDatatype)]
-    if primaryKey { parts.append(Expression<()>(literal: "PRIMARY KEY")) }
+    if let primaryKey = primaryKey {
+        parts.append(Expression<()>(literal: "PRIMARY KEY"))
+        if primaryKey == .Autoincrement { parts.append(Expression<()>(literal: "AUTOINCREMENT")) }
+    }
     if !null { parts.append(Expression<()>(literal: "NOT NULL")) }
     if unique { parts.append(Expression<()>(literal: "UNIQUE")) }
     if let check = check { parts.append(Expression<()>(literal: "CHECK \(check.SQL)", check.bindings)) }
