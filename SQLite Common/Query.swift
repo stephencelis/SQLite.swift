@@ -685,10 +685,11 @@ public struct Query {
 /// access to a row’s values.
 public struct Row {
 
-    private var values: [String: Binding?]
+    private let columnNames: [String: Int]
+    private let values: [Binding?]
 
-    private init(_ values: [String: Binding?]) {
-        self.values = values
+    private init(_ columnNames: [String: Int], _ values: [Binding?]) {
+        (self.columnNames, self.values) = (columnNames, values)
     }
 
     /// Returns a row’s value for the given column.
@@ -700,20 +701,20 @@ public struct Row {
         return get(Expression<V?>(column))!
     }
     public func get<V: Value where V.Datatype: Binding>(column: Expression<V?>) -> V? {
-        func bindingToValue(binding: Binding?) -> V? {
-            if let value = binding as? V.Datatype { return (V.fromDatatypeValue(value) as V) }
+        func valueAtIndex(idx: Int) -> V? {
+            if let value = values[idx] as? V.Datatype { return (V.fromDatatypeValue(value) as V) }
             return nil
         }
 
-        if let binding = values[column.SQL] { return bindingToValue(binding) }
+        if let idx = columnNames[column.SQL] { return valueAtIndex(idx) }
 
-        let similar = filter(values.keys) { $0.hasSuffix(".\(column.SQL)") }
-        if similar.count == 1 { return bindingToValue(values[similar[0]]!) }
+        let similar = filter(columnNames.keys) { $0.hasSuffix(".\(column.SQL)") }
+        if similar.count == 1 { return valueAtIndex(columnNames[similar[0]]!) }
 
         if similar.count > 1 {
             fatalError("ambiguous column \(quote(literal: column.SQL)) (please disambiguate: \(similar))")
         }
-        fatalError("no such column \(quote(literal: column.SQL)) in columns: \(Array(values.keys))")
+        fatalError("no such column \(quote(literal: column.SQL)) in columns: \(Array(columnNames.keys))")
     }
 
     // FIXME: rdar://18673897 subscript<T>(expression: Expression<V>) -> Expression<V>
@@ -750,8 +751,8 @@ public struct QueryGenerator: GeneratorType {
     private let query: Query
     private let statement: Statement
 
-    private lazy var columnNames: [String] = {
-        var columnNames = [String]()
+    private lazy var columnNames: [String: Int] = {
+        var (columnNames, idx) = ([String: Int](), 0)
         for each in self.query.columns {
             let pair = split(each.expression.SQL) { $0 == "." }
             let (tableName, column) = (pair.count > 1 ? pair.first : nil, pair.last!)
@@ -760,7 +761,7 @@ public struct QueryGenerator: GeneratorType {
                 return { table in
                     var names = self.query.database[table.tableName].selectStatement.columnNames.map { quote(identifier: $0) }
                     if namespace { names = names.map { "\(quote(identifier: table.alias ?? table.tableName)).\($0)" } }
-                    columnNames.extend(names)
+                    for name in names { columnNames[name] = idx++ }
                 }
             }
 
@@ -774,7 +775,7 @@ public struct QueryGenerator: GeneratorType {
                 continue
             }
 
-            columnNames.append(each.expression.SQL)
+            columnNames[each.expression.SQL] = idx++
         }
         return columnNames
     }()
@@ -784,12 +785,7 @@ public struct QueryGenerator: GeneratorType {
     }
 
     public mutating func next() -> Row? {
-        if let row = statement.next() {
-            var values = [String: Binding?]()
-            for idx in 0..<row.count { values[columnNames[idx]] = row[idx] }
-            return Row(values)
-        }
-        return nil
+        return statement.next().map { Row(self.columnNames, $0) }
     }
 
 }
