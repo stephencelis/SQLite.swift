@@ -88,7 +88,7 @@ class SchemaTests: XCTestCase {
     func test_createTable_column_withDefaultValue_buildsDefaultClause() {
         ExpectExecution(db, "CREATE TABLE \"users\" (\"salary\" REAL NOT NULL DEFAULT 0.0)",
             db.create(table: users) { t in
-                t.column(salary, defaultValue: 0.0)
+                t.column(salary, defaultValue: 0)
             }
         )
     }
