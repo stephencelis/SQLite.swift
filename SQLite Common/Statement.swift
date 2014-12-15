@@ -212,31 +212,29 @@ extension Statement: GeneratorType {
     /// :returns: The current row of an open statement.
     public var row: Element? {
         if status != SQLITE_ROW { return nil }
-        var row = Element()
-        for idx in 0..<columnNames.count {
-            switch sqlite3_column_type(handle, Int32(idx)) {
+        return (0..<columnNames.count).map { idx in
+            switch sqlite3_column_type(self.handle, Int32(idx)) {
             case SQLITE_BLOB:
-                let bytes = sqlite3_column_blob(handle, Int32(idx))
-                let length = sqlite3_column_bytes(handle, Int32(idx))
-                row.append(Blob(bytes: bytes, length: Int(length)))
+                let bytes = sqlite3_column_blob(self.handle, Int32(idx))
+                let length = sqlite3_column_bytes(self.handle, Int32(idx))
+                return Blob(bytes: bytes, length: Int(length))
             case SQLITE_FLOAT:
-                row.append(Double(sqlite3_column_double(handle, Int32(idx))))
+                return Double(sqlite3_column_double(self.handle, Int32(idx)))
             case SQLITE_INTEGER:
-                let int = Int(sqlite3_column_int64(handle, Int32(idx)))
+                let int = Int(sqlite3_column_int64(self.handle, Int32(idx)))
                 var bool = false
-                if let type = String.fromCString(sqlite3_column_decltype(handle, Int32(idx))) {
+                if let type = String.fromCString(sqlite3_column_decltype(self.handle, Int32(idx))) {
                     bool = type.hasPrefix("BOOL")
                 }
-                row.append(bool ? int != 0 : int)
+                return bool ? int != 0 : int
             case SQLITE_NULL:
-                row.append(nil)
+                return nil
             case SQLITE_TEXT:
-                row.append(String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(handle, Int32(idx))))!)
+                return String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(self.handle, Int32(idx))))!
             case let type:
                 assertionFailure("unsupported column type: \(type)")
             }
         }
-        return row
     }
 
 }
