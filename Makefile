@@ -20,7 +20,7 @@ clean:
 	$(BUILD_TOOL) $(BUILD_ARGUMENTS) clean
 
 repl:
-	@$(BUILD_TOOL) $(BUILD_ARGUMENTS) -derivedDataPath $(TMPDIR)/SQLite.swift > /dev/null 2>&1 && \
+	@$(BUILD_TOOL) $(BUILD_ARGUMENTS) -derivedDataPath $(TMPDIR)/SQLite.swift > /dev/null && \
 		swift -F '$(TMPDIR)/SQLite.swift/Build/Products/Debug'
 
 sloc:
