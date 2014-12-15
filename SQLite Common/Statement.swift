@@ -257,12 +257,12 @@ extension Statement: DebugPrintable {
 
 }
 
-public func &&(lhs: Statement, rhs: @autoclosure () -> Statement) -> Statement {
+public func && (lhs: Statement, rhs: @autoclosure () -> Statement) -> Statement {
     if lhs.status == SQLITE_OK { lhs.run() }
     return lhs.failed ? lhs : rhs()
 }
 
-public func ||(lhs: Statement, rhs: @autoclosure () -> Statement) -> Statement {
+public func || (lhs: Statement, rhs: @autoclosure () -> Statement) -> Statement {
     if lhs.status == SQLITE_OK { lhs.run() }
     return lhs.failed ? rhs() : lhs
 }
