@@ -416,7 +416,10 @@ public struct Query {
     // MARK: - Array
 
     /// The first result (or nil if the query has no results).
-    public var first: Row? { return limit(1).generate().next() }
+    public var first: Row? {
+        var generator = limit(1).generate()
+        return generator.next()
+    }
 
     /// Returns true if the query has no results.
     public var isEmpty: Bool { return first == nil }
@@ -739,35 +742,6 @@ extension Query: SequenceType {
 
     public func generate() -> Generator { return Generator(self) }
 
-    private var columnNames: [String] {
-        var columnNames = [String]()
-        for each in columns {
-            let pair = split(each.expression.SQL) { $0 == "." }
-            let (tableName, column) = (pair.count > 1 ? pair.first : nil, pair.last!)
-
-            func expandGlob(namespace: Bool) -> Query -> () {
-                return { table in
-                    var names = self.database[table.tableName].selectStatement.columnNames.map { quote(identifier: $0) }
-                    if namespace { names = names.map { "\(quote(identifier: table.alias ?? table.tableName)).\($0)" } }
-                    columnNames.extend(names)
-                }
-            }
-
-            if column == "*" {
-                if let tableName = tableName {
-                    expandGlob(true)(database[tableName])
-                    continue
-                }
-                let tables = [self] + joins.map { $0.table }
-                tables.map(expandGlob(joins.count > 0))
-                continue
-            }
-
-            columnNames.append(each.expression.SQL)
-        }
-        return columnNames
-    }
-
 }
 
 // MARK: - GeneratorType
@@ -776,14 +750,42 @@ public struct QueryGenerator: GeneratorType {
     private let query: Query
     private let statement: Statement
 
+    private lazy var columnNames: [String] = {
+        var columnNames = [String]()
+        for each in self.query.columns {
+            let pair = split(each.expression.SQL) { $0 == "." }
+            let (tableName, column) = (pair.count > 1 ? pair.first : nil, pair.last!)
+
+            func expandGlob(namespace: Bool) -> Query -> () {
+                return { table in
+                    var names = self.query.database[table.tableName].selectStatement.columnNames.map { quote(identifier: $0) }
+                    if namespace { names = names.map { "\(quote(identifier: table.alias ?? table.tableName)).\($0)" } }
+                    columnNames.extend(names)
+                }
+            }
+
+            if column == "*" {
+                if let tableName = tableName {
+                    expandGlob(true)(self.query.database[tableName])
+                    continue
+                }
+                let tables = [self.query] + self.query.joins.map { $0.table }
+                tables.map(expandGlob(self.query.joins.count > 0))
+                continue
+            }
+
+            columnNames.append(each.expression.SQL)
+        }
+        return columnNames
+    }()
+
     private init(_ query: Query) {
         (self.query, self.statement) = (query, query.selectStatement)
     }
 
-    public func next() -> Row? {
+    public mutating func next() -> Row? {
         if let row = statement.next() {
             var values = [String: Binding?]()
-            let columnNames = query.columnNames
             for idx in 0..<row.count { values[columnNames[idx]] = row[idx] }
             return Row(values)
         }
