@@ -81,7 +81,7 @@ To use SQLite.swift classes or structures in your target’s source file, first 
 
 ``` swift
 import SQLite
-``` 
+```
 
 
 ### Connecting to a Database
@@ -237,7 +237,7 @@ The `create(table:)` function has several default parameters we can override.
     db.create(table: users, temporary: true) { t in /* ... */ }
     // CREATE TEMPORARY TABLE "users" -- ...
     ```
- 
+
   - `ifNotExists` adds an `IF NOT EXISTS` clause to the `CREATE TABLE` statement (which will bail out gracefully if the table already exists). Default: `false`.
 
     ``` swift
@@ -266,21 +266,21 @@ The `column` function is used for a single column definition. It takes an [expre
     t.column(email, unique: true)
     // "email" TEXT UNIQUE NOT NULL
     ```
- 
+
   - `check` attaches a `CHECK` constraint to a column definition in the form of a boolean expression (`Expression<Bool>`). Boolean expressions can be easily built using [filter operators and functions](#filter-operators-and-functions). (See also the `check` function under [Table Constraints](#table-constraints).)
 
     ``` swift
     t.column(email, check: like("%@%", email))
     // "email" TEXT NOT NULL CHECK ("email" LIKE '%@%')
     ```
- 
+
   - `defaultValue` adds a `DEFAULT` clause to a column definition and _only_ accepts a value (or expression) matching the column’s type. This value is used if none is explicitly provided during [an `INSERT`](#inserting-rows).
 
     ``` swift
     t.column(name, defaultValue: "Anonymous")
     // "name" TEXT DEFAULT 'Anonymous'
     ```
- 
+
     > _Note:_ The `defaultValue` parameter cannot be used alongside `primaryKey` and `references`. If you need to create a column that has a default value and is also a primary and/or foreign key, use the `primaryKey` and `foreignKey` functions mentioned under [Table Constraints](#table-constraints).
 
   - `collate` adds a `COLLATE` clause to `Expression<String>` (and `Expression<String?>`) column definitions with [a collating sequence](https://www.sqlite.org/datatype3.html#collation) defined in the `Collation` enumeration.
@@ -289,7 +289,7 @@ The `column` function is used for a single column definition. It takes an [expre
     t.column(email, collate: .NoCase)
     // "email" TEXT NOT NULL COLLATE NOCASE
     ```
- 
+
   - `references` adds a `REFERENCES` clause to `Expression<Int>` (and `Expression<Int?>`) column definitions and accepts a table (`Query`) or namespaced column expression. (See the `foreignKey` function under [Table Constraints](#table-constraints) for non-integer foreign key support.)
 
     ``` swift
@@ -314,14 +314,14 @@ Additional constraints may be provided outside the scope of a single column usin
     t.primaryKey(email.asc, name)
     // PRIMARY KEY("email" ASC, "name")
     ```
- 
+
   - `unique` adds a `UNIQUE` constraint to the table. Unlike [the column constraint, above](#column-constraints), it supports composite (multiple column) constraints.
 
     ``` swift
     t.unique(local, domain)
     // UNIQUE("local", "domain")
     ```
- 
+
   - `check` adds a `CHECK` constraint to the table in the form of a boolean expression (`Expression<Bool>`). Boolean expressions can be easily built using [filter operators and functions](#filter-operators-and-functions). (See also the `check` parameter under [Column Constraints](#column-constraints).)
 
     ``` swift
@@ -358,7 +358,7 @@ The `insert` function can return several different types that are useful in diff
 
     ``` swift
     if let insertID = users.insert(email <- "alice@mac.com") {
-       println("inserted id: \(insertID)")
+        println("inserted id: \(insertID)")
     }
     ```
 
@@ -383,23 +383,23 @@ The `insert` function can return several different types that are useful in diff
     // INSERT INTO "users" ("email") VALUES ('alice@mac.com');
     // INSERT INTO "users" ("email") VALUES ('betty@mac.com');
     // COMMIT TRANSACTION;
-    ``` 
+    ```
 
   - A tuple of the above [`ROWID`][ROWID] and statement: `(ID: Int?, Statement)`, for flexibility.
 
     ``` swift
     let (ID, statement) = users.insert(email <- "alice@mac.com")
     if let ID = ID {
-       println("inserted id: \(ID)")
+        println("inserted id: \(ID)")
     } else if statement.failed {
-       println("insertion failed: \(statement.reason)")
+        println("insertion failed: \(statement.reason)")
     }
     ```
 
 The [`update`](#updating-rows) and [`delete`](#deleting-rows) functions follow similar patterns.
 
 > _Note:_ If `insert` is called without any arguments, the statement will run with a `DEFAULT VALUES` clause. The table must not have any constraints that aren’t fulfilled by default values.
-> 
+>
 > ``` swift
 > timestamps.insert()!
 > // INSERT INTO "timestamps" DEFAULT VALUES
@@ -790,7 +790,7 @@ Like [`insert`](#inserting-rows) (and [`delete`](#updating-rows)), `update` can 
 
     ``` swift
     if alice.update(email <- "alice@me.com") > 0 {
-       println("updated Alice")
+        println("updated Alice")
     }
     ```
 
@@ -834,7 +834,7 @@ Like [`insert`](#inserting-rows) and [`update`](#updating-rows), `delete` can re
 
     ``` swift
     if alice.delete() > 0 {
-       println("deleted Alice")
+        println("deleted Alice")
     }
     ```
 
@@ -895,7 +895,7 @@ db.alter(table: users, add: suffix)
 #### Added Column Constraints
 
 The `alter` function shares several of the same [`column` function parameters](#column-constraints) used when [creating tables](#creating-a-table).
- 
+
   - `check` attaches a `CHECK` constraint to a column definition in the form of a boolean expression (`Expression<Bool>`). (See also the `check` function under [Table Constraints](#table-constraints).)
 
     ``` swift
@@ -904,14 +904,14 @@ The `alter` function shares several of the same [`column` function parameters](#
     // ALTER TABLE "users"
     // ADD COLUMN "suffix" TEXT CHECK ("suffix" IN ('JR', 'SR'))
     ```
- 
+
   - `defaultValue` adds a `DEFAULT` clause to a column definition and _only_ accepts a value matching the column’s type. This value is used if none is explicitly provided during [an `INSERT`](#inserting-rows).
 
     ``` swift
     db.alter(table: users, add: suffix, defaultValue: "SR")
     // ALTER TABLE "users" ADD COLUMN "suffix" TEXT DEFAULT 'SR'
     ```
- 
+
     > _Note:_ Unlike the [`CREATE TABLE` constraint](#table-constraints), default values may not be expression structures (including `CURRENT_TIME`, `CURRENT_DATE`, or `CURRENT_TIMESTAMP`).
 
 <!-- FIXME
@@ -935,7 +935,7 @@ The `alter` function shares several of the same [`column` function parameters](#
     ```
 
 
-### Indexes 
+### Indexes
 
 
 #### Creating Indexes
