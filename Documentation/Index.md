@@ -628,17 +628,19 @@ SQLite.swift defines a number of operators for building filtering predicates. Op
 
 ###### Infix Filter Operators
 
-| Swift | Types                            | SQLite    |
-| ----- | -------------------------------- | --------- |
-| `==`  | `Equatable -> Bool`              | `=`       |
-| `!=`  | `Equatable -> Bool`              | `!=`      |
-| `>`   | `Comparable -> Bool`             | `>`       |
-| `>=`  | `Comparable -> Bool`             | `>=`      |
-| `<`   | `Comparable -> Bool`             | `<`       |
-| `<=`  | `Comparable -> Bool`             | `<=`      |
-| `~=`  | `(Interval, Comparable) -> Bool` | `BETWEEN` |
-| `&&`  | `Bool -> Bool`                   | `AND`     |
-| `||`  | `Bool -> Bool`                   | `OR`      |
+| Swift | Types                            | SQLite         |
+| ----- | -------------------------------- | -------------- |
+| `==`  | `Equatable -> Bool`              | `=`/`IS`*      |
+| `!=`  | `Equatable -> Bool`              | `!=`/`IS NOT`* |
+| `>`   | `Comparable -> Bool`             | `>`            |
+| `>=`  | `Comparable -> Bool`             | `>=`           |
+| `<`   | `Comparable -> Bool`             | `<`            |
+| `<=`  | `Comparable -> Bool`             | `<=`           |
+| `~=`  | `(Interval, Comparable) -> Bool` | `BETWEEN`      |
+| `&&`  | `Bool -> Bool`                   | `AND`          |
+| `||`  | `Bool -> Bool`                   | `OR`           |
+
+> *When comparing against `nil`, SQLite.swift will use `IS` and `IS NOT` accordingly.
 
 
 ###### Prefix Filter Operators
