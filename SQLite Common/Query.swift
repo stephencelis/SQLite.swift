@@ -449,7 +449,19 @@ public struct Query {
         return insert([value] + more)
     }
 
-    private func insert(values: [Setter]) -> (ID: Int?, statement: Statement) {
+    /// Runs an INSERT statement against the query.
+    ///
+    /// :param: values An array of values to set.
+    ///
+    /// :returns: The row ID.
+    public func insert(values: [Setter]) -> Int? { return insert(values).ID }
+
+    /// Runs an INSERT statement against the query.
+    ///
+    /// :param: values An array of values to set.
+    ///
+    /// :returns: The row ID and statement.
+    public func insert(values: [Setter]) -> (ID: Int?, statement: Statement) {
         let statement = insertStatement(values).run()
         return (statement.failed ? nil : database.lastID, statement)
     }
