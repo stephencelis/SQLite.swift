@@ -508,7 +508,19 @@ public struct Query {
         return replace(values)
     }
 
-    private func replace(values: [Setter]) -> (ID: Int?, statement: Statement) {
+    /// Runs a REPLACE statement against the query.
+    ///
+    /// :param: values An array of values to set.
+    ///
+    /// :returns: The row ID.
+    public func replace(values: [Setter]) -> Int? { return replace(values).ID }
+
+    /// Runs a REPLACE statement against the query.
+    ///
+    /// :param: values An array of values to set.
+    ///
+    /// :returns: The row ID and statement.
+    public func replace(values: [Setter]) -> (ID: Int?, statement: Statement) {
         let statement = insertStatement(values, or: .Replace).run()
         return (statement.failed ? nil : database.lastID, statement)
     }
@@ -536,7 +548,19 @@ public struct Query {
         return update(values)
     }
 
-    private func update(values: [Setter]) -> (changes: Int?, statement: Statement) {
+    /// Runs an UPDATE statement against the query.
+    ///
+    /// :param: values An array of of values to set.
+    ///
+    /// :returns: The number of updated rows.
+    public func update(values: [Setter]) -> Int? { return update(values).changes }
+
+    /// Runs an UPDATE statement against the query.
+    ///
+    /// :param: values An array of of values to set.
+    ///
+    /// :returns: The number of updated rows and statement.
+    public func update(values: [Setter]) -> (changes: Int?, statement: Statement) {
         let statement = updateStatement(values).run()
         return (statement.failed ? nil : database.lastChanges, statement)
     }
