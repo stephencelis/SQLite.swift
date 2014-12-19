@@ -101,6 +101,22 @@ class QueryTests: XCTestCase {
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in middleManagers {} }
     }
 
+    func test_join_withNamespacedStar_expandsColumnNames() {
+        let managers = db["users"].alias("managers")
+
+        let aliceID = users.insert(email <- "alice@example.com")!
+        users.insert(email <- "betty@example.com", manager_id <- aliceID)!
+
+        let query = users
+            .select(users[*], managers[*])
+            .join(managers, on: managers[id] == users[manager_id])
+
+        let SQL = "SELECT \"users\".*, \"managers\".* FROM \"users\" " +
+            "INNER JOIN \"users\" AS \"managers\" " +
+            "ON (\"managers\".\"id\" = \"users\".\"manager_id\")"
+        ExpectExecutions(db, [SQL: 1]) { _ in for row in query { println(row) } }
+    }
+
     func test_namespacedColumnRowValueAccess() {
         let aliceID = users.insert(email <- "alice@example.com")!
         let bettyID = users.insert(email <- "betty@example.com", manager_id <- aliceID)!

@@ -753,7 +753,7 @@ public struct QueryGenerator: GeneratorType {
 
     private lazy var columnNames: [String: Int] = {
         var (columnNames, idx) = ([String: Int](), 0)
-        for each in self.query.columns {
+        column: for each in self.query.columns {
             let pair = split(each.expression.SQL) { $0 == "." }
             let (tableName, column) = (pair.count > 1 ? pair.first : nil, pair.last!)
 
@@ -766,11 +766,16 @@ public struct QueryGenerator: GeneratorType {
             }
 
             if column == "*" {
-                if let tableName = tableName {
-                    expandGlob(true)(self.query.database[tableName])
-                    continue
-                }
                 let tables = [self.query] + self.query.joins.map { $0.table }
+                if let tableName = tableName {
+                    for table in tables {
+                        if quote(identifier: table.alias ?? table.tableName) == tableName {
+                            expandGlob(true)(table)
+                            continue column
+                        }
+                    }
+                    assertionFailure("no such table: \(tableName)")
+                }
                 tables.map(expandGlob(self.query.joins.count > 0))
                 continue
             }
