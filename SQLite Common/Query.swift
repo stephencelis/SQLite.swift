@@ -28,8 +28,7 @@ public struct Query {
     internal var database: Database
 
     internal init(_ database: Database, _ tableName: String) {
-        self.database = database
-        self.tableName = tableName
+        (self.database, self.tableName) = (database, tableName)
     }
 
     // MARK: - Keywords
