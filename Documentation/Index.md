@@ -977,7 +977,7 @@ db.drop(index: users, on: email)
 // DROP INDEX "index_users_on_email"
 ```
 
-The `drop(table:)` function has one additional parameter, `ifExists`, which (when `true`) adds an `IF EXISTS` clause to the statement.
+The `drop(index:)` function has one additional parameter, `ifExists`, which (when `true`) adds an `IF EXISTS` clause to the statement.
 
 ``` swift
 db.drop(index: users, on: email, ifExists: true)
