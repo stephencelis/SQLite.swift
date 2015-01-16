@@ -14,23 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DC37741319C8CC2F004FCF85"
+               BlueprintIdentifier = "DCC6B36D1A9191C300734B78"
                BuildableName = "SQLite.framework"
-               BlueprintName = "SQLite Mac"
-               ReferencedContainer = "container:SQLite.xcodeproj">
-            </BuildableReference>
-         </BuildActionEntry>
-         <BuildActionEntry
-            buildForTesting = "YES"
-            buildForRunning = "YES"
-            buildForProfiling = "NO"
-            buildForArchiving = "NO"
-            buildForAnalyzing = "YES">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DC37741D19C8CC2F004FCF85"
-               BuildableName = "SQLite Mac Tests.xctest"
-               BlueprintName = "SQLite Mac Tests"
+               BlueprintName = "SQLiteCipher"
                ReferencedContainer = "container:SQLite.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -46,9 +32,9 @@
             skipped = "NO">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "DC37741D19C8CC2F004FCF85"
-               BuildableName = "SQLite Mac Tests.xctest"
-               BlueprintName = "SQLite Mac Tests"
+               BlueprintIdentifier = "DCC6B3821A9191D100734B78"
+               BuildableName = "SQLiteCipher Tests.xctest"
+               BlueprintName = "SQLiteCipher Tests"
                ReferencedContainer = "container:SQLite.xcodeproj">
             </BuildableReference>
          </TestableReference>
@@ -56,9 +42,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DC37741319C8CC2F004FCF85"
+            BlueprintIdentifier = "DCC6B36D1A9191C300734B78"
             BuildableName = "SQLite.framework"
-            BlueprintName = "SQLite Mac"
+            BlueprintName = "SQLiteCipher"
             ReferencedContainer = "container:SQLite.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -75,9 +61,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DC37741319C8CC2F004FCF85"
+            BlueprintIdentifier = "DCC6B36D1A9191C300734B78"
             BuildableName = "SQLite.framework"
-            BlueprintName = "SQLite Mac"
+            BlueprintName = "SQLiteCipher"
             ReferencedContainer = "container:SQLite.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -93,9 +79,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "DC37741319C8CC2F004FCF85"
+            BlueprintIdentifier = "DCC6B36D1A9191C300734B78"
             BuildableName = "SQLite.framework"
-            BlueprintName = "SQLite Mac"
+            BlueprintName = "SQLiteCipher"
             ReferencedContainer = "container:SQLite.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

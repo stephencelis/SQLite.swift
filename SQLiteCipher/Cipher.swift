@@ -22,20 +22,14 @@
 // THE SOFTWARE.
 //
 
+extension Database {
 
-#ifdef SQLCIPHER
-#	define SQLITE_HAS_CODEC 1
-#	define SQLITE_TEMP_STORE 2
-#	include "sqlite3.h"
-#else
-#	include <sqlite3.h>
-#endif
+    public func key(key: String) {
+        try(sqlite3_key(handle, key, Int32(countElements(key.utf8))))
+    }
 
-typedef int (^SQLiteBusyHandlerCallback)(int times);
-int SQLiteBusyHandler(sqlite3 * handle, SQLiteBusyHandlerCallback callback);
+    public func rekey(key: String) {
+        try(sqlite3_rekey(handle, key, Int32(countElements(key.utf8))))
+    }
 
-typedef void (^SQLiteTraceCallback)(const char * SQL);
-void SQLiteTrace(sqlite3 * handle, SQLiteTraceCallback callback);
-
-typedef void (^SQLiteCreateFunctionCallback)(sqlite3_context * context, int argc, sqlite3_value ** argv);
-int SQLiteCreateFunction(sqlite3 * handle, const char * name, SQLiteCreateFunctionCallback callback);
+}

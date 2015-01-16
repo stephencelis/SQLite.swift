@@ -67,11 +67,11 @@ To install SQLite.swift as an Xcode sub-project:
 
     ![Installation](Resources/installation@2x.png)
 
- 2. In your target’s **Build Phases**, add **SQLite iOS** (or **SQLite Mac**) to the **Target Dependencies** build phase.
+ 2. In your target’s **Build Phases**, add **SQLite** to the **Target Dependencies** build phase.
 
- 3. Add the appropriate **SQLite.framework** product to the **Link Binary With Libraries** build phase.
+ 3. Add **SQLite.framework** to the **Link Binary With Libraries** build phase.
 
- 4. Add the same **SQLite.framework** to a **Copy Files** build phase with a **Frameworks** destination. (Add a new build phase if need be.)
+ 4. Add **SQLite.framework** to a **Copy Files** build phase with a **Frameworks** destination. (Add a new build phase if need be.)
 
 You should now be able to `import SQLite` from any of your target’s source files and begin using SQLite.swift.
 

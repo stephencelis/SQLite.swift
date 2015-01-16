@@ -1,8 +1,6 @@
 language: objective-c
 env:
-  - BUILD_PLATFORM=iOS
-  - BUILD_PLATFORM=Mac
-before_install:
-  - gem install xcpretty --no-document
+  - BUILD_SDK=iphonesimulator ONLY_ACTIVE_ARCH=NO
+  - BUILD_SDK=macosx
 script:
   - make test

@@ -22,7 +22,7 @@
 		<key>3AE8ED2E684071AF4FB151FA51BF266B82FF45BD</key>
 		<string>../..</string>
 		<key>55011AEBD444630C0E9DF47BD2E18FDBBDCC285D</key>
-		<string>../...swift/sqlcipher/</string>
+		<string>../../Vendor/sqlcipher</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>github.com:stephencelis/SQLite.swift.git</string>
