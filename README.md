@@ -5,7 +5,7 @@ A type-safe, [Swift][1.1]-language layer over [SQLite3][1.2].
 [SQLite.swift][1.3] provides compile-time confidence in SQL statement
 syntax _and_ intent.
 
-[0.1]: https://img.shields.io/travis/stephencelis/SQLite.swift.svg?style=flat
+[0.1]: https://img.shields.io/travis/stephencelis/SQLite.swift/master.svg?style=flat
 [0.2]: https://travis-ci.org/stephencelis/SQLite.swift
 [1.1]: https://developer.apple.com/swift/
 [1.2]: http://www.sqlite.org
