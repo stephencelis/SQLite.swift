@@ -223,7 +223,7 @@ public final class Database {
     /// :param: statements Statements array to run in the transaction.
     ///
     /// :returns: The last statement executed, successful or not.
-    public func transaction(statements: [(@autoclosure () -> Statement)]) -> Statement {
+    public func transaction(statements: [@autoclosure () -> Statement]) -> Statement {
         return transaction(.Deferred, statements)
     }
 
