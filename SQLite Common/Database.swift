@@ -215,6 +215,17 @@ public final class Database {
     public func transaction(statements: (@autoclosure () -> Statement)...) -> Statement {
         return transaction(.Deferred, statements)
     }
+    
+    /// Runs a series of statements in a transaction. The first statement to
+    /// fail will short-circuit the rest and roll back the changes. A successful
+    /// transaction will automatically be committed.
+    ///
+    /// :param: statements Statements array to run in the transaction.
+    ///
+    /// :returns: The last statement executed, successful or not.
+    public func transaction(statements: [@autoclosure () -> Statement]) -> Statement {
+        return transaction(.Deferred, statements)
+    }
 
     /// Runs a series of statements in a transaction. The first statement to
     /// fail will short-circuit the rest and roll back the changes. A successful
