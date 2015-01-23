@@ -1108,7 +1108,7 @@ extension NSData: Value {
         return Blob.declaredDatatype
     }
     class func fromDatatypeValue(blobValue: Blob) -> Self {
-        return self(bytes: blobValue.bytes, blob: blobValue.length)
+        return self(bytes: blobValue.bytes, length: blobValue.length)
     }
     var datatypeValue: Blob {
         return Blob(bytes: bytes, length: length)
