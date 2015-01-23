@@ -1088,7 +1088,7 @@ Once defined, we can use these types directly in SQLite statements.
 ``` swift
 let published_at = Expression<NSDate>("published_at")
 
-let published = posts.filter(published_at <= Date())
+let published = posts.filter(published_at <= NSDate())
 // extension where Datatype == String:
 //     SELECT * FROM "posts" WHERE "published_at" <= '2014-11-18 12:45:30'
 // extension where Datatype == Int:
