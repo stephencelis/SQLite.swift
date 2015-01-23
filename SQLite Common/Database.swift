@@ -213,7 +213,7 @@ public final class Database {
     ///
     /// :returns: The last statement executed, successful or not.
     public func transaction(statements: (@autoclosure () -> Statement)...) -> Statement {
-        return transaction(.Deferred, statements)
+        return transaction(statements)
     }
     
     /// Runs a series of statements in a transaction. The first statement to
