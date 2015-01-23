@@ -220,7 +220,7 @@ public final class Database {
     /// fail will short-circuit the rest and roll back the changes. A successful
     /// transaction will automatically be committed.
     ///
-    /// :param: statements Statements array to run in the transaction.
+    /// :param: statements Statements to run in the transaction.
     ///
     /// :returns: The last statement executed, successful or not.
     public func transaction(statements: [@autoclosure () -> Statement]) -> Statement {
@@ -241,7 +241,17 @@ public final class Database {
         return transaction(mode, statements)
     }
 
-    private func transaction(mode: TransactionMode, _ statements: [@autoclosure () -> Statement]) -> Statement {
+    /// Runs a series of statements in a transaction. The first statement to
+    /// fail will short-circuit the rest and roll back the changes. A successful
+    /// transaction will automatically be committed.
+    ///
+    /// :param: mode       The mode in which the transaction will acquire a
+    ///                    lock.
+    ///
+    /// :param: statements Statements to run in the transaction.
+    ///
+    /// :returns: The last statement executed, successful or not.
+    public func transaction(mode: TransactionMode, _ statements: [@autoclosure () -> Statement]) -> Statement {
         var transaction = run("BEGIN \(mode.rawValue) TRANSACTION")
         // FIXME: rdar://15217242 // for statement in statements { transaction = transaction && statement() }
         for idx in 0..<statements.count { transaction = transaction && statements[idx]() }
