@@ -272,6 +272,17 @@ public final class Database {
     ///
     /// :returns: The last statement executed, successful or not.
     public func savepoint(statements: (@autoclosure () -> Statement)...) -> Statement {
+        return savepoint(statements)
+    }
+
+    /// Runs a series of statements in a new savepoint. The first statement to
+    /// fail will short-circuit the rest and roll back the changes. A successful
+    /// savepoint will automatically be committed.
+    ///
+    /// :param: statements Statements to run in the savepoint.
+    ///
+    /// :returns: The last statement executed, successful or not.
+    public func savepoint(statements: [@autoclosure () -> Statement]) -> Statement {
         let transaction = savepoint("\(++saveName)", statements)
         --saveName
         return transaction
@@ -290,7 +301,16 @@ public final class Database {
         return savepoint(name, statements)
     }
 
-    private func savepoint(name: String, _ statements: [@autoclosure () -> Statement]) -> Statement {
+    /// Runs a series of statements in a new savepoint. The first statement to
+    /// fail will short-circuit the rest and roll back the changes. A successful
+    /// savepoint will automatically be committed.
+    ///
+    /// :param: name       The name of the savepoint.
+    ///
+    /// :param: statements Statements to run in the savepoint.
+    ///
+    /// :returns: The last statement executed, successful or not.
+    public func savepoint(name: String, _ statements: [@autoclosure () -> Statement]) -> Statement {
         let quotedName = quote(literal: name)
         var savepoint = run("SAVEPOINT \(quotedName)")
         // FIXME: rdar://15217242 // for statement in statements { savepoint = savepoint && statement() }
