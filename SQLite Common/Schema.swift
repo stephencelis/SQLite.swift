@@ -32,7 +32,7 @@ public extension Database {
         var builder = SchemaBuilder(table)
         block(builder)
         let create = createSQL("TABLE", temporary, false, ifNotExists, table.tableName)
-        let columns = SQLite.join(", ", builder.columns).compile()
+        let columns = Expression<()>.join(", ", builder.columns).compile()
         return run("\(create) (\(columns))")
     }
 
@@ -90,7 +90,7 @@ public extension Database {
         on columns: Expressible...
     ) -> Statement {
         let create = createSQL("INDEX", false, unique, ifNotExists, indexName(table, on: columns))
-        let joined = SQLite.join(", ", columns)
+        let joined = Expression<()>.join(", ", columns)
         return run("\(create) ON \(quote(identifier: table.tableName)) (\(joined.compile()))")
     }
 
@@ -309,12 +309,12 @@ public final class SchemaBuilder {
     // MARK: - Table Constraints
 
     public func primaryKey(column: Expressible...) {
-        let primaryKey = SQLite.join(", ", column)
+        let primaryKey = Expression<()>.join(", ", column)
         columns.append(Expression<()>(literal: "PRIMARY KEY(\(primaryKey.SQL))", primaryKey.bindings))
     }
 
     public func unique(column: Expressible...) {
-        let unique = SQLite.join(", ", column)
+        let unique = Expression<()>.join(", ", column)
         columns.append(Expression<()>(literal: "UNIQUE(\(unique.SQL))", unique.bindings))
     }
 
@@ -347,7 +347,7 @@ public final class SchemaBuilder {
         parts.append(namespace(references))
         if let update = update { parts.append(Expression<()>(literal: "ON UPDATE \(update.rawValue)")) }
         if let delete = delete { parts.append(Expression<()>(literal: "ON DELETE \(delete.rawValue)")) }
-        columns.append(SQLite.join(" ", parts))
+        columns.append(Expression<()>.join(" ", parts))
     }
     public func foreignKey<V: Value where V.Datatype: Binding>(
         column: Expression<V?>,
@@ -411,7 +411,7 @@ private func define<V: Value where V.Datatype: Binding>(
     if let check = check { parts.append(Expression<()>(literal: "CHECK \(check.SQL)", check.bindings)) }
     if let value = defaultValue { parts.append(Expression<()>(literal: "DEFAULT \(value.SQL)", value.bindings)) }
     if let expressions = expressions { parts += expressions }
-    return SQLite.join(" ", parts)
+    return Expression<()>.join(" ", parts)
 }
 
 private func createSQL(

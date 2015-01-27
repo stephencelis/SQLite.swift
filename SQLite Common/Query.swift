@@ -215,8 +215,8 @@ public struct Query {
     /// :returns: A query with the given GROUP BY clause applied.
     public func group(by: [Expressible], having: Expression<Bool>? = nil) -> Query {
         var query = self
-        var group = SQLite.join(" ", [Expression<()>(literal: "GROUP BY"), SQLite.join(", ", by)])
-        if let having = having { group = SQLite.join(" ", [group, Expression<()>(literal: "HAVING"), having]) }
+        var group = Expression<()>.join(" ", [Expression<()>(literal: "GROUP BY"), Expression<()>.join(", ", by)])
+        if let having = having { group = Expression<()>.join(" ", [group, Expression<()>(literal: "HAVING"), having]) }
         query.group = group
         return query
     }
@@ -327,7 +327,7 @@ public struct Query {
         group.map(expressions.append)
         orderClause.map(expressions.append)
         limitClause.map(expressions.append)
-        return SQLite.join(" ", expressions)
+        return Expression<()>.join(" ", expressions)
     }
 
     /// ON CONFLICT resolutions.
@@ -349,25 +349,25 @@ public struct Query {
         var insertClause = "INSERT"
         if let or = or { insertClause = "\(insertClause) OR \(or.rawValue)" }
         var expressions: [Expressible] = [Expression<()>(literal: "\(insertClause) INTO \(quote(identifier: tableName))")]
-        let (c, v) = (SQLite.join(", ", values.map { $0.0 }), SQLite.join(", ", values.map { $0.1 }))
+        let (c, v) = (Expression<()>.join(", ", values.map { $0.0 }), Expression<()>.join(", ", values.map { $0.1 }))
         expressions.append(Expression<()>(literal: "(\(c.SQL)) VALUES (\(v.SQL))", c.bindings + v.bindings))
         whereClause.map(expressions.append)
-        let expression = SQLite.join(" ", expressions)
+        let expression = Expression<()>.join(" ", expressions)
         return database.prepare(expression.SQL, expression.bindings)
     }
 
     private func updateStatement(values: [Setter]) -> Statement {
         var expressions: [Expressible] = [Expression<()>(literal: "UPDATE \(quote(identifier: tableName)) SET")]
-        expressions.append(SQLite.join(", ", values.map { SQLite.join(" = ", [$0, $1]) }))
+        expressions.append(Expression<()>.join(", ", values.map { Expression<()>.join(" = ", [$0, $1]) }))
         whereClause.map(expressions.append)
-        let expression = SQLite.join(" ", expressions)
+        let expression = Expression<()>.join(" ", expressions)
         return database.prepare(expression.SQL, expression.bindings)
     }
 
     private var deleteStatement: Statement {
         var expressions: [Expressible] = [Expression<()>(literal: "DELETE FROM \(quote(identifier: tableName))")]
         whereClause.map(expressions.append)
-        let expression = SQLite.join(" ", expressions)
+        let expression = Expression<()>.join(" ", expressions)
         return database.prepare(expression.SQL, expression.bindings)
     }
 
@@ -376,14 +376,14 @@ public struct Query {
     private var selectClause: Expressible {
         var expressions: [Expressible] = [Expression<()>(literal: "SELECT")]
         if distinct { expressions.append(Expression<()>(literal: "DISTINCT")) }
-        expressions.append(SQLite.join(", ", columns))
+        expressions.append(Expression<()>.join(", ", columns))
         expressions.append(Expression<()>(literal: "FROM \(self)"))
-        return SQLite.join(" ", expressions)
+        return Expression<()>.join(" ", expressions)
     }
 
     private var joinClause: Expressible? {
         if joins.count == 0 { return nil }
-        return SQLite.join(" ", joins.map { type, table, condition in
+        return Expression<()>.join(" ", joins.map { type, table, condition in
             Expression<()>(literal: "\(type.rawValue) JOIN \(table) ON \(condition.SQL)", condition.bindings)
         })
     }
@@ -397,7 +397,7 @@ public struct Query {
 
     private var orderClause: Expressible? {
         if order.count == 0 { return nil }
-        let clause = SQLite.join(", ", order)
+        let clause = Expression<()>.join(", ", order)
         return Expression<()>(literal: "ORDER BY \(clause.SQL)", clause.bindings)
     }
 
@@ -405,7 +405,7 @@ public struct Query {
         if let limit = limit {
             var clause = Expression<()>(literal: "LIMIT \(limit.to)")
             if let offset = limit.offset {
-                clause = SQLite.join(" ", [clause, Expression<()>(literal: "OFFSET \(offset)")])
+                clause = Expression<()>.join(" ", [clause, Expression<()>(literal: "OFFSET \(offset)")])
             }
             return clause
         }
@@ -593,7 +593,7 @@ public struct Query {
     ///
     /// :returns: The number of rows matching the given column.
     public func count<V>(column: Expression<V>) -> Int {
-        return calculate(SQLite.count(column))!
+        return calculate(SQLite_count(column))!
     }
 
     /// Runs count() with DISTINCT against the query.
@@ -602,7 +602,7 @@ public struct Query {
     ///
     /// :returns: The number of rows matching the given column.
     public func count<V>(distinct column: Expression<V>) -> Int {
-        return calculate(SQLite.count(distinct: column))!
+        return calculate(SQLite_count(distinct: column))!
     }
 
     /// Runs count(DISTINCT *) against the query.
@@ -611,7 +611,7 @@ public struct Query {
     ///
     /// :returns: The number of rows matching the given column.
     public func count<V>(distinct star: Star) -> Int {
-        return calculate(SQLite.count(distinct: star(nil, nil)))!
+        return calculate(SQLite_count(distinct: star(nil, nil)))!
     }
 
     /// Runs max() against the query.
@@ -620,10 +620,10 @@ public struct Query {
     ///
     /// :returns: The largest value of the given column.
     public func max<V: Value where V.Datatype: Comparable>(column: Expression<V>) -> V? {
-        return calculate(SQLite.max(column))
+        return calculate(SQLite_max(column))
     }
     public func max<V: Value where V.Datatype: Comparable>(column: Expression<V?>) -> V? {
-        return calculate(SQLite.max(column))
+        return calculate(SQLite_max(column))
     }
 
     /// Runs min() against the query.
@@ -632,10 +632,10 @@ public struct Query {
     ///
     /// :returns: The smallest value of the given column.
     public func min<V: Value where V.Datatype: Comparable>(column: Expression<V>) -> V? {
-        return calculate(SQLite.min(column))
+        return calculate(SQLite_min(column))
     }
     public func min<V: Value where V.Datatype: Comparable>(column: Expression<V?>) -> V? {
-        return calculate(SQLite.min(column))
+        return calculate(SQLite_min(column))
     }
 
     /// Runs avg() against the query.
@@ -644,10 +644,10 @@ public struct Query {
     ///
     /// :returns: The average value of the given column.
     public func average<V: Number>(column: Expression<V>) -> Double? {
-        return calculate(SQLite.average(column))
+        return calculate(SQLite_average(column))
     }
     public func average<V: Number>(column: Expression<V?>) -> Double? {
-        return calculate(SQLite.average(column))
+        return calculate(SQLite_average(column))
     }
 
     /// Runs avg() with DISTINCT against the query.
@@ -656,10 +656,10 @@ public struct Query {
     ///
     /// :returns: The average value of the given column.
     public func average<V: Number>(distinct column: Expression<V>) -> Double? {
-        return calculate(SQLite.average(distinct: column))
+        return calculate(SQLite_average(distinct: column))
     }
     public func average<V: Number>(distinct column: Expression<V?>) -> Double? {
-        return calculate(SQLite.average(distinct: column))
+        return calculate(SQLite_average(distinct: column))
     }
 
     /// Runs sum() against the query.
@@ -668,10 +668,10 @@ public struct Query {
     ///
     /// :returns: The sum of the given column’s values.
     public func sum<V: Number>(column: Expression<V>) -> V? {
-        return calculate(SQLite.sum(column))
+        return calculate(SQLite_sum(column))
     }
     public func sum<V: Number>(column: Expression<V?>) -> V? {
-        return calculate(SQLite.sum(column))
+        return calculate(SQLite_sum(column))
     }
 
     /// Runs sum() with DISTINCT against the query.
@@ -680,10 +680,10 @@ public struct Query {
     ///
     /// :returns: The sum of the given column’s values.
     public func sum<V: Number>(distinct column: Expression<V>) -> V? {
-        return calculate(SQLite.sum(distinct: column))
+        return calculate(SQLite_sum(distinct: column))
     }
     public func sum<V: Number>(distinct column: Expression<V?>) -> V? {
-        return calculate(SQLite.sum(distinct: column))
+        return calculate(SQLite_sum(distinct: column))
     }
 
     /// Runs total() against the query.
@@ -692,10 +692,10 @@ public struct Query {
     ///
     /// :returns: The total of the given column’s values.
     public func total<V: Number>(column: Expression<V>) -> Double {
-        return calculate(SQLite.total(column))!
+        return calculate(SQLite_total(column))!
     }
     public func total<V: Number>(column: Expression<V?>) -> Double {
-        return calculate(SQLite.total(column))!
+        return calculate(SQLite_total(column))!
     }
 
     /// Runs total() with DISTINCT against the query.
@@ -704,10 +704,10 @@ public struct Query {
     ///
     /// :returns: The total of the given column’s values.
     public func total<V: Number>(distinct column: Expression<V>) -> Double {
-        return calculate(SQLite.total(distinct: column))!
+        return calculate(SQLite_total(distinct: column))!
     }
     public func total<V: Number>(distinct column: Expression<V?>) -> Double {
-        return calculate(SQLite.total(distinct: column))!
+        return calculate(SQLite_total(distinct: column))!
     }
 
     private func calculate<T, U>(expression: Expression<T>) -> U? {

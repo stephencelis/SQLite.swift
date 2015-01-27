@@ -47,11 +47,21 @@ public struct Expression<T> {
     }
 
     public var asc: Expression<()> {
-        return join(" ", [self, Expression(literal: "ASC")])
+        return Expression.join(" ", [self, Expression(literal: "ASC")])
     }
 
     public var desc: Expression<()> {
-        return join(" ", [self, Expression(literal: "DESC")])
+        return Expression.join(" ", [self, Expression(literal: "DESC")])
+    }
+
+    internal static func join(separator: String, _ expressions: [Expressible]) -> Expression<()> {
+        var (SQL, bindings) = ([String](), [Binding?]())
+        for expressible in expressions {
+            let expression = expressible.expression
+            SQL.append(expression.SQL)
+            bindings.extend(expression.bindings)
+        }
+        return Expression<()>(literal: Swift.join(separator, SQL), bindings)
     }
 
     // naïve compiler for statements that can't be bound, e.g., CREATE TABLE
@@ -451,17 +461,17 @@ public func abs<V: Number>(expression: Expression<V?>) -> Expression<V?> { retur
 
 // FIXME: support Expression<V?>..., Expression<V> when Swift supports inner variadic signatures
 public func coalesce<V>(expressions: Expression<V?>...) -> Expression<V?> {
-    return wrap(__FUNCTION__, join(", ", expressions.map { $0 }))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", expressions.map { $0 } as [Expressible]))
 }
 
 public func ifnull<V: Expressible>(expression: Expression<V?>, defaultValue: V) -> Expression<V> {
-    return wrap(__FUNCTION__, join(", ", [expression, defaultValue]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, defaultValue]))
 }
 public func ifnull<V: Expressible>(expression: Expression<V?>, defaultValue: Expression<V>) -> Expression<V> {
-    return wrap(__FUNCTION__, join(", ", [expression, defaultValue]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, defaultValue]))
 }
 public func ifnull<V: Expressible>(expression: Expression<V?>, defaultValue: Expression<V?>) -> Expression<V> {
-    return wrap(__FUNCTION__, join(", ", [expression, defaultValue]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, defaultValue]))
 }
 public func ?? <V: Expressible>(expression: Expression<V?>, defaultValue: V) -> Expression<V> {
     return ifnull(expression, defaultValue)
@@ -483,51 +493,51 @@ public func ltrim(expression: Expression<String>) -> Expression<String> { return
 public func ltrim(expression: Expression<String?>) -> Expression<String?> { return wrap(__FUNCTION__, expression) }
 
 public func ltrim(expression: Expression<String>, characters: String) -> Expression<String> {
-    return wrap(__FUNCTION__, join(", ", [expression, characters]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, characters]))
 }
 public func ltrim(expression: Expression<String?>, characters: String) -> Expression<String?> {
-    return wrap(__FUNCTION__, join(", ", [expression, characters]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, characters]))
 }
 
 public var random: Expression<Int> { return wrap(__FUNCTION__, Expression<()>()) }
 
 public func replace(expression: Expression<String>, match: String, subtitute: String) -> Expression<String> {
-    return wrap(__FUNCTION__, join(", ", [expression, match, subtitute]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, match, subtitute]))
 }
 public func replace(expression: Expression<String?>, match: String, subtitute: String) -> Expression<String?> {
-    return wrap(__FUNCTION__, join(", ", [expression, match, subtitute]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, match, subtitute]))
 }
 
 public func round(expression: Expression<Double>) -> Expression<Double> { return wrap(__FUNCTION__, expression) }
 public func round(expression: Expression<Double?>) -> Expression<Double?> { return wrap(__FUNCTION__, expression) }
 public func round(expression: Expression<Double>, precision: Int) -> Expression<Double> {
-    return wrap(__FUNCTION__, join(", ", [expression, precision]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, precision]))
 }
 public func round(expression: Expression<Double?>, precision: Int) -> Expression<Double?> {
-    return wrap(__FUNCTION__, join(", ", [expression, precision]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, precision]))
 }
 
 public func rtrim(expression: Expression<String>) -> Expression<String> { return wrap(__FUNCTION__, expression) }
 public func rtrim(expression: Expression<String?>) -> Expression<String?> { return wrap(__FUNCTION__, expression) }
 public func rtrim(expression: Expression<String>, characters: String) -> Expression<String> {
-    return wrap(__FUNCTION__, join(", ", [expression, characters]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, characters]))
 }
 public func rtrim(expression: Expression<String?>, characters: String) -> Expression<String?> {
-    return wrap(__FUNCTION__, join(", ", [expression, characters]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, characters]))
 }
 
 public func substr(expression: Expression<String>, startIndex: Int) -> Expression<String> {
-    return wrap(__FUNCTION__, join(", ", [expression, startIndex]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, startIndex]))
 }
 public func substr(expression: Expression<String?>, startIndex: Int) -> Expression<String?> {
-    return wrap(__FUNCTION__, join(", ", [expression, startIndex]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, startIndex]))
 }
 
 public func substr(expression: Expression<String>, position: Int, length: Int) -> Expression<String> {
-    return wrap(__FUNCTION__, join(", ", [expression, position, length]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, position, length]))
 }
 public func substr(expression: Expression<String?>, position: Int, length: Int) -> Expression<String?> {
-    return wrap(__FUNCTION__, join(", ", [expression, position, length]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, position, length]))
 }
 
 public func substr(expression: Expression<String>, subRange: Range<Int>) -> Expression<String> {
@@ -540,10 +550,10 @@ public func substr(expression: Expression<String?>, subRange: Range<Int>) -> Exp
 public func trim(expression: Expression<String>) -> Expression<String> { return wrap(__FUNCTION__, expression) }
 public func trim(expression: Expression<String?>) -> Expression<String?> { return wrap(__FUNCTION__, expression) }
 public func trim(expression: Expression<String>, characters: String) -> Expression<String> {
-    return wrap(__FUNCTION__, join(", ", [expression, characters]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, characters]))
 }
 public func trim(expression: Expression<String?>, characters: String) -> Expression<String?> {
-    return wrap(__FUNCTION__, join(", ", [expression, characters]))
+    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, characters]))
 }
 
 public func upper(expression: Expression<String>) -> Expression<String> { return wrap(__FUNCTION__, expression) }
@@ -591,8 +601,48 @@ public func total<V: Number>(expression: Expression<V?>) -> Expression<Double?> 
 public func total<V: Number>(#distinct: Expression<V>) -> Expression<Double> { return wrapDistinct("total", distinct) }
 public func total<V: Number>(#distinct: Expression<V?>) -> Expression<Double?> { return wrapDistinct("total", distinct) }
 
+internal func SQLite_count<V>(expression: Expression<V>) -> Expression<Int> { return count(expression) }
+internal func SQLite_count<V>(expression: Expression<V?>) -> Expression<Int?> { return count(expression) }
+
+internal func SQLite_count<V>(#distinct: Expression<V>) -> Expression<Int> { return count(distinct: distinct) }
+internal func SQLite_count<V>(#distinct: Expression<V?>) -> Expression<Int> { return count(distinct: distinct) }
+
+internal func SQLite_count(star: Star) -> Expression<Int> { return count(star) }
+
+internal func SQLite_max<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V> {
+    return max(expression)
+}
+internal func SQLite_max<V: Value where V.Datatype: Comparable>(expression: Expression<V?>) -> Expression<V?> {
+    return max(expression)
+}
+
+internal func SQLite_min<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V> {
+    return min(expression)
+}
+internal func SQLite_min<V: Value where V.Datatype: Comparable>(expression: Expression<V?>) -> Expression<V?> {
+    return min(expression)
+}
+
+internal func SQLite_average<V: Number>(expression: Expression<V>) -> Expression<Double> { return average(expression) }
+internal func SQLite_average<V: Number>(expression: Expression<V?>) -> Expression<Double?> { return average(expression) }
+
+internal func SQLite_average<V: Number>(#distinct: Expression<V>) -> Expression<Double> { return average(distinct: distinct) }
+internal func SQLite_average<V: Number>(#distinct: Expression<V?>) -> Expression<Double?> { return average(distinct: distinct) }
+
+internal func SQLite_sum<V: Number>(expression: Expression<V>) -> Expression<V> { return sum(expression) }
+internal func SQLite_sum<V: Number>(expression: Expression<V?>) -> Expression<V?> { return sum(expression) }
+
+internal func SQLite_sum<V: Number>(#distinct: Expression<V>) -> Expression<V> { return sum(distinct: distinct) }
+internal func SQLite_sum<V: Number>(#distinct: Expression<V?>) -> Expression<V?> { return sum(distinct: distinct) }
+
+internal func SQLite_total<V: Number>(expression: Expression<V>) -> Expression<Double> { return total(expression) }
+internal func SQLite_total<V: Number>(expression: Expression<V?>) -> Expression<Double?> { return total(expression) }
+
+internal func SQLite_total<V: Number>(#distinct: Expression<V>) -> Expression<Double> { return total(distinct: distinct) }
+internal func SQLite_total<V: Number>(#distinct: Expression<V?>) -> Expression<Double?> { return total(distinct: distinct) }
+
 private func wrapDistinct<V, U>(function: String, expression: Expression<V>) -> Expression<U> {
-    return wrap(function, SQLite.join(" ", [Expression<()>(literal: "DISTINCT"), expression]))
+    return wrap(function, Expression<()>.join(" ", [Expression<()>(literal: "DISTINCT"), expression]))
 }
 
 // MARK: - Helper
@@ -775,16 +825,6 @@ public postfix func -- (column: Expression<Int?>) -> Setter {
 }
 
 // MARK: - Internal
-
-internal func join(separator: String, expressions: [Expressible]) -> Expression<()> {
-    var (SQL, bindings) = ([String](), [Binding?]())
-    for expressible in expressions {
-        let expression = expressible.expression
-        SQL.append(expression.SQL)
-        bindings.extend(expression.bindings)
-    }
-    return Expression(literal: Swift.join(separator, SQL), bindings)
-}
 
 internal func transcode(literal: Binding?) -> String {
     if let literal = literal {
