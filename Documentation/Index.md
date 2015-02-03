@@ -1060,6 +1060,7 @@ extension NSDate: Value {
 let SQLDateFormatter: NSDateFormatter = {
     let formatter = NSDateFormatter()
     formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
     formatter.timeZone = NSTimeZone(abbreviation: "UTC")
     return formatter
 }()
