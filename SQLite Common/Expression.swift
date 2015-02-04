@@ -81,6 +81,14 @@ public protocol Expressible {
 
 }
 
+extension Blob: Expressible {
+
+    public var expression: Expression<()> {
+        return Expression(binding: self)
+    }
+
+}
+
 extension Bool: Expressible {
 
     public var expression: Expression<()> {
@@ -833,6 +841,7 @@ public postfix func -- (column: Expression<Int?>) -> Setter {
 
 internal func transcode(literal: Binding?) -> String {
     if let literal = literal {
+        if let literal = literal as? Blob { return literal.description }
         if let literal = literal as? String { return quote(literal: literal) }
         return "\(literal)"
     }

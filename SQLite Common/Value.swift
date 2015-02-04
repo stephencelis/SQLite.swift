@@ -86,6 +86,16 @@ extension Blob: Binding, Value {
 
 }
 
+extension Blob: Printable {
+
+    public var description: String {
+        let bytes = UnsafeBufferPointer<UInt8>(start: UnsafePointer<UInt8>(data.bytes), count: data.length)
+        let hex = join("", map(bytes) { String(format: "%02x", $0) })
+        return "x'\(hex)'"
+    }
+
+}
+
 extension Bool: Value {
 
     public typealias Datatype = Int
