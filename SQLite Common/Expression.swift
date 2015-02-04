@@ -38,7 +38,7 @@ public struct Expression<T> {
         self.init(literal: expression.SQL, expression.bindings)
     }
 
-    public init<V: Value where V.Datatype: Binding>(value: V?) {
+    public init<V: Value>(value: V?) {
         self.init(binding: value?.datatypeValue)
     }
 
@@ -244,157 +244,157 @@ public func collate(collation: Collation, expression: Expression<String?>) -> Ex
 
 // MARK: - Predicates
 
-public func == <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
+public func == <V: Value where V.Datatype: Equatable>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
     return infix("=", lhs, rhs)
 }
-public func == <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> {
+public func == <V: Value where V.Datatype: Equatable>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> {
     return infix("=", lhs, rhs)
 }
-public func == <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> {
+public func == <V: Value where V.Datatype: Equatable>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> {
     return infix("=", lhs, rhs)
 }
-public func == <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> {
+public func == <V: Value where V.Datatype: Equatable>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> {
     return infix("=", lhs, rhs)
 }
-public func == <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V>, rhs: V) -> Expression<Bool> {
+public func == <V: Value where V.Datatype: Equatable>(lhs: Expression<V>, rhs: V) -> Expression<Bool> {
     return lhs == Expression(value: rhs)
 }
-public func == <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V?>, rhs: V?) -> Expression<Bool?> {
+public func == <V: Value where V.Datatype: Equatable>(lhs: Expression<V?>, rhs: V?) -> Expression<Bool?> {
     if let rhs = rhs { return lhs == Expression(value: rhs) }
     return Expression(literal: "\(lhs.SQL) IS ?", lhs.bindings + [nil])
 }
-public func == <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
+public func == <V: Value where V.Datatype: Equatable>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
     return Expression(value: lhs) == rhs
 }
-public func == <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> {
+public func == <V: Value where V.Datatype: Equatable>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> {
     if let lhs = lhs { return Expression(value: lhs) == rhs }
     return Expression(literal: "? IS \(rhs.SQL)", [nil] + rhs.bindings)
 }
 
-public func != <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
+public func != <V: Value where V.Datatype: Equatable>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func != <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> {
+public func != <V: Value where V.Datatype: Equatable>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func != <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> {
+public func != <V: Value where V.Datatype: Equatable>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func != <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> {
+public func != <V: Value where V.Datatype: Equatable>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func != <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V>, rhs: V) -> Expression<Bool> {
+public func != <V: Value where V.Datatype: Equatable>(lhs: Expression<V>, rhs: V) -> Expression<Bool> {
     return lhs != Expression(value: rhs)
 }
-public func != <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: Expression<V?>, rhs: V?) -> Expression<Bool?> {
+public func != <V: Value where V.Datatype: Equatable>(lhs: Expression<V?>, rhs: V?) -> Expression<Bool?> {
     if let rhs = rhs { return lhs != Expression(value: rhs) }
     return Expression(literal: "\(lhs.SQL) IS NOT ?", lhs.bindings + [nil])
 }
-public func != <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
+public func != <V: Value where V.Datatype: Equatable>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
     return Expression(value: lhs) != rhs
 }
-public func != <V: Value where V.Datatype: protocol<Binding, Equatable>>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> {
+public func != <V: Value where V.Datatype: Equatable>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> {
     if let lhs = lhs { return Expression(value: lhs) != rhs }
     return Expression(literal: "? IS NOT \(rhs.SQL)", [nil] + rhs.bindings)
 }
 
-public func > <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
+public func > <V: Value where V.Datatype: Comparable>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func > <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> {
+public func > <V: Value where V.Datatype: Comparable>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func > <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> {
+public func > <V: Value where V.Datatype: Comparable>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func > <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> {
+public func > <V: Value where V.Datatype: Comparable>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func > <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V>, rhs: V) -> Expression<Bool> {
+public func > <V: Value where V.Datatype: Comparable>(lhs: Expression<V>, rhs: V) -> Expression<Bool> {
     return lhs > Expression(value: rhs)
 }
-public func > <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V?>, rhs: V) -> Expression<Bool?> {
+public func > <V: Value where V.Datatype: Comparable>(lhs: Expression<V?>, rhs: V) -> Expression<Bool?> {
     return lhs > Expression(value: rhs)
 }
-public func > <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
+public func > <V: Value where V.Datatype: Comparable>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
     return Expression(value: lhs) > rhs
 }
-public func > <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> {
+public func > <V: Value where V.Datatype: Comparable>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> {
     return Expression(value: lhs) > rhs
 }
 
-public func >= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
+public func >= <V: Value where V.Datatype: Comparable>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func >= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> {
+public func >= <V: Value where V.Datatype: Comparable>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func >= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> {
+public func >= <V: Value where V.Datatype: Comparable>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func >= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> {
+public func >= <V: Value where V.Datatype: Comparable>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func >= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V>, rhs: V) -> Expression<Bool> {
+public func >= <V: Value where V.Datatype: Comparable>(lhs: Expression<V>, rhs: V) -> Expression<Bool> {
     return lhs >= Expression(value: rhs)
 }
-public func >= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V?>, rhs: V) -> Expression<Bool?> {
+public func >= <V: Value where V.Datatype: Comparable>(lhs: Expression<V?>, rhs: V) -> Expression<Bool?> {
     return lhs >= Expression(value: rhs)
 }
-public func >= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
+public func >= <V: Value where V.Datatype: Comparable>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
     return Expression(value: lhs) >= rhs
 }
-public func >= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> {
+public func >= <V: Value where V.Datatype: Comparable>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> {
     return Expression(value: lhs) >= rhs
 }
 
-public func < <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
+public func < <V: Value where V.Datatype: Comparable>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func < <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> {
+public func < <V: Value where V.Datatype: Comparable>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func < <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> {
+public func < <V: Value where V.Datatype: Comparable>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func < <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> {
+public func < <V: Value where V.Datatype: Comparable>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func < <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V>, rhs: V) -> Expression<Bool> {
+public func < <V: Value where V.Datatype: Comparable>(lhs: Expression<V>, rhs: V) -> Expression<Bool> {
     return lhs < Expression(value: rhs)
 }
-public func < <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V?>, rhs: V) -> Expression<Bool?> {
+public func < <V: Value where V.Datatype: Comparable>(lhs: Expression<V?>, rhs: V) -> Expression<Bool?> {
     return lhs < Expression(value: rhs)
 }
-public func < <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
+public func < <V: Value where V.Datatype: Comparable>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
     return Expression(value: lhs) < rhs
 }
-public func < <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> {
+public func < <V: Value where V.Datatype: Comparable>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> {
     return Expression(value: lhs) < rhs
 }
 
-public func <= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
+public func <= <V: Value where V.Datatype: Comparable>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func <= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> {
+public func <= <V: Value where V.Datatype: Comparable>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func <= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> {
+public func <= <V: Value where V.Datatype: Comparable>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func <= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> {
+public func <= <V: Value where V.Datatype: Comparable>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> {
     return infix(__FUNCTION__, lhs, rhs)
 }
-public func <= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V>, rhs: V) -> Expression<Bool> {
+public func <= <V: Value where V.Datatype: Comparable>(lhs: Expression<V>, rhs: V) -> Expression<Bool> {
     return lhs <= Expression(value: rhs)
 }
-public func <= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: Expression<V?>, rhs: V) -> Expression<Bool?> {
+public func <= <V: Value where V.Datatype: Comparable>(lhs: Expression<V?>, rhs: V) -> Expression<Bool?> {
     return lhs <= Expression(value: rhs)
 }
-public func <= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
+public func <= <V: Value where V.Datatype: Comparable>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
     return Expression(value: lhs) <= rhs
 }
-public func <= <V: Value where V.Datatype: protocol<Binding, Comparable>>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> {
+public func <= <V: Value where V.Datatype: Comparable>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> {
     return Expression(value: lhs) <= rhs
 }
 
@@ -675,10 +675,10 @@ public typealias Setter = (Expressible, Expressible)
 ///
 /// :returns: A setter that can be used in a Query's insert and update
 ///           functions.
-public func set<V: Value where V.Datatype: Binding>(column: Expression<V>, value: V) -> Setter {
+public func set<V: Value>(column: Expression<V>, value: V) -> Setter {
     return (column, Expression<()>(value: value))
 }
-public func set<V: Value where V.Datatype: Binding>(column: Expression<V?>, value: V?) -> Setter {
+public func set<V: Value>(column: Expression<V?>, value: V?) -> Setter {
     return (column, Expression<()>(value: value))
 }
 public func set<V: Value>(column: Expression<V>, value: Expression<V>) -> Setter { return (column, value) }
@@ -691,8 +691,8 @@ public func <- <V: Value>(column: Expression<V>, value: Expression<V>) -> Setter
 public func <- <V: Value>(column: Expression<V>, value: Expression<V?>) -> Setter { return set(column, value) }
 public func <- <V: Value>(column: Expression<V?>, value: Expression<V>) -> Setter { return set(column, value) }
 public func <- <V: Value>(column: Expression<V?>, value: Expression<V?>) -> Setter { return set(column, value) }
-public func <- <V: Value where V.Datatype: Binding>(column: Expression<V>, value: V) -> Setter { return set(column, value) }
-public func <- <V: Value where V.Datatype: Binding>(column: Expression<V?>, value: V?) -> Setter { return set(column, value) }
+public func <- <V: Value>(column: Expression<V>, value: V) -> Setter { return set(column, value) }
+public func <- <V: Value>(column: Expression<V?>, value: V?) -> Setter { return set(column, value) }
 
 public func += (column: Expression<String>, value: Expression<String>) -> Setter { return set(column, column + value) }
 public func += (column: Expression<String>, value: Expression<String?>) -> Setter { return set(column, column + value) }

@@ -732,10 +732,10 @@ public struct Row {
     /// :param: column An expression representing a column selected in a Query.
     ///
     /// returns The value for the given column.
-    public func get<V: Value where V.Datatype: Binding>(column: Expression<V>) -> V {
+    public func get<V: Value>(column: Expression<V>) -> V {
         return get(Expression<V?>(column))!
     }
-    public func get<V: Value where V.Datatype: Binding>(column: Expression<V?>) -> V? {
+    public func get<V: Value>(column: Expression<V?>) -> V? {
         func valueAtIndex(idx: Int) -> V? {
             if let value = values[idx] as? V.Datatype { return (V.fromDatatypeValue(value) as V) }
             return nil
