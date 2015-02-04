@@ -286,7 +286,7 @@ public struct Query {
         return Expression(literal: "\(quote(identifier: alias ?? tableName)).\(column.SQL)", column.bindings)
     }
 
-    // FIXME: rdar://18673897 subscript<T>(expression: Expression<V>) -> Expression<V>
+    // FIXME: rdar://18673897 // ... subscript<T>(expression: Expression<V>) -> Expression<V>
 
     public subscript(column: Expression<Blob>) -> Expression<Blob> { return namespace(column) }
     public subscript(column: Expression<Blob?>) -> Expression<Blob?> { return namespace(column) }
@@ -752,7 +752,7 @@ public struct Row {
         fatalError("no such column \(quote(literal: column.SQL)) in columns: \(Array(columnNames.keys))")
     }
 
-    // FIXME: rdar://18673897 subscript<T>(expression: Expression<V>) -> Expression<V>
+    // FIXME: rdar://18673897 // ... subscript<T>(expression: Expression<V>) -> Expression<V>
 
     public subscript(column: Expression<Blob>) -> Blob { return get(column) }
     public subscript(column: Expression<Blob?>) -> Blob? { return get(column) }
