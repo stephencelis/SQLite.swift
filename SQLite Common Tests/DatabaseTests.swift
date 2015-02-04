@@ -50,26 +50,26 @@ class DatabaseTests: XCTestCase {
 
     func test_prepare_preparesAndReturnsStatements() {
         db.prepare("SELECT * FROM users WHERE admin = 0")
-        db.prepare("SELECT * FROM users WHERE admin = ?", false)
-        db.prepare("SELECT * FROM users WHERE admin = ?", [false])
-        db.prepare("SELECT * FROM users WHERE admin = $admin", ["$admin": false])
+        db.prepare("SELECT * FROM users WHERE admin = ?", 0)
+        db.prepare("SELECT * FROM users WHERE admin = ?", [0])
+        db.prepare("SELECT * FROM users WHERE admin = $admin", ["$admin": 0])
         // no-op assert-nothing-asserted
     }
 
     func test_run_preparesRunsAndReturnsStatements() {
         ExpectExecutions(db, ["SELECT * FROM users WHERE admin = 0": 4]) { db in
             db.run("SELECT * FROM users WHERE admin = 0")
-            db.run("SELECT * FROM users WHERE admin = ?", false)
-            db.run("SELECT * FROM users WHERE admin = ?", [false])
-            db.run("SELECT * FROM users WHERE admin = $admin", ["$admin": false])
+            db.run("SELECT * FROM users WHERE admin = ?", 0)
+            db.run("SELECT * FROM users WHERE admin = ?", [0])
+            db.run("SELECT * FROM users WHERE admin = $admin", ["$admin": 0])
         }
     }
 
     func test_scalar_preparesRunsAndReturnsScalarValues() {
         XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = 0") as Int)
-        XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = ?", false) as Int)
-        XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = ?", [false]) as Int)
-        XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = $admin", ["$admin": false]) as Int)
+        XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = ?", 0) as Int)
+        XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = ?", [0]) as Int)
+        XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = $admin", ["$admin": 0]) as Int)
     }
 
     func test_transaction_beginsAndCommitsStatements() {
@@ -80,34 +80,34 @@ class DatabaseTests: XCTestCase {
         ]
         ExpectExecutions(db, fulfilled) { db in
             let stmt = db.prepare("INSERT INTO users (email, admin) VALUES (?, ?)")
-            db.transaction(stmt.bind("alice@example.com", true))
+            db.transaction(stmt.bind("alice@example.com", 1))
         }
     }
 
     func test_transaction_executesBeginDeferred() {
         ExpectExecutions(db, ["BEGIN DEFERRED TRANSACTION": 1]) { db in
             let stmt = db.prepare("INSERT INTO users (email, admin) VALUES (?, ?)")
-            db.transaction(.Deferred, stmt.bind("alice@example.com", true))
+            db.transaction(.Deferred, stmt.bind("alice@example.com", 1))
         }
     }
 
     func test_transaction_executesBeginImmediate() {
         ExpectExecutions(db, ["BEGIN IMMEDIATE TRANSACTION": 1]) { db in
             let stmt = db.prepare("INSERT INTO users (email, admin) VALUES (?, ?)")
-            db.transaction(.Immediate, stmt.bind("alice@example.com", true))
+            db.transaction(.Immediate, stmt.bind("alice@example.com", 1))
         }
     }
 
     func test_transaction_executesBeginExclusive() {
         ExpectExecutions(db, ["BEGIN EXCLUSIVE TRANSACTION": 1]) { db in
             let stmt = db.prepare("INSERT INTO users (email, admin) VALUES (?, ?)")
-            db.transaction(.Exclusive, stmt.bind("alice@example.com", true))
+            db.transaction(.Exclusive, stmt.bind("alice@example.com", 1))
         }
     }
 
     func test_transaction_rollsBackOnFailure() {
         let stmt = db.prepare("INSERT INTO users (email, admin) VALUES (?, ?)")
-        db.transaction(stmt.bind("alice@example.com", true))
+        db.transaction(stmt.bind("alice@example.com", 1))
         let fulfilled = [
             "COMMIT TRANSACTION": 0,
             "ROLLBACK TRANSACTION": 1,
@@ -116,8 +116,8 @@ class DatabaseTests: XCTestCase {
         var txn: Statement!
         ExpectExecutions(db, fulfilled) { db in
             txn = db.transaction(
-                stmt.bind("alice@example.com", true),
-                stmt.bind("alice@example.com", true)
+                stmt.bind("alice@example.com", 1),
+                stmt.bind("alice@example.com", 1)
             )
             return
         }
@@ -162,14 +162,14 @@ class DatabaseTests: XCTestCase {
         ExpectExecutions(db, fulfilled) { db in
             db.savepoint(
                 db.savepoint(
-                    stmt.run("alice@example.com", true),
-                    stmt.run("alice@example.com", true),
-                    stmt.run("alice@example.com", true)
+                    stmt.run("alice@example.com", 1),
+                    stmt.run("alice@example.com", 1),
+                    stmt.run("alice@example.com", 1)
                 ),
                 db.savepoint(
-                    stmt.run("alice@example.com", true),
-                    stmt.run("alice@example.com", true),
-                    stmt.run("alice@example.com", true)
+                    stmt.run("alice@example.com", 1),
+                    stmt.run("alice@example.com", 1),
+                    stmt.run("alice@example.com", 1)
                 )
             )
             return

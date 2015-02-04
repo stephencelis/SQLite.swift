@@ -86,18 +86,18 @@ extension Blob: Binding, Value {
 
 }
 
-extension Bool: Binding, Value {
+extension Bool: Value {
 
-    public typealias Datatype = Bool
+    public typealias Datatype = Int
 
-    public static var declaredDatatype = "BOOLEAN"
+    public static var declaredDatatype = Int.declaredDatatype
 
     public static func fromDatatypeValue(datatypeValue: Datatype) -> Bool {
-        return datatypeValue
+        return datatypeValue != 0
     }
 
     public var datatypeValue: Datatype {
-        return self
+        return self ? 1 : 0
     }
 
 }

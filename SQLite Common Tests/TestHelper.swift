@@ -20,10 +20,10 @@ func CreateUsersTable(db: Database) {
     db.trace(Trace)
 }
 
-func InsertUser(db: Database, name: String, age: Int? = nil, admin: Bool? = false) -> Statement {
+func InsertUser(db: Database, name: String, age: Int? = nil, admin: Bool = false) -> Statement {
     return db.run(
         "INSERT INTO \"users\" (email, age, admin) values (?, ?, ?)",
-        ["\(name)@example.com", age, admin]
+        ["\(name)@example.com", age, admin.datatypeValue]
     )
 }
 

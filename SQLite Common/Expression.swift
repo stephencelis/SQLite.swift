@@ -84,7 +84,8 @@ public protocol Expressible {
 extension Bool: Expressible {
 
     public var expression: Expression<()> {
-        return Expression(binding: self)
+        // FIXME: rdar://TODO segfaults during archive // return Expression(value: self)
+        return Expression(binding: datatypeValue)
     }
 
 }
@@ -437,19 +438,23 @@ public func && (lhs: Expression<Bool>, rhs: Expression<Bool>) -> Expression<Bool
 public func && (lhs: Expression<Bool>, rhs: Expression<Bool?>) -> Expression<Bool?> { return infix("AND", lhs, rhs) }
 public func && (lhs: Expression<Bool?>, rhs: Expression<Bool>) -> Expression<Bool?> { return infix("AND", lhs, rhs) }
 public func && (lhs: Expression<Bool?>, rhs: Expression<Bool?>) -> Expression<Bool?> { return infix("AND", lhs, rhs) }
-public func && (lhs: Expression<Bool>, rhs: Bool) -> Expression<Bool> { return lhs && Expression(binding: rhs) }
-public func && (lhs: Expression<Bool?>, rhs: Bool) -> Expression<Bool?> { return lhs && Expression(binding: rhs) }
-public func && (lhs: Bool, rhs: Expression<Bool>) -> Expression<Bool> { return Expression(binding: lhs) && rhs }
-public func && (lhs: Bool, rhs: Expression<Bool?>) -> Expression<Bool?> { return Expression(binding: lhs) && rhs }
+// FIXME: rdar://TODO segfaults during archive // ... Expression(value: lhs)
+public func && (lhs: Expression<Bool>, rhs: Bool) -> Expression<Bool> { return lhs && Expression(binding: rhs.datatypeValue) }
+public func && (lhs: Expression<Bool?>, rhs: Bool) -> Expression<Bool?> { return lhs && Expression(binding: rhs.datatypeValue) }
+// FIXME: rdar://TODO segfaults during archive // ... Expression(value: rhs)
+public func && (lhs: Bool, rhs: Expression<Bool>) -> Expression<Bool> { return Expression(binding: lhs.datatypeValue) && rhs }
+public func && (lhs: Bool, rhs: Expression<Bool?>) -> Expression<Bool?> { return Expression(binding: lhs.datatypeValue) && rhs }
 
 public func || (lhs: Expression<Bool>, rhs: Expression<Bool>) -> Expression<Bool> { return infix("OR", lhs, rhs) }
 public func || (lhs: Expression<Bool>, rhs: Expression<Bool?>) -> Expression<Bool?> { return infix("OR", lhs, rhs) }
 public func || (lhs: Expression<Bool?>, rhs: Expression<Bool>) -> Expression<Bool?> { return infix("OR", lhs, rhs) }
 public func || (lhs: Expression<Bool?>, rhs: Expression<Bool?>) -> Expression<Bool?> { return infix("OR", lhs, rhs) }
-public func || (lhs: Expression<Bool>, rhs: Bool) -> Expression<Bool> { return lhs || Expression(binding: rhs) }
-public func || (lhs: Expression<Bool?>, rhs: Bool) -> Expression<Bool?> { return lhs || Expression(binding: rhs) }
-public func || (lhs: Bool, rhs: Expression<Bool>) -> Expression<Bool> { return Expression(binding: lhs) || rhs }
-public func || (lhs: Bool, rhs: Expression<Bool?>) -> Expression<Bool?> { return Expression(binding: lhs) || rhs }
+// FIXME: rdar://TODO segfaults during archive // ... Expression(value: lhs)
+public func || (lhs: Expression<Bool>, rhs: Bool) -> Expression<Bool> { return lhs || Expression(binding: rhs.datatypeValue) }
+public func || (lhs: Expression<Bool?>, rhs: Bool) -> Expression<Bool?> { return lhs || Expression(binding: rhs.datatypeValue) }
+// FIXME: rdar://TODO segfaults during archive // ... Expression(value: rhs)
+public func || (lhs: Bool, rhs: Expression<Bool>) -> Expression<Bool> { return Expression(binding: lhs.datatypeValue) || rhs }
+public func || (lhs: Bool, rhs: Expression<Bool?>) -> Expression<Bool?> { return Expression(binding: lhs.datatypeValue) || rhs }
 
 public prefix func ! (rhs: Expression<Bool>) -> Expression<Bool> { return wrap("NOT ", rhs) }
 public prefix func ! (rhs: Expression<Bool?>) -> Expression<Bool?> { return wrap("NOT ", rhs) }
@@ -655,11 +660,11 @@ public func * (Expression<Binding>?, Expression<Binding>?) -> Expression<()> {
 
 public func contains<V: Value>(values: [V], column: Expression<V>) -> Expression<Bool> {
     let templates = join(", ", [String](count: values.count, repeatedValue: "?"))
-    return infix("IN", column, Expression<V>(literal: "(\(templates))", values.map { $0 }))
+    return infix("IN", column, Expression<V>(literal: "(\(templates))", values.map { $0.datatypeValue }))
 }
 public func contains<V: Value>(values: [V?], column: Expression<V?>) -> Expression<Bool> {
     let templates = join(", ", [String](count: values.count, repeatedValue: "?"))
-    return infix("IN", column, Expression<V>(literal: "(\(templates))", values.map { $0 }))
+    return infix("IN", column, Expression<V>(literal: "(\(templates))", values.map { $0?.datatypeValue }))
 }
 
 // MARK: - Modifying
@@ -829,7 +834,6 @@ public postfix func -- (column: Expression<Int?>) -> Setter {
 internal func transcode(literal: Binding?) -> String {
     if let literal = literal {
         if let literal = literal as? String { return quote(literal: literal) }
-        if let literal = literal as? Bool { return literal ? "1" : "0" }
         return "\(literal)"
     }
     return "NULL"

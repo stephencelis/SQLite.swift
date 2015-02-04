@@ -12,30 +12,30 @@ class StatementTests: XCTestCase {
     }
 
     func test_bind_withVariadicParameters_bindsParameters() {
-        let stmt = db.prepare("SELECT ?, ?, ?, ?, ?")
-        ExpectExecutions(db, ["SELECT 0, 1, 2.0, '3', x'34'": 1]) { _ in
+        let stmt = db.prepare("SELECT ?, ?, ?, ?")
+        ExpectExecutions(db, ["SELECT 1, 2.0, '3', x'34'": 1]) { _ in
             withBlob { blob in
-                stmt.bind(false, 1, 2.0, "3", blob).run()
+                stmt.bind(1, 2.0, "3", blob).run()
                 return
             }
         }
     }
 
     func test_bind_withArrayOfParameters_bindsParameters() {
-        let stmt = db.prepare("SELECT ?, ?, ?, ?, ?")
-        ExpectExecutions(db, ["SELECT 0, 1, 2.0, '3', x'34'": 1]) { _ in
+        let stmt = db.prepare("SELECT ?, ?, ?, ?")
+        ExpectExecutions(db, ["SELECT 1, 2.0, '3', x'34'": 1]) { _ in
             withBlob { blob in
-                stmt.bind([false, 1, 2.0, "3", blob]).run()
+                stmt.bind([1, 2.0, "3", blob]).run()
                 return
             }
         }
     }
 
     func test_bind_withNamedParameters_bindsParameters() {
-        let stmt = db.prepare("SELECT ?1, ?2, ?3, ?4, ?5")
-        ExpectExecutions(db, ["SELECT 0, 1, 2.0, '3', x'34'": 1]) { _ in
+        let stmt = db.prepare("SELECT ?1, ?2, ?3, ?4")
+        ExpectExecutions(db, ["SELECT 1, 2.0, '3', x'34'": 1]) { _ in
             withBlob { blob in
-                stmt.bind(["?1": false, "?2": 1, "?3": 2.0, "?4": "3", "?5": blob]).run()
+                stmt.bind(["?1": 1, "?2": 2.0, "?3": "3", "?4": blob]).run()
                 return
             }
         }
@@ -48,14 +48,6 @@ class StatementTests: XCTestCase {
                 stmt.bind(blob).run()
                 return
             }
-        }
-    }
-
-    func test_bind_withBool_bindsInt() {
-        let stmt = db.prepare("SELECT ?")
-        ExpectExecutions(db, ["SELECT 0": 1, "SELECT 1": 1]) { _ in
-            stmt.bind(false).run()
-            stmt.bind(true).run()
         }
     }
 
@@ -93,13 +85,13 @@ class StatementTests: XCTestCase {
 
     func test_run_withVariadicParameters() {
         let stmt = db.prepare("INSERT INTO users (email, admin) VALUES (?, ?)")
-        stmt.run("alice@example.com", true)
+        stmt.run("alice@example.com", 1)
         XCTAssertEqual(1, db.totalChanges)
     }
 
     func test_run_withArrayOfParameters() {
         let stmt = db.prepare("INSERT INTO users (email, admin) VALUES (?, ?)")
-        stmt.run(["alice@example.com", true])
+        stmt.run(["alice@example.com", 1])
         XCTAssertEqual(1, db.totalChanges)
     }
 
@@ -107,7 +99,7 @@ class StatementTests: XCTestCase {
         let stmt = db.prepare(
             "INSERT INTO users (email, admin) VALUES ($email, $admin)"
         )
-        stmt.run(["$email": "alice@example.com", "$admin": true])
+        stmt.run(["$email": "alice@example.com", "$admin": 1])
         XCTAssertEqual(1, db.totalChanges)
     }
 
@@ -147,11 +139,6 @@ class StatementTests: XCTestCase {
         let count = db.prepare("SELECT count(*) FROM users WHERE age >= ?")
         XCTAssertEqual(1, count.scalar(21) as Int)
         XCTAssertEqual(0, count.scalar(22) as Int)
-    }
-
-    func test_scalar_boolReturnValue() {
-        InsertUser(db, "alice", admin: true)
-        XCTAssertEqual(true, db.scalar("SELECT admin FROM users") as Bool)
     }
 
     func test_scalar_doubleReturnValue() {
