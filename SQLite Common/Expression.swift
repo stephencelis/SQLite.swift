@@ -653,11 +653,11 @@ public func * (Expression<Binding>?, Expression<Binding>?) -> Expression<()> {
     return Expression<()>(literal: "*")
 }
 
-public func contains<V: Value where V.Datatype: Binding>(values: [V.Datatype], column: Expression<V>) -> Expression<Bool> {
+public func contains<V: Value>(values: [V], column: Expression<V>) -> Expression<Bool> {
     let templates = join(", ", [String](count: values.count, repeatedValue: "?"))
     return infix("IN", column, Expression<V>(literal: "(\(templates))", values.map { $0 }))
 }
-public func contains<V: Value where V.Datatype: Binding>(values: [V.Datatype?], column: Expression<V?>) -> Expression<Bool> {
+public func contains<V: Value>(values: [V?], column: Expression<V?>) -> Expression<Bool> {
     let templates = join(", ", [String](count: values.count, repeatedValue: "?"))
     return infix("IN", column, Expression<V>(literal: "(\(templates))", values.map { $0 }))
 }
