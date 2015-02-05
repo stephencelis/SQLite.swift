@@ -46,7 +46,7 @@ public final class Database {
     /// :returns: A new database connection.
     public init(_ path: String? = ":memory:", readonly: Bool = false) {
         let flags = readonly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE
-        try(sqlite3_open_v2(path ?? "", &handle, flags, nil))
+        try(sqlite3_open_v2(path ?? "", &handle, flags | SQLITE_OPEN_FULLMUTEX, nil))
     }
 
     deinit { try(sqlite3_close(handle)) } // sqlite3_close_v2 in Yosemite/iOS 8?
