@@ -166,7 +166,6 @@ SQLite.swift comes with a typed expression layer that directly maps [Swift types
 | `Int`           | `INTEGER`   |
 | `Double`        | `REAL`      |
 | `String`        | `TEXT`      |
-| `Bool`          | `BOOLEAN`   |
 | `nil`           | `NULL`      |
 | `SQLite.Blob`*  | `BLOB`      |
 
