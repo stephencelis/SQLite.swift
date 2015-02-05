@@ -206,6 +206,14 @@ public final class Database {
 
     }
 
+    public enum TransactionResult: String {
+
+        case Commit = "COMMIT TRANSACTION"
+
+        case Rollback = "ROLLBACK TRANSACTION"
+
+    }
+
     /// Runs a series of statements in a transaction. The first statement to
     /// fail will short-circuit the rest and roll back the changes. A successful
     /// transaction will automatically be committed.
@@ -253,12 +261,16 @@ public final class Database {
     ///
     /// :returns: The last statement executed, successful or not.
     public func transaction(mode: TransactionMode, _ statements: [@autoclosure () -> Statement]) -> Statement {
-        var transaction = run("BEGIN \(mode.rawValue) TRANSACTION")
-        // FIXME: rdar://15217242 // for statement in statements { transaction = transaction && statement() }
-        for idx in 0..<statements.count { transaction = transaction && statements[idx]() }
-        transaction = transaction && run("COMMIT TRANSACTION")
-        if transaction.failed { run("ROLLBACK TRANSACTION") }
-        return transaction
+        var statement: Statement!
+        let result = transaction(mode) { transaction in
+            statement = reduce(statements, transaction, &&)
+            return statement.failed ? .Rollback : .Commit
+        }
+        return statement && result
+    }
+
+    public func transaction(_ mode: TransactionMode = .Deferred, block: Statement -> TransactionResult) -> Statement {
+        return run(block(run("BEGIN \(mode.rawValue) TRANSACTION")).rawValue)
     }
 
     // MARK: - Savepoints
