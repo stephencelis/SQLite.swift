@@ -21,7 +21,7 @@
 	<key>CFBundleVersion</key>
 	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>NSHumanReadableCopyright</key>
-	<string>Copyright © 2014 Stephen Celis.</string>
+	<string>Copyright © 2014–2015 Stephen Celis.</string>
 	<key>NSPrincipalClass</key>
 	<string></string>
 </dict>
