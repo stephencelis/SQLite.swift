@@ -28,3 +28,6 @@ void SQLiteBusyHandler(sqlite3 * handle, SQLiteBusyHandlerCallback callback);
 
 typedef void (^SQLiteTraceCallback)(const char * SQL);
 void SQLiteTrace(sqlite3 * handle, SQLiteTraceCallback callback);
+
+typedef void (^SQLiteCreateFunctionCallback)(sqlite3_context * context, int argc, sqlite3_value ** argv);
+void SQLiteCreateFunction(sqlite3 * handle, const char * name, SQLiteCreateFunctionCallback callback);

@@ -21,8 +21,8 @@
 // THE SOFTWARE.
 //
 
-private let SQLITE_STATIC = sqlite3_destructor_type(COpaquePointer(bitPattern: 0))
-private let SQLITE_TRANSIENT = sqlite3_destructor_type(COpaquePointer(bitPattern: -1))
+internal let SQLITE_STATIC = sqlite3_destructor_type(COpaquePointer(bitPattern: 0))
+internal let SQLITE_TRANSIENT = sqlite3_destructor_type(COpaquePointer(bitPattern: -1))
 
 /// A single SQL statement.
 public final class Statement {

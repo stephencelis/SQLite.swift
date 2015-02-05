@@ -29,6 +29,10 @@
 		DC37743C19C8D6C0004FCF85 /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC37743A19C8D6C0004FCF85 /* Statement.swift */; };
 		DC37744319C8DC91004FCF85 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC37744219C8DC91004FCF85 /* libsqlite3.dylib */; };
 		DC37744519C8DCA1004FCF85 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC37744419C8DCA1004FCF85 /* libsqlite3.dylib */; };
+		DC3F17101A8127A300C83A2F /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3F170F1A8127A300C83A2F /* Functions.swift */; };
+		DC3F17111A8127A300C83A2F /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3F170F1A8127A300C83A2F /* Functions.swift */; };
+		DC3F17131A814F7000C83A2F /* FunctionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3F17121A814F7000C83A2F /* FunctionsTests.swift */; };
+		DC3F17141A814F7000C83A2F /* FunctionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC3F17121A814F7000C83A2F /* FunctionsTests.swift */; };
 		DC475EA119F219AE00788FBD /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC475E9E19F2199900788FBD /* ExpressionTests.swift */; };
 		DC475EA219F219AF00788FBD /* ExpressionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC475E9E19F2199900788FBD /* ExpressionTests.swift */; };
 		DC650B9619F0CDC3002FBE91 /* Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC650B9519F0CDC3002FBE91 /* Expression.swift */; };
@@ -66,7 +70,7 @@
 		DC0FA83119D87CA3009F3A35 /* SQLite-Bridging-Header.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SQLite-Bridging-Header.h"; sourceTree = "<group>"; };
 		DC0FA83519D87E0C009F3A35 /* SQLite-Bridging.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = "SQLite-Bridging.c"; sourceTree = "<group>"; };
 		DC0FA83619D87E0C009F3A35 /* SQLite-Bridging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SQLite-Bridging.h"; sourceTree = "<group>"; };
-		DC109CE01A0C4D970070988E /* Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Schema.swift; sourceTree = "<group>"; };
+		DC109CE01A0C4D970070988E /* Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Schema.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DC109CE31A0C4F5D0070988E /* SchemaTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaTests.swift; sourceTree = "<group>"; };
 		DC3773F319C8CBB3004FCF85 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DC3773F719C8CBB3004FCF85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -80,15 +84,17 @@
 		DC37742419C8CC2F004FCF85 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		DC37742E19C8CE67004FCF85 /* SQLite Common.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; path = "SQLite Common.xcconfig"; sourceTree = "<group>"; };
 		DC37743419C8D626004FCF85 /* Database.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Database.swift; sourceTree = "<group>"; };
-		DC37743719C8D693004FCF85 /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
+		DC37743719C8D693004FCF85 /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Value.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DC37743A19C8D6C0004FCF85 /* Statement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Statement.swift; sourceTree = "<group>"; };
 		DC37744219C8DC91004FCF85 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		DC37744419C8DCA1004FCF85 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.10.sdk/usr/lib/libsqlite3.dylib; sourceTree = DEVELOPER_DIR; };
 		DC37744719C8F50B004FCF85 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		DC3F170F1A8127A300C83A2F /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
+		DC3F17121A814F7000C83A2F /* FunctionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FunctionsTests.swift; sourceTree = "<group>"; };
 		DC475E9E19F2199900788FBD /* ExpressionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExpressionTests.swift; sourceTree = "<group>"; };
 		DC650B9519F0CDC3002FBE91 /* Expression.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Expression.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DCAAE66D19D8A71B00158FEF /* SQLite.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = SQLite.playground; sourceTree = "<group>"; };
-		DCAD429619E2E0F1004A51DF /* Query.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Query.swift; sourceTree = "<group>"; };
+		DCAD429619E2E0F1004A51DF /* Query.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Query.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DCAD429919E2EE50004A51DF /* QueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryTests.swift; sourceTree = "<group>"; };
 		DCF37F8119DDAC2D001534AA /* DatabaseTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseTests.swift; sourceTree = "<group>"; };
 		DCF37F8419DDAF3F001534AA /* StatementTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementTests.swift; sourceTree = "<group>"; };
@@ -135,6 +141,7 @@
 			isa = PBXGroup;
 			children = (
 				DC650B9519F0CDC3002FBE91 /* Expression.swift */,
+				DC3F170F1A8127A300C83A2F /* Functions.swift */,
 				DCAD429619E2E0F1004A51DF /* Query.swift */,
 				DC109CE01A0C4D970070988E /* Schema.swift */,
 			);
@@ -158,6 +165,7 @@
 				DCF37F8119DDAC2D001534AA /* DatabaseTests.swift */,
 				DCF37F8419DDAF3F001534AA /* StatementTests.swift */,
 				DC475E9E19F2199900788FBD /* ExpressionTests.swift */,
+				DC3F17121A814F7000C83A2F /* FunctionsTests.swift */,
 				DCAD429919E2EE50004A51DF /* QueryTests.swift */,
 				DC109CE31A0C4F5D0070988E /* SchemaTests.swift */,
 			);
@@ -469,6 +477,7 @@
 				DCAD429719E2E0F1004A51DF /* Query.swift in Sources */,
 				DC37743B19C8D6C0004FCF85 /* Statement.swift in Sources */,
 				DC650B9619F0CDC3002FBE91 /* Expression.swift in Sources */,
+				DC3F17101A8127A300C83A2F /* Functions.swift in Sources */,
 				DC37743519C8D626004FCF85 /* Database.swift in Sources */,
 				DC37743819C8D693004FCF85 /* Value.swift in Sources */,
 				DC109CE11A0C4D970070988E /* Schema.swift in Sources */,
@@ -480,6 +489,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC3F17131A814F7000C83A2F /* FunctionsTests.swift in Sources */,
 				DC475EA219F219AF00788FBD /* ExpressionTests.swift in Sources */,
 				DCAD429A19E2EE50004A51DF /* QueryTests.swift in Sources */,
 				DC109CE41A0C4F5D0070988E /* SchemaTests.swift in Sources */,
@@ -496,6 +506,7 @@
 				DCAD429819E2E0F1004A51DF /* Query.swift in Sources */,
 				DC37743C19C8D6C0004FCF85 /* Statement.swift in Sources */,
 				DC650B9719F0CDC3002FBE91 /* Expression.swift in Sources */,
+				DC3F17111A8127A300C83A2F /* Functions.swift in Sources */,
 				DC37743619C8D626004FCF85 /* Database.swift in Sources */,
 				DC37743919C8D693004FCF85 /* Value.swift in Sources */,
 				DC109CE21A0C4D970070988E /* Schema.swift in Sources */,
@@ -507,6 +518,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				DC3F17141A814F7000C83A2F /* FunctionsTests.swift in Sources */,
 				DC475EA119F219AE00788FBD /* ExpressionTests.swift in Sources */,
 				DCAD429B19E2EE50004A51DF /* QueryTests.swift in Sources */,
 				DC109CE51A0C4F5D0070988E /* SchemaTests.swift in Sources */,
