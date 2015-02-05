@@ -33,7 +33,7 @@ public extension Database {
     ///                  mapped to the function's parameters and should return a
     ///                  raw SQL value (or nil).
     public func create(#function: String, _ block: [Binding?] -> Binding?) {
-        SQLiteCreateFunction(handle, function) { context, argc, argv in
+        try(SQLiteCreateFunction(handle, function) { context, argc, argv in
             let arguments: [Binding?] = map(0..<argc) { idx in
                 let value = argv[Int(idx)]
                 switch sqlite3_value_type(value) {
@@ -67,7 +67,7 @@ public extension Database {
             } else {
                 assertionFailure("unsupported result type: \(result)")
             }
-        }
+        })
     }
 
     // MARK: - Type-Safe Function Creation Shims

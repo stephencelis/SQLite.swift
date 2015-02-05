@@ -346,9 +346,9 @@ public final class Database {
     ///                  no further attempts will be made.
     public func busy(callback: (Int -> Bool)?) {
         if let callback = callback {
-            SQLiteBusyHandler(handle) { callback(Int($0)) ? 1 : 0 }
+            try(SQLiteBusyHandler(handle) { callback(Int($0)) ? 1 : 0 })
         } else {
-            SQLiteBusyHandler(handle, nil)
+            try(SQLiteBusyHandler(handle, nil))
         }
     }
 

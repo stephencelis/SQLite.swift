@@ -30,11 +30,11 @@ int _SQLiteBusyHandler(void * context, int tries) {
     return ((SQLiteBusyHandlerCallback)context)(tries);
 }
 
-void SQLiteBusyHandler(sqlite3 * handle, SQLiteBusyHandlerCallback callback) {
+int SQLiteBusyHandler(sqlite3 * handle, SQLiteBusyHandlerCallback callback) {
     if (callback) {
-        sqlite3_busy_handler(handle, _SQLiteBusyHandler, Block_copy(callback)); // FIXME: leak
+        return sqlite3_busy_handler(handle, _SQLiteBusyHandler, Block_copy(callback)); // FIXME: leak
     } else {
-        sqlite3_busy_handler(handle, 0, 0);
+        return sqlite3_busy_handler(handle, 0, 0);
     }
 }
 
@@ -54,10 +54,10 @@ void _SQLiteCreateFunction(sqlite3_context * context, int argc, sqlite3_value **
     ((SQLiteCreateFunctionCallback)sqlite3_user_data(context))(context, argc, argv);
 }
 
-void SQLiteCreateFunction(sqlite3 * handle, const char * name, SQLiteCreateFunctionCallback callback) {
+int SQLiteCreateFunction(sqlite3 * handle, const char * name, SQLiteCreateFunctionCallback callback) {
     if (callback) {
-        sqlite3_create_function_v2(handle, name, -1, SQLITE_ANY, Block_copy(callback), &_SQLiteCreateFunction, 0, 0, 0);
+        return sqlite3_create_function_v2(handle, name, -1, SQLITE_ANY, Block_copy(callback), &_SQLiteCreateFunction, 0, 0, 0);
     } else {
-        sqlite3_create_function_v2(handle, name, 0, 0, 0, 0, 0, 0, 0);
+        return sqlite3_create_function_v2(handle, name, 0, 0, 0, 0, 0, 0, 0);
     }
 }
