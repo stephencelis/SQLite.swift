@@ -49,6 +49,7 @@
   - [Other Operators](#other-operators)
   - [Core SQLite Functions](#core-sqlite-functions)
   - [Aggregate SQLite Functions](#aggregate-sqlite-functions)
+  - [Custom SQL Functions](#custom-sql-functions)
   - [Executing Arbitrary SQL](#executing-arbitrary-sql)
   - [Logging](#logging)
 
@@ -1225,6 +1226,47 @@ Many of SQLite’s [core functions](https://www.sqlite.org/lang_corefunc.html) h
 ## Aggregate SQLite Functions
 
 Most of SQLite’s [aggregate functions](https://www.sqlite.org/lang_aggfunc.html) have been surfaced in and type-audited for SQLite.swift.
+
+
+## Custom SQL Functions
+
+We can create custom SQL functions by calling `create(function:)` on a database connection.
+
+For example, to give queries access to [`MobileCoreServices.UTTypeConformsTo`](https://developer.apple.com/library/ios/documentation/MobileCoreServices/Reference/UTTypeRef/index.html#//apple_ref/c/func/UTTypeConformsTo), we can write the following:
+
+``` swift
+import MobileCoreServices
+
+let typeConformsTo: (String, Expression<String>) -> Expression<Bool> = (
+    db.create(function: "typeConformsTo") { UTI, conformsToUTI in
+        return UTTypeConformsTo(UTI, conformsToUTI) != 0
+    }
+)
+```
+
+Note `typeConformsTo`’s signature:
+
+``` swift
+(Expression<String>, String) -> Expression<Bool>
+```
+
+Because of this, `create(function:)` expects a block with the following signature:
+
+``` swift
+(String, String) -> Bool
+```
+
+Once assigned, the closure can be called wherever boolean expressions are accepted.
+
+``` swift
+let attachments = db["attachments"]
+let UTI = Expression<String>("UTI")
+
+attachments.filter(typeConformsTo(UTI, kUTTypeImage))
+// SELECT * FROM "attachments" WHERE typeConformsTo("UTI", 'public.image')
+```
+
+> _Note:_ The return type of a function must be [a core SQL type](#building-type-safe-sql) or [conform to `Value`](#custom-types).
 
 
 ## Executing Arbitrary SQL
