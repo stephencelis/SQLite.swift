@@ -90,8 +90,8 @@ extension Blob: Binding, Value {
 extension Blob: Printable {
 
     public var description: String {
-        let bytes = UnsafeBufferPointer<UInt8>(start: UnsafePointer<UInt8>(data.bytes), count: data.length)
-        let hex = join("", map(bytes) { String(format: "%02x", $0) })
+        let buf = UnsafeBufferPointer<UInt8>(start: UnsafePointer<UInt8>(bytes), count: length)
+        let hex = join("", map(buf) { String(format: "%02x", $0) })
         return "x'\(hex)'"
     }
 
