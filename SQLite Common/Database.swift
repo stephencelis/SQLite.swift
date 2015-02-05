@@ -402,7 +402,7 @@ internal func quote(#identifier: String) -> String {
 }
 
 private func quote(string: String, mark: Character) -> String {
-    let escaped = Array(string).reduce("") { string, character in
+    let escaped = reduce(string, "") { string, character in
         string + (character == mark ? "\(mark)\(mark)" : "\(character)")
     }
     return "\(mark)\(escaped)\(mark)"

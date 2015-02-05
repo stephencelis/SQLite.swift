@@ -68,7 +68,7 @@ public struct Expression<T> {
     // naïve compiler for statements that can't be bound, e.g., CREATE TABLE
     internal func compile() -> String {
         var idx = 0
-        return Array(SQL).reduce("") { SQL, character in
+        return reduce(SQL, "") { SQL, character in
             let string = String(character)
             return SQL + (string == "?" ? transcode(self.bindings[idx++]) : string)
         }

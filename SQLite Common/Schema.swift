@@ -101,7 +101,7 @@ public extension Database {
 
     private func indexName(table: Query, on columns: [Expressible]) -> String {
         let string = join(" ", ["index", table.tableName, "on"] + columns.map { $0.expression.SQL })
-        return Array(string).reduce("") { underscored, character in
+        return reduce(string, "") { underscored, character in
             if character == "\"" { return underscored }
             if "A"..."Z" ~= character || "a"..."z" ~= character { return underscored + String(character) }
             return underscored + "_"
@@ -386,7 +386,7 @@ public final class SchemaBuilder {
 private func namespace(column: Expressible) -> Expressible {
     let expression = column.expression
     if !contains(expression.SQL, ".") { return expression }
-    let reference = Array(expression.SQL).reduce("") { SQL, character in
+    let reference = reduce(expression.SQL, "") { SQL, character in
         let string = String(character)
         return SQL + (string == "." ? "(" : string)
     }
