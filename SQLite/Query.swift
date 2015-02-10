@@ -86,13 +86,12 @@ public struct Query {
         return query
     }
 
-    // rdar://18778670 causes select(distinct: *) to make select(*) ambiguous
     /// Sets the SELECT clause on the query.
     ///
     /// :param: star A literal *.
     ///
     /// :returns: A query with SELECT * applied.
-    public func select(all star: Star) -> Query {
+    public func select(star: Star) -> Query {
         return select(star(nil, nil))
     }
 
@@ -738,7 +737,7 @@ public struct Row {
     }
     public func get<V: Value>(column: Expression<V?>) -> V? {
         func valueAtIndex(idx: Int) -> V? {
-            if let value = values[idx] as? V.Datatype { return (V.fromDatatypeValue(value) as V) }
+            if let value = values[idx] as? V.Datatype { return (V.fromDatatypeValue(value) as! V) }
             return nil
         }
 
@@ -790,7 +789,8 @@ public struct QueryGenerator: GeneratorType {
     private lazy var columnNames: [String: Int] = {
         var (columnNames, idx) = ([String: Int](), 0)
         column: for each in self.query.columns {
-            let pair = split(each.expression.SQL) { $0 == "." }
+            // FIXME: rdar://19769314 // split(each.expression.SQL) { $0 == "." }
+            let pair = split(each.expression.SQL, { $0 == "." })
             let (tableName, column) = (pair.count > 1 ? pair.first : nil, pair.last!)
 
             func expandGlob(namespace: Bool) -> Query -> () {

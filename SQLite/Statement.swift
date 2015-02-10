@@ -28,13 +28,13 @@ internal let SQLITE_TRANSIENT = sqlite3_destructor_type(COpaquePointer(bitPatter
 /// A single SQL statement.
 public final class Statement {
 
-    private let handle: COpaquePointer = nil
+    private var handle = COpaquePointer.null()
 
     private var database: Database
 
     internal init(_ database: Database, _ SQL: String) {
         self.database = database
-        database.try(sqlite3_prepare_v2(database.handle, SQL, -1, &handle, nil))
+        database.try { sqlite3_prepare_v2(database.handle, SQL, -1, &self.handle, nil) }
     }
 
     deinit { sqlite3_finalize(handle) }
@@ -86,15 +86,15 @@ public final class Statement {
 
     private func bind(value: Binding?, atIndex idx: Int) {
         if let value = value as? Blob {
-            try(sqlite3_bind_blob(handle, Int32(idx), value.bytes, Int32(value.length), SQLITE_TRANSIENT))
+            try { sqlite3_bind_blob(self.handle, Int32(idx), value.bytes, Int32(value.length), SQLITE_TRANSIENT) }
         } else if let value = value as? Double {
-            try(sqlite3_bind_double(handle, Int32(idx), value))
+            try { sqlite3_bind_double(self.handle, Int32(idx), value) }
         } else if let value = value as? Int {
-            try(sqlite3_bind_int64(handle, Int32(idx), Int64(value)))
+            try { sqlite3_bind_int64(self.handle, Int32(idx), Int64(value)) }
         } else if let value = value as? String {
-            try(sqlite3_bind_text(handle, Int32(idx), value, -1, SQLITE_TRANSIENT))
+            try { sqlite3_bind_text(self.handle, Int32(idx), value, -1, SQLITE_TRANSIENT) }
         } else {
-            try(sqlite3_bind_null(handle, Int32(idx)))
+            try { sqlite3_bind_null(self.handle, Int32(idx)) }
         }
     }
 
@@ -173,7 +173,7 @@ public final class Statement {
 
     private var status: Int32 = SQLITE_OK
 
-    private func try(block: @autoclosure () -> Int32) {
+    private func try(block: () -> Int32) {
         if failed { return }
         database.perform {
             self.status = block()
@@ -204,7 +204,7 @@ extension Statement: GeneratorType {
     /// :returns: The next row from the result set (or nil).
     public func next() -> Element? {
         if status == SQLITE_DONE { return nil }
-        try(sqlite3_step(handle))
+        try { sqlite3_step(self.handle) }
         return row
     }
 
@@ -249,12 +249,12 @@ extension Statement: DebugPrintable {
 
 }
 
-public func && (lhs: Statement, rhs: @autoclosure () -> Statement) -> Statement {
+public func && (lhs: Statement, @autoclosure rhs: () -> Statement) -> Statement {
     if lhs.status == SQLITE_OK { lhs.run() }
     return lhs.failed ? lhs : rhs()
 }
 
-public func || (lhs: Statement, rhs: @autoclosure () -> Statement) -> Statement {
+public func || (lhs: Statement, @autoclosure rhs: () -> Statement) -> Statement {
     if lhs.status == SQLITE_OK { lhs.run() }
     return lhs.failed ? rhs() : lhs
 }

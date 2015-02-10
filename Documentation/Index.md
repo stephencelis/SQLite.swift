@@ -1299,12 +1299,10 @@ You can create loosely-typed functions by handling an array of raw arguments, in
 
 ``` swift
 db.create(function: "typeConformsTo", deterministic: true) { args in
-    switch (args[0], args[1]) {
-    case let (UTI as String, conformsToUTI as String):
+    if let UTI = args[0] as? String, conformsToUTI = args[1] as? String {
         return Int(UTTypeConformsTo(UTI, conformsToUTI))
-    default:
-        return nil
     }
+    return nil
 }
 ```
 
