@@ -39,9 +39,9 @@ public protocol Value {
 
     typealias Datatype: Binding
 
-    class var declaredDatatype: String { get }
+    static var declaredDatatype: String { get }
 
-    class func fromDatatypeValue(datatypeValue: Datatype) -> ValueType
+    static func fromDatatypeValue(datatypeValue: Datatype) -> ValueType
 
     var datatypeValue: Datatype { get }
 

@@ -399,13 +399,9 @@ The `insert` function can return several different types that are useful in diff
     }
     ```
 
-    We can use the optional nature of the value to disambiguate with a simple `?` or `!`.
+    If a value is always expected, we can disambiguate with a `!`.
 
     ``` swift
-    // ignore failure
-    users.insert(email <- "alice@mac.com")?
-
-    // assertion on failure
     users.insert(email <- "alice@mac.com")!
     ```
 
@@ -833,13 +829,9 @@ Like [`insert`](#inserting-rows) (and [`delete`](#updating-rows)), `update` can 
     }
     ```
 
-    We can use the optional nature of the value to disambiguate with a simple `?` or `!`.
+    If a value is always expected, we can disambiguate with a `!`.
 
     ``` swift
-    // ignore failure
-    alice.update(email <- "alice@me.com")?
-
-    // assertion on failure
     alice.update(email <- "alice@me.com")!
     ```
 
@@ -877,13 +869,9 @@ Like [`insert`](#inserting-rows) and [`update`](#updating-rows), `delete` can re
     }
     ```
 
-    We can use the optional nature of the value to disambiguate with a simple `?` or `!`.
+    If a value is always expected, we can disambiguate with a `!`.
 
     ``` swift
-    // ignore failure
-    alice.delete()?
-
-    // assertion on failure
     alice.delete()!
     ```
 
@@ -1311,12 +1299,10 @@ We can create loosely-typed functions by handling an array of raw arguments, ins
 
 ``` swift
 db.create(function: "typeConformsTo", deterministic: true) { args in
-    switch (args[0], args[1]) {
-    case let (UTI as String, conformsToUTI as String):
+    if let UTI = args[0] as? String, conformsToUTI = args[1] as? String {
         return Int(UTTypeConformsTo(UTI, conformsToUTI))
-    default:
-        return nil
     }
+    return nil
 }
 ```
 
@@ -1403,14 +1389,14 @@ Though we recommend you stick with SQLite.swift’s type-safe system whenever po
   - `scalar` prepares a single `Statement` object from a SQL string, optionally binds values to it (using the statement’s `bind` function), executes, and returns the first value of the first row.
 
     ``` swift
-    db.scalar("SELECT count(*) FROM users") as Int64
+    db.scalar("SELECT count(*) FROM users") as! Int64
     ```
 
     Statements also have a `scalar` function, which can optionally re-bind values at execution.
 
     ``` swift
     let stmt = db.prepare("SELECT count (*) FROM users")
-    stmt.scalar() as Int64
+    stmt.scalar() as! Int64
     ```
 
 

@@ -174,5 +174,5 @@ public extension Database {
 }
 
 private func asValue<A: Value>(value: Binding?) -> A {
-    return A.fromDatatypeValue(value as A.Datatype) as A
+    return A.fromDatatypeValue(value as! A.Datatype) as! A
 }

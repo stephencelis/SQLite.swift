@@ -89,13 +89,12 @@ public struct Query {
         return query
     }
 
-    // rdar://18778670 causes select(distinct: *) to make select(*) ambiguous
     /// Sets the SELECT clause on the query.
     ///
     /// :param: star A literal *.
     ///
     /// :returns: A query with SELECT * applied.
-    public func select(all star: Star) -> Query {
+    public func select(star: Star) -> Query {
         var query = self
         (query.distinct, query.columns) = (false, nil)
         return query
@@ -716,16 +715,10 @@ public struct Query {
     }
 
     private func calculate<V: Value>(expression: Expression<V>) -> V? {
-        if let scalar = select(expression).selectStatement.scalar() as? V.Datatype {
-            return (V.fromDatatypeValue(scalar) as V)
-        }
-        return nil
+        return (select(expression).selectStatement.scalar() as? V.Datatype).map(V.fromDatatypeValue) as? V
     }
     private func calculate<V: Value>(expression: Expression<V?>) -> V? {
-        if let scalar = select(expression).selectStatement.scalar() as? V.Datatype {
-            return (V.fromDatatypeValue(scalar) as V)
-        }
-        return nil
+        return (select(expression).selectStatement.scalar() as? V.Datatype).map(V.fromDatatypeValue) as? V
     }
 
     // MARK: - Array
@@ -775,7 +768,7 @@ public struct Row {
     }
     public func get<V: Value>(column: Expression<V?>) -> V? {
         func valueAtIndex(idx: Int) -> V? {
-            if let value = values[idx] as? V.Datatype { return (V.fromDatatypeValue(value) as V) }
+            if let value = values[idx] as? V.Datatype { return (V.fromDatatypeValue(value) as! V) }
             return nil
         }
 
@@ -828,7 +821,8 @@ public struct QueryGenerator: GeneratorType {
     private lazy var columnNames: [String: Int] = {
         var (columnNames, idx) = ([String: Int](), 0)
         column: for each in self.query.columns ?? [Expression<()>(literal: "*")] {
-            let pair = split(each.expression.SQL) { $0 == "." }
+            // FIXME: rdar://19769314 // split(each.expression.SQL) { $0 == "." }
+            let pair = split(each.expression.SQL, { $0 == "." })
             let (tableName, column) = (pair.count > 1 ? pair.first : nil, pair.last!)
 
             func expandGlob(namespace: Bool) -> Query -> () {
@@ -842,7 +836,7 @@ public struct QueryGenerator: GeneratorType {
             }
 
             if column == "*" {
-                let tables = [self.query.select(all: *)] + self.query.joins.map { $0.table }
+                let tables = [self.query.select(*)] + self.query.joins.map { $0.table }
                 if let tableName = tableName {
                     for table in tables {
                         if table.tableName.SQL == tableName {
