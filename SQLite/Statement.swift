@@ -28,7 +28,7 @@ internal let SQLITE_TRANSIENT = sqlite3_destructor_type(COpaquePointer(bitPatter
 /// A single SQL statement.
 public final class Statement {
 
-    private let handle: COpaquePointer = nil
+    private var handle = COpaquePointer.null()
 
     private let database: Database
 
@@ -36,7 +36,7 @@ public final class Statement {
 
     internal init(_ database: Database, _ SQL: String) {
         self.database = database
-        database.try(sqlite3_prepare_v2(database.handle, SQL, -1, &handle, nil))
+        database.try { sqlite3_prepare_v2(database.handle, SQL, -1, &self.handle, nil) }
     }
 
     deinit { sqlite3_finalize(handle) }
@@ -89,15 +89,15 @@ public final class Statement {
 
     private func bind(value: Binding?, atIndex idx: Int) {
         if value == nil {
-            try(sqlite3_bind_null(self.handle, Int32(idx)))
+            try { sqlite3_bind_null(self.handle, Int32(idx)) }
         } else if let value = value as? Blob {
-            try(sqlite3_bind_blob(self.handle, Int32(idx), value.bytes, Int32(value.length), SQLITE_TRANSIENT))
+            try { sqlite3_bind_blob(self.handle, Int32(idx), value.bytes, Int32(value.length), SQLITE_TRANSIENT) }
         } else if let value = value as? Double {
-            try(sqlite3_bind_double(self.handle, Int32(idx), value))
+            try { sqlite3_bind_double(self.handle, Int32(idx), value) }
         } else if let value = value as? Int64 {
-            try(sqlite3_bind_int64(self.handle, Int32(idx), value))
+            try { sqlite3_bind_int64(self.handle, Int32(idx), value) }
         } else if let value = value as? String {
-            try(sqlite3_bind_text(handle, Int32(idx), value, -1, SQLITE_TRANSIENT))
+            try { sqlite3_bind_text(self.handle, Int32(idx), value, -1, SQLITE_TRANSIENT) }
         } else if let value = value as? Bool {
             bind(value.datatypeValue, atIndex: idx)
         } else if let value = value as? Int {
@@ -164,7 +164,7 @@ public final class Statement {
     // MARK: -
 
     public func step() -> Bool {
-        try(sqlite3_step(handle))
+        try { sqlite3_step(self.handle) }
         return status == SQLITE_ROW
     }
 
@@ -186,7 +186,7 @@ public final class Statement {
 
     private var status: Int32 = SQLITE_OK
 
-    private func try(block: @autoclosure () -> Int32) {
+    private func try(block: () -> Int32) {
         if failed { return }
         database.perform {
             self.status = block()
@@ -228,12 +228,12 @@ extension Statement: Printable {
 
 }
 
-public func && (lhs: Statement, rhs: @autoclosure () -> Statement) -> Statement {
+public func && (lhs: Statement, @autoclosure rhs: () -> Statement) -> Statement {
     if lhs.status == SQLITE_OK { lhs.run() }
     return lhs.failed ? lhs : rhs()
 }
 
-public func || (lhs: Statement, rhs: @autoclosure () -> Statement) -> Statement {
+public func || (lhs: Statement, @autoclosure rhs: () -> Statement) -> Statement {
     if lhs.status == SQLITE_OK { lhs.run() }
     return lhs.failed ? rhs() : lhs
 }

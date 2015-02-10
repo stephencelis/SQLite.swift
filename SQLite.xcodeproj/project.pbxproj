@@ -396,7 +396,7 @@
 		DC3773EA19C8CBB3004FCF85 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0620;
+				LastUpgradeCheck = 0630;
 				ORGANIZATIONNAME = "Stephen Celis";
 				TargetAttributes = {
 					DC3773F219C8CBB3004FCF85 = {

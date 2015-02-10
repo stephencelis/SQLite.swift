@@ -25,11 +25,11 @@
 extension Database {
 
     public func key(key: String) {
-        try(sqlite3_key(handle, key, Int32(countElements(key.utf8))))
+        try { sqlite3_key(self.handle, key, Int32(count(key.utf8))) }
     }
 
     public func rekey(key: String) {
-        try(sqlite3_rekey(handle, key, Int32(countElements(key.utf8))))
+        try { sqlite3_rekey(self.handle, key, Int32(count(key.utf8))) }
     }
 
 }

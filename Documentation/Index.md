@@ -237,7 +237,7 @@ let name = Expression<String?>("name")
 
 ### Compound Expressions
 
-Expressions can be combined with other expressions and types using [filters](#filter-operators-and-functions), and [other operators](#other-operators) and [functions](#core-sqlite-functions). These building blocks can create complex SQLite statements.
+Expressions can be combined with other expressions and types using [filter operators and functions](#filter-operators-and-functions) (as well as other [non-filter operators](#other-operators) and [functions](#core-sqlite-functions)). These building blocks can create complex SQLite statements.
 
 
 ### Queries
@@ -407,23 +407,19 @@ The `insert` function can return several different types that are useful in diff
     }
     ```
 
-    We can use the optional nature of the value to disambiguate with a simple `?` or `!`.
+    If a value is always expected, we can disambiguate with a `!`.
 
     ``` swift
-    // ignore failure
-    users.insert(email <- "alice@mac.com")?
-
-    // assertion on failure
     users.insert(email <- "alice@mac.com")!
     ```
 
   - A `Statement`, for [the transaction and savepoint helpers](#transactions-and-savepoints) that take a list of statements.
 
     ``` swift
-    db.transaction(
-        users.insert(email <- "alice@mac.com"),
-        users.insert(email <- "betty@mac.com")
-    )
+    db.transaction()
+        && users.insert(email <- "alice@mac.com")
+        && users.insert(email <- "betty@mac.com")
+        && db.commit() || db.rollback()
     // BEGIN DEFERRED TRANSACTION;
     // INSERT INTO "users" ("email") VALUES ('alice@mac.com');
     // INSERT INTO "users" ("email") VALUES ('betty@mac.com');
@@ -473,10 +469,10 @@ To take an amount and “move” it via transaction, we can use `-=` and `+=`:
 
 ``` swift
 let amount = 100.0
-db.transaction(
-    alice.update(balance -= amount),
-    betty.update(balance += amount)
-)
+db.transaction()
+    && alice.update(balance -= amount)
+    && betty.update(balance += amount)
+    && db.commit() || db.rollback()
 // BEGIN DEFERRED TRANSACTION;
 // UPDATE "users" SET "balance" = "balance" - 100.0 WHERE ("id" = 1);
 // UPDATE "users" SET "balance" = "balance" + 100.0 WHERE ("id" = 2);
@@ -841,13 +837,9 @@ Like [`insert`](#inserting-rows) (and [`delete`](#updating-rows)), `update` can 
     }
     ```
 
-    We can use the optional nature of the value to disambiguate with a simple `?` or `!`.
+    If a value is always expected, we can disambiguate with a `!`.
 
     ``` swift
-    // ignore failure
-    alice.update(email <- "alice@me.com")?
-
-    // assertion on failure
     alice.update(email <- "alice@me.com")!
     ```
 
@@ -885,13 +877,9 @@ Like [`insert`](#inserting-rows) and [`update`](#updating-rows), `delete` can re
     }
     ```
 
-    We can use the optional nature of the value to disambiguate with a simple `?` or `!`.
+    If a value is always expected, we can disambiguate with a `!`.
 
     ``` swift
-    // ignore failure
-    alice.delete()?
-
-    // assertion on failure
     alice.delete()!
     ```
 
@@ -902,13 +890,13 @@ Like [`insert`](#inserting-rows) and [`update`](#updating-rows), `delete` can re
 
 ## Transactions and Savepoints
 
-Using the `transaction` and `savepoint` functions, we can run a series of statements, commiting the changes to the database if they all succeed. If a single statement fails, we bail out early and roll back.
+Using the `transaction` and `savepoint` functions, we can run a series of statements, committing the changes to the database if they all succeed. If a single statement fails, we can bail out early and roll back.
 
 ``` swift
-db.transaction(
-    users.insert(email <- "betty@icloud.com"),
-    users.insert(email <- "cathy@icloud.com", manager_id <- db.lastId)
-)
+db.transaction()
+    && users.insert(email <- "betty@icloud.com")
+    && users.insert(email <- "cathy@icloud.com", manager_id <- db.lastId)
+    && db.commit() || db.rollback()
 ```
 
 > _Note:_ Each statement is captured in an auto-closure and won’t execute till the preceding statement succeeds. This means we can use the `lastId` property on `Database` to reference the previous statement’s insert [`ROWID`][ROWID].
@@ -1319,12 +1307,10 @@ We can create loosely-typed functions by handling an array of raw arguments, ins
 
 ``` swift
 db.create(function: "typeConformsTo", deterministic: true) { args in
-    switch (args[0], args[1]) {
-    case let (UTI as String, conformsToUTI as String):
+    if let UTI = args[0] as? String, conformsToUTI = args[1] as? String {
         return Int(UTTypeConformsTo(UTI, conformsToUTI))
-    default:
-        return nil
     }
+    return nil
 }
 ```
 
@@ -1447,14 +1433,14 @@ Though we recommend you stick with SQLite.swift’s [type-safe system](#building
   - `scalar` prepares a single `Statement` object from a SQL string, optionally binds values to it (using the statement’s `bind` function), executes, and returns the first value of the first row.
 
     ``` swift
-    db.scalar("SELECT count(*) FROM users") as Int64
+    db.scalar("SELECT count(*) FROM users") as! Int64
     ```
 
     Statements also have a `scalar` function, which can optionally re-bind values at execution.
 
     ``` swift
     let stmt = db.prepare("SELECT count (*) FROM users")
-    stmt.scalar() as Int64
+    stmt.scalar() as! Int64
     ```
 
 

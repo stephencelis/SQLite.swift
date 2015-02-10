@@ -17,7 +17,6 @@ syntax _and_ intent.
  - A flexible, chainable, lazy-executing query layer
  - Automatically-typed data access
  - A lightweight, uncomplicated query and parameter binding interface
- - Transactions with implicit commit/rollback
  - Developer-friendly error handling and debugging
  - [Full-text search][] support
  - [SQLCipher](#sqlcipher) support
@@ -106,12 +105,8 @@ interactively, from the Xcode project’s playground.
 
 ## Installation
 
-> _Note:_ SQLite.swift requires Swift 1.1 (and [Xcode][] 6.1) or
+> _Note:_ SQLite.swift requires Swift 1.2 (and [Xcode][] 6.3) or
 > greater.
->
-> For the Swift 1.2 beta (included in Xcode 6.3), use the
-> [`swift-1-2`](https://github.com/stephencelis/SQLite.swift/tree/swift-1-2)
-> branch.
 >
 > The following instructions apply to targets that support embedded
 > Swift frameworks. To use SQLite.swift in iOS 7 or an OS X command line

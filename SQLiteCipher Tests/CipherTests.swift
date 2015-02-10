@@ -1,16 +1,12 @@
 import XCTest
 import SQLite
 
-class CipherTests: XCTestCase {
-
-    let db = Database()
-
-    var users: Query { return db["users"] }
+class CipherTests: SQLiteTestCase {
 
     override func setUp() {
         db.key("hello")
-        CreateUsersTable(db)
-        InsertUser(db, "alice")
+        createUsersTable()
+        insertUser("alice")
 
         super.setUp()
     }
