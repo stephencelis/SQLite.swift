@@ -443,7 +443,8 @@ class QueryTests: XCTestCase {
 private let formatter: NSDateFormatter = {
     let formatter = NSDateFormatter()
     formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'"
-    formatter.timeZone = NSTimeZone(abbreviation: "UTC")
+    formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
+    formatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
     return formatter
 }()
 

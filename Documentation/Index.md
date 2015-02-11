@@ -1059,9 +1059,9 @@ extension NSDate: Value {
 
 let SQLDateFormatter: NSDateFormatter = {
     let formatter = NSDateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd HH:mm:ss"
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
     formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
-    formatter.timeZone = NSTimeZone(abbreviation: "UTC")
+    formatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
     return formatter
 }()
 ```
