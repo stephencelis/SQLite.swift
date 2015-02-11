@@ -1267,6 +1267,23 @@ attachments.filter(typeConformsTo(UTI, kUTTypeImage))
 
 > _Note:_ The return type of a function must be [a core SQL type](#building-type-safe-sql) or [conform to `Value`](#custom-types).
 
+You can create loosely-typed functions by handling an array of raw arguments, instead.
+
+``` swift
+db.create(function: "typeConformsTo") { args in
+    if let UTI = args[0] as? String, conformsToUTI = args[1] as? String {
+        return Int(UTTypeConformsTo(UTI, conformsToUTI))
+    }
+    return nil
+}
+
+Creating a loosely-typed function cannot return a closure and instead must be wrapped manually or executed [using raw SQL](#executing-arbitrary-sql).
+
+``` swift
+let stmt = db.prepare("SELECT * FROM files WHERE typeConformsTo(UTI, ?)")
+for row in stmt.bind(kUTTypeImage) { /* ... */ }
+```
+
 
 ## Executing Arbitrary SQL
 
