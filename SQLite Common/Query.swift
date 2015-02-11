@@ -437,15 +437,15 @@ public struct Query {
     ///
     /// :param: values A list of values to set.
     ///
-    /// :returns: The row ID.
-    public func insert(value: Setter, _ more: Setter...) -> Int? { return insert([value] + more).ID }
+    /// :returns: The row id.
+    public func insert(value: Setter, _ more: Setter...) -> Int? { return insert([value] + more).id }
 
     /// Runs an INSERT statement against the query.
     ///
     /// :param: values A list of values to set.
     ///
-    /// :returns: The row ID and statement.
-    public func insert(value: Setter, _ more: Setter...) -> (ID: Int?, statement: Statement) {
+    /// :returns: The row id and statement.
+    public func insert(value: Setter, _ more: Setter...) -> (id: Int?, statement: Statement) {
         return insert([value] + more)
     }
 
@@ -453,17 +453,17 @@ public struct Query {
     ///
     /// :param: values An array of values to set.
     ///
-    /// :returns: The row ID.
-    public func insert(values: [Setter]) -> Int? { return insert(values).ID }
+    /// :returns: The row id.
+    public func insert(values: [Setter]) -> Int? { return insert(values).id }
 
     /// Runs an INSERT statement against the query.
     ///
     /// :param: values An array of values to set.
     ///
-    /// :returns: The row ID and statement.
-    public func insert(values: [Setter]) -> (ID: Int?, statement: Statement) {
+    /// :returns: The row id and statement.
+    public func insert(values: [Setter]) -> (id: Int?, statement: Statement) {
         let statement = insertStatement(values).run()
-        return (statement.failed ? nil : database.lastID, statement)
+        return (statement.failed ? nil : database.lastId, statement)
     }
 
     public func insert(query: Query) -> Int? { return insert(query).changes }
@@ -476,13 +476,13 @@ public struct Query {
         return (statement.failed ? nil : database.lastChanges, statement)
     }
 
-    public func insert() -> Int? { return insert().ID }
+    public func insert() -> Int? { return insert().id }
 
     public func insert() -> Statement { return insert().statement }
 
-    public func insert() -> (ID: Int?, statement: Statement) {
+    public func insert() -> (id: Int?, statement: Statement) {
         let statement = database.run("INSERT INTO \(quote(identifier: tableName)) DEFAULT VALUES")
-        return (statement.failed ? nil : database.lastID, statement)
+        return (statement.failed ? nil : database.lastId, statement)
     }
 
     /// Runs a REPLACE statement against the query.
@@ -496,15 +496,15 @@ public struct Query {
     ///
     /// :param: values A list of values to set.
     ///
-    /// :returns: The row ID.
-    public func replace(values: Setter...) -> Int? { return replace(values).ID }
+    /// :returns: The row id.
+    public func replace(values: Setter...) -> Int? { return replace(values).id }
 
     /// Runs a REPLACE statement against the query.
     ///
     /// :param: values A list of values to set.
     ///
-    /// :returns: The row ID and statement.
-    public func replace(values: Setter...) -> (ID: Int?, statement: Statement) {
+    /// :returns: The row id and statement.
+    public func replace(values: Setter...) -> (id: Int?, statement: Statement) {
         return replace(values)
     }
 
@@ -512,17 +512,17 @@ public struct Query {
     ///
     /// :param: values An array of values to set.
     ///
-    /// :returns: The row ID.
-    public func replace(values: [Setter]) -> Int? { return replace(values).ID }
+    /// :returns: The row id.
+    public func replace(values: [Setter]) -> Int? { return replace(values).id }
 
     /// Runs a REPLACE statement against the query.
     ///
     /// :param: values An array of values to set.
     ///
-    /// :returns: The row ID and statement.
-    public func replace(values: [Setter]) -> (ID: Int?, statement: Statement) {
+    /// :returns: The row id and statement.
+    public func replace(values: [Setter]) -> (id: Int?, statement: Statement) {
         let statement = insertStatement(values, or: .Replace).run()
-        return (statement.failed ? nil : database.lastID, statement)
+        return (statement.failed ? nil : database.lastId, statement)
     }
 
     /// Runs an UPDATE statement against the query.

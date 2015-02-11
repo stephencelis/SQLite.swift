@@ -357,8 +357,8 @@ The `insert` function can return several different types that are useful in diff
   - An `Int?` representing the inserted row’s [`ROWID`][ROWID] (or `nil` on failure), for simplicity.
 
     ``` swift
-    if let insertID = users.insert(email <- "alice@mac.com") {
-        println("inserted id: \(insertID)")
+    if let insertId = users.insert(email <- "alice@mac.com") {
+        println("inserted id: \(insertId)")
     }
     ```
 
@@ -385,12 +385,12 @@ The `insert` function can return several different types that are useful in diff
     // COMMIT TRANSACTION;
     ```
 
-  - A tuple of the above [`ROWID`][ROWID] and statement: `(ID: Int?, Statement)`, for flexibility.
+  - A tuple of the above [`ROWID`][ROWID] and statement: `(id: Int?, statement: Statement)`, for flexibility.
 
     ``` swift
-    let (ID, statement) = users.insert(email <- "alice@mac.com")
-    if let ID = ID {
-        println("inserted id: \(ID)")
+    let (id, statement) = users.insert(email <- "alice@mac.com")
+    if let id = id {
+        println("inserted id: \(id)")
     } else if statement.failed {
         println("insertion failed: \(statement.reason)")
     }
@@ -862,11 +862,11 @@ Using the `transaction` and `savepoint` functions, we can run a series of statem
 ``` swift
 db.transaction(
     users.insert(email <- "betty@icloud.com"),
-    users.insert(email <- "cathy@icloud.com", manager_id <- db.lastID)
+    users.insert(email <- "cathy@icloud.com", manager_id <- db.lastId)
 )
 ```
 
-> _Note:_ Each statement is captured in an auto-closure and won’t execute till the preceding statement succeeds. This means we can use the `lastID` property on `Database` to reference the previous statement’s insert [`ROWID`][ROWID].
+> _Note:_ Each statement is captured in an auto-closure and won’t execute till the preceding statement succeeds. This means we can use the `lastId` property on `Database` to reference the previous statement’s insert [`ROWID`][ROWID].
 
 
 ## Altering the Schema

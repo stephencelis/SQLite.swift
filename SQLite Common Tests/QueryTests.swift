@@ -104,8 +104,8 @@ class QueryTests: XCTestCase {
     func test_join_withNamespacedStar_expandsColumnNames() {
         let managers = db["users"].alias("managers")
 
-        let aliceID = users.insert(email <- "alice@example.com")!
-        users.insert(email <- "betty@example.com", manager_id <- aliceID)!
+        let aliceId = users.insert(email <- "alice@example.com")!
+        users.insert(email <- "betty@example.com", manager_id <- aliceId)!
 
         let query = users
             .select(users[*], managers[*])
@@ -118,11 +118,11 @@ class QueryTests: XCTestCase {
     }
 
     func test_namespacedColumnRowValueAccess() {
-        let aliceID = users.insert(email <- "alice@example.com")!
-        let bettyID = users.insert(email <- "betty@example.com", manager_id <- aliceID)!
+        let aliceId = users.insert(email <- "alice@example.com")!
+        let bettyId = users.insert(email <- "betty@example.com", manager_id <- aliceId)!
 
         let alice = users.first!
-        XCTAssertEqual(aliceID, alice[id])
+        XCTAssertEqual(aliceId, alice[id])
 
         let managers = db["users"].alias("managers")
         let query = users.join(managers, on: managers[id] == users[manager_id])
@@ -302,10 +302,10 @@ class QueryTests: XCTestCase {
         let SQL = "INSERT INTO \"users\" (\"email\", \"age\") VALUES ('alice@example.com', 30)"
 
         ExpectExecutions(db, [SQL: 1]) { _ in
-            XCTAssertEqual(1, self.users.insert(self.email <- "alice@example.com", self.age <- 30).ID!)
+            XCTAssertEqual(1, self.users.insert(self.email <- "alice@example.com", self.age <- 30).id!)
         }
 
-        XCTAssert(self.users.insert(self.email <- "alice@example.com", self.age <- 30).ID == nil)
+        XCTAssert(self.users.insert(self.email <- "alice@example.com", self.age <- 30).id == nil)
     }
 
     func test_insert_withQuery_insertsRows() {
@@ -321,7 +321,7 @@ class QueryTests: XCTestCase {
         let table = db["timestamps"]
 
         ExpectExecutions(db, ["INSERT INTO \"timestamps\" DEFAULT VALUES": 1]) { _ in
-            XCTAssertEqual(1, table.insert().ID!)
+            XCTAssertEqual(1, table.insert().id!)
         }
     }
 
@@ -329,10 +329,10 @@ class QueryTests: XCTestCase {
         let SQL = "INSERT OR REPLACE INTO \"users\" (\"email\", \"age\") VALUES ('alice@example.com', 30)"
 
         ExpectExecutions(db, [SQL: 1]) { _ in
-            XCTAssertEqual(1, self.users.replace(self.email <- "alice@example.com", self.age <- 30).ID!)
+            XCTAssertEqual(1, self.users.replace(self.email <- "alice@example.com", self.age <- 30).id!)
         }
 
-        XCTAssertEqual(1, self.users.replace(self.id <- 1, self.email <- "bob@example.com", self.age <- 30).ID!)
+        XCTAssertEqual(1, self.users.replace(self.id <- 1, self.email <- "bob@example.com", self.age <- 30).id!)
     }
     
     func test_update_updatesRows() {

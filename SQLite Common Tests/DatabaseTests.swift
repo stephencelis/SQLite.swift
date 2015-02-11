@@ -20,13 +20,13 @@ class DatabaseTests: XCTestCase {
         XCTAssert(db.readonly)
     }
 
-    func test_lastID_returnsNilOnNewConnections() {
-        XCTAssert(db.lastID == nil)
+    func test_lastId_returnsNilOnNewConnections() {
+        XCTAssert(db.lastId == nil)
     }
 
-    func test_lastID_returnsLastIDAfterInserts() {
+    func test_lastId_returnsLastIdAfterInserts() {
         InsertUser(db, "alice")
-        XCTAssert(db.lastID! == 1)
+        XCTAssert(db.lastId! == 1)
     }
 
     func test_lastChanges_returnsZeroOnNewConnections() {

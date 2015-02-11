@@ -1,3 +1,3 @@
 db.totalChanges
 db.lastChanges
-db.lastID
+db.lastId

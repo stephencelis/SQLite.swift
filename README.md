@@ -51,10 +51,10 @@ db.create(table: users) { t in
 // )
 
 var alice: Query?
-if let insertedID = users.insert(name <- "Alice", email <- "alice@mac.com") {
-    println("inserted id: \(insertedID)")
+if let insertId = users.insert(name <- "Alice", email <- "alice@mac.com") {
+    println("inserted id: \(insertId)")
     // inserted id: 1
-    alice = users.filter(id == insertedID)
+    alice = users.filter(id == insertId)
 }
 // INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
 
@@ -86,7 +86,7 @@ for email in ["betty@icloud.com", "cathy@icloud.com"] {
 
 db.totalChanges // 3
 db.lastChanges  // {Some 1}
-db.lastID       // {Some 3}
+db.lastId       // {Some 3}
 
 for row in db.prepare("SELECT id, email FROM users") {
     println("id: \(row[0]), email: \(row[1])")
