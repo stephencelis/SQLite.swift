@@ -405,9 +405,7 @@ public final class Database {
     }
 
     internal func try(block: @autoclosure () -> Int32) {
-        perform {
-			if block() != SQLITE_OK { assertionFailure("\(self.lastError)") }
-		}
+        perform { if block() != SQLITE_OK { assertionFailure("\(self.lastError)") } }
     }
 
     // MARK: - Threading
