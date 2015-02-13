@@ -56,7 +56,7 @@ public final class Database {
 	/// Specify the key for an encrypted database. Should be called right after Database().
 	/// If the current database is not encrypted, this routine will encrypt it.
 	public func key(key:String) {
-		try(sqlite3_key(handle, key, Int32(key.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))))
+		try(sqlite3_key(handle, key, Int32(countElements(key.utf8))))
 	}
 
 	/// Change the key on an open database. If the current database is not
@@ -64,7 +64,7 @@ public final class Database {
 	/// If key == "" the database is decrypted.
 	public func rekey(key:String) {
 		if(key.lengthOfBytesUsingEncoding(NSUTF8StringEncoding) > 0) {
-			try(sqlite3_rekey(handle, key, Int32(key.lengthOfBytesUsingEncoding(NSUTF8StringEncoding))))
+			try(sqlite3_rekey(handle, key, Int32(countElements(key.utf8))))
 		} else {
 			//try(sqlite3_rekey(handle, UnsafePointer<Void>(), Int32(0)))
 		}
