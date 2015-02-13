@@ -22,7 +22,9 @@
 // THE SOFTWARE.
 //
 
-#include <sqlite3.h>
+// defined here because build setting OTHER_C_FLAGS was not picked up
+#define SQLITE_HAS_CODEC 1
+#include "sqlite3.h"
 
 typedef int (^SQLiteBusyHandlerCallback)(int times);
 int SQLiteBusyHandler(sqlite3 * handle, SQLiteBusyHandlerCallback callback);
