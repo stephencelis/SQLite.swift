@@ -12,6 +12,8 @@
 	<dict>
 		<key>3AE8ED2E684071AF4FB151FA51BF266B82FF45BD</key>
 		<string>github.com:stephencelis/SQLite.swift.git</string>
+		<key>55011AEBD444630C0E9DF47BD2E18FDBBDCC285D</key>
+		<string>https://github.com/sqlcipher/sqlcipher.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>SQLite.xcodeproj</string>
@@ -19,6 +21,8 @@
 	<dict>
 		<key>3AE8ED2E684071AF4FB151FA51BF266B82FF45BD</key>
 		<string>../..</string>
+		<key>55011AEBD444630C0E9DF47BD2E18FDBBDCC285D</key>
+		<string>../...swift/sqlcipher/</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>github.com:stephencelis/SQLite.swift.git</string>
@@ -28,6 +32,14 @@
 	<string>3AE8ED2E684071AF4FB151FA51BF266B82FF45BD</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>55011AEBD444630C0E9DF47BD2E18FDBBDCC285D</string>
+			<key>IDESourceControlWCCName</key>
+			<string>sqlcipher</string>
+		</dict>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>

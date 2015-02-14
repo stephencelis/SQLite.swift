@@ -51,8 +51,9 @@ public final class Database {
 
     deinit { try(sqlite3_close(handle)) } // sqlite3_close_v2 in Yosemite/iOS 8?
 
+#if SQLCIPHER
 	// MARK: - sqlcipher support
-	
+
 	/// Specify the key for an encrypted database. Should be called right after Database().
 	/// If the current database is not encrypted, this routine will encrypt it.
 	public func key(key:String) {
@@ -69,6 +70,7 @@ public final class Database {
 			//try(sqlite3_rekey(handle, UnsafePointer<Void>(), Int32(0)))
 		}
 	}
+#endif
 	
     // MARK: -
 
