@@ -25,6 +25,7 @@
 
 #ifdef SQLCIPHER
 #	define SQLITE_HAS_CODEC 1
+#	define SQLITE_TEMP_STORE 2
 #	include "sqlite3.h"
 #else
 #	include <sqlite3.h>
