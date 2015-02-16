@@ -224,7 +224,7 @@ extension Statement: GeneratorType {
             case SQLITE_NULL:
                 return nil
             case SQLITE_TEXT:
-                return String.fromCString(UnsafePointer<CChar>(sqlite3_column_text(self.handle, Int32(idx))))!
+                return String.fromCString(UnsafePointer(sqlite3_column_text(self.handle, Int32(idx))))!
             case let type:
                 assertionFailure("unsupported column type: \(type)")
             }

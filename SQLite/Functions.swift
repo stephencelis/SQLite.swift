@@ -48,7 +48,7 @@ public extension Database {
                 case SQLITE_NULL:
                     return nil
                 case SQLITE_TEXT:
-                    return String.fromCString(UnsafePointer<CChar>(sqlite3_value_text(value)))!
+                    return String.fromCString(UnsafePointer(sqlite3_value_text(value)))!
                 case let type:
                     assertionFailure("unsupported value type: \(type)")
                 }
