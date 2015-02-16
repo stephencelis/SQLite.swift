@@ -1,6 +1,7 @@
 # SQLite.swift Documentation
 
   - [Installation](#installation)
+    - [SQLCipher](#sqlcipher)
   - [Getting Started](#getting-started)
     - [Connecting to a Database](#connecting-to-a-database)
       - [Read-Write Databases](#read-write-databases)
@@ -74,6 +75,17 @@ To install SQLite.swift as an Xcode sub-project:
  4. Add **SQLite.framework** to a **Copy Files** build phase with a **Frameworks** destination. (Add a new build phase if need be.)
 
 You should now be able to `import SQLite` from any of your target’s source files and begin using SQLite.swift.
+
+
+### SQLCipher
+
+To install SQLite.swift with [SQLCipher][] support:
+
+ 1. Make sure the **sqlcipher** working copy is checked out in Xcode. If **sqlcipher.xcodeproj** (in the **Vendor** group) is unavailable (and appears red), go to the **Source Control** menu and select **Check Out sqlcipher…** from the **sqlcipher** menu item.
+
+ 2. Follow [the instructions above](#installation) with the **SQLiteCipher** target, instead.
+
+[SQLCipher]: http://sqlcipher.net
 
 
 ## Getting Started

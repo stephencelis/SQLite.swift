@@ -19,6 +19,7 @@ syntax _and_ intent.
  - A lightweight, uncomplicated query and parameter binding interface
  - Transactions with implicit commit/rollback
  - Developer-friendly error handling and debugging
+ - [SQLCipher](#sqlcipher) support
  - [Well-documented][See Documentation]
  - Extensively tested
 
@@ -125,6 +126,21 @@ To install SQLite.swift:
 [4.1]: https://developer.apple.com/xcode/downloads/
 [4.2]: http://git-scm.com/book/en/Git-Tools-Submodules
 [4.3]: https://github.com/stephencelis/SQLite.swift/archive/master.zip
+
+
+### SQLCipher
+
+To install SQLite.swift with [SQLCipher][] support:
+
+ 1. Make sure the **sqlcipher** working copy is checked out in Xcode. If
+    **sqlcipher.xcodeproj** (in the **Vendor** group) is unavailable
+    (and appears red), go to the **Source Control** menu and select
+    **Check Out sqlcipher…** from the **sqlcipher** menu item.
+
+ 2. Follow [the instructions above](#installation) with the
+    **SQLiteCipher** target, instead.
+
+[SQLCipher]: http://sqlcipher.net
 
 
 ## Communication
