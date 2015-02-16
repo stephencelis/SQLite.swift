@@ -154,7 +154,7 @@ let db = Database("\(path)/db.sqlite3")
 
 #### Read-Only Databases
 
-If you bundle a database with your app, you can establish a _read-only_ connection to it.
+If you bundle a database with your app (_i.e._, you’ve copied a database file into your Xcode project and added it to your application target), you can establish a _read-only_ connection to it.
 
 ``` swift
 let path = NSBundle.mainBundle().pathForResource("db", ofType: "sqlite3")!
