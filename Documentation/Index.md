@@ -1313,7 +1313,7 @@ db.create(function: "typeConformsTo") { args in
 Creating a loosely-typed function cannot return a closure and instead must be wrapped manually or executed [using raw SQL](#executing-arbitrary-sql).
 
 ``` swift
-let stmt = db.prepare("SELECT * FROM files WHERE typeConformsTo(UTI, ?)")
+let stmt = db.prepare("SELECT * FROM attachments WHERE typeConformsTo(UTI, ?)")
 for row in stmt.bind(kUTTypeImage) { /* ... */ }
 ```
 
