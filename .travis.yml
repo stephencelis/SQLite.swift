@@ -1,6 +1,0 @@
-language: objective-c
-env:
-  - BUILD_SDK=iphonesimulator ONLY_ACTIVE_ARCH=NO
-  - BUILD_SDK=macosx
-script:
-  - make test
