@@ -26,14 +26,19 @@ public extension Database {
 
     /// Creates or redefines a custom SQL function.
     ///
-    /// :param: function The name of the function to create or redefine.
+    /// :param: function      The name of the function to create or redefine.
     ///
-    /// :param: block    A block of code to run when the function is called.
-    ///                  The block is called with an array of raw SQL values
-    ///                  mapped to the function's parameters and should return a
-    ///                  raw SQL value (or nil).
-    public func create(#function: String, _ block: [Binding?] -> Binding?) {
-        try(SQLiteCreateFunction(handle, function) { context, argc, argv in
+    /// :param: deterministic Whether or not the function is deterministic. If
+    ///                       the function always returns the same result for a
+    ///                       given input, SQLite can make optimizations.
+    ///                       (Default: false.)
+    ///
+    /// :param: block         A block of code to run when the function is
+    ///                       called. The block is called with an array of raw
+    ///                       SQL values mapped to the function's parameters and
+    ///                       should return a raw SQL value (or nil).
+    public func create(#function: String, deterministic: Bool = false, _ block: [Binding?] -> Binding?) {
+        try(SQLiteCreateFunction(handle, function, deterministic ? 1 : 0) { context, argc, argv in
             let arguments: [Binding?] = map(0..<argc) { idx in
                 let value = argv[Int(idx)]
                 switch sqlite3_value_type(value) {
@@ -82,138 +87,138 @@ public extension Database {
     ///                  The assigned types must be explicit.
     ///
     /// :returns: A closure returning a SQL expression to call the function.
-    public func create<Z: Value>(#function: String, _ block: () -> Z) -> (() -> Expression<Z>) {
-        return { self.create(function) { _ in return block() }([]) }
+    public func create<Z: Value>(#function: String, deterministic: Bool = false, _ block: () -> Z) -> (() -> Expression<Z>) {
+        return { self.create(function, deterministic) { _ in return block() }([]) }
     }
 
-    public func create<Z: Value>(#function: String, _ block: () -> Z?) -> (() -> Expression<Z?>) {
-        return { self.create(function) { _ in return block() }([]) }
+    public func create<Z: Value>(#function: String, deterministic: Bool = false, _ block: () -> Z?) -> (() -> Expression<Z?>) {
+        return { self.create(function, deterministic) { _ in return block() }([]) }
     }
 
     // MARK: 1 Argument
 
-    public func create<Z: Value, A: Value>(#function: String, _ block: A -> Z) -> (Expression<A> -> Expression<Z>) {
-        return { self.create(function) { block(asValue($0[0])) }([$0]) }
+    public func create<Z: Value, A: Value>(#function: String, deterministic: Bool = false, _ block: A -> Z) -> (Expression<A> -> Expression<Z>) {
+        return { self.create(function, deterministic) { block(asValue($0[0])) }([$0]) }
     }
 
-    public func create<Z: Value, A: Value>(#function: String, _ block: A? -> Z) -> (Expression<A?> -> Expression<Z>) {
-        return { self.create(function) { block($0[0].map(asValue)) }([$0]) }
+    public func create<Z: Value, A: Value>(#function: String, deterministic: Bool = false, _ block: A? -> Z) -> (Expression<A?> -> Expression<Z>) {
+        return { self.create(function, deterministic) { block($0[0].map(asValue)) }([$0]) }
     }
 
-    public func create<Z: Value, A: Value>(#function: String, _ block: A -> Z?) -> (Expression<A> -> Expression<Z?>) {
-        return { self.create(function) { block(asValue($0[0])) }([$0]) }
+    public func create<Z: Value, A: Value>(#function: String, deterministic: Bool = false, _ block: A -> Z?) -> (Expression<A> -> Expression<Z?>) {
+        return { self.create(function, deterministic) { block(asValue($0[0])) }([$0]) }
     }
 
-    public func create<Z: Value, A: Value>(#function: String, _ block: A? -> Z?) -> (Expression<A?> -> Expression<Z?>) {
-        return { self.create(function) { block($0[0].map(asValue)) }([$0]) }
+    public func create<Z: Value, A: Value>(#function: String, deterministic: Bool = false, _ block: A? -> Z?) -> (Expression<A?> -> Expression<Z?>) {
+        return { self.create(function, deterministic) { block($0[0].map(asValue)) }([$0]) }
     }
 
     // MARK: 2 Arguments
 
-    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, _ block: (A, B) -> Z) -> ((A, Expression<B>) -> Expression<Z>) {
-        return { self.create(function) { block(asValue($0[0]), asValue($0[1])) }([$0, $1]) }
+    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, deterministic: Bool = false, _ block: (A, B) -> Z) -> ((A, Expression<B>) -> Expression<Z>) {
+        return { self.create(function, deterministic) { block(asValue($0[0]), asValue($0[1])) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, _ block: (A?, B) -> Z) -> ((A?, Expression<B>) -> Expression<Z>) {
-        return { self.create(function) { block($0[0].map(asValue), asValue($0[1])) }([Expression<A?>(value: $0), $1]) }
+    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, deterministic: Bool = false, _ block: (A?, B) -> Z) -> ((A?, Expression<B>) -> Expression<Z>) {
+        return { self.create(function, deterministic) { block($0[0].map(asValue), asValue($0[1])) }([Expression<A?>(value: $0), $1]) }
     }
 
-    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, _ block: (A, B?) -> Z) -> ((A, Expression<B?>) -> Expression<Z>) {
-        return { self.create(function) { block(asValue($0[0]), $0[1].map(asValue)) }([$0, $1]) }
+    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, deterministic: Bool = false, _ block: (A, B?) -> Z) -> ((A, Expression<B?>) -> Expression<Z>) {
+        return { self.create(function, deterministic) { block(asValue($0[0]), $0[1].map(asValue)) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, _ block: (A?, B?) -> Z) -> ((A?, Expression<B?>) -> Expression<Z>) {
-        return { self.create(function) { block($0[0].map(asValue), $0[1].map(asValue)) }([Expression<A?>(value: $0), $1]) }
+    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, deterministic: Bool = false, _ block: (A?, B?) -> Z) -> ((A?, Expression<B?>) -> Expression<Z>) {
+        return { self.create(function, deterministic) { block($0[0].map(asValue), $0[1].map(asValue)) }([Expression<A?>(value: $0), $1]) }
     }
 
-    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, _ block: (A, B) -> Z?) -> ((A, Expression<B>) -> Expression<Z?>) {
-        return { self.create(function) { block(asValue($0[0]), asValue($0[1])) }([$0, $1]) }
+    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, deterministic: Bool = false, _ block: (A, B) -> Z?) -> ((A, Expression<B>) -> Expression<Z?>) {
+        return { self.create(function, deterministic) { block(asValue($0[0]), asValue($0[1])) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, _ block: (A?, B) -> Z?) -> ((A?, Expression<B>) -> Expression<Z?>) {
-        return { self.create(function) { block($0[0].map(asValue), asValue($0[1])) }([Expression<A?>(value: $0), $1]) }
+    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, deterministic: Bool = false, _ block: (A?, B) -> Z?) -> ((A?, Expression<B>) -> Expression<Z?>) {
+        return { self.create(function, deterministic) { block($0[0].map(asValue), asValue($0[1])) }([Expression<A?>(value: $0), $1]) }
     }
 
-    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, _ block: (A, B?) -> Z?) -> ((A, Expression<B?>) -> Expression<Z?>) {
-        return { self.create(function) { block(asValue($0[0]), $0[1].map(asValue)) }([$0, $1]) }
+    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, deterministic: Bool = false, _ block: (A, B?) -> Z?) -> ((A, Expression<B?>) -> Expression<Z?>) {
+        return { self.create(function, deterministic) { block(asValue($0[0]), $0[1].map(asValue)) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, _ block: (A?, B?) -> Z?) -> ((A?, Expression<B?>) -> Expression<Z?>) {
-        return { self.create(function) { block($0[0].map(asValue), $0[1].map(asValue)) }([Expression<A?>(value: $0), $1]) }
+    public func create<Z: Value, A: protocol<Value, Expressible>, B: Value>(#function: String, deterministic: Bool = false, _ block: (A?, B?) -> Z?) -> ((A?, Expression<B?>) -> Expression<Z?>) {
+        return { self.create(function, deterministic) { block($0[0].map(asValue), $0[1].map(asValue)) }([Expression<A?>(value: $0), $1]) }
     }
 
-    public func create<Z: Value, A: Value, B: Value>(#function: String, _ block: (A, B) -> Z) -> ((Expression<A>, Expression<B>) -> Expression<Z>) {
-        return { self.create(function) { block(asValue($0[0]), asValue($0[1])) }([$0, $1]) }
+    public func create<Z: Value, A: Value, B: Value>(#function: String, deterministic: Bool = false, _ block: (A, B) -> Z) -> ((Expression<A>, Expression<B>) -> Expression<Z>) {
+        return { self.create(function, deterministic) { block(asValue($0[0]), asValue($0[1])) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: Value, B: Value>(#function: String, _ block: (A?, B) -> Z) -> ((Expression<A?>, Expression<B>) -> Expression<Z>) {
-        return { self.create(function) { block($0[0].map(asValue), asValue($0[1])) }([$0, $1]) }
+    public func create<Z: Value, A: Value, B: Value>(#function: String, deterministic: Bool = false, _ block: (A?, B) -> Z) -> ((Expression<A?>, Expression<B>) -> Expression<Z>) {
+        return { self.create(function, deterministic) { block($0[0].map(asValue), asValue($0[1])) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: Value, B: Value>(#function: String, _ block: (A, B?) -> Z) -> ((Expression<A>, Expression<B?>) -> Expression<Z>) {
-        return { self.create(function) { block(asValue($0[0]), $0[1].map(asValue)) }([$0, $1]) }
+    public func create<Z: Value, A: Value, B: Value>(#function: String, deterministic: Bool = false, _ block: (A, B?) -> Z) -> ((Expression<A>, Expression<B?>) -> Expression<Z>) {
+        return { self.create(function, deterministic) { block(asValue($0[0]), $0[1].map(asValue)) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: Value, B: Value>(#function: String, _ block: (A?, B?) -> Z) -> ((Expression<A?>, Expression<B?>) -> Expression<Z>) {
-        return { self.create(function) { block($0[0].map(asValue), $0[1].map(asValue)) }([$0, $1]) }
+    public func create<Z: Value, A: Value, B: Value>(#function: String, deterministic: Bool = false, _ block: (A?, B?) -> Z) -> ((Expression<A?>, Expression<B?>) -> Expression<Z>) {
+        return { self.create(function, deterministic) { block($0[0].map(asValue), $0[1].map(asValue)) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: Value, B: Value>(#function: String, _ block: (A, B) -> Z?) -> ((Expression<A>, Expression<B>) -> Expression<Z?>) {
-        return { self.create(function) { block(asValue($0[0]), asValue($0[1])) }([$0, $1]) }
+    public func create<Z: Value, A: Value, B: Value>(#function: String, deterministic: Bool = false, _ block: (A, B) -> Z?) -> ((Expression<A>, Expression<B>) -> Expression<Z?>) {
+        return { self.create(function, deterministic) { block(asValue($0[0]), asValue($0[1])) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: Value, B: Value>(#function: String, _ block: (A?, B) -> Z?) -> ((Expression<A?>, Expression<B>) -> Expression<Z?>) {
-        return { self.create(function) { block($0[0].map(asValue), asValue($0[1])) }([$0, $1]) }
+    public func create<Z: Value, A: Value, B: Value>(#function: String, deterministic: Bool = false, _ block: (A?, B) -> Z?) -> ((Expression<A?>, Expression<B>) -> Expression<Z?>) {
+        return { self.create(function, deterministic) { block($0[0].map(asValue), asValue($0[1])) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: Value, B: Value>(#function: String, _ block: (A, B?) -> Z?) -> ((Expression<A>, Expression<B?>) -> Expression<Z?>) {
-        return { self.create(function) { block(asValue($0[0]), $0[1].map(asValue)) }([$0, $1]) }
+    public func create<Z: Value, A: Value, B: Value>(#function: String, deterministic: Bool = false, _ block: (A, B?) -> Z?) -> ((Expression<A>, Expression<B?>) -> Expression<Z?>) {
+        return { self.create(function, deterministic) { block(asValue($0[0]), $0[1].map(asValue)) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: Value, B: Value>(#function: String, _ block: (A?, B?) -> Z?) -> ((Expression<A?>, Expression<B?>) -> Expression<Z?>) {
-        return { self.create(function) { block($0[0].map(asValue), $0[1].map(asValue)) }([$0, $1]) }
+    public func create<Z: Value, A: Value, B: Value>(#function: String, deterministic: Bool = false, _ block: (A?, B?) -> Z?) -> ((Expression<A?>, Expression<B?>) -> Expression<Z?>) {
+        return { self.create(function, deterministic) { block($0[0].map(asValue), $0[1].map(asValue)) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, _ block: (A, B) -> Z) -> ((Expression<A>, B) -> Expression<Z>) {
-        return { self.create(function) { block(asValue($0[0]), asValue($0[1])) }([$0, $1]) }
+    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, deterministic: Bool = false, _ block: (A, B) -> Z) -> ((Expression<A>, B) -> Expression<Z>) {
+        return { self.create(function, deterministic) { block(asValue($0[0]), asValue($0[1])) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, _ block: (A?, B) -> Z) -> ((Expression<A?>, B) -> Expression<Z>) {
-        return { self.create(function) { block($0[0].map(asValue), asValue($0[1])) }([$0, $1]) }
+    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, deterministic: Bool = false, _ block: (A?, B) -> Z) -> ((Expression<A?>, B) -> Expression<Z>) {
+        return { self.create(function, deterministic) { block($0[0].map(asValue), asValue($0[1])) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, _ block: (A, B?) -> Z) -> ((Expression<A>, B?) -> Expression<Z>) {
-        return { self.create(function) { block(asValue($0[0]), $0[1].map(asValue)) }([$0, Expression<B?>(value: $1)]) }
+    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, deterministic: Bool = false, _ block: (A, B?) -> Z) -> ((Expression<A>, B?) -> Expression<Z>) {
+        return { self.create(function, deterministic) { block(asValue($0[0]), $0[1].map(asValue)) }([$0, Expression<B?>(value: $1)]) }
     }
 
-    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, _ block: (A?, B?) -> Z) -> ((Expression<A?>, B?) -> Expression<Z>) {
-        return { self.create(function) { block($0[0].map(asValue), $0[1].map(asValue)) }([$0, Expression<B?>(value: $1)]) }
+    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, deterministic: Bool = false, _ block: (A?, B?) -> Z) -> ((Expression<A?>, B?) -> Expression<Z>) {
+        return { self.create(function, deterministic) { block($0[0].map(asValue), $0[1].map(asValue)) }([$0, Expression<B?>(value: $1)]) }
     }
 
-    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, _ block: (A, B) -> Z?) -> ((Expression<A>, B) -> Expression<Z?>) {
-        return { self.create(function) { block(asValue($0[0]), asValue($0[1])) }([$0, $1]) }
+    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, deterministic: Bool = false, _ block: (A, B) -> Z?) -> ((Expression<A>, B) -> Expression<Z?>) {
+        return { self.create(function, deterministic) { block(asValue($0[0]), asValue($0[1])) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, _ block: (A?, B) -> Z?) -> ((Expression<A?>, B) -> Expression<Z?>) {
-        return { self.create(function) { block($0[0].map(asValue), asValue($0[1])) }([$0, $1]) }
+    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, deterministic: Bool = false, _ block: (A?, B) -> Z?) -> ((Expression<A?>, B) -> Expression<Z?>) {
+        return { self.create(function, deterministic) { block($0[0].map(asValue), asValue($0[1])) }([$0, $1]) }
     }
 
-    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, _ block: (A, B?) -> Z?) -> ((Expression<A>, B?) -> Expression<Z?>) {
-        return { self.create(function) { block(asValue($0[0]), $0[1].map(asValue)) }([$0, Expression<B?>(value: $1)]) }
+    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, deterministic: Bool = false, _ block: (A, B?) -> Z?) -> ((Expression<A>, B?) -> Expression<Z?>) {
+        return { self.create(function, deterministic) { block(asValue($0[0]), $0[1].map(asValue)) }([$0, Expression<B?>(value: $1)]) }
     }
 
-    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, _ block: (A?, B?) -> Z?) -> ((Expression<A?>, B?) -> Expression<Z?>) {
-        return { self.create(function) { block($0[0].map(asValue), $0[1].map(asValue)) }([$0, Expression<B?>(value: $1)]) }
+    public func create<Z: Value, A: Value, B: protocol<Value, Expressible>>(#function: String, deterministic: Bool = false, _ block: (A?, B?) -> Z?) -> ((Expression<A?>, B?) -> Expression<Z?>) {
+        return { self.create(function, deterministic) { block($0[0].map(asValue), $0[1].map(asValue)) }([$0, Expression<B?>(value: $1)]) }
     }
 
     // MARK: -
 
-    private func create<Z: Value>(function: String, _ block: [Binding?] -> Z) -> ([Expressible] -> Expression<Z>) {
-        return { Expression<Z>(self.create(function) { (arguments: [Binding?]) -> Z? in block(arguments) }($0)) }
+    private func create<Z: Value>(function: String, _ deterministic: Bool, _ block: [Binding?] -> Z) -> ([Expressible] -> Expression<Z>) {
+        return { Expression<Z>(self.create(function, deterministic) { (arguments: [Binding?]) -> Z? in block(arguments) }($0)) }
     }
 
-    private func create<Z: Value>(function: String, _ block: [Binding?] -> Z?) -> ([Expressible] -> Expression<Z?>) {
-        create(function: function) { block($0)?.datatypeValue }
+    private func create<Z: Value>(function: String, _ deterministic: Bool, _ block: [Binding?] -> Z?) -> ([Expressible] -> Expression<Z?>) {
+        create(function: function, deterministic: deterministic) { block($0)?.datatypeValue }
         return { arguments in wrap(function, Expression<Z>.join(", ", arguments)) }
     }
 

@@ -1267,11 +1267,13 @@ For example, to give queries access to [`MobileCoreServices.UTTypeConformsTo`](h
 import MobileCoreServices
 
 let typeConformsTo: (String, Expression<String>) -> Expression<Bool> = (
-    db.create(function: "typeConformsTo") { UTI, conformsToUTI in
+    db.create(function: "typeConformsTo", deterministic: true) { UTI, conformsToUTI in
         return UTTypeConformsTo(UTI, conformsToUTI) != 0
     }
 )
 ```
+
+> _Note:_ The optional `deterministic` parameter is an optimization that causes the function to be created with [`SQLITE_DETERMINISTIC`](https://www.sqlite.org/c3ref/create_function.html).
 
 Note `typeConformsTo`’s signature:
 
@@ -1300,7 +1302,7 @@ attachments.filter(typeConformsTo(UTI, kUTTypeImage))
 You can create loosely-typed functions by handling an array of raw arguments, instead.
 
 ``` swift
-db.create(function: "typeConformsTo") { args in
+db.create(function: "typeConformsTo", deterministic: true) { args in
     switch (args[0], args[1]) {
     case let (UTI as String, conformsToUTI as String):
         return Int(UTTypeConformsTo(UTI, conformsToUTI))
