@@ -107,6 +107,9 @@ interactively, from the Xcode project’s playground.
 > _Note:_ SQLite.swift requires Swift 1.1 (and [Xcode
 > 6.1](https://developer.apple.com/xcode/downloads/)) or greater.
 >
+> For the Swift 1.2 beta (included in Xcode 6.3), use the
+> [`swift-1-2`](tree/swift-1-2) branch.
+>
 > The following instructions apply to targets that support embedded
 > Swift frameworks. To use SQLite.swift in iOS 7 or an OS X command line
 > tool, please read the [Frameworkless Targets][4.0] section of the
