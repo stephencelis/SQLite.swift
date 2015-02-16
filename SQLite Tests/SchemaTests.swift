@@ -15,7 +15,7 @@ class SchemaTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        db.run("PRAGMA foreign_keys = ON")
+        db.foreignKeys = true
         db.trace(println)
     }
 

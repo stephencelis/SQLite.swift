@@ -378,7 +378,7 @@ public final class SchemaBuilder {
     }
 
     private func assertForeignKeysEnabled() {
-        assert(table.database.scalar("PRAGMA foreign_keys") as Int == 1, "foreign key constraints are disabled")
+        assert(table.database.foreignKeys, "foreign key constraints are disabled (run `db.foreignKeys = true`)")
     }
 
 }

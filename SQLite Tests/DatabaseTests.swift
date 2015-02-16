@@ -193,4 +193,10 @@ class DatabaseTests: XCTestCase {
         XCTAssertEqual(1, db.userVersion)
     }
 
+    func test_foreignKeys_getsAndSetsForeignKeys() {
+        XCTAssertEqual(false, db.foreignKeys)
+        db.foreignKeys = true
+        XCTAssertEqual(true, db.foreignKeys)
+    }
+
 }

@@ -335,6 +335,11 @@ public final class Database {
 
     // MARK: - Configuration
 
+    public var foreignKeys: Bool {
+        get { return Bool.fromDatatypeValue(scalar("PRAGMA foreign_keys") as Int) }
+        set { run("PRAGMA foreign_keys = \(transcode(newValue.datatypeValue))") }
+    }
+
     public var userVersion: Int {
         get { return scalar("PRAGMA user_version") as Int }
         set { run("PRAGMA user_version = \(transcode(newValue))") }
