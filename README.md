@@ -106,6 +106,11 @@ interactively, from the Xcode project’s playground.
 
 > _Note:_ SQLite.swift requires Swift 1.1 (and [Xcode
 > 6.1](https://developer.apple.com/xcode/downloads/)) or greater.
+>
+> The following instructions apply to targets that support embedded
+> Swift frameworks. To use SQLite.swift in iOS 7 or an OS X command line
+> tool, please read the [Frameworkless Targets][4.0] section of the
+> documentation.
 
 To install SQLite.swift:
 
@@ -123,6 +128,7 @@ To install SQLite.swift:
  4. Add **SQLite.framework** to a **Copy Files** build phase with a
     **Frameworks** destination. (Add a new build phase if need be.)
 
+[4.0]: Documentation/Index.md#frameworkless-targets
 [4.1]: https://developer.apple.com/xcode/downloads/
 [4.2]: http://git-scm.com/book/en/Git-Tools-Submodules
 [4.3]: https://github.com/stephencelis/SQLite.swift/archive/master.zip

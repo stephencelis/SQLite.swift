@@ -2,6 +2,7 @@
 
   - [Installation](#installation)
     - [SQLCipher](#sqlcipher)
+    - [Frameworkless Targets](#frameworkless-targets)
   - [Getting Started](#getting-started)
     - [Connecting to a Database](#connecting-to-a-database)
       - [Read-Write Databases](#read-write-databases)
@@ -86,6 +87,23 @@ To install SQLite.swift with [SQLCipher][] support:
  2. Follow [the instructions above](#installation) with the **SQLiteCipher** target, instead.
 
 [SQLCipher]: http://sqlcipher.net
+
+
+### Frameworkless Targets
+
+It’s possible to use SQLite.swift in a target that doesn’t support frameworks, including iOS 7 apps and OS X command line tools, though it takes a little extra work.
+
+ 1. In your target’s **Build Phases**, add **libsqlite3.dylib** to the **Link Binary With Libraries** build phase.
+
+ 2. Copy the SQLite.swift source files (from its **SQLite** directory) into your Xcode project.
+
+ 3. Add the following line to your project’s [bridging header](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html#//apple_ref/doc/uid/TP40014216-CH10-XID_79) (a file usually in the form of `$(TARGET_NAME)-Bridging-Header.h`.
+
+    ``` swift
+    #import "SQLite-Bridging.h'
+    ```
+
+> _Note:_ Adding SQLite.swift source files directly to your application will both remove the `SQLite` module namespace and expose internal functions and variables. Please [report any namespace collisions and bugs](https://github.com/stephencelis/SQLite.swift/issues/new) you encounter.
 
 
 ## Getting Started
