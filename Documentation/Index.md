@@ -359,14 +359,12 @@ Additional constraints may be provided outside the scope of a single column usin
     // CHECK ("balance" >= 0.0)
     ```
 
-  - `foreignKey` adds a `FOREIGN KEY` constraint to the table. Unlike [the `references` constraint, above](#column-constraints), it supports all SQLite types, and both [`ON UPDATE` and `ON DELETE` actions](https://www.sqlite.org/foreignkeys.html#fk_actions).
+  - `foreignKey` adds a `FOREIGN KEY` constraint to the table. Unlike [the `references` constraint, above](#column-constraints), it supports all SQLite types, and both [`ON UPDATE` and `ON DELETE` actions](https://www.sqlite.org/foreignkeys.html#fk_actions), and composite (multiple column) keys.
 
     ``` swift
     t.foreignKey(user_id, on: users[id], delete: .SetNull)
     // FOREIGN KEY("user_id") REFERENCES "users"("id") ON DELETE SET NULL
     ```
-
-    > _Note:_ Composite foreign keys are not supported at this time. If you add support, please [submit a pull request](https://github.com/stephencelis/SQLite.swift/fork).
 
 <!-- TODO
 ### Creating a Table from a Select Statement
