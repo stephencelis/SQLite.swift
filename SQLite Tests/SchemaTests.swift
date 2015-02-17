@@ -78,7 +78,7 @@ class SchemaTests: XCTestCase {
     }
 
     func test_createTable_column_withCheck_buildsCheckClause() {
-        ExpectExecution(db, "CREATE TABLE \"users\" (\"admin\" INTEGER NOT NULL CHECK (\"admin\" IN (0, 1)))",
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"admin\" INTEGER NOT NULL CHECK ((\"admin\" IN (0, 1))))",
             db.create(table: users) { t in
                 t.column(admin, check: contains([false, true], admin))
             }
@@ -175,7 +175,7 @@ class SchemaTests: XCTestCase {
 
     func test_createTable_check_buildsCheckTableConstraint() {
         let users = self.users
-        ExpectExecution(db, "CREATE TABLE \"users\" (\"admin\" INTEGER NOT NULL, CHECK (\"admin\" IN (0, 1)))",
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"admin\" INTEGER NOT NULL, CHECK ((\"admin\" IN (0, 1))))",
             db.create(table: users) { t in
                 t.column(admin)
                 t.check(contains([false, true], admin))

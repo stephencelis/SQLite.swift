@@ -346,7 +346,7 @@ public final class SchemaBuilder {
     }
 
     public func check(condition: Expression<Bool>) {
-        columns.append(Expression<()>(literal: "CHECK \(condition.SQL)", condition.bindings))
+        columns.append(Expression<()>(literal: "CHECK (\(condition.SQL))", condition.bindings))
     }
 
     public enum Dependency: String {
@@ -435,7 +435,7 @@ private func define<V: Value>(
     }
     if !null { parts.append(Expression<()>(literal: "NOT NULL")) }
     if unique { parts.append(Expression<()>(literal: "UNIQUE")) }
-    if let check = check { parts.append(Expression<()>(literal: "CHECK \(check.SQL)", check.bindings)) }
+    if let check = check { parts.append(Expression<()>(literal: "CHECK (\(check.SQL))", check.bindings)) }
     if let value = defaultValue { parts.append(Expression<()>(literal: "DEFAULT \(value.SQL)", value.bindings)) }
     if let expressions = expressions { parts += expressions }
     return Expression<()>.join(" ", parts)
