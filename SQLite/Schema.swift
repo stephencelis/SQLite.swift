@@ -72,8 +72,34 @@ public extension Database {
         check: Expression<Bool>? = nil,
         references: Expression<V>
     ) -> Statement {
-        let expressions = [Expression<()>(literal: "REFERENCES"), namespace(references)]
-        return alter(table, define(Expression<V>(column), nil, true, false, check, nil, expressions))
+        return alter(table, define(Expression<V>(column), nil, true, false, check, nil, [
+            Expression<()>(literal: "REFERENCES"), namespace(references)
+        ]))
+    }
+
+    public func alter(
+        #table: Query,
+        add column: Expression<String>,
+        check: Expression<Bool>? = nil,
+        defaultValue: String,
+        collate: Collation
+    ) -> Statement {
+        return alter(table, define(Expression<String>(column), nil, false, false, check, Expression(value: defaultValue), [
+            Expression<()>(literal: "COLLATE \(collate.rawValue)")
+        ]))
+    }
+
+    public func alter(
+        #table: Query,
+        add column: Expression<String?>,
+        check: Expression<Bool>? = nil,
+        defaultValue: String? = nil,
+        collate: Collation
+    ) -> Statement {
+        let value = defaultValue.map { Expression<String>(value: $0) }
+        return alter(table, define(Expression<String>(column), nil, true, false, check, value, [
+            Expression<()>(literal: "COLLATE \(collate.rawValue)")
+        ]))
     }
 
     private func alter(table: Query, _ definition: Expressible) -> Statement {
