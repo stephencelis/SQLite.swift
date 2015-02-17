@@ -456,13 +456,9 @@ class ExpressionTests: XCTestCase {
     let admin2 = Expression<Bool?>("admin")
 
     func test_countFunction_withExpression_buildsCountExpression() {
-        ExpectExecutionMatches("count(\"id\")", count(id))
         ExpectExecutionMatches("count(\"age\")", count(age))
-        ExpectExecutionMatches("count(\"email\")", count(email))
         ExpectExecutionMatches("count(\"email\")", count(email2))
-        ExpectExecutionMatches("count(\"salary\")", count(salary))
         ExpectExecutionMatches("count(\"salary\")", count(salary2))
-        ExpectExecutionMatches("count(\"admin\")", count(admin))
         ExpectExecutionMatches("count(\"admin\")", count(admin2))
         ExpectExecutionMatches("count(DISTINCT \"id\")", count(distinct: id))
         ExpectExecutionMatches("count(DISTINCT \"age\")", count(distinct: age))

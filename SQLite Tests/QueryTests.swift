@@ -261,18 +261,18 @@ class QueryTests: XCTestCase {
         managers = managers.filter(managers[admin] == true)
 
         let query = users
-            .select(users[email], count(users[email]))
+            .select(users[email], count(users[age]))
             .join(.LeftOuter, managers, on: managers[id] == users[manager_id])
             .filter(21..<32 ~= users[age])
-            .group(users[age], having: count(users[email]) > 1)
+            .group(users[age], having: count(users[age]) > 1)
             .order(users[email].desc)
             .limit(1, offset: 2)
 
-        let SQL = "SELECT \"users\".\"email\", count(\"users\".\"email\") FROM \"users\" " +
+        let SQL = "SELECT \"users\".\"email\", count(\"users\".\"age\") FROM \"users\" " +
             "LEFT OUTER JOIN \"users\" AS \"managers\" " +
             "ON ((\"managers\".\"id\" = \"users\".\"manager_id\") AND (\"managers\".\"admin\" = 1)) " +
             "WHERE \"users\".\"age\" BETWEEN 21 AND 32 " +
-            "GROUP BY \"users\".\"age\" HAVING (count(\"users\".\"email\") > 1) " +
+            "GROUP BY \"users\".\"age\" HAVING (count(\"users\".\"age\") > 1) " +
             "ORDER BY \"users\".\"email\" DESC " +
             "LIMIT 1 " +
             "OFFSET 2"

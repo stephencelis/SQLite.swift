@@ -586,14 +586,14 @@ public struct Query {
     // MARK: - Aggregate Functions
 
     /// Runs count(*) against the query and returns it.
-    public var count: Int { return count(Expression<()>(literal: "*")) }
+    public var count: Int { return calculate(SQLite_count(*))! }
 
     /// Runs count() against the query.
     ///
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The number of rows matching the given column.
-    public func count<V>(column: Expression<V>) -> Int {
+    public func count<V: Value>(column: Expression<V?>) -> Int {
         return calculate(SQLite_count(column))!
     }
 
@@ -602,17 +602,17 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The number of rows matching the given column.
-    public func count<V>(distinct column: Expression<V>) -> Int {
+    public func count<V: Value>(distinct column: Expression<V>) -> Int {
         return calculate(SQLite_count(distinct: column))!
     }
 
-    /// Runs count(DISTINCT *) against the query.
+    /// Runs count() with DISTINCT against the query.
     ///
-    /// :param: star A literal *.
+    /// :param: column The column used for the calculation.
     ///
     /// :returns: The number of rows matching the given column.
-    public func count<V>(distinct star: Star) -> Int {
-        return calculate(SQLite_count(distinct: star(nil, nil)))!
+    public func count<V: Value>(distinct column: Expression<V?>) -> Int {
+        return calculate(SQLite_count(distinct: column))!
     }
 
     /// Runs max() against the query.
