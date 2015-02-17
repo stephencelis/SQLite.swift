@@ -199,34 +199,18 @@ class SchemaTests: XCTestCase {
         )
     }
 
-    func test_createTable_foreignKey_referencingTable_buildsForeignKeyTableConstraint() {
-        let users = self.users
-        ExpectExecution(db,
-            "CREATE TABLE \"users\" (" +
-                "\"id\" INTEGER PRIMARY KEY NOT NULL, " +
-                "\"manager_id\" INTEGER, " +
-                "FOREIGN KEY(\"manager_id\") REFERENCES \"users\"" +
-            ")",
-            db.create(table: users) { t in
-                t.column(id, primaryKey: true)
-                t.column(manager_id)
-                t.foreignKey(manager_id, references: users)
-            }
-        )
-    }
-
     func test_createTable_foreignKey_withUpdateDependency_buildsUpdateDependency() {
         let users = self.users
         ExpectExecution(db,
             "CREATE TABLE \"users\" (" +
                 "\"id\" INTEGER PRIMARY KEY NOT NULL, " +
                 "\"manager_id\" INTEGER, " +
-                "FOREIGN KEY(\"manager_id\") REFERENCES \"users\" ON UPDATE CASCADE" +
+                "FOREIGN KEY(\"manager_id\") REFERENCES \"users\"(\"id\") ON UPDATE CASCADE" +
             ")",
             db.create(table: users) { t in
                 t.column(id, primaryKey: true)
                 t.column(manager_id)
-                t.foreignKey(manager_id, references: users, update: .Cascade)
+                t.foreignKey(manager_id, references: users[id], update: .Cascade)
             }
         )
     }
@@ -237,12 +221,31 @@ class SchemaTests: XCTestCase {
             "CREATE TABLE \"users\" (" +
                 "\"id\" INTEGER PRIMARY KEY NOT NULL, " +
                 "\"manager_id\" INTEGER, " +
-                "FOREIGN KEY(\"manager_id\") REFERENCES \"users\" ON DELETE CASCADE" +
+                "FOREIGN KEY(\"manager_id\") REFERENCES \"users\"(\"id\") ON DELETE CASCADE" +
             ")",
             db.create(table: users) { t in
                 t.column(id, primaryKey: true)
                 t.column(manager_id)
-                t.foreignKey(manager_id, references: users, delete: .Cascade)
+                t.foreignKey(manager_id, references: users[id], delete: .Cascade)
+            }
+        )
+    }
+
+    func test_createTable_foreignKey_withCompositeKey_buildsForeignKeyTableConstraint() {
+        let users = self.users
+        let manager_id = Expression<Int>("manager_id") // required
+        ExpectExecution(db,
+            "CREATE TABLE \"users\" (" +
+                "\"id\" INTEGER PRIMARY KEY NOT NULL, " +
+                "\"manager_id\" INTEGER NOT NULL, " +
+                "\"email\" TEXT NOT NULL, " +
+                "FOREIGN KEY(\"manager_id\", \"email\") REFERENCES \"users\"(\"id\", \"email\")" +
+            ")",
+            db.create(table: users) { t in
+                t.column(id, primaryKey: true)
+                t.column(manager_id)
+                t.column(email)
+                t.foreignKey((manager_id, email), references: (users[id], email))
             }
         )
     }

@@ -275,7 +275,7 @@ public final class SchemaBuilder {
         )
     }
 
-    // MARK: TEXT Columns
+    // MARK: TEXT Columns (COLLATE)
 
     public func column(
         name: Expression<String>,
@@ -335,8 +335,20 @@ public final class SchemaBuilder {
 
     // MARK: - Table Constraints
 
-    public func primaryKey(column: Expressible...) {
-        let primaryKey = Expression<()>.join(", ", column)
+    public func primaryKey<T: Value>(column: Expression<T>) {
+        primaryKey([column])
+    }
+
+    public func primaryKey<T: Value, U: Value>(columnA: Expression<T>, _ B: Expression<U>) {
+        primaryKey([columnA, B])
+    }
+
+    public func primaryKey<T: Value, U: Value, V: Value>(columnA: Expression<T>, _ B: Expression<U>, _ C: Expression<V>) {
+        primaryKey([columnA, B, C])
+    }
+
+    private func primaryKey(composite: [Expressible]) {
+        let primaryKey = Expression<()>.join(", ", composite)
         columns.append(Expression<()>(literal: "PRIMARY KEY(\(primaryKey.SQL))", primaryKey.bindings))
     }
 
@@ -363,9 +375,9 @@ public final class SchemaBuilder {
 
     }
 
-    public func foreignKey<V: Value>(
-        column: Expression<V>,
-        references: Expression<V>,
+    public func foreignKey<T: Value>(
+        column: Expression<T>,
+        references: Expression<T>,
         update: Dependency? = nil,
         delete: Dependency? = nil
     ) {
@@ -376,31 +388,37 @@ public final class SchemaBuilder {
         if let delete = delete { parts.append(Expression<()>(literal: "ON DELETE \(delete.rawValue)")) }
         columns.append(Expression<()>.join(" ", parts))
     }
-    public func foreignKey<V: Value>(
-        column: Expression<V?>,
-        references: Expression<V>,
+
+    public func foreignKey<T: Value>(
+        column: Expression<T?>,
+        references: Expression<T>,
         update: Dependency? = nil,
         delete: Dependency? = nil
     ) {
         assertForeignKeysEnabled()
-        foreignKey(Expression<V>(column), references: references, update: update, delete: delete)
+        foreignKey(Expression<T>(column), references: references, update: update, delete: delete)
     }
 
-    public func foreignKey<V: Value>(
-        column: Expression<V>,
-        references: Query,
+    public func foreignKey<T: Value, U: Value>(
+        columns: (Expression<T>, Expression<U>),
+        references: (Expression<T>, Expression<U>),
         update: Dependency? = nil,
         delete: Dependency? = nil
     ) {
-        foreignKey(column, references: Expression(references.tableName), update: update, delete: delete)
+        let compositeA = Expression<T>(Expression<()>.join(", ", [columns.0, columns.1]))
+        let compositeB = Expression<T>(Expression<()>.join(", ", [references.0, references.1]))
+        foreignKey(compositeA, references: compositeB, update: update, delete: delete)
     }
-    public func foreignKey<V: Value>(
-        column: Expression<V?>,
-        references: Query,
+
+    public func foreignKey<T: Value, U: Value, V: Value>(
+        columns: (Expression<T>, Expression<U>, Expression<V>),
+        references: (Expression<T>, Expression<U>, Expression<V>),
         update: Dependency? = nil,
         delete: Dependency? = nil
     ) {
-        foreignKey(column, references: Expression(references.tableName), update: update, delete: delete)
+        let compositeA = Expression<T>(Expression<()>.join(", ", [columns.0, columns.1, columns.2]))
+        let compositeB = Expression<T>(Expression<()>.join(", ", [references.0, references.1, references.2]))
+        foreignKey(compositeA, references: compositeB, update: update, delete: delete)
     }
 
     private func assertForeignKeysEnabled() {
