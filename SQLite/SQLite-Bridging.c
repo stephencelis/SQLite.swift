@@ -58,7 +58,9 @@ int SQLiteCreateFunction(sqlite3 * handle, const char * name, int deterministic,
     if (callback) {
         int flags = SQLITE_UTF8;
         if (deterministic) {
+#ifdef SQLITE_DETERMINISTIC
             flags |= SQLITE_DETERMINISTIC;
+#endif
         }
         return sqlite3_create_function_v2(handle, name, -1, flags, Block_copy(callback), &_SQLiteCreateFunction, 0, 0, 0); // FIXME: leak
     } else {
