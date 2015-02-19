@@ -199,4 +199,11 @@ class DatabaseTests: XCTestCase {
         XCTAssertEqual(true, db.foreignKeys)
     }
 
+    func test_createCollation_createsCollation() {
+        db.create(collation: "NODIACRITIC") { lhs, rhs in
+            return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)
+        }
+        XCTAssertEqual(1, db.scalar("SELECT ? = ? COLLATE NODIACRITIC", "cafe", "café") as Int)
+    }
+
 }

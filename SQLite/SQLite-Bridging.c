@@ -67,3 +67,15 @@ int SQLiteCreateFunction(sqlite3 * handle, const char * name, int deterministic,
         return sqlite3_create_function_v2(handle, name, 0, 0, 0, 0, 0, 0, 0);
     }
 }
+
+int _SQLiteCreateCollation(void * context, int len_lhs, const void * lhs, int len_rhs, const void * rhs) {
+    return ((SQLiteCreateCollationCallback)context)(lhs, rhs);
+}
+
+int SQLiteCreateCollation(sqlite3 * handle, const char * name, SQLiteCreateCollationCallback callback) {
+    if (callback) {
+        return sqlite3_create_collation_v2(handle, name, SQLITE_UTF8, Block_copy(callback), &_SQLiteCreateCollation, 0); // FIXME: leak
+    } else {
+        return sqlite3_create_collation_v2(handle, name, 0, 0, 0, 0);
+    }
+}

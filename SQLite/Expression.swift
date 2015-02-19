@@ -235,21 +235,40 @@ public func ^ (lhs: Int, rhs: Expression<Int?>) -> Expression<Int?> { return Exp
 public prefix func ~ (rhs: Expression<Int>) -> Expression<Int> { return wrap(__FUNCTION__, rhs) }
 public prefix func ~ (rhs: Expression<Int?>) -> Expression<Int?> { return wrap(__FUNCTION__, rhs) }
 
-public enum Collation: String {
+public enum Collation {
 
-    case Binary = "BINARY"
+    case Binary
 
-    case NoCase = "NOCASE"
+    case NoCase
 
-    case RTrim = "RTRIM"
+    case RTrim
+
+    case Custom(String)
+
+}
+
+extension Collation: Printable {
+
+    public var description: String {
+        switch self {
+        case Binary:
+            return "BINARY"
+        case NoCase:
+            return "NOCASE"
+        case RTrim:
+            return "RTRIM"
+        case Custom(let collation):
+            return collation
+        }
+    }
 
 }
 
 public func collate(collation: Collation, expression: Expression<String>) -> Expression<String> {
-    return infix("COLLATE", expression, Expression<String>(literal: collation.rawValue))
+    return infix("COLLATE", expression, Expression<String>(literal: collation.description))
 }
 public func collate(collation: Collation, expression: Expression<String?>) -> Expression<String?> {
-    return infix("COLLATE", expression, Expression<String>(literal: collation.rawValue))
+    return infix("COLLATE", expression, Expression<String>(literal: collation.description))
 }
 
 public func cast<T: Value, U: Value>(expression: Expression<T>) -> Expression<U> {

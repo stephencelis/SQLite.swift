@@ -85,7 +85,7 @@ public extension Database {
         collate: Collation
     ) -> Statement {
         return alter(table, define(Expression<String>(column), nil, false, false, check, Expression(value: defaultValue), [
-            Expression<()>(literal: "COLLATE \(collate.rawValue)")
+            Expression<()>(literal: "COLLATE \(collate)")
         ]))
     }
 
@@ -98,7 +98,7 @@ public extension Database {
     ) -> Statement {
         let value = defaultValue.map { Expression<String>(value: $0) }
         return alter(table, define(Expression<String>(column), nil, true, false, check, value, [
-            Expression<()>(literal: "COLLATE \(collate.rawValue)")
+            Expression<()>(literal: "COLLATE \(collate)")
         ]))
     }
 
@@ -284,7 +284,7 @@ public final class SchemaBuilder {
         defaultValue value: Expression<String>?,
         collate: Collation
     ) {
-        let expressions: [Expressible] = [Expression<()>(literal: "COLLATE \(collate.rawValue)")]
+        let expressions: [Expressible] = [Expression<()>(literal: "COLLATE \(collate)")]
         column(name, nil, false, unique, check, value, expressions)
     }
 

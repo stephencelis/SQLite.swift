@@ -298,6 +298,12 @@ class ExpressionTests: XCTestCase {
         ExpectExecutionMatches("('A' COLLATE BINARY)", collate(.Binary, stringA))
         ExpectExecutionMatches("('B' COLLATE NOCASE)", collate(.NoCase, stringB))
         ExpectExecutionMatches("('A' COLLATE RTRIM)", collate(.RTrim, stringA))
+
+        let NoDiacritic = "NODIACRITIC"
+        db.create(collation: NoDiacritic) { lhs, rhs in
+            return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)
+        }
+        ExpectExecutionMatches("('A' COLLATE NODIACRITIC)", collate(.Custom(NoDiacritic), stringA))
     }
 
     func test_cast_buildsCastingExpressions() {

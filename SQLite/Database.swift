@@ -383,6 +383,21 @@ public final class Database {
         }
     }
 
+    /// The return type of a collation comparison function.
+    public typealias ComparisonResult = NSComparisonResult
+
+    /// Defines a new collating sequence.
+    ///
+    /// :param: collation The name of the collation added.
+    ///
+    /// :param: block     A collation function that takes two strings and
+    ///                   returns the comparison result.
+    public func create(#collation: String, _ block: (String, String) -> ComparisonResult) {
+        try(SQLiteCreateCollation(handle, collation) { lhs, rhs in
+            return Int32(block(String.fromCString(lhs)!, String.fromCString(rhs)!).rawValue)
+        })
+    }
+
     // MARK: - Error Handling
 
     /// Returns the last error produced on this connection.
