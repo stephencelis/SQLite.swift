@@ -383,6 +383,57 @@ public final class Database {
         }
     }
 
+    /// Creates or redefines a custom SQL function.
+    ///
+    /// :param: function      The name of the function to create or redefine.
+    ///
+    /// :param: deterministic Whether or not the function is deterministic. If
+    ///                       the function always returns the same result for a
+    ///                       given input, SQLite can make optimizations.
+    ///                       (Default: false.)
+    ///
+    /// :param: block         A block of code to run when the function is
+    ///                       called. The block is called with an array of raw
+    ///                       SQL values mapped to the function's parameters and
+    ///                       should return a raw SQL value (or nil).
+    public func create(#function: String, deterministic: Bool = false, _ block: [Binding?] -> Binding?) {
+        try(SQLiteCreateFunction(handle, function, deterministic ? 1 : 0) { context, argc, argv in
+            let arguments: [Binding?] = map(0..<argc) { idx in
+                let value = argv[Int(idx)]
+                switch sqlite3_value_type(value) {
+                case SQLITE_BLOB:
+                    let bytes = sqlite3_value_blob(value)
+                    let length = sqlite3_value_bytes(value)
+                    return Blob(bytes: bytes, length: Int(length))
+                case SQLITE_FLOAT:
+                    return Double(sqlite3_value_double(value))
+                case SQLITE_INTEGER:
+                    return Int(sqlite3_value_int64(value))
+                case SQLITE_NULL:
+                    return nil
+                case SQLITE_TEXT:
+                    return String.fromCString(UnsafePointer(sqlite3_value_text(value)))!
+                case let type:
+                    assertionFailure("unsupported value type: \(type)")
+                }
+            }
+            let result = block(arguments)
+            if let result = result as? Blob {
+                sqlite3_result_blob(context, result.bytes, Int32(result.length), nil)
+            } else if let result = result as? Double {
+                sqlite3_result_double(context, result)
+            } else if let result = result as? Int {
+                sqlite3_result_int64(context, Int64(result))
+            } else if let result = result as? String {
+                sqlite3_result_text(context, result, Int32(countElements(result)), SQLITE_TRANSIENT)
+            } else if result == nil {
+                sqlite3_result_null(context)
+            } else {
+                assertionFailure("unsupported result type: \(result)")
+            }
+        })
+    }
+
     /// The return type of a collation comparison function.
     public typealias ComparisonResult = NSComparisonResult
 
