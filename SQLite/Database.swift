@@ -27,7 +27,7 @@ import Foundation
 /// A connection (handle) to a SQLite database.
 public final class Database {
 
-    internal var handle = COpaquePointer.null()
+    internal var handle: COpaquePointer = nil
 
     /// Whether or not the database was opened in a read-only state.
     public var readonly: Bool { return sqlite3_db_readonly(handle, nil) == 1 }

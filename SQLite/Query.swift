@@ -768,7 +768,7 @@ public struct Row {
     }
     public func get<V: Value>(column: Expression<V?>) -> V? {
         func valueAtIndex(idx: Int) -> V? {
-            if let value = values[idx] as? V.Datatype { return (V.fromDatatypeValue(value) as! V) }
+            if let value = self.values[idx] as? V.Datatype { return (V.fromDatatypeValue(value) as! V) }
             return nil
         }
 
@@ -821,8 +821,7 @@ public struct QueryGenerator: GeneratorType {
     private lazy var columnNames: [String: Int] = {
         var (columnNames, idx) = ([String: Int](), 0)
         column: for each in self.query.columns ?? [Expression<()>(literal: "*")] {
-            // FIXME: rdar://19769314 // split(each.expression.SQL) { $0 == "." }
-            let pair = split(each.expression.SQL, { $0 == "." })
+            let pair = split(each.expression.SQL) { $0 == "." }
             let (tableName, column) = (pair.count > 1 ? pair.first : nil, pair.last!)
 
             func expandGlob(namespace: Bool) -> Query -> () {
