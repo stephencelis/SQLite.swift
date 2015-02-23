@@ -28,7 +28,7 @@ internal let SQLITE_TRANSIENT = sqlite3_destructor_type(COpaquePointer(bitPatter
 /// A single SQL statement.
 public final class Statement {
 
-    private var handle = COpaquePointer.null()
+    private var handle: COpaquePointer = nil
 
     private let database: Database
 
