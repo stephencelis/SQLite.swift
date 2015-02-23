@@ -147,7 +147,7 @@ func withBlob(block: Blob -> ()) {
     let length = 1
     let buflen = Int(length) + 1
     let buffer = UnsafeMutablePointer<()>.alloc(buflen)
-    memcpy(buffer, "4", UInt(length))
+    memcpy(buffer, "4", length)
     block(Blob(bytes: buffer, length: length))
     buffer.dealloc(buflen)
 }
