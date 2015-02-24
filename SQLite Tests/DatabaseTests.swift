@@ -199,6 +199,20 @@ class DatabaseTests: XCTestCase {
         XCTAssertEqual(true, db.foreignKeys)
     }
 
+    func test_createFunction_withArrayArguments() {
+        db.create(function: "hello") { $0[0].map { "Hello, \($0)!" } }
+
+        XCTAssertEqual("Hello, world!", db.scalar("SELECT hello('world')") as String)
+        XCTAssert(db.scalar("SELECT hello(NULL)") == nil)
+    }
+
+    func test_createFunction_createsQuotableFunction() {
+        db.create(function: "hello world") { $0[0].map { "Hello, \($0)!" } }
+
+        XCTAssertEqual("Hello, world!", db.scalar("SELECT \"hello world\"('world')") as String)
+        XCTAssert(db.scalar("SELECT \"hello world\"(NULL)") == nil)
+    }
+
     func test_createCollation_createsCollation() {
         db.create(collation: "NODIACRITIC") { lhs, rhs in
             return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)

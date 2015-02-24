@@ -5,13 +5,6 @@ class FunctionsTests: XCTestCase {
 
     let db = Database()
 
-    func test_createFunction_withArrayArguments() {
-        db.create(function: "hello") { $0[0].map { "Hello, \($0)!" } }
-
-        XCTAssertEqual("Hello, world!", db.scalar("SELECT hello('world')") as String)
-        XCTAssert(db.scalar("SELECT hello(NULL)") == nil)
-    }
-
     func test_createFunction_withZeroArguments() {
         let f1: () -> Expression<Bool> = db.create(function: "f1") { true }
         let f2: () -> Expression<Bool?> = db.create(function: "f2") { nil }
@@ -20,10 +13,10 @@ class FunctionsTests: XCTestCase {
         db.create(table: table) { $0.column(Expression<Int>("id"), primaryKey: true) }
         table.insert()!
 
-        ExpectExecutions(db, ["SELECT f1() FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f1\"() FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f1()).first![f1()])
         }
-        ExpectExecutions(db, ["SELECT f2() FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f2\"() FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssertNil(table.select(f2()).first![f2()])
         }
     }
@@ -45,16 +38,16 @@ class FunctionsTests: XCTestCase {
 
         let null = Expression<String?>(value: nil as String?)
 
-        ExpectExecutions(db, ["SELECT f1(\"s1\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f1\"(\"s1\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f1(s1)).first![f1(s1)])
         }
-        ExpectExecutions(db, ["SELECT f2(\"s2\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f2\"(\"s2\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(!table.select(f2(s2)).first![f2(s2)])
         }
-        ExpectExecutions(db, ["SELECT f3(\"s1\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f3\"(\"s1\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f3(s1)).first![f3(s1)]!)
         }
-        ExpectExecutions(db, ["SELECT f4(NULL) FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f4\"(NULL) FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssertNil(table.select(f4(null)).first![f4(null)])
         }
     }
@@ -73,7 +66,7 @@ class FunctionsTests: XCTestCase {
         }
         table.insert(b <- true)!
 
-        ExpectExecutions(db, ["SELECT f1(\"b\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f1\"(\"b\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f1(b)).first![f1(b)])
         }
     }
@@ -93,16 +86,16 @@ class FunctionsTests: XCTestCase {
         let f3: (Bool, Expression<Bool?>) -> Expression<Bool> = db.create(function: "f3") { $0 && $1 != nil }
         let f4: (Bool?, Expression<Bool?>) -> Expression<Bool> = db.create(function: "f4") { $0 ?? $1 != nil }
 
-        ExpectExecutions(db, ["SELECT f1(1, \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f1\"(1, \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f1(true, b1)).first![f1(true, b1)])
         }
-        ExpectExecutions(db, ["SELECT f2(NULL, \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f2\"(NULL, \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f2(nil, b1)).first![f2(nil, b1)])
         }
-        ExpectExecutions(db, ["SELECT f3(0, \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f3\"(0, \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssertFalse(table.select(f3(false, b2)).first![f3(false, b2)])
         }
-        ExpectExecutions(db, ["SELECT f4(NULL, \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f4\"(NULL, \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssertFalse(table.select(f4(nil, b2)).first![f4(nil, b2)])
         }
 
@@ -111,16 +104,16 @@ class FunctionsTests: XCTestCase {
         let f7: (Bool, Expression<Bool?>) -> Expression<Bool?> = db.create(function: "f7") { $0 && $1 != nil }
         let f8: (Bool?, Expression<Bool?>) -> Expression<Bool?> = db.create(function: "f8") { $0 ?? $1 != nil }
 
-        ExpectExecutions(db, ["SELECT f5(1, \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f5\"(1, \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f5(true, b1)).first![f5(true, b1)]!)
         }
-        ExpectExecutions(db, ["SELECT f6(NULL, \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f6\"(NULL, \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f6(nil, b1)).first![f6(nil, b1)]!)
         }
-        ExpectExecutions(db, ["SELECT f7(0, \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f7\"(0, \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssertFalse(table.select(f7(false, b2)).first![f7(false, b2)]!)
         }
-        ExpectExecutions(db, ["SELECT f8(NULL, \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f8\"(NULL, \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssertFalse(table.select(f8(nil, b2)).first![f8(nil, b2)]!)
         }
 
@@ -129,16 +122,16 @@ class FunctionsTests: XCTestCase {
         let f11: (Expression<Bool>, Expression<Bool?>) -> Expression<Bool> = db.create(function: "f11") { $0 && $1 != nil }
         let f12: (Expression<Bool?>, Expression<Bool?>) -> Expression<Bool> = db.create(function: "f12") { $0 ?? $1 != nil }
 
-        ExpectExecutions(db, ["SELECT f9(\"b1\", \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f9\"(\"b1\", \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f9(b1, b1)).first![f9(b1, b1)])
         }
-        ExpectExecutions(db, ["SELECT f10(\"b2\", \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f10\"(\"b2\", \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f10(b2, b1)).first![f10(b2, b1)])
         }
-        ExpectExecutions(db, ["SELECT f11(\"b1\", \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f11\"(\"b1\", \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssertFalse(table.select(f11(b1, b2)).first![f11(b1, b2)])
         }
-        ExpectExecutions(db, ["SELECT f12(\"b2\", \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f12\"(\"b2\", \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssertFalse(table.select(f12(b2, b2)).first![f12(b2, b2)])
         }
 
@@ -147,16 +140,16 @@ class FunctionsTests: XCTestCase {
         let f15: (Expression<Bool>, Expression<Bool?>) -> Expression<Bool?> = db.create(function: "f15") { $0 && $1 != nil }
         let f16: (Expression<Bool?>, Expression<Bool?>) -> Expression<Bool?> = db.create(function: "f16") { $0 ?? $1 != nil }
 
-        ExpectExecutions(db, ["SELECT f13(\"b1\", \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f13\"(\"b1\", \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f13(b1, b1)).first![f13(b1, b1)]!)
         }
-        ExpectExecutions(db, ["SELECT f14(\"b2\", \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f14\"(\"b2\", \"b1\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f14(b2, b1)).first![f14(b2, b1)]!)
         }
-        ExpectExecutions(db, ["SELECT f15(\"b1\", \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f15\"(\"b1\", \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssertFalse(table.select(f15(b1, b2)).first![f15(b1, b2)]!)
         }
-        ExpectExecutions(db, ["SELECT f16(\"b2\", \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f16\"(\"b2\", \"b2\") FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssertFalse(table.select(f16(b2, b2)).first![f16(b2, b2)]!)
         }
 
@@ -165,16 +158,16 @@ class FunctionsTests: XCTestCase {
         let f19: (Expression<Bool>, Bool?) -> Expression<Bool> = db.create(function: "f19") { $0 && $1 != nil }
         let f20: (Expression<Bool?>, Bool?) -> Expression<Bool> = db.create(function: "f20") { $0 ?? $1 != nil }
 
-        ExpectExecutions(db, ["SELECT f17(\"b1\", 1) FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f17\"(\"b1\", 1) FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f17(b1, true)).first![f17(b1, true)])
         }
-        ExpectExecutions(db, ["SELECT f18(\"b2\", 1) FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f18\"(\"b2\", 1) FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f18(b2, true)).first![f18(b2, true)])
         }
-        ExpectExecutions(db, ["SELECT f19(\"b1\", NULL) FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f19\"(\"b1\", NULL) FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssertFalse(table.select(f19(b1, nil)).first![f19(b1, nil)])
         }
-        ExpectExecutions(db, ["SELECT f20(\"b2\", NULL) FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f20\"(\"b2\", NULL) FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssertFalse(table.select(f20(b2, nil)).first![f20(b2, nil)])
         }
 
@@ -183,16 +176,16 @@ class FunctionsTests: XCTestCase {
         let f23: (Expression<Bool>, Bool?) -> Expression<Bool?> = db.create(function: "f23") { $0 && $1 != nil }
         let f24: (Expression<Bool?>, Bool?) -> Expression<Bool?> = db.create(function: "f24") { $0 ?? $1 != nil }
 
-        ExpectExecutions(db, ["SELECT f21(\"b1\", 1) FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f21\"(\"b1\", 1) FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f21(b1, true)).first![f21(b1, true)]!)
         }
-        ExpectExecutions(db, ["SELECT f22(\"b2\", 1) FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f22\"(\"b2\", 1) FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssert(table.select(f22(b2, true)).first![f22(b2, true)]!)
         }
-        ExpectExecutions(db, ["SELECT f23(\"b1\", NULL) FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f23\"(\"b1\", NULL) FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssertFalse(table.select(f23(b1, nil)).first![f23(b1, nil)]!)
         }
-        ExpectExecutions(db, ["SELECT f24(\"b2\", NULL) FROM \"table\" LIMIT 1": 1]) { db in
+        ExpectExecutions(db, ["SELECT \"f24\"(\"b2\", NULL) FROM \"table\" LIMIT 1": 1]) { db in
             XCTAssertFalse(table.select(f24(b2, nil)).first![f24(b2, nil)]!)
         }
     }

@@ -168,7 +168,7 @@ public extension Database {
 
     private func create<Z: Value>(function: String, _ deterministic: Bool, _ block: [Binding?] -> Z?) -> ([Expressible] -> Expression<Z?>) {
         create(function: function, deterministic: deterministic) { block($0)?.datatypeValue }
-        return { arguments in wrap(function, Expression<Z>.join(", ", arguments)) }
+        return { arguments in wrap(quote(identifier: function), Expression<Z>.join(", ", arguments)) }
     }
 
 }
