@@ -317,7 +317,7 @@ The `column` function is used for a single column definition. It takes an [expre
 
     ``` swift
     t.column(email, collate: .NoCase)
-    // "email" TEXT NOT NULL COLLATE NOCASE
+    // "email" TEXT NOT NULL COLLATE "NOCASE"
     ```
 
   - `references` adds a `REFERENCES` clause to `Expression<Int>` (and `Expression<Int?>`) column definitions and accepts a table (`Query`) or namespaced column expression. (See the `foreignKey` function under [Table Constraints](#table-constraints) for non-integer foreign key support.)
@@ -944,14 +944,12 @@ The `alter` function shares several of the same [`column` function parameters](#
 
     > _Note:_ Unlike the [`CREATE TABLE` constraint](#table-constraints), default values may not be expression structures (including `CURRENT_TIME`, `CURRENT_DATE`, or `CURRENT_TIMESTAMP`).
 
-<!-- FIXME
   - `collate` adds a `COLLATE` clause to `Expression<String>` (and `Expression<String?>`) column definitions with [a collating sequence](https://www.sqlite.org/datatype3.html#collation) defined in the `Collation` enumeration.
 
     ``` swift
     t.column(email, collate: .NoCase)
-    // email TEXT NOT NULL COLLATE NOCASE
+    // email TEXT NOT NULL COLLATE "NOCASE"
     ```
--->
 
   - `references` adds a `REFERENCES` clause to `Int` (and `Int?`) column definitions and accepts a table or namespaced column expression. (See the `foreignKey` function under [Table Constraints](#table-constraints) for non-integer foreign key support.)
 
@@ -1292,7 +1290,7 @@ let attachments = db["attachments"]
 let UTI = Expression<String>("UTI")
 
 attachments.filter(typeConformsTo(UTI, kUTTypeImage))
-// SELECT * FROM "attachments" WHERE typeConformsTo("UTI", 'public.image')
+// SELECT * FROM "attachments" WHERE "typeConformsTo"("UTI", 'public.image')
 ```
 
 > _Note:_ The return type of a function must be [a core SQL type](#building-type-safe-sql) or [conform to `Value`](#custom-types).
