@@ -85,7 +85,7 @@ public extension Database {
         collate: Collation
     ) -> Statement {
         return alter(table, define(Expression<String>(column), nil, false, false, check, Expression(value: defaultValue), [
-            Expression<()>(literal: "COLLATE \(collate)")
+            Expression<()>(literal: "COLLATE"), Expression<()>(collate.description)
         ]))
     }
 
@@ -98,7 +98,7 @@ public extension Database {
     ) -> Statement {
         let value = defaultValue.map { Expression<String>(value: $0) }
         return alter(table, define(Expression<String>(column), nil, true, false, check, value, [
-            Expression<()>(literal: "COLLATE \(collate)")
+            Expression<()>(literal: "COLLATE"), Expression<()>(collate.description)
         ]))
     }
 

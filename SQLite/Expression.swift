@@ -265,10 +265,10 @@ extension Collation: Printable {
 }
 
 public func collate(collation: Collation, expression: Expression<String>) -> Expression<String> {
-    return infix("COLLATE", expression, Expression<String>(literal: collation.description))
+    return infix("COLLATE", expression, Expression<String>(collation.description))
 }
 public func collate(collation: Collation, expression: Expression<String?>) -> Expression<String?> {
-    return infix("COLLATE", expression, Expression<String>(literal: collation.description))
+    return infix("COLLATE", expression, Expression<String>(collation.description))
 }
 
 public func cast<T: Value, U: Value>(expression: Expression<T>) -> Expression<U> {

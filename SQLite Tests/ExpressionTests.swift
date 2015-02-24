@@ -295,16 +295,16 @@ class ExpressionTests: XCTestCase {
     }
 
     func test_collateOperator_withStringExpression_buildsCollationExpression() {
-        ExpectExecutionMatches("('A' COLLATE BINARY)", collate(.Binary, stringA))
-        ExpectExecutionMatches("('B' COLLATE NOCASE)", collate(.NoCase, stringB))
-        ExpectExecutionMatches("('A' COLLATE RTRIM)", collate(.RTrim, stringA))
+        ExpectExecutionMatches("('A' COLLATE \"BINARY\")", collate(.Binary, stringA))
+        ExpectExecutionMatches("('B' COLLATE \"NOCASE\")", collate(.NoCase, stringB))
+        ExpectExecutionMatches("('A' COLLATE \"RTRIM\")", collate(.RTrim, stringA))
 
         let NoDiacritic = "NODIACRITIC"
         db.create(collation: NoDiacritic) { lhs, rhs in
             return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)
         }
-        ExpectExecutionMatches("('A' COLLATE NODIACRITIC)", collate(.Custom(NoDiacritic), stringA))
-    }
+        ExpectExecutionMatches("('A' COLLATE \"NODIACRITIC\")", collate(.Custom(NoDiacritic), stringA))
+}
 
     func test_cast_buildsCastingExpressions() {
         let string1 = Expression<String>(value: "10")

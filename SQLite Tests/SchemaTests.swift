@@ -308,11 +308,11 @@ class SchemaTests: XCTestCase {
         let columnA = Expression<String>("column_a")
         let columnB = Expression<String?>("column_b")
 
-        ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN \"column_a\" TEXT NOT NULL DEFAULT '' COLLATE NOCASE",
+        ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN \"column_a\" TEXT NOT NULL DEFAULT '' COLLATE \"NOCASE\"",
             db.alter(table: users, add: columnA, defaultValue: "", collate: .NoCase)
         )
 
-        ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN \"column_b\" TEXT COLLATE NOCASE",
+        ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN \"column_b\" TEXT COLLATE \"NOCASE\"",
             db.alter(table: users, add: columnB, collate: .NoCase)
         )
     }

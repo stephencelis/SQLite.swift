@@ -206,4 +206,11 @@ class DatabaseTests: XCTestCase {
         XCTAssertEqual(1, db.scalar("SELECT ? = ? COLLATE NODIACRITIC", "cafe", "café") as Int)
     }
 
+    func test_createCollation_createsQuotableCollation() {
+        db.create(collation: "NO DIACRITIC") { lhs, rhs in
+            return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)
+        }
+        XCTAssertEqual(1, db.scalar("SELECT ? = ? COLLATE \"NO DIACRITIC\"", "cafe", "café") as Int)
+    }
+
 }
