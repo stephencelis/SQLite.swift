@@ -691,13 +691,12 @@ public func * (Expression<Binding>?, Expression<Binding>?) -> Expression<()> {
     return Expression<()>(literal: "*")
 }
 
-public func contains<V: Value>(values: [V], column: Expression<V>) -> Expression<Bool> {
-    let templates = join(", ", [String](count: values.count, repeatedValue: "?"))
-    return infix("IN", column, Expression<V>(literal: "(\(templates))", values.map { $0.datatypeValue }))
+public func contains<V: Value, C: CollectionType where C.Generator.Element == V, C.Index.Distance == Int>(values: C, column: Expression<V>) -> Expression<Bool> {
+    let templates = join(", ", [String](count: countElements(values), repeatedValue: "?"))
+    return infix("IN", column, Expression<V>(literal: "(\(templates))", map(values) { $0.datatypeValue }))
 }
-public func contains<V: Value>(values: [V?], column: Expression<V?>) -> Expression<Bool> {
-    let templates = join(", ", [String](count: values.count, repeatedValue: "?"))
-    return infix("IN", column, Expression<V>(literal: "(\(templates))", values.map { $0?.datatypeValue }))
+public func contains<V: Value, C: CollectionType where C.Generator.Element == V, C.Index.Distance == Int>(values: C, column: Expression<V?>) -> Expression<Bool> {
+    return contains(values, Expression<V>(column))
 }
 
 // MARK: - Modifying
