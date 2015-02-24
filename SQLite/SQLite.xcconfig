@@ -1,3 +1,7 @@
+SWIFT_WHOLE_MODULE_OPTIMIZATION      = YES
+
+// Universal Framework
+
 SUPPORTED_PLATFORMS                  = iphoneos iphonesimulator macosx
 
 VALID_ARCHS[sdk=iphone*]             = arm64 armv7 armv7s

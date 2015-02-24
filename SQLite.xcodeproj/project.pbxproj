@@ -679,6 +679,7 @@
 				);
 				INFOPLIST_FILE = "SQLite Tests/Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = NO;
 			};
 			name = Debug;
 		};
@@ -688,6 +689,7 @@
 			buildSettings = {
 				INFOPLIST_FILE = "SQLite Tests/Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = NO;
 			};
 			name = Release;
 		};
@@ -744,6 +746,7 @@
 				);
 				INFOPLIST_FILE = "SQLite Tests/Info.plist";
 				PRODUCT_NAME = "SQLiteCipher Tests";
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = NO;
 			};
 			name = Debug;
 		};
@@ -753,6 +756,7 @@
 			buildSettings = {
 				INFOPLIST_FILE = "SQLite Tests/Info.plist";
 				PRODUCT_NAME = "SQLiteCipher Tests";
+				SWIFT_WHOLE_MODULE_OPTIMIZATION = NO;
 			};
 			name = Release;
 		};
