@@ -196,7 +196,10 @@
 				DCC6B3951A91936500734B78 /* Vendor */,
 				DC3773F419C8CBB3004FCF85 /* Products */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
+			usesTabs = 0;
 		};
 		DC3773F419C8CBB3004FCF85 /* Products */ = {
 			isa = PBXGroup;
