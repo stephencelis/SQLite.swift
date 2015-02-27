@@ -131,7 +131,7 @@ On iOS, you can create a writable database in your app’s **Documents** directo
 ``` swift
 let path = NSSearchPathForDirectoriesInDomains(
     .DocumentDirectory, .UserDomainMask, true
-).first as String
+).first as! String
 
 let db = Database("\(path)/db.sqlite3")
 ```
@@ -141,7 +141,7 @@ On OS X, you can use your app’s **Application Support** directory:
 ``` swift
 var path = NSSearchPathForDirectoriesInDomains(
     .ApplicationSupportDirectory, .UserDomainMask, true
-).first as String + NSBundle.mainBundle().bundleIdentifier!
+).first as! String + NSBundle.mainBundle().bundleIdentifier!
 
 // create parent directory iff it doesn't exist
 NSFileManager.defaultManager().createDirectoryAtPath(
