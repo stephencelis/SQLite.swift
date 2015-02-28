@@ -52,6 +52,7 @@
   - [Core SQLite Functions](#core-sqlite-functions)
   - [Aggregate SQLite Functions](#aggregate-sqlite-functions)
   - [Custom SQL Functions](#custom-sql-functions)
+  - [Custom Collations](#custom-collations)
   - [Executing Arbitrary SQL](#executing-arbitrary-sql)
   - [Logging](#logging)
 
@@ -1313,6 +1314,24 @@ Creating a loosely-typed function cannot return a closure and instead must be wr
 ``` swift
 let stmt = db.prepare("SELECT * FROM attachments WHERE typeConformsTo(UTI, ?)")
 for row in stmt.bind(kUTTypeImage) { /* ... */ }
+```
+
+
+## Custom Collations
+
+We can create custom collating sequences by calling `create(collation:)` on a database connection.
+
+``` swift
+db.create(collation: "NODIACRITIC") { lhs, rhs in
+    return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)
+}
+```
+
+We can reference a custom collation using the `Custom` member of the `Collation` enumeration.
+
+```
+restaurants.order(collate(.Custom("NODIACRITIC"), name))
+// SELECT * FROM "restaurants" ORDER BY "name" COLLATE "NODIACRITIC"
 ```
 
 
