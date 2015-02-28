@@ -22,37 +22,56 @@
 // THE SOFTWARE.
 //
 
+/// A typed SQL expression that wraps a raw string and bindings.
 public struct Expression<T> {
 
     public let SQL: String
+
     public let bindings: [Binding?]
 
+    /// Builds a SQL expression with a literal string and an optional list of
+    /// bindings.
+    ///
+    /// :param: SQL      A SQL string.
+    ///
+    /// :param: bindings Values to be bound to the given SQL.
     public init(literal SQL: String = "", _ bindings: [Binding?] = []) {
         (self.SQL, self.bindings) = (SQL, bindings)
     }
 
+    /// Builds a SQL expression with a quoted identifier.
+    ///
+    /// :param: identifier A SQL identifier (*e.g.*, a column name).
     public init(_ identifier: String) {
         self.init(literal: quote(identifier: identifier))
     }
 
-    public init<V>(_ expression: Expression<V>) {
-        self.init(literal: expression.SQL, expression.bindings)
-    }
-
+    /// Builds a SQL expression with the given value.
+    ///
+    /// :param: value An encodable SQL value.
     public init<V: Value>(value: V?) {
         self.init(binding: value?.datatypeValue)
     }
 
+    /// Builds a SQL expression with the given value.
+    ///
+    /// :param: binding A raw SQL value.
     private init(binding: Binding?) {
         self.init(literal: "?", [binding])
     }
 
+    /// Returns an ascending sort version of the expression.
     public var asc: Expression<()> {
         return Expression.join(" ", [self, Expression(literal: "ASC")])
     }
 
+    /// Returns an descending sort version of the expression.
     public var desc: Expression<()> {
         return Expression.join(" ", [self, Expression(literal: "DESC")])
+    }
+
+    internal init<V>(_ expression: Expression<V>) {
+        self.init(literal: expression.SQL, expression.bindings)
     }
 
     internal static func join(separator: String, _ expressions: [Expressible]) -> Expression<()> {
