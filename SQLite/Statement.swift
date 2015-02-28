@@ -32,6 +32,8 @@ public final class Statement {
 
     private let database: Database
 
+    public lazy var cursor: Cursor = { Cursor(self) }()
+
     internal init(_ database: Database, _ SQL: String) {
         self.database = database
         database.try(sqlite3_prepare_v2(database.handle, SQL, -1, &handle, nil))
@@ -39,9 +41,12 @@ public final class Statement {
 
     deinit { sqlite3_finalize(handle) }
 
+    public lazy var columnCount: Int = { [unowned self] in
+        return Int(sqlite3_column_count(self.handle))
+    }()
+
     public lazy var columnNames: [String] = { [unowned self] in
-        let count = sqlite3_column_count(self.handle)
-        return (0..<count).map { String.fromCString(sqlite3_column_name(self.handle, $0))! }
+        return (0..<Int32(self.columnCount)).map { String.fromCString(sqlite3_column_name(self.handle, $0))! }
     }()
 
     // MARK: - Binding
@@ -106,7 +111,7 @@ public final class Statement {
     public func run(bindings: Binding?...) -> Statement {
         if !bindings.isEmpty { return run(bindings) }
         reset(clearBindings: false)
-        for _ in self {}
+        while cursor.step() {}
         return self
     }
 
@@ -133,9 +138,8 @@ public final class Statement {
     public func scalar(bindings: Binding?...) -> Binding? {
         if !bindings.isEmpty { return scalar(bindings) }
         reset(clearBindings: false)
-        let value: Binding? = next()?[0]
-        for _ in self {}
-        return value
+        cursor.step()
+        return cursor[0]
     }
 
     /// :param: bindings A list of parameters to bind to the statement.
@@ -189,54 +193,17 @@ public final class Statement {
 // MARK: - SequenceType
 extension Statement: SequenceType {
 
-    public typealias Generator = Statement
-
-    public func generate() -> Generator { return self }
+    public func generate() -> Statement { return self }
 
 }
 
 // MARK: - GeneratorType
 extension Statement: GeneratorType {
 
-    /// A single row.
-    public typealias Element = [Binding?]
-
     /// :returns: The next row from the result set (or nil).
-    public func next() -> Element? {
-        if status == SQLITE_DONE { return nil }
-        try(sqlite3_step(handle))
-        return row
+    public func next() -> [Binding?]? {
+        return cursor.step() ? Array(cursor) : nil
     }
-
-    /// :returns: The current row of an open statement.
-    public var row: Element? {
-        if status != SQLITE_ROW { return nil }
-        return (0..<columnNames.count).map { idx in
-            switch sqlite3_column_type(self.handle, Int32(idx)) {
-            case SQLITE_BLOB:
-                let bytes = sqlite3_column_blob(self.handle, Int32(idx))
-                let length = sqlite3_column_bytes(self.handle, Int32(idx))
-                return Blob(bytes: bytes, length: Int(length))
-            case SQLITE_FLOAT:
-                return Double(sqlite3_column_double(self.handle, Int32(idx)))
-            case SQLITE_INTEGER:
-                return Int(sqlite3_column_int64(self.handle, Int32(idx)))
-            case SQLITE_NULL:
-                return nil
-            case SQLITE_TEXT:
-                return String.fromCString(UnsafePointer(sqlite3_column_text(self.handle, Int32(idx))))!
-            case let type:
-                assertionFailure("unsupported column type: \(type)")
-            }
-        }
-    }
-
-}
-
-// MARK: - BooleanType
-extension Statement: BooleanType {
-
-    public var boolValue: Bool { return status == SQLITE_DONE }
 
 }
 
@@ -257,4 +224,67 @@ public func && (lhs: Statement, rhs: @autoclosure () -> Statement) -> Statement 
 public func || (lhs: Statement, rhs: @autoclosure () -> Statement) -> Statement {
     if lhs.status == SQLITE_OK { lhs.run() }
     return lhs.failed ? rhs() : lhs
+}
+
+/// Cursors provide direct access to a statement's current row.
+public struct Cursor {
+
+    private unowned let statement: Statement
+
+    private init(_ statement: Statement) {
+        self.statement = statement
+    }
+
+    public func step() -> Bool {
+        statement.try(sqlite3_step(statement.handle))
+        return statement.status == SQLITE_ROW
+    }
+
+    public subscript(idx: Int) -> Blob {
+        let bytes = sqlite3_column_blob(statement.handle, Int32(idx))
+        let length = sqlite3_column_bytes(statement.handle, Int32(idx))
+        return Blob(bytes: bytes, length: Int(length))
+    }
+
+    public subscript(idx: Int) -> Double {
+        return Double(sqlite3_column_double(statement.handle, Int32(idx)))
+    }
+
+    public subscript(idx: Int) -> Int {
+        return Int(sqlite3_column_int64(statement.handle, Int32(idx)))
+    }
+
+    public subscript(idx: Int) -> String {
+        return String.fromCString(UnsafePointer(sqlite3_column_text(statement.handle, Int32(idx))))!
+    }
+
+}
+
+// MARK: - SequenceType
+extension Cursor: SequenceType {
+
+    public subscript(idx: Int) -> Binding? {
+        switch sqlite3_column_type(statement.handle, Int32(idx)) {
+        case SQLITE_BLOB:
+            return self[idx] as Blob
+        case SQLITE_FLOAT:
+            return self[idx] as Double
+        case SQLITE_INTEGER:
+            return self[idx] as Int
+        case SQLITE_NULL:
+            return nil
+        case SQLITE_TEXT:
+            return self[idx] as String
+        case let type:
+            assertionFailure("unsupported column type: \(type)")
+        }
+    }
+
+    public func generate() -> GeneratorOf<Binding?> {
+        var idx = 0
+        return GeneratorOf<Binding?> {
+            idx >= self.statement.columnCount ? Optional<Binding?>.None : self[idx++]
+        }
+    }
+
 }

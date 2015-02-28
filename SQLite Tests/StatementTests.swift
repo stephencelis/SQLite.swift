@@ -163,15 +163,13 @@ class StatementTests: XCTestCase {
         XCTAssertEqual(3, count)
     }
 
-    func test_row_returnsArrayOfValues() {
+    func test_cursor_returnsValues() {
         InsertUser(db, "alice")
         let stmt = db.prepare("SELECT id, email FROM users")
-        stmt.next()
+        stmt.cursor.step()
 
-        let row = stmt.row!
-
-        XCTAssertEqual(1, row[0] as Int)
-        XCTAssertEqual("alice@example.com", row[1] as String)
+        XCTAssertEqual(1, stmt.cursor[0] as Int)
+        XCTAssertEqual("alice@example.com", stmt.cursor[1] as String)
     }
 
 }
