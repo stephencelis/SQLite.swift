@@ -30,7 +30,7 @@ public final class Statement {
 
     private let handle: COpaquePointer = nil
 
-    private var database: Database
+    private let database: Database
 
     internal init(_ database: Database, _ SQL: String) {
         self.database = database
