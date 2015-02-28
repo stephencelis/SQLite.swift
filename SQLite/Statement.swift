@@ -207,11 +207,11 @@ extension Statement: GeneratorType {
 
 }
 
-// MARK: - DebugPrintable
-extension Statement: DebugPrintable {
+// MARK: - Printable
+extension Statement: Printable {
 
-    public var debugDescription: String {
-        return "Statement(\"\(String.fromCString(sqlite3_sql(handle))!)\")"
+    public var description: String {
+        return String.fromCString(sqlite3_sql(handle))!
     }
 
 }

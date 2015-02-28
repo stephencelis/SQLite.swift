@@ -468,10 +468,11 @@ public final class Database {
 
 }
 
-extension Database: DebugPrintable {
+// MARK: - Printable
+extension Database: Printable {
 
-    public var debugDescription: String {
-        return "Database(\(String.fromCString(sqlite3_db_filename(handle, nil))!))"
+    public var description: String {
+        return String.fromCString(sqlite3_db_filename(handle, nil))!
     }
 
 }
