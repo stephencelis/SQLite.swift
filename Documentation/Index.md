@@ -645,7 +645,7 @@ users.filter(verified || balance >= 10_000)
 // SELECT * FROM "users" WHERE ("verified" OR ("balance" >= 10000.0))
 ```
 
-You can build your own boolean expressions by using one of the many [filter operators and functions](#filter-operators-and-functions).
+We can build our own boolean expressions by using one of the many [filter operators and functions](#filter-operators-and-functions).
 
 > _Note:_ SQLite.swift defines `filter` instead of `where` because `where` is [a reserved keyword](https://developer.apple.com/library/ios/documentation/swift/conceptual/Swift_Programming_Language/LexicalStructure.html#//apple_ref/doc/uid/TP40014097-CH30-XID_906).
 
@@ -1296,7 +1296,7 @@ attachments.filter(typeConformsTo(UTI, kUTTypeImage))
 
 > _Note:_ The return type of a function must be [a core SQL type](#building-type-safe-sql) or [conform to `Value`](#custom-types).
 
-You can create loosely-typed functions by handling an array of raw arguments, instead.
+We can create loosely-typed functions by handling an array of raw arguments, instead.
 
 ``` swift
 db.create(function: "typeConformsTo", deterministic: true) { args in
