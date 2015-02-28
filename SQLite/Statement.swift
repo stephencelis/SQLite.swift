@@ -41,12 +41,10 @@ public final class Statement {
 
     deinit { sqlite3_finalize(handle) }
 
-    public lazy var columnCount: Int = { [unowned self] in
-        return Int(sqlite3_column_count(self.handle))
-    }()
+    public lazy var columnCount: Int = { Int(sqlite3_column_count(self.handle)) }()
 
-    public lazy var columnNames: [String] = { [unowned self] in
-        return (0..<Int32(self.columnCount)).map { String.fromCString(sqlite3_column_name(self.handle, $0))! }
+    public lazy var columnNames: [String] = {
+        (0..<Int32(self.columnCount)).map { String.fromCString(sqlite3_column_name(self.handle, $0))! }
     }()
 
     // MARK: - Binding
