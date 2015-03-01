@@ -406,7 +406,7 @@ public final class Database {
                     let length = sqlite3_value_bytes(value)
                     return Blob(bytes: bytes, length: Int(length))
                 case SQLITE_FLOAT:
-                    return Double(sqlite3_value_double(value))
+                    return sqlite3_value_double(value)
                 case SQLITE_INTEGER:
                     return Int(sqlite3_value_int64(value))
                 case SQLITE_NULL:

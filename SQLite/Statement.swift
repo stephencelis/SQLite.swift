@@ -66,7 +66,7 @@ public final class Statement {
     public func bind(values: [Binding?]) -> Statement {
         if values.isEmpty { return self }
         reset()
-        assert(values.count == Int(sqlite3_bind_parameter_count(handle)), "\(Int(sqlite3_bind_parameter_count(handle))) values expected, \(values.count) passed")
+        assert(values.count == Int(sqlite3_bind_parameter_count(handle)), "\(sqlite3_bind_parameter_count(handle)) values expected, \(values.count) passed")
         for idx in 1...values.count { bind(values[idx - 1], atIndex: idx) }
         return self
     }
@@ -245,7 +245,7 @@ public struct Cursor {
     }
 
     public subscript(idx: Int) -> Double {
-        return Double(sqlite3_column_double(statement.handle, Int32(idx)))
+        return sqlite3_column_double(statement.handle, Int32(idx))
     }
 
     public subscript(idx: Int) -> Int {
