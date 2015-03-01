@@ -198,6 +198,27 @@ class QueryTests: XCTestCase {
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
+    func test_order_whenChained_overridesOrder() {
+        let query = users.order(email).order(age)
+
+        let SQL = "SELECT * FROM \"users\" ORDER BY \"age\""
+        ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
+    }
+
+    func test_reverse_withoutOrder_ordersByRowIdDescending() {
+        let query = users.reverse()
+
+        let SQL = "SELECT * FROM \"users\" ORDER BY \"ROWID\" DESC"
+        ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
+    }
+
+    func test_reverse_withOrder_reversesOrder() {
+        let query = users.order(age, email.desc).reverse()
+
+        let SQL = "SELECT * FROM \"users\" ORDER BY \"age\" DESC, \"email\" ASC"
+        ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
+    }
+
     func test_limit_compilesLimitClause() {
         let query = users.limit(5)
 

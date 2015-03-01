@@ -239,6 +239,15 @@ public struct Query {
     ///
     /// :returns: A query with the given ORDER BY clause applied.
     public func order(by: Expressible...) -> Query {
+        return order(by)
+    }
+
+    /// Sets an ORDER BY clause on the query.
+    ///
+    /// :param: by An ordered list of columns and directions to sort by.
+    ///
+    /// :returns: A query with the given ORDER BY clause applied.
+    public func order(by: [Expressible]) -> Query {
         var query = self
         query.order = by
         return query
@@ -398,7 +407,7 @@ public struct Query {
 
     private var orderClause: Expressible? {
         if order.count == 0 { return nil }
-        let clause = Expression<()>.join(", ", order)
+        let clause = Expression<()>.join(", ", order.map { $0.expression.ordered })
         return Expression<()>(literal: "ORDER BY \(clause.SQL)", clause.bindings)
     }
 
@@ -412,17 +421,6 @@ public struct Query {
         }
         return nil
     }
-
-    // MARK: - Array
-
-    /// The first result (or nil if the query has no results).
-    public var first: Row? {
-        var generator = limit(1).generate()
-        return generator.next()
-    }
-
-    /// Returns true if the query has no results.
-    public var isEmpty: Bool { return first == nil }
 
     // MARK: - Modifying
 
@@ -585,9 +583,6 @@ public struct Query {
 
     // MARK: - Aggregate Functions
 
-    /// Runs count(*) against the query and returns it.
-    public var count: Int { return calculate(SQLite_count(*))! }
-
     /// Runs count() against the query.
     ///
     /// :param: column The column used for the calculation.
@@ -713,6 +708,30 @@ public struct Query {
 
     private func calculate<T, U>(expression: Expression<T>) -> U? {
         return select(expression).selectStatement.scalar() as? U
+    }
+
+    // MARK: - Array
+
+    /// Runs count(*) against the query and returns it.
+    public var count: Int { return calculate(SQLite_count(*))! }
+
+    /// Returns true if the query has no rows.
+    public var isEmpty: Bool { return first == nil }
+
+    /// The first row (or nil if the query returns no rows).
+    public var first: Row? {
+        var generator = limit(1).generate()
+        return generator.next()
+    }
+
+    /// The last row (or nil if the query returns no rows).
+    public var last: Row? {
+        return reverse().first
+    }
+
+    /// A query in reverse order.
+    public func reverse() -> Query {
+        return order(order.isEmpty ? [rowid.desc] : order.map { $0.expression.reverse() })
     }
 
 }

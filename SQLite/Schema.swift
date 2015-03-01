@@ -117,7 +117,7 @@ public extension Database {
         on columns: Expressible...
     ) -> Statement {
         let create = createSQL("INDEX", false, unique, ifNotExists, indexName(table, on: columns))
-        let joined = Expression<()>.join(", ", columns)
+        let joined = Expression<()>.join(", ", columns.map { $0.expression.ordered })
         return run("\(create) ON \(quote(identifier: table.tableName)) (\(joined.compile()))")
     }
 

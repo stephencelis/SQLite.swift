@@ -29,6 +29,8 @@ public struct Expression<T> {
 
     public let bindings: [Binding?]
 
+    internal var ascending: Bool?
+
     /// Builds a SQL expression with a literal string and an optional list of
     /// bindings.
     ///
@@ -61,17 +63,17 @@ public struct Expression<T> {
     }
 
     /// Returns an ascending sort version of the expression.
-    public var asc: Expression<()> {
-        return Expression.join(" ", [self, Expression(literal: "ASC")])
+    public var asc: Expression {
+        var expression = self
+        expression.ascending = true
+        return expression
     }
 
     /// Returns an descending sort version of the expression.
-    public var desc: Expression<()> {
-        return Expression.join(" ", [self, Expression(literal: "DESC")])
-    }
-
-    internal init<V>(_ expression: Expression<V>) {
-        self.init(literal: expression.SQL, expression.bindings)
+    public var desc: Expression {
+        var expression = self
+        expression.ascending = false
+        return expression
     }
 
     internal static func join(separator: String, _ expressions: [Expressible]) -> Expression<()> {
@@ -82,6 +84,24 @@ public struct Expression<T> {
             bindings.extend(expression.bindings)
         }
         return Expression<()>(literal: Swift.join(separator, SQL), bindings)
+    }
+
+    internal init<V>(_ expression: Expression<V>) {
+        self.init(literal: expression.SQL, expression.bindings)
+        ascending = expression.ascending
+    }
+
+    internal var ordered: Expression<()> {
+        if let ascending = ascending {
+            return Expression.join(" ", [self, Expression(literal: ascending ? "ASC" : "DESC")])
+        }
+        return Expression<()>(self)
+    }
+
+    internal func reverse() -> Expression {
+        var expression = self
+        expression.ascending = expression.ascending.map(!) ?? false
+        return expression
     }
 
     // naïve compiler for statements that can't be bound, e.g., CREATE TABLE
@@ -881,6 +901,8 @@ public postfix func -- (column: Expression<Int?>) -> Setter {
 }
 
 // MARK: - Internal
+
+internal let rowid = Expression<Int>("ROWID")
 
 internal func transcode(literal: Binding?) -> String {
     if let literal = literal {

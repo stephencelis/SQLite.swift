@@ -350,7 +350,7 @@ class SchemaTests: XCTestCase {
     func test_index_withMultipleColumns_executesCompoundIndexStatement() {
         CreateUsersTable(db)
         ExpectExecution(db,
-            "CREATE INDEX \"index_users_on_age_DESC_email\" ON \"users\" (\"age\" DESC, \"email\")",
+            "CREATE INDEX \"index_users_on_age_email\" ON \"users\" (\"age\" DESC, \"email\")",
             db.create(index: users, on: age.desc, email)
         )
     }
