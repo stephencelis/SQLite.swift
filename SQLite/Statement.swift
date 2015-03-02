@@ -88,16 +88,22 @@ public final class Statement {
     }
 
     private func bind(value: Binding?, atIndex idx: Int) {
-        if let value = value as? Blob {
-            try(sqlite3_bind_blob(handle, Int32(idx), value.bytes, Int32(value.length), SQLITE_TRANSIENT))
+        if value == nil {
+            try(sqlite3_bind_null(self.handle, Int32(idx)))
+        } else if let value = value as? Blob {
+            try(sqlite3_bind_blob(self.handle, Int32(idx), value.bytes, Int32(value.length), SQLITE_TRANSIENT))
         } else if let value = value as? Double {
-            try(sqlite3_bind_double(handle, Int32(idx), value))
-        } else if let value = value as? Int {
-            try(sqlite3_bind_int64(handle, Int32(idx), Int64(value)))
+            try(sqlite3_bind_double(self.handle, Int32(idx), value))
+        } else if let value = value as? Int64 {
+            try(sqlite3_bind_int64(self.handle, Int32(idx), value))
         } else if let value = value as? String {
             try(sqlite3_bind_text(handle, Int32(idx), value, -1, SQLITE_TRANSIENT))
-        } else {
-            try(sqlite3_bind_null(handle, Int32(idx)))
+        } else if let value = value as? Bool {
+            bind(value.datatypeValue, atIndex: idx)
+        } else if let value = value as? Int {
+            bind(value.datatypeValue, atIndex: idx)
+        } else if let value = value {
+            assertionFailure("tried to bind unexpected value \(value)")
         }
     }
 
@@ -248,12 +254,20 @@ public struct Cursor {
         return sqlite3_column_double(statement.handle, Int32(idx))
     }
 
-    public subscript(idx: Int) -> Int {
-        return Int(sqlite3_column_int64(statement.handle, Int32(idx)))
+    public subscript(idx: Int) -> Int64 {
+        return sqlite3_column_int64(statement.handle, Int32(idx))
     }
 
     public subscript(idx: Int) -> String {
-        return String.fromCString(UnsafePointer(sqlite3_column_text(statement.handle, Int32(idx))))!
+        return String.fromCString(UnsafePointer(sqlite3_column_text(statement.handle, Int32(idx)))) ?? ""
+    }
+
+    public subscript(idx: Int) -> Bool {
+        return Bool.fromDatatypeValue(self[idx])
+    }
+
+    public subscript(idx: Int) -> Int {
+        return Int.fromDatatypeValue(self[idx])
     }
 
 }
@@ -268,7 +282,7 @@ extension Cursor: SequenceType {
         case SQLITE_FLOAT:
             return self[idx] as Double
         case SQLITE_INTEGER:
-            return self[idx] as Int
+            return self[idx] as Int64
         case SQLITE_NULL:
             return nil
         case SQLITE_TEXT:

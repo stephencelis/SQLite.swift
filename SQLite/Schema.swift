@@ -77,27 +77,27 @@ public extension Database {
         ]))
     }
 
-    public func alter(
+    public func alter<V: Value where V.Datatype == String>(
         #table: Query,
-        add column: Expression<String>,
+        add column: Expression<V>,
         check: Expression<Bool>? = nil,
-        defaultValue: String,
+        defaultValue: V,
         collate: Collation
     ) -> Statement {
-        return alter(table, define(Expression<String>(column), nil, false, false, check, Expression(value: defaultValue), [
+        return alter(table, define(Expression<V>(column), nil, false, false, check, Expression(value: defaultValue), [
             Expression<()>(literal: "COLLATE"), Expression<()>(collate.description)
         ]))
     }
 
-    public func alter(
+    public func alter<V: Value where V.Datatype == String>(
         #table: Query,
-        add column: Expression<String?>,
+        add column: Expression<V?>,
         check: Expression<Bool>? = nil,
-        defaultValue: String? = nil,
+        defaultValue: V? = nil,
         collate: Collation
     ) -> Statement {
-        let value = defaultValue.map { Expression<String>(value: $0) }
-        return alter(table, define(Expression<String>(column), nil, true, false, check, value, [
+        let value = defaultValue.map { Expression<V>(value: $0) }
+        return alter(table, define(Expression<V>(column), nil, true, false, check, value, [
             Expression<()>(literal: "COLLATE"), Expression<()>(collate.description)
         ]))
     }
@@ -197,9 +197,9 @@ public final class SchemaBuilder {
 
     // MARK: PRIMARY KEY
 
-    public func column(
-        name: Expression<Int>,
-        primaryKey: Bool = false,
+    public func column<V: Value where V.Datatype == Int64>(
+        name: Expression<V>,
+        primaryKey: Bool,
         unique: Bool = false,
         check: Expression<Bool>? = nil
     ) {
@@ -214,8 +214,8 @@ public final class SchemaBuilder {
 
     }
 
-    public func column(
-        name: Expression<Int>,
+    public func column<V: Value where V.Datatype == Int64>(
+        name: Expression<V>,
         primaryKey: PrimaryKey?,
         unique: Bool = false,
         check: Expression<Bool>? = nil
@@ -225,19 +225,19 @@ public final class SchemaBuilder {
 
     // MARK: REFERENCES
 
-    public func column(
-        name: Expression<Int>,
+    public func column<V: Value where V.Datatype == Int64>(
+        name: Expression<V>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        references: Expression<Int>
+        references: Expression<V>
     ) {
         assertForeignKeysEnabled()
         let expressions: [Expressible] = [Expression<()>(literal: "REFERENCES"), namespace(references)]
         column(name, nil, false, unique, check, nil, expressions)
     }
 
-    public func column(
-        name: Expression<Int>,
+    public func column<V: Value where V.Datatype == Int64>(
+        name: Expression<V>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
         references: Query
@@ -250,19 +250,19 @@ public final class SchemaBuilder {
         )
     }
 
-    public func column(
-        name: Expression<Int?>,
+    public func column<V: Value where V.Datatype == Int64>(
+        name: Expression<V?>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        references: Expression<Int>
+        references: Expression<V>
     ) {
         assertForeignKeysEnabled()
         let expressions: [Expressible] = [Expression<()>(literal: "REFERENCES"), namespace(references)]
         column(Expression<Int>(name), nil, true, unique, check, nil, expressions)
     }
 
-    public func column(
-        name: Expression<Int?>,
+    public func column<V: Value where V.Datatype == Int64>(
+        name: Expression<V?>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
         references: Query
@@ -277,46 +277,46 @@ public final class SchemaBuilder {
 
     // MARK: TEXT Columns (COLLATE)
 
-    public func column(
-        name: Expression<String>,
+    public func column<V: Value where V.Datatype == String>(
+        name: Expression<V>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: Expression<String>?,
+        defaultValue value: Expression<V>?,
         collate: Collation
     ) {
         let expressions: [Expressible] = [Expression<()>(literal: "COLLATE \(collate)")]
         column(name, nil, false, unique, check, value, expressions)
     }
 
-    public func column(
-        name: Expression<String>,
+    public func column<V: Value where V.Datatype == String>(
+        name: Expression<V>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: String? = nil,
+        defaultValue value: V? = nil,
         collate: Collation
     ) {
         column(name, unique: unique, check: check, defaultValue: value.map { Expression(value: $0) }, collate: collate)
     }
 
-    public func column(
-        name: Expression<String?>,
+    public func column<V: Value where V.Datatype == String>(
+        name: Expression<V?>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue value: Expression<String>?,
+        defaultValue value: Expression<V>?,
         collate: Collation
     ) {
-        column(Expression<String>(name), unique: unique, check: check, defaultValue: value, collate: collate)
+        column(Expression<V>(name), unique: unique, check: check, defaultValue: value, collate: collate)
     }
 
-    public func column(
-        name: Expression<String?>,
+    public func column<V: Value where V.Datatype == String>(
+        name: Expression<V?>,
         unique: Bool = false,
         check: Expression<Bool>? = nil,
-        defaultValue: String? = nil,
+        defaultValue: V? = nil,
         collate: Collation
     ) {
-        let value = defaultValue.map { Expression<String>(value: $0) }
-        column(Expression<String>(name), unique: unique, check: check, defaultValue: value, collate: collate)
+        let value = defaultValue.map { Expression<V>(value: $0) }
+        column(Expression<V>(name), unique: unique, check: check, defaultValue: value, collate: collate)
     }
 
     // MARK: -

@@ -105,40 +105,40 @@ class StatementTests: XCTestCase {
 
     func test_scalar_withNoParameters() {
         let zero = db.prepare("SELECT 0")
-        XCTAssertEqual(0, zero.scalar() as Int)
+        XCTAssertEqual(Int64(0), zero.scalar() as Int64)
     }
 
     func test_scalar_withNoParameters_retainsBindings() {
         let count = db.prepare("SELECT count(*) FROM users WHERE age >= ?", 21)
-        XCTAssertEqual(0, count.scalar() as Int)
+        XCTAssertEqual(Int64(0), count.scalar() as Int64)
 
         InsertUser(db, "alice", age: 21)
-        XCTAssertEqual(1, count.scalar() as Int)
+        XCTAssertEqual(Int64(1), count.scalar() as Int64)
     }
 
     func test_scalar_withVariadicParameters() {
         InsertUser(db, "alice", age: 21)
         let count = db.prepare("SELECT count(*) FROM users WHERE age >= ?")
-        XCTAssertEqual(1, count.scalar(21) as Int)
+        XCTAssertEqual(Int64(1), count.scalar(21) as Int64)
     }
 
     func test_scalar_withArrayOfParameters() {
         InsertUser(db, "alice", age: 21)
         let count = db.prepare("SELECT count(*) FROM users WHERE age >= ?")
-        XCTAssertEqual(1, count.scalar([21]) as Int)
+        XCTAssertEqual(Int64(1), count.scalar([21]) as Int64)
     }
 
     func test_scalar_withNamedParameters() {
         InsertUser(db, "alice", age: 21)
         let count = db.prepare("SELECT count(*) FROM users WHERE age >= $age")
-        XCTAssertEqual(1, count.scalar(["$age": 21]) as Int)
+        XCTAssertEqual(Int64(1), count.scalar(["$age": 21]) as Int64)
     }
 
     func test_scalar_withParameters_updatesBindings() {
         InsertUser(db, "alice", age: 21)
         let count = db.prepare("SELECT count(*) FROM users WHERE age >= ?")
-        XCTAssertEqual(1, count.scalar(21) as Int)
-        XCTAssertEqual(0, count.scalar(22) as Int)
+        XCTAssertEqual(Int64(1), count.scalar(21) as Int64)
+        XCTAssertEqual(Int64(0), count.scalar(22) as Int64)
     }
 
     func test_scalar_doubleReturnValue() {
@@ -146,7 +146,7 @@ class StatementTests: XCTestCase {
     }
 
     func test_scalar_intReturnValue() {
-        XCTAssertEqual(3, db.scalar("SELECT 3") as Int)
+        XCTAssertEqual(Int64(3), db.scalar("SELECT 3") as Int64)
     }
 
     func test_scalar_stringReturnValue() {
@@ -168,7 +168,7 @@ class StatementTests: XCTestCase {
         let stmt = db.prepare("SELECT id, email FROM users")
         stmt.cursor.step()
 
-        XCTAssertEqual(1, stmt.cursor[0] as Int)
+        XCTAssertEqual(Int64(1), stmt.cursor[0] as Int64)
         XCTAssertEqual("alice@example.com", stmt.cursor[1] as String)
     }
 

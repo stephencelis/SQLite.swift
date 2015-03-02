@@ -1,12 +1,12 @@
 import XCTest
 import SQLite
 
-private let id = Expression<Int>("id")
+private let id = Expression<Int64>("id")
 private let email = Expression<String>("email")
 private let age = Expression<Int?>("age")
 private let salary = Expression<Double>("salary")
 private let admin = Expression<Bool>("admin")
-private let manager_id = Expression<Int?>("manager_id")
+private let manager_id = Expression<Int64?>("manager_id")
 
 class SchemaTests: XCTestCase {
 
@@ -233,7 +233,7 @@ class SchemaTests: XCTestCase {
 
     func test_createTable_foreignKey_withCompositeKey_buildsForeignKeyTableConstraint() {
         let users = self.users
-        let manager_id = Expression<Int>("manager_id") // required
+        let manager_id = Expression<Int64>("manager_id") // required
         ExpectExecution(db,
             "CREATE TABLE \"users\" (" +
                 "\"id\" INTEGER PRIMARY KEY NOT NULL, " +
@@ -296,7 +296,7 @@ class SchemaTests: XCTestCase {
 
     func test_alterTable_withForeignKey_addsRegularColumn() {
         CreateUsersTable(db)
-        let column = Expression<Int?>("parent_id")
+        let column = Expression<Int64?>("parent_id")
 
         ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN \"parent_id\" INTEGER REFERENCES \"users\"(\"id\")",
             db.alter(table: users, add: column, references: users[id])

@@ -149,6 +149,14 @@ extension Double: Expressible {
 extension Int: Expressible {
 
     public var expression: Expression<()> {
+        return Expression(value: self)
+    }
+
+}
+
+extension Int64: Expressible {
+
+    public var expression: Expression<()> {
         return Expression(binding: self)
     }
 
@@ -181,98 +189,98 @@ public func + (lhs: Expression<String?>, rhs: String) -> Expression<String?> { r
 public func + (lhs: String, rhs: Expression<String>) -> Expression<String> { return Expression(binding: lhs) + rhs }
 public func + (lhs: String, rhs: Expression<String?>) -> Expression<String?> { return Expression(binding: lhs) + rhs }
 
-public func + <V: Number>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return infix(__FUNCTION__, lhs, rhs) }
-public func + <V: Number>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
-public func + <V: Number>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
-public func + <V: Number>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
-public func + <V: Number>(lhs: Expression<V>, rhs: V) -> Expression<V> { return lhs + Expression(binding: rhs) }
-public func + <V: Number>(lhs: Expression<V?>, rhs: V) -> Expression<V?> { return lhs + Expression(binding: rhs) }
-public func + <V: Number>(lhs: V, rhs: Expression<V>) -> Expression<V> { return Expression(binding: lhs) + rhs }
-public func + <V: Number>(lhs: V, rhs: Expression<V?>) -> Expression<V?> { return Expression(binding: lhs) + rhs }
+public func + <V: Value where V.Datatype: Number>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return infix(__FUNCTION__, lhs, rhs) }
+public func + <V: Value where V.Datatype: Number>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func + <V: Value where V.Datatype: Number>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func + <V: Value where V.Datatype: Number>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func + <V: Value where V.Datatype: Number>(lhs: Expression<V>, rhs: V) -> Expression<V> { return lhs + Expression(value: rhs) }
+public func + <V: Value where V.Datatype: Number>(lhs: Expression<V?>, rhs: V) -> Expression<V?> { return lhs + Expression(value: rhs) }
+public func + <V: Value where V.Datatype: Number>(lhs: V, rhs: Expression<V>) -> Expression<V> { return Expression(value: lhs) + rhs }
+public func + <V: Value where V.Datatype: Number>(lhs: V, rhs: Expression<V?>) -> Expression<V?> { return Expression(value: lhs) + rhs }
 
-public func - <V: Number>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return infix(__FUNCTION__, lhs, rhs) }
-public func - <V: Number>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
-public func - <V: Number>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
-public func - <V: Number>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
-public func - <V: Number>(lhs: Expression<V>, rhs: V) -> Expression<V> { return lhs - Expression(binding: rhs) }
-public func - <V: Number>(lhs: Expression<V?>, rhs: V) -> Expression<V?> { return lhs - Expression(binding: rhs) }
-public func - <V: Number>(lhs: V, rhs: Expression<V>) -> Expression<V> { return Expression(binding: lhs) - rhs }
-public func - <V: Number>(lhs: V, rhs: Expression<V?>) -> Expression<V?> { return Expression(binding: lhs) - rhs }
+public func - <V: Value where V.Datatype: Number>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return infix(__FUNCTION__, lhs, rhs) }
+public func - <V: Value where V.Datatype: Number>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func - <V: Value where V.Datatype: Number>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func - <V: Value where V.Datatype: Number>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func - <V: Value where V.Datatype: Number>(lhs: Expression<V>, rhs: V) -> Expression<V> { return lhs - Expression(value: rhs) }
+public func - <V: Value where V.Datatype: Number>(lhs: Expression<V?>, rhs: V) -> Expression<V?> { return lhs - Expression(value: rhs) }
+public func - <V: Value where V.Datatype: Number>(lhs: V, rhs: Expression<V>) -> Expression<V> { return Expression(value: lhs) - rhs }
+public func - <V: Value where V.Datatype: Number>(lhs: V, rhs: Expression<V?>) -> Expression<V?> { return Expression(value: lhs) - rhs }
 
-public func * <V: Number>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return infix(__FUNCTION__, lhs, rhs) }
-public func * <V: Number>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
-public func * <V: Number>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
-public func * <V: Number>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
-public func * <V: Number>(lhs: Expression<V>, rhs: V) -> Expression<V> { return lhs * Expression(binding: rhs) }
-public func * <V: Number>(lhs: Expression<V?>, rhs: V) -> Expression<V?> { return lhs * Expression(binding: rhs) }
-public func * <V: Number>(lhs: V, rhs: Expression<V>) -> Expression<V> { return Expression(binding: lhs) * rhs }
-public func * <V: Number>(lhs: V, rhs: Expression<V?>) -> Expression<V?> { return Expression(binding: lhs) * rhs }
+public func * <V: Value where V.Datatype: Number>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return infix(__FUNCTION__, lhs, rhs) }
+public func * <V: Value where V.Datatype: Number>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func * <V: Value where V.Datatype: Number>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func * <V: Value where V.Datatype: Number>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func * <V: Value where V.Datatype: Number>(lhs: Expression<V>, rhs: V) -> Expression<V> { return lhs * Expression(value: rhs) }
+public func * <V: Value where V.Datatype: Number>(lhs: Expression<V?>, rhs: V) -> Expression<V?> { return lhs * Expression(value: rhs) }
+public func * <V: Value where V.Datatype: Number>(lhs: V, rhs: Expression<V>) -> Expression<V> { return Expression(value: lhs) * rhs }
+public func * <V: Value where V.Datatype: Number>(lhs: V, rhs: Expression<V?>) -> Expression<V?> { return Expression(value: lhs) * rhs }
 
-public func / <V: Number>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return infix(__FUNCTION__, lhs, rhs) }
-public func / <V: Number>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
-public func / <V: Number>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
-public func / <V: Number>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
-public func / <V: Number>(lhs: Expression<V>, rhs: V) -> Expression<V> { return lhs / Expression(binding: rhs) }
-public func / <V: Number>(lhs: Expression<V?>, rhs: V) -> Expression<V?> { return lhs / Expression(binding: rhs) }
-public func / <V: Number>(lhs: V, rhs: Expression<V>) -> Expression<V> { return Expression(binding: lhs) / rhs }
-public func / <V: Number>(lhs: V, rhs: Expression<V?>) -> Expression<V?> { return Expression(binding: lhs) / rhs }
+public func / <V: Value where V.Datatype: Number>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return infix(__FUNCTION__, lhs, rhs) }
+public func / <V: Value where V.Datatype: Number>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func / <V: Value where V.Datatype: Number>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func / <V: Value where V.Datatype: Number>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func / <V: Value where V.Datatype: Number>(lhs: Expression<V>, rhs: V) -> Expression<V> { return lhs / Expression(value: rhs) }
+public func / <V: Value where V.Datatype: Number>(lhs: Expression<V?>, rhs: V) -> Expression<V?> { return lhs / Expression(value: rhs) }
+public func / <V: Value where V.Datatype: Number>(lhs: V, rhs: Expression<V>) -> Expression<V> { return Expression(value: lhs) / rhs }
+public func / <V: Value where V.Datatype: Number>(lhs: V, rhs: Expression<V?>) -> Expression<V?> { return Expression(value: lhs) / rhs }
 
-public func % (lhs: Expression<Int>, rhs: Expression<Int>) -> Expression<Int> { return infix(__FUNCTION__, lhs, rhs) }
-public func % (lhs: Expression<Int>, rhs: Expression<Int?>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func % (lhs: Expression<Int?>, rhs: Expression<Int>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func % (lhs: Expression<Int?>, rhs: Expression<Int?>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func % (lhs: Expression<Int>, rhs: Int) -> Expression<Int> { return lhs % Expression(binding: rhs) }
-public func % (lhs: Expression<Int?>, rhs: Int) -> Expression<Int?> { return lhs % Expression(binding: rhs) }
-public func % (lhs: Int, rhs: Expression<Int>) -> Expression<Int> { return Expression(binding: lhs) % rhs }
-public func % (lhs: Int, rhs: Expression<Int?>) -> Expression<Int?> { return Expression(binding: lhs) % rhs }
+public func % <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return infix(__FUNCTION__, lhs, rhs) }
+public func % <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func % <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func % <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func % <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: V) -> Expression<V> { return lhs % Expression(value: rhs) }
+public func % <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: V) -> Expression<V?> { return lhs % Expression(value: rhs) }
+public func % <V: Value where V.Datatype == Int64>(lhs: V, rhs: Expression<V>) -> Expression<V> { return Expression(value: lhs) % rhs }
+public func % <V: Value where V.Datatype == Int64>(lhs: V, rhs: Expression<V?>) -> Expression<V?> { return Expression(value: lhs) % rhs }
 
-public func << (lhs: Expression<Int>, rhs: Expression<Int>) -> Expression<Int> { return infix(__FUNCTION__, lhs, rhs) }
-public func << (lhs: Expression<Int>, rhs: Expression<Int?>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func << (lhs: Expression<Int?>, rhs: Expression<Int>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func << (lhs: Expression<Int?>, rhs: Expression<Int?>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func << (lhs: Expression<Int>, rhs: Int) -> Expression<Int> { return lhs << Expression(binding: rhs) }
-public func << (lhs: Expression<Int?>, rhs: Int) -> Expression<Int?> { return lhs << Expression(binding: rhs) }
-public func << (lhs: Int, rhs: Expression<Int>) -> Expression<Int> { return Expression(binding: lhs) << rhs }
-public func << (lhs: Int, rhs: Expression<Int?>) -> Expression<Int?> { return Expression(binding: lhs) << rhs }
+public func << <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return infix(__FUNCTION__, lhs, rhs) }
+public func << <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func << <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func << <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func << <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: V) -> Expression<V> { return lhs << Expression(value: rhs) }
+public func << <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: V) -> Expression<V?> { return lhs << Expression(value: rhs) }
+public func << <V: Value where V.Datatype == Int64>(lhs: V, rhs: Expression<V>) -> Expression<V> { return Expression(value: lhs) << rhs }
+public func << <V: Value where V.Datatype == Int64>(lhs: V, rhs: Expression<V?>) -> Expression<V?> { return Expression(value: lhs) << rhs }
 
-public func >> (lhs: Expression<Int>, rhs: Expression<Int>) -> Expression<Int> { return infix(__FUNCTION__, lhs, rhs) }
-public func >> (lhs: Expression<Int>, rhs: Expression<Int?>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func >> (lhs: Expression<Int?>, rhs: Expression<Int>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func >> (lhs: Expression<Int?>, rhs: Expression<Int?>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func >> (lhs: Expression<Int>, rhs: Int) -> Expression<Int> { return lhs >> Expression(binding: rhs) }
-public func >> (lhs: Expression<Int?>, rhs: Int) -> Expression<Int?> { return lhs >> Expression(binding: rhs) }
-public func >> (lhs: Int, rhs: Expression<Int>) -> Expression<Int> { return Expression(binding: lhs) >> rhs }
-public func >> (lhs: Int, rhs: Expression<Int?>) -> Expression<Int?> { return Expression(binding: lhs) >> rhs }
+public func >> <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return infix(__FUNCTION__, lhs, rhs) }
+public func >> <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func >> <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func >> <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func >> <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: V) -> Expression<V> { return lhs >> Expression(value: rhs) }
+public func >> <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: V) -> Expression<V?> { return lhs >> Expression(value: rhs) }
+public func >> <V: Value where V.Datatype == Int64>(lhs: V, rhs: Expression<V>) -> Expression<V> { return Expression(value: lhs) >> rhs }
+public func >> <V: Value where V.Datatype == Int64>(lhs: V, rhs: Expression<V?>) -> Expression<V?> { return Expression(value: lhs) >> rhs }
 
-public func & (lhs: Expression<Int>, rhs: Expression<Int>) -> Expression<Int> { return infix(__FUNCTION__, lhs, rhs) }
-public func & (lhs: Expression<Int>, rhs: Expression<Int?>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func & (lhs: Expression<Int?>, rhs: Expression<Int>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func & (lhs: Expression<Int?>, rhs: Expression<Int?>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func & (lhs: Expression<Int>, rhs: Int) -> Expression<Int> { return lhs & Expression(binding: rhs) }
-public func & (lhs: Expression<Int?>, rhs: Int) -> Expression<Int?> { return lhs & Expression(binding: rhs) }
-public func & (lhs: Int, rhs: Expression<Int>) -> Expression<Int> { return Expression(binding: lhs) & rhs }
-public func & (lhs: Int, rhs: Expression<Int?>) -> Expression<Int?> { return Expression(binding: lhs) & rhs }
+public func & <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return infix(__FUNCTION__, lhs, rhs) }
+public func & <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func & <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func & <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func & <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: V) -> Expression<V> { return lhs & Expression(value: rhs) }
+public func & <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: V) -> Expression<V?> { return lhs & Expression(value: rhs) }
+public func & <V: Value where V.Datatype == Int64>(lhs: V, rhs: Expression<V>) -> Expression<V> { return Expression(value: lhs) & rhs }
+public func & <V: Value where V.Datatype == Int64>(lhs: V, rhs: Expression<V?>) -> Expression<V?> { return Expression(value: lhs) & rhs }
 
-public func | (lhs: Expression<Int>, rhs: Expression<Int>) -> Expression<Int> { return infix(__FUNCTION__, lhs, rhs) }
-public func | (lhs: Expression<Int>, rhs: Expression<Int?>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func | (lhs: Expression<Int?>, rhs: Expression<Int>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func | (lhs: Expression<Int?>, rhs: Expression<Int?>) -> Expression<Int?> { return infix(__FUNCTION__, lhs, rhs) }
-public func | (lhs: Expression<Int>, rhs: Int) -> Expression<Int> { return lhs | Expression(binding: rhs) }
-public func | (lhs: Expression<Int?>, rhs: Int) -> Expression<Int?> { return lhs | Expression(binding: rhs) }
-public func | (lhs: Int, rhs: Expression<Int>) -> Expression<Int> { return Expression(binding: lhs) | rhs }
-public func | (lhs: Int, rhs: Expression<Int?>) -> Expression<Int?> { return Expression(binding: lhs) | rhs }
+public func | <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return infix(__FUNCTION__, lhs, rhs) }
+public func | <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func | <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func | <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<V?> { return infix(__FUNCTION__, lhs, rhs) }
+public func | <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: V) -> Expression<V> { return lhs | Expression(value: rhs) }
+public func | <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: V) -> Expression<V?> { return lhs | Expression(value: rhs) }
+public func | <V: Value where V.Datatype == Int64>(lhs: V, rhs: Expression<V>) -> Expression<V> { return Expression(value: lhs) | rhs }
+public func | <V: Value where V.Datatype == Int64>(lhs: V, rhs: Expression<V?>) -> Expression<V?> { return Expression(value: lhs) | rhs }
 
-public func ^ (lhs: Expression<Int>, rhs: Expression<Int>) -> Expression<Int> { return (~(lhs & rhs)) & (lhs | rhs) }
-public func ^ (lhs: Expression<Int>, rhs: Expression<Int?>) -> Expression<Int?> { return (~(lhs & rhs)) & (lhs | rhs) }
-public func ^ (lhs: Expression<Int?>, rhs: Expression<Int>) -> Expression<Int?> { return (~(lhs & rhs)) & (lhs | rhs) }
-public func ^ (lhs: Expression<Int?>, rhs: Expression<Int?>) -> Expression<Int?> { return (~(lhs & rhs)) & (lhs | rhs) }
-public func ^ (lhs: Expression<Int>, rhs: Int) -> Expression<Int> { return lhs ^ Expression(binding: rhs) }
-public func ^ (lhs: Expression<Int?>, rhs: Int) -> Expression<Int?> { return lhs ^ Expression(binding: rhs) }
-public func ^ (lhs: Int, rhs: Expression<Int>) -> Expression<Int> { return Expression(binding: lhs) ^ rhs }
-public func ^ (lhs: Int, rhs: Expression<Int?>) -> Expression<Int?> { return Expression(binding: lhs) ^ rhs }
+public func ^ <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<V> { return (~(lhs & rhs)) & (lhs | rhs) }
+public func ^ <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<V?> { return (~(lhs & rhs)) & (lhs | rhs) }
+public func ^ <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<V?> { return (~(lhs & rhs)) & (lhs | rhs) }
+public func ^ <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<V?> { return (~(lhs & rhs)) & (lhs | rhs) }
+public func ^ <V: Value where V.Datatype == Int64>(lhs: Expression<V>, rhs: V) -> Expression<V> { return lhs ^ Expression(value: rhs) }
+public func ^ <V: Value where V.Datatype == Int64>(lhs: Expression<V?>, rhs: V) -> Expression<V?> { return lhs ^ Expression(value: rhs) }
+public func ^ <V: Value where V.Datatype == Int64>(lhs: V, rhs: Expression<V>) -> Expression<V> { return Expression(value: lhs) ^ rhs }
+public func ^ <V: Value where V.Datatype == Int64>(lhs: V, rhs: Expression<V?>) -> Expression<V?> { return Expression(value: lhs) ^ rhs }
 
-public prefix func ~ (rhs: Expression<Int>) -> Expression<Int> { return wrap(__FUNCTION__, rhs) }
-public prefix func ~ (rhs: Expression<Int?>) -> Expression<Int?> { return wrap(__FUNCTION__, rhs) }
+public prefix func ~ <V: Value where V.Datatype == Int64>(rhs: Expression<V>) -> Expression<V> { return wrap(__FUNCTION__, rhs) }
+public prefix func ~ <V: Value where V.Datatype == Int64>(rhs: Expression<V?>) -> Expression<V?> { return wrap(__FUNCTION__, rhs) }
 
 public enum Collation {
 
@@ -473,13 +481,13 @@ public func <= <V: Value where V.Datatype: Comparable>(lhs: V, rhs: Expression<V
     return Expression(value: lhs) <= rhs
 }
 
-public prefix func - <V: Number>(rhs: Expression<V>) -> Expression<V> { return wrap(__FUNCTION__, rhs) }
-public prefix func - <V: Number>(rhs: Expression<V?>) -> Expression<V?> { return wrap(__FUNCTION__, rhs) }
+public prefix func - <V: Value where V.Datatype: Number>(rhs: Expression<V>) -> Expression<V> { return wrap(__FUNCTION__, rhs) }
+public prefix func - <V: Value where V.Datatype: Number>(rhs: Expression<V?>) -> Expression<V?> { return wrap(__FUNCTION__, rhs) }
 
-public func ~= <I: IntervalType, V: Value where V: protocol<Binding, Comparable>, V == I.Bound>(lhs: I, rhs: Expression<V>) -> Expression<Bool> {
+public func ~= <I: IntervalType, V: Value where V.Datatype: protocol<Binding, Comparable>, V.Datatype == I.Bound>(lhs: I, rhs: Expression<V>) -> Expression<Bool> {
     return Expression(literal: "\(rhs.SQL) BETWEEN ? AND ?", rhs.bindings + [lhs.start, lhs.end])
 }
-public func ~= <I: IntervalType, V: Value where V: protocol<Binding, Comparable>, V == I.Bound>(lhs: I, rhs: Expression<V?>) -> Expression<Bool?> {
+public func ~= <I: IntervalType, V: Value where V.Datatype: protocol<Binding, Comparable>, V.Datatype == I.Bound>(lhs: I, rhs: Expression<V?>) -> Expression<Bool?> {
     return Expression<Bool?>(lhs ~= Expression<V>(rhs))
 }
 
@@ -535,8 +543,8 @@ public prefix func ! (rhs: Expression<Bool?>) -> Expression<Bool?> { return wrap
 
 // MARK: - Core Functions
 
-public func abs<V: Number>(expression: Expression<V>) -> Expression<V> { return wrap(__FUNCTION__, expression) }
-public func abs<V: Number>(expression: Expression<V?>) -> Expression<V?> { return wrap(__FUNCTION__, expression) }
+public func abs<V: Value where V.Datatype: Number>(expression: Expression<V>) -> Expression<V> { return wrap(__FUNCTION__, expression) }
+public func abs<V: Value where V.Datatype: Number>(expression: Expression<V?>) -> Expression<V?> { return wrap(__FUNCTION__, expression) }
 
 // FIXME: support Expression<V?>..., Expression<V> when Swift supports inner variadic signatures
 public func coalesce<V>(expressions: Expression<V?>...) -> Expression<V?> {
@@ -647,37 +655,37 @@ public func count<V: Value>(#distinct: Expression<V?>) -> Expression<Int> { retu
 
 public func count(star: Star) -> Expression<Int> { return wrap(__FUNCTION__, star(nil, nil)) }
 
-public func max<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V> {
+public func max<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V?> {
     return wrap(__FUNCTION__, expression)
 }
 public func max<V: Value where V.Datatype: Comparable>(expression: Expression<V?>) -> Expression<V?> {
     return wrap(__FUNCTION__, expression)
 }
 
-public func min<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V> {
+public func min<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V?> {
     return wrap(__FUNCTION__, expression)
 }
 public func min<V: Value where V.Datatype: Comparable>(expression: Expression<V?>) -> Expression<V?> {
     return wrap(__FUNCTION__, expression)
 }
 
-public func average<V: Number>(expression: Expression<V>) -> Expression<Double> { return wrap("avg", expression) }
-public func average<V: Number>(expression: Expression<V?>) -> Expression<Double?> { return wrap("avg", expression) }
+public func average<V: Value where V.Datatype: Number>(expression: Expression<V>) -> Expression<Double?> { return wrap("avg", expression) }
+public func average<V: Value where V.Datatype: Number>(expression: Expression<V?>) -> Expression<Double?> { return wrap("avg", expression) }
 
-public func average<V: Number>(#distinct: Expression<V>) -> Expression<Double> { return wrapDistinct("avg", distinct) }
-public func average<V: Number>(#distinct: Expression<V?>) -> Expression<Double?> { return wrapDistinct("avg", distinct) }
+public func average<V: Value where V.Datatype: Number>(#distinct: Expression<V>) -> Expression<Double?> { return wrapDistinct("avg", distinct) }
+public func average<V: Value where V.Datatype: Number>(#distinct: Expression<V?>) -> Expression<Double?> { return wrapDistinct("avg", distinct) }
 
-public func sum<V: Number>(expression: Expression<V>) -> Expression<V> { return wrap(__FUNCTION__, expression) }
-public func sum<V: Number>(expression: Expression<V?>) -> Expression<V?> { return wrap(__FUNCTION__, expression) }
+public func sum<V: Value where V.Datatype: Number>(expression: Expression<V>) -> Expression<V?> { return wrap(__FUNCTION__, expression) }
+public func sum<V: Value where V.Datatype: Number>(expression: Expression<V?>) -> Expression<V?> { return wrap(__FUNCTION__, expression) }
 
-public func sum<V: Number>(#distinct: Expression<V>) -> Expression<V> { return wrapDistinct("sum", distinct) }
-public func sum<V: Number>(#distinct: Expression<V?>) -> Expression<V?> { return wrapDistinct("sum", distinct) }
+public func sum<V: Value where V.Datatype: Number>(#distinct: Expression<V>) -> Expression<V?> { return wrapDistinct("sum", distinct) }
+public func sum<V: Value where V.Datatype: Number>(#distinct: Expression<V?>) -> Expression<V?> { return wrapDistinct("sum", distinct) }
 
-public func total<V: Number>(expression: Expression<V>) -> Expression<Double> { return wrap(__FUNCTION__, expression) }
-public func total<V: Number>(expression: Expression<V?>) -> Expression<Double?> { return wrap(__FUNCTION__, expression) }
+public func total<V: Value where V.Datatype: Number>(expression: Expression<V>) -> Expression<Double> { return wrap(__FUNCTION__, expression) }
+public func total<V: Value where V.Datatype: Number>(expression: Expression<V?>) -> Expression<Double> { return wrap(__FUNCTION__, expression) }
 
-public func total<V: Number>(#distinct: Expression<V>) -> Expression<Double> { return wrapDistinct("total", distinct) }
-public func total<V: Number>(#distinct: Expression<V?>) -> Expression<Double?> { return wrapDistinct("total", distinct) }
+public func total<V: Value where V.Datatype: Number>(#distinct: Expression<V>) -> Expression<Double> { return wrapDistinct("total", distinct) }
+public func total<V: Value where V.Datatype: Number>(#distinct: Expression<V?>) -> Expression<Double> { return wrapDistinct("total", distinct) }
 
 internal func SQLite_count<V: Value>(expression: Expression<V?>) -> Expression<Int> { return count(expression) }
 
@@ -686,37 +694,37 @@ internal func SQLite_count<V: Value>(#distinct: Expression<V?>) -> Expression<In
 
 internal func SQLite_count(star: Star) -> Expression<Int> { return count(star) }
 
-internal func SQLite_max<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V> {
+internal func SQLite_max<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V?> {
     return max(expression)
 }
 internal func SQLite_max<V: Value where V.Datatype: Comparable>(expression: Expression<V?>) -> Expression<V?> {
     return max(expression)
 }
 
-internal func SQLite_min<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V> {
+internal func SQLite_min<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V?> {
     return min(expression)
 }
 internal func SQLite_min<V: Value where V.Datatype: Comparable>(expression: Expression<V?>) -> Expression<V?> {
     return min(expression)
 }
 
-internal func SQLite_average<V: Number>(expression: Expression<V>) -> Expression<Double> { return average(expression) }
-internal func SQLite_average<V: Number>(expression: Expression<V?>) -> Expression<Double?> { return average(expression) }
+internal func SQLite_average<V: Value where V.Datatype: Number>(expression: Expression<V>) -> Expression<Double?> { return average(expression) }
+internal func SQLite_average<V: Value where V.Datatype: Number>(expression: Expression<V?>) -> Expression<Double?> { return average(expression) }
 
-internal func SQLite_average<V: Number>(#distinct: Expression<V>) -> Expression<Double> { return average(distinct: distinct) }
-internal func SQLite_average<V: Number>(#distinct: Expression<V?>) -> Expression<Double?> { return average(distinct: distinct) }
+internal func SQLite_average<V: Value where V.Datatype: Number>(#distinct: Expression<V>) -> Expression<Double?> { return average(distinct: distinct) }
+internal func SQLite_average<V: Value where V.Datatype: Number>(#distinct: Expression<V?>) -> Expression<Double?> { return average(distinct: distinct) }
 
-internal func SQLite_sum<V: Number>(expression: Expression<V>) -> Expression<V> { return sum(expression) }
-internal func SQLite_sum<V: Number>(expression: Expression<V?>) -> Expression<V?> { return sum(expression) }
+internal func SQLite_sum<V: Value where V.Datatype: Number>(expression: Expression<V>) -> Expression<V?> { return sum(expression) }
+internal func SQLite_sum<V: Value where V.Datatype: Number>(expression: Expression<V?>) -> Expression<V?> { return sum(expression) }
 
-internal func SQLite_sum<V: Number>(#distinct: Expression<V>) -> Expression<V> { return sum(distinct: distinct) }
-internal func SQLite_sum<V: Number>(#distinct: Expression<V?>) -> Expression<V?> { return sum(distinct: distinct) }
+internal func SQLite_sum<V: Value where V.Datatype: Number>(#distinct: Expression<V>) -> Expression<V?> { return sum(distinct: distinct) }
+internal func SQLite_sum<V: Value where V.Datatype: Number>(#distinct: Expression<V?>) -> Expression<V?> { return sum(distinct: distinct) }
 
-internal func SQLite_total<V: Number>(expression: Expression<V>) -> Expression<Double> { return total(expression) }
-internal func SQLite_total<V: Number>(expression: Expression<V?>) -> Expression<Double?> { return total(expression) }
+internal func SQLite_total<V: Value where V.Datatype: Number>(expression: Expression<V>) -> Expression<Double> { return total(expression) }
+internal func SQLite_total<V: Value where V.Datatype: Number>(expression: Expression<V?>) -> Expression<Double> { return total(expression) }
 
-internal func SQLite_total<V: Number>(#distinct: Expression<V>) -> Expression<Double> { return total(distinct: distinct) }
-internal func SQLite_total<V: Number>(#distinct: Expression<V?>) -> Expression<Double?> { return total(distinct: distinct) }
+internal func SQLite_total<V: Value where V.Datatype: Number>(#distinct: Expression<V>) -> Expression<Double> { return total(distinct: distinct) }
+internal func SQLite_total<V: Value where V.Datatype: Number>(#distinct: Expression<V?>) -> Expression<Double> { return total(distinct: distinct) }
 
 private func wrapDistinct<V, U>(function: String, expression: Expression<V>) -> Expression<U> {
     return wrap(function, Expression<()>.join(" ", [Expression<()>(literal: "DISTINCT"), expression]))
@@ -777,132 +785,136 @@ public func += (column: Expression<String?>, value: Expression<String?>) -> Sett
 public func += (column: Expression<String>, value: String) -> Setter { return set(column, column + value) }
 public func += (column: Expression<String?>, value: String) -> Setter { return set(column, column + value) }
 
-public func += <V: protocol<Number, Value>>(column: Expression<V>, value: Expression<V>) -> Setter {
+public func += <V: Value where V.Datatype: Number>(column: Expression<V>, value: Expression<V>) -> Setter {
     return set(column, column + value)
 }
-public func += <V: protocol<Number, Value>>(column: Expression<V>, value: Expression<V?>) -> Setter {
+public func += <V: Value where V.Datatype: Number>(column: Expression<V>, value: Expression<V?>) -> Setter {
     return set(column, column + value)
 }
-public func += <V: protocol<Number, Value>>(column: Expression<V?>, value: Expression<V>) -> Setter {
+public func += <V: Value where V.Datatype: Number>(column: Expression<V?>, value: Expression<V>) -> Setter {
     return set(column, column + value)
 }
-public func += <V: protocol<Number, Value>>(column: Expression<V?>, value: Expression<V?>) -> Setter {
+public func += <V: Value where V.Datatype: Number>(column: Expression<V?>, value: Expression<V?>) -> Setter {
     return set(column, column + value)
 }
-public func += <V: protocol<Number, Value>>(column: Expression<V>, value: V) -> Setter { return set(column, column + value) }
-public func += <V: protocol<Number, Value>>(column: Expression<V?>, value: V) -> Setter { return set(column, column + value) }
+public func += <V: Value where V.Datatype: Number>(column: Expression<V>, value: V) -> Setter { return set(column, column + value) }
+public func += <V: Value where V.Datatype: Number>(column: Expression<V?>, value: V) -> Setter { return set(column, column + value) }
 
-public func -= <V: protocol<Number, Value>>(column: Expression<V>, value: Expression<V>) -> Setter {
+public func -= <V: Value where V.Datatype: Number>(column: Expression<V>, value: Expression<V>) -> Setter {
     return set(column, column - value)
 }
-public func -= <V: protocol<Number, Value>>(column: Expression<V>, value: Expression<V?>) -> Setter {
+public func -= <V: Value where V.Datatype: Number>(column: Expression<V>, value: Expression<V?>) -> Setter {
     return set(column, column - value)
 }
-public func -= <V: protocol<Number, Value>>(column: Expression<V?>, value: Expression<V>) -> Setter {
+public func -= <V: Value where V.Datatype: Number>(column: Expression<V?>, value: Expression<V>) -> Setter {
     return set(column, column - value)
 }
-public func -= <V: protocol<Number, Value>>(column: Expression<V?>, value: Expression<V?>) -> Setter {
+public func -= <V: Value where V.Datatype: Number>(column: Expression<V?>, value: Expression<V?>) -> Setter {
     return set(column, column - value)
 }
-public func -= <V: protocol<Number, Value>>(column: Expression<V>, value: V) -> Setter { return set(column, column - value) }
-public func -= <V: protocol<Number, Value>>(column: Expression<V?>, value: V) -> Setter { return set(column, column - value) }
+public func -= <V: Value where V.Datatype: Number>(column: Expression<V>, value: V) -> Setter { return set(column, column - value) }
+public func -= <V: Value where V.Datatype: Number>(column: Expression<V?>, value: V) -> Setter { return set(column, column - value) }
 
-public func *= <V: protocol<Number, Value>>(column: Expression<V>, value: Expression<V>) -> Setter {
+public func *= <V: Value where V.Datatype: Number>(column: Expression<V>, value: Expression<V>) -> Setter {
     return set(column, column * value)
 }
-public func *= <V: protocol<Number, Value>>(column: Expression<V>, value: Expression<V?>) -> Setter {
+public func *= <V: Value where V.Datatype: Number>(column: Expression<V>, value: Expression<V?>) -> Setter {
     return set(column, column * value)
 }
-public func *= <V: protocol<Number, Value>>(column: Expression<V?>, value: Expression<V>) -> Setter {
+public func *= <V: Value where V.Datatype: Number>(column: Expression<V?>, value: Expression<V>) -> Setter {
     return set(column, column * value)
 }
-public func *= <V: protocol<Number, Value>>(column: Expression<V?>, value: Expression<V?>) -> Setter {
+public func *= <V: Value where V.Datatype: Number>(column: Expression<V?>, value: Expression<V?>) -> Setter {
     return set(column, column * value)
 }
-public func *= <V: protocol<Number, Value>>(column: Expression<V>, value: V) -> Setter { return set(column, column * value) }
-public func *= <V: protocol<Number, Value>>(column: Expression<V?>, value: V) -> Setter { return set(column, column * value) }
+public func *= <V: Value where V.Datatype: Number>(column: Expression<V>, value: V) -> Setter { return set(column, column * value) }
+public func *= <V: Value where V.Datatype: Number>(column: Expression<V?>, value: V) -> Setter { return set(column, column * value) }
 
-public func /= <V: protocol<Number, Value>>(column: Expression<V>, value: Expression<V>) -> Setter {
+public func /= <V: Value where V.Datatype: Number>(column: Expression<V>, value: Expression<V>) -> Setter {
     return set(column, column / value)
 }
-public func /= <V: protocol<Number, Value>>(column: Expression<V>, value: Expression<V?>) -> Setter {
+public func /= <V: Value where V.Datatype: Number>(column: Expression<V>, value: Expression<V?>) -> Setter {
     return set(column, column / value)
 }
-public func /= <V: protocol<Number, Value>>(column: Expression<V?>, value: Expression<V>) -> Setter {
+public func /= <V: Value where V.Datatype: Number>(column: Expression<V?>, value: Expression<V>) -> Setter {
     return set(column, column / value)
 }
-public func /= <V: protocol<Number, Value>>(column: Expression<V?>, value: Expression<V?>) -> Setter {
+public func /= <V: Value where V.Datatype: Number>(column: Expression<V?>, value: Expression<V?>) -> Setter {
     return set(column, column / value)
 }
-public func /= <V: protocol<Number, Value>>(column: Expression<V>, value: V) -> Setter {
+public func /= <V: Value where V.Datatype: Number>(column: Expression<V>, value: V) -> Setter {
     return set(column, column / value)
 }
-public func /= <V: protocol<Number, Value>>(column: Expression<V?>, value: V) -> Setter {
+public func /= <V: Value where V.Datatype: Number>(column: Expression<V?>, value: V) -> Setter {
     return set(column, column / value)
 }
 
-public func %= (column: Expression<Int>, value: Expression<Int>) -> Setter { return set(column, column % value) }
-public func %= (column: Expression<Int>, value: Expression<Int?>) -> Setter { return set(column, column % value) }
-public func %= (column: Expression<Int?>, value: Expression<Int>) -> Setter { return set(column, column % value) }
-public func %= (column: Expression<Int?>, value: Expression<Int?>) -> Setter { return set(column, column % value) }
-public func %= (column: Expression<Int>, value: Int) -> Setter { return set(column, column % value) }
-public func %= (column: Expression<Int?>, value: Int) -> Setter { return set(column, column % value) }
+public func %= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: Expression<V>) -> Setter { return set(column, column % value) }
+public func %= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: Expression<V?>) -> Setter { return set(column, column % value) }
+public func %= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: Expression<V>) -> Setter { return set(column, column % value) }
+public func %= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: Expression<V?>) -> Setter { return set(column, column % value) }
+public func %= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: V) -> Setter { return set(column, column % value) }
+public func %= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: V) -> Setter { return set(column, column % value) }
 
-public func <<= (column: Expression<Int>, value: Expression<Int>) -> Setter { return set(column, column << value) }
-public func <<= (column: Expression<Int>, value: Expression<Int?>) -> Setter { return set(column, column << value) }
-public func <<= (column: Expression<Int?>, value: Expression<Int>) -> Setter { return set(column, column << value) }
-public func <<= (column: Expression<Int?>, value: Expression<Int?>) -> Setter { return set(column, column << value) }
-public func <<= (column: Expression<Int>, value: Int) -> Setter { return set(column, column << value) }
-public func <<= (column: Expression<Int?>, value: Int) -> Setter { return set(column, column << value) }
+public func <<= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: Expression<V>) -> Setter { return set(column, column << value) }
+public func <<= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: Expression<V?>) -> Setter { return set(column, column << value) }
+public func <<= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: Expression<V>) -> Setter { return set(column, column << value) }
+public func <<= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: Expression<V?>) -> Setter { return set(column, column << value) }
+public func <<= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: V) -> Setter { return set(column, column << value) }
+public func <<= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: V) -> Setter { return set(column, column << value) }
 
-public func >>= (column: Expression<Int>, value: Expression<Int>) -> Setter { return set(column, column >> value) }
-public func >>= (column: Expression<Int>, value: Expression<Int?>) -> Setter { return set(column, column >> value) }
-public func >>= (column: Expression<Int?>, value: Expression<Int>) -> Setter { return set(column, column >> value) }
-public func >>= (column: Expression<Int?>, value: Expression<Int?>) -> Setter { return set(column, column >> value) }
-public func >>= (column: Expression<Int>, value: Int) -> Setter { return set(column, column >> value) }
-public func >>= (column: Expression<Int?>, value: Int) -> Setter { return set(column, column >> value) }
+public func >>= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: Expression<V>) -> Setter { return set(column, column >> value) }
+public func >>= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: Expression<V?>) -> Setter { return set(column, column >> value) }
+public func >>= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: Expression<V>) -> Setter { return set(column, column >> value) }
+public func >>= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: Expression<V?>) -> Setter { return set(column, column >> value) }
+public func >>= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: V) -> Setter { return set(column, column >> value) }
+public func >>= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: V) -> Setter { return set(column, column >> value) }
 
-public func &= (column: Expression<Int>, value: Expression<Int>) -> Setter { return set(column, column & value) }
-public func &= (column: Expression<Int>, value: Expression<Int?>) -> Setter { return set(column, column & value) }
-public func &= (column: Expression<Int?>, value: Expression<Int>) -> Setter { return set(column, column & value) }
-public func &= (column: Expression<Int?>, value: Expression<Int?>) -> Setter { return set(column, column & value) }
-public func &= (column: Expression<Int>, value: Int) -> Setter { return set(column, column & value) }
-public func &= (column: Expression<Int?>, value: Int) -> Setter { return set(column, column & value) }
+public func &= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: Expression<V>) -> Setter { return set(column, column & value) }
+public func &= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: Expression<V?>) -> Setter { return set(column, column & value) }
+public func &= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: Expression<V>) -> Setter { return set(column, column & value) }
+public func &= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: Expression<V?>) -> Setter { return set(column, column & value) }
+public func &= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: V) -> Setter { return set(column, column & value) }
+public func &= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: V) -> Setter { return set(column, column & value) }
 
-public func |= (column: Expression<Int>, value: Expression<Int>) -> Setter { return set(column, column | value) }
-public func |= (column: Expression<Int>, value: Expression<Int?>) -> Setter { return set(column, column | value) }
-public func |= (column: Expression<Int?>, value: Expression<Int>) -> Setter { return set(column, column | value) }
-public func |= (column: Expression<Int?>, value: Expression<Int?>) -> Setter { return set(column, column | value) }
-public func |= (column: Expression<Int>, value: Int) -> Setter { return set(column, column | value) }
-public func |= (column: Expression<Int?>, value: Int) -> Setter { return set(column, column | value) }
+public func |= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: Expression<V>) -> Setter { return set(column, column | value) }
+public func |= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: Expression<V?>) -> Setter { return set(column, column | value) }
+public func |= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: Expression<V>) -> Setter { return set(column, column | value) }
+public func |= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: Expression<V?>) -> Setter { return set(column, column | value) }
+public func |= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: V) -> Setter { return set(column, column | value) }
+public func |= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: V) -> Setter { return set(column, column | value) }
 
-public func ^= (column: Expression<Int>, value: Expression<Int>) -> Setter { return set(column, column ^ value) }
-public func ^= (column: Expression<Int>, value: Expression<Int?>) -> Setter { return set(column, column ^ value) }
-public func ^= (column: Expression<Int?>, value: Expression<Int>) -> Setter { return set(column, column ^ value) }
-public func ^= (column: Expression<Int?>, value: Expression<Int?>) -> Setter { return set(column, column ^ value) }
-public func ^= (column: Expression<Int>, value: Int) -> Setter { return set(column, column ^ value) }
-public func ^= (column: Expression<Int?>, value: Int) -> Setter { return set(column, column ^ value) }
+public func ^= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: Expression<V>) -> Setter { return set(column, column ^ value) }
+public func ^= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: Expression<V?>) -> Setter { return set(column, column ^ value) }
+public func ^= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: Expression<V>) -> Setter { return set(column, column ^ value) }
+public func ^= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: Expression<V?>) -> Setter { return set(column, column ^ value) }
+public func ^= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: V) -> Setter { return set(column, column ^ value) }
+public func ^= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: V) -> Setter { return set(column, column ^ value) }
 
-public postfix func ++ (column: Expression<Int>) -> Setter {
-    // rdar://18825175 segfaults during archive: // column += 1
-    return (column, Expression<Int>(literal: "(\(column.SQL) + 1)", column.bindings))
-}
-public postfix func ++ (column: Expression<Int?>) -> Setter {
-    // rdar://18825175 segfaults during archive: // column += 1
-    return (column, Expression<Int>(literal: "(\(column.SQL) + 1)", column.bindings))
-}
-public postfix func -- (column: Expression<Int>) -> Setter {
-    // rdar://18825175 segfaults during archive: // column -= 1
-    return (column, Expression<Int>(literal: "(\(column.SQL) - 1)", column.bindings))
-}
-public postfix func -- (column: Expression<Int?>) -> Setter {
-    // rdar://18825175 segfaults during archive: // column -= 1
-    return (column, Expression<Int>(literal: "(\(column.SQL) - 1)", column.bindings))
-}
+public postfix func ++ <V: Value where V.Datatype == Int64>(column: Expression<V>) -> Setter { return Expression<Int>(column) += 1 }
+public postfix func ++ <V: Value where V.Datatype == Int64>(column: Expression<V?>) -> Setter { return Expression<Int>(column) += 1 }
+public postfix func -- <V: Value where V.Datatype == Int64>(column: Expression<V>) -> Setter { return Expression<Int>(column) -= 1 }
+public postfix func -- <V: Value where V.Datatype == Int64>(column: Expression<V?>) -> Setter { return Expression<Int>(column) -= 1 }
+//public postfix func ++ (column: Expression<Int>) -> Setter {
+//    // rdar://18825175 segfaults during archive: // column += 1
+//    return (column, Expression<Int>(literal: "(\(column.SQL) + 1)", column.bindings))
+//}
+//public postfix func ++ (column: Expression<Int?>) -> Setter {
+//    // rdar://18825175 segfaults during archive: // column += 1
+//    return (column, Expression<Int>(literal: "(\(column.SQL) + 1)", column.bindings))
+//}
+//public postfix func -- (column: Expression<Int>) -> Setter {
+//    // rdar://18825175 segfaults during archive: // column -= 1
+//    return (column, Expression<Int>(literal: "(\(column.SQL) - 1)", column.bindings))
+//}
+//public postfix func -- (column: Expression<Int?>) -> Setter {
+//    // rdar://18825175 segfaults during archive: // column -= 1
+//    return (column, Expression<Int>(literal: "(\(column.SQL) - 1)", column.bindings))
+//}
 
 // MARK: - Internal
 
-internal let rowid = Expression<Int>("ROWID")
+internal let rowid = Expression<Int64>("ROWID")
 
 internal func transcode(literal: Binding?) -> String {
     if let literal = literal {

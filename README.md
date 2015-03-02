@@ -34,7 +34,7 @@ import SQLite
 let db = Database("path/to/db.sqlite3")
 
 let users = db["users"]
-let id = Expression<Int>("id")
+let id = Expression<Int64>("id")
 let name = Expression<String?>("name")
 let email = Expression<String>("email")
 
@@ -84,8 +84,8 @@ for email in ["betty@icloud.com", "cathy@icloud.com"] {
 }
 
 db.totalChanges // 3
-db.lastChanges  // {Some 1}
-db.lastId       // {Some 3}
+db.lastChanges  // 1
+db.lastId       // 3
 
 for row in db.prepare("SELECT id, email FROM users") {
     println("id: \(row[0]), email: \(row[1])")
@@ -93,7 +93,7 @@ for row in db.prepare("SELECT id, email FROM users") {
     // id: Optional(3), email: Optional("cathy@icloud.com")
 }
 
-db.scalar("SELECT count(*) FROM users") // {Some 2}
+db.scalar("SELECT count(*) FROM users") // 2
 ```
 
 [Read the documentation][See Documentation] or explore more,

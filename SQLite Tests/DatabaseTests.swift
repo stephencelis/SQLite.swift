@@ -66,10 +66,10 @@ class DatabaseTests: XCTestCase {
     }
 
     func test_scalar_preparesRunsAndReturnsScalarValues() {
-        XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = 0") as Int)
-        XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = ?", 0) as Int)
-        XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = ?", [0]) as Int)
-        XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = $admin", ["$admin": 0]) as Int)
+        XCTAssertEqual(Int64(0), db.scalar("SELECT count(*) FROM users WHERE admin = 0") as Int64)
+        XCTAssertEqual(Int64(0), db.scalar("SELECT count(*) FROM users WHERE admin = ?", 0) as Int64)
+        XCTAssertEqual(Int64(0), db.scalar("SELECT count(*) FROM users WHERE admin = ?", [0]) as Int64)
+        XCTAssertEqual(Int64(0), db.scalar("SELECT count(*) FROM users WHERE admin = $admin", ["$admin": 0]) as Int64)
     }
 
     func test_transaction_beginsAndCommitsStatements() {
@@ -217,14 +217,14 @@ class DatabaseTests: XCTestCase {
         db.create(collation: "NODIACRITIC") { lhs, rhs in
             return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)
         }
-        XCTAssertEqual(1, db.scalar("SELECT ? = ? COLLATE NODIACRITIC", "cafe", "café") as Int)
+        XCTAssertEqual(Int64(1), db.scalar("SELECT ? = ? COLLATE NODIACRITIC", "cafe", "café") as Int64)
     }
 
     func test_createCollation_createsQuotableCollation() {
         db.create(collation: "NO DIACRITIC") { lhs, rhs in
             return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)
         }
-        XCTAssertEqual(1, db.scalar("SELECT ? = ? COLLATE \"NO DIACRITIC\"", "cafe", "café") as Int)
+        XCTAssertEqual(Int64(1), db.scalar("SELECT ? = ? COLLATE \"NO DIACRITIC\"", "cafe", "café") as Int64)
     }
 
 }

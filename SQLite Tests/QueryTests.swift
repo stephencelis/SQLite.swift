@@ -6,12 +6,12 @@ class QueryTests: XCTestCase {
     let db = Database()
     var users: Query { return db["users"] }
 
-    let id = Expression<Int>("id")
+    let id = Expression<Int64>("id")
     let email = Expression<String>("email")
     let age = Expression<Int?>("age")
     let salary = Expression<Double>("salary")
     let admin = Expression<Bool>("admin")
-    let manager_id = Expression<Int>("manager_id")
+    let manager_id = Expression<Int64>("manager_id")
 
     override func setUp() {
         super.setUp()
@@ -105,7 +105,7 @@ class QueryTests: XCTestCase {
         let managers = db["users"].alias("managers")
 
         let aliceId = users.insert(email <- "alice@example.com")!
-        users.insert(email <- "betty@example.com", manager_id <- aliceId)!
+        users.insert(email <- "betty@example.com", manager_id <- Int64(aliceId))!
 
         let query = users
             .select(users[*], managers[*])
@@ -119,10 +119,10 @@ class QueryTests: XCTestCase {
 
     func test_namespacedColumnRowValueAccess() {
         let aliceId = users.insert(email <- "alice@example.com")!
-        let bettyId = users.insert(email <- "betty@example.com", manager_id <- aliceId)!
+        let bettyId = users.insert(email <- "betty@example.com", manager_id <- Int64(aliceId))!
 
         let alice = users.first!
-        XCTAssertEqual(aliceId, alice[id])
+        XCTAssertEqual(Int64(aliceId), alice[id])
 
         let managers = db["users"].alias("managers")
         let query = users.join(managers, on: managers[id] == users[manager_id])
@@ -307,7 +307,7 @@ class QueryTests: XCTestCase {
     func test_first_returnsTheFirstRow() {
         InsertUsers(db, "alice", "betsy")
         ExpectExecutions(db, ["SELECT * FROM \"users\" LIMIT 1": 1]) { _ in
-            XCTAssertEqual(1, self.users.first![self.id])
+            XCTAssertEqual(Int64(1), self.users.first![self.id])
         }
     }
 
@@ -323,7 +323,7 @@ class QueryTests: XCTestCase {
         let SQL = "INSERT INTO \"users\" (\"email\", \"age\") VALUES ('alice@example.com', 30)"
 
         ExpectExecutions(db, [SQL: 1]) { _ in
-            XCTAssertEqual(1, self.users.insert(self.email <- "alice@example.com", self.age <- 30).id!)
+            XCTAssertEqual(Int64(1), self.users.insert(self.email <- "alice@example.com", self.age <- 30).id!)
         }
 
         XCTAssert(self.users.insert(self.email <- "alice@example.com", self.age <- 30).id == nil)
@@ -342,7 +342,7 @@ class QueryTests: XCTestCase {
         let table = db["timestamps"]
 
         ExpectExecutions(db, ["INSERT INTO \"timestamps\" DEFAULT VALUES": 1]) { _ in
-            XCTAssertEqual(1, table.insert().id!)
+            XCTAssertEqual(Int64(1), table.insert().id!)
         }
     }
 
@@ -350,10 +350,10 @@ class QueryTests: XCTestCase {
         let SQL = "INSERT OR REPLACE INTO \"users\" (\"email\", \"age\") VALUES ('alice@example.com', 30)"
 
         ExpectExecutions(db, [SQL: 1]) { _ in
-            XCTAssertEqual(1, self.users.replace(self.email <- "alice@example.com", self.age <- 30).id!)
+            XCTAssertEqual(Int64(1), self.users.replace(self.email <- "alice@example.com", self.age <- 30).id!)
         }
 
-        XCTAssertEqual(1, self.users.replace(self.id <- 1, self.email <- "bob@example.com", self.age <- 30).id!)
+        XCTAssertEqual(Int64(1), self.users.replace(self.id <- 1, self.email <- "bob@example.com", self.age <- 30).id!)
     }
     
     func test_update_updatesRows() {
@@ -442,7 +442,7 @@ class QueryTests: XCTestCase {
     }
 
     func test_valueExtension_serializesAndDeserializes() {
-        let id = Expression<Int>("id")
+        let id = Expression<Int64>("id")
         let timestamp = Expression<NSDate?>("timestamp")
         let touches = db["touches"]
         db.create(table: touches) { t in
@@ -454,7 +454,7 @@ class QueryTests: XCTestCase {
         touches.insert(timestamp <- date)!
         XCTAssertEqual(touches.first!.get(timestamp)!, date)
 
-        XCTAssertNil(touches.filter(id == touches.insert()!).first!.get(timestamp))
+        XCTAssertNil(touches.filter(id == Int64(touches.insert()!)).first!.get(timestamp))
 
         XCTAssert(touches.filter(timestamp < NSDate()).first != nil)
     }

@@ -54,8 +54,8 @@ public final class Database {
     // MARK: -
 
     /// The last row id inserted into the database via this connection.
-    public var lastId: Int? {
-        let lastId = Int(sqlite3_last_insert_rowid(handle))
+    public var lastId: Int64? {
+        let lastId = sqlite3_last_insert_rowid(handle)
         return lastId == 0 ? nil : lastId
     }
 
@@ -336,13 +336,13 @@ public final class Database {
     // MARK: - Configuration
 
     public var foreignKeys: Bool {
-        get { return Bool.fromDatatypeValue(scalar("PRAGMA foreign_keys") as Int) }
+        get { return Bool.fromDatatypeValue(scalar("PRAGMA foreign_keys") as Int64) }
         set { run("PRAGMA foreign_keys = \(transcode(newValue.datatypeValue))") }
     }
 
     public var userVersion: Int {
-        get { return scalar("PRAGMA user_version") as Int }
-        set { run("PRAGMA user_version = \(transcode(newValue))") }
+        get { return Int(scalar("PRAGMA user_version") as Int64) }
+        set { run("PRAGMA user_version = \(transcode(Int64(newValue)))") }
     }
 
     // MARK: - Handlers
@@ -398,7 +398,7 @@ public final class Database {
     ///                       should return a raw SQL value (or nil).
     public func create(#function: String, deterministic: Bool = false, _ block: [Binding?] -> Binding?) {
         try(SQLiteCreateFunction(handle, function, deterministic ? 1 : 0) { context, argc, argv in
-            let arguments: [Binding?] = map(0..<argc) { idx in
+            let arguments: [Binding?] = map(0..<Int(argc)) { idx in
                 let value = argv[Int(idx)]
                 switch sqlite3_value_type(value) {
                 case SQLITE_BLOB:
@@ -408,7 +408,7 @@ public final class Database {
                 case SQLITE_FLOAT:
                     return sqlite3_value_double(value)
                 case SQLITE_INTEGER:
-                    return Int(sqlite3_value_int64(value))
+                    return sqlite3_value_int64(value)
                 case SQLITE_NULL:
                     return nil
                 case SQLITE_TEXT:
@@ -422,8 +422,8 @@ public final class Database {
                 sqlite3_result_blob(context, result.bytes, Int32(result.length), nil)
             } else if let result = result as? Double {
                 sqlite3_result_double(context, result)
-            } else if let result = result as? Int {
-                sqlite3_result_int64(context, Int64(result))
+            } else if let result = result as? Int64 {
+                sqlite3_result_int64(context, result)
             } else if let result = result as? String {
                 sqlite3_result_text(context, result, Int32(countElements(result)), SQLITE_TRANSIENT)
             } else if result == nil {

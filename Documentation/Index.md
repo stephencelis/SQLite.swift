@@ -194,13 +194,15 @@ SQLite.swift comes with a typed expression layer that directly maps [Swift types
 
 | Swift Type      | SQLite Type |
 | --------------- | ----------- |
-| `Int`           | `INTEGER`   |
+| `Int64`*        | `INTEGER`   |
 | `Double`        | `REAL`      |
 | `String`        | `TEXT`      |
 | `nil`           | `NULL`      |
-| `SQLite.Blob`*  | `BLOB`      |
+| `SQLite.Blob`†  | `BLOB`      |
 
-> *SQLite.swift defines its own `Blob` structure, which safely wraps the underlying bytes.
+> *While `Int64` is the basic, raw type (to preserve 64-bit integers on 32-bit platforms), `Int` and `Bool` work transparently.
+>
+> †SQLite.swift defines its own `Blob` structure, which safely wraps the underlying bytes.
 >
 > See [Custom Types](#custom-types) for more information about extending other classes and structures to work with SQLite.swift.
 
@@ -212,7 +214,7 @@ These expressions (in the form of the structure, [`Expression`](#expressions)) b
 Expressions are generic structures associated with a type ([built-in](#building-type-safe-sql) or [custom](#custom-types)), raw SQL, and (optionally) values to bind to that SQL. Typically, you will only explicitly create expressions to describe your columns, and typically only once per column.
 
 ``` swift
-let id = Expression<Int>("id")
+let id = Expression<Int64>("id")
 let email = Expression<String>("email")
 let balance = Expression<Double>("balance")
 let verified = Expression<Bool>("verified")
@@ -289,7 +291,7 @@ The `column` function is used for a single column definition. It takes an [expre
 
     > _Note:_ The `primaryKey` parameter cannot be used alongside `defaultValue` or `references`. If you need to create a column that has a default value and is also a primary and/or foreign key, use the `primaryKey` and `foreignKey` functions mentioned under [Table Constraints](#table-constraints).
     >
-    > Primary keys cannot be optional (`Expression<Int?>`).
+    > Primary keys cannot be optional (`Expression<Int64?>`).
 
   - `unique` adds a `UNIQUE` constraint to the column. (See the `unique` function under [Table Constraints](#table-constraints) for uniqueness over multiple columns).
 
@@ -321,7 +323,7 @@ The `column` function is used for a single column definition. It takes an [expre
     // "email" TEXT NOT NULL COLLATE "NOCASE"
     ```
 
-  - `references` adds a `REFERENCES` clause to `Expression<Int>` (and `Expression<Int?>`) column definitions and accepts a table (`Query`) or namespaced column expression. (See the `foreignKey` function under [Table Constraints](#table-constraints) for non-integer foreign key support.)
+  - `references` adds a `REFERENCES` clause to `Expression<Int64>` (and `Expression<Int64?>`) column definitions and accepts a table (`Query`) or namespaced column expression. (See the `foreignKey` function under [Table Constraints](#table-constraints) for non-integer foreign key support.)
 
     ``` swift
     t.column(user_id, references: users[id])
@@ -383,7 +385,7 @@ users.insert(email <- "alice@mac.com", name <- "Alice")?
 
 The `insert` function can return several different types that are useful in different contexts.
 
-  - An `Int?` representing the inserted row’s [`ROWID`][ROWID] (or `nil` on failure), for simplicity.
+  - An `Int64?` representing the inserted row’s [`ROWID`][ROWID] (or `nil` on failure), for simplicity.
 
     ``` swift
     if let insertId = users.insert(email <- "alice@mac.com") {
@@ -414,7 +416,7 @@ The `insert` function can return several different types that are useful in diff
     // COMMIT TRANSACTION;
     ```
 
-  - A tuple of the above [`ROWID`][ROWID] and statement: `(id: Int?, statement: Statement)`, for flexibility.
+  - A tuple of the above [`ROWID`][ROWID] and statement: `(id: Int64?, statement: Statement)`, for flexibility.
 
     ``` swift
     let (id, statement) = users.insert(email <- "alice@mac.com")
@@ -756,14 +758,14 @@ users.filter(name != nil).count
   - `max` takes a comparable column expression and returns the largest value if any exists.
 
     ``` swift
-    users.max(id) // -> Int?
+    users.max(id) // -> Int64?
     // SELECT max("id") FROM "users"
     ```
 
   - `min` takes a comparable column expression and returns the smallest value if any exists.
 
     ``` swift
-    users.min(id) // -> Int?
+    users.min(id) // -> Int64?
     // SELECT min("id") FROM "users"
     ```
 
@@ -952,7 +954,7 @@ The `alter` function shares several of the same [`column` function parameters](#
     // email TEXT NOT NULL COLLATE "NOCASE"
     ```
 
-  - `references` adds a `REFERENCES` clause to `Int` (and `Int?`) column definitions and accepts a table or namespaced column expression. (See the `foreignKey` function under [Table Constraints](#table-constraints) for non-integer foreign key support.)
+  - `references` adds a `REFERENCES` clause to `Int64` (and `Int64?`) column definitions and accepts a table or namespaced column expression. (See the `foreignKey` function under [Table Constraints](#table-constraints) for non-integer foreign key support.)
 
     ``` swift
     db.alter(table: posts, add: user_id, references: users[id])
@@ -1392,14 +1394,14 @@ Though we recommend you stick with SQLite.swift’s type-safe system whenever po
   - `scalar` prepares a single `Statement` object from a SQL string, optionally binds values to it (using the statement’s `bind` function), executes, and returns the first value of the first row.
 
     ``` swift
-    db.scalar("SELECT count(*) FROM users") as Int
+    db.scalar("SELECT count(*) FROM users") as Int64
     ```
 
     Statements also have a `scalar` function, which can optionally re-bind values at execution.
 
     ``` swift
     let stmt = db.prepare("SELECT count (*) FROM users")
-    stmt.scalar() as Int
+    stmt.scalar() as Int64
     ```
 
 

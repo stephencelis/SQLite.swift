@@ -310,6 +310,9 @@ public struct Query {
     public subscript(column: Expression<Int>) -> Expression<Int> { return namespace(column) }
     public subscript(column: Expression<Int?>) -> Expression<Int?> { return namespace(column) }
 
+    public subscript(column: Expression<Int64>) -> Expression<Int64> { return namespace(column) }
+    public subscript(column: Expression<Int64?>) -> Expression<Int64?> { return namespace(column) }
+
     public subscript(column: Expression<String>) -> Expression<String> { return namespace(column) }
     public subscript(column: Expression<String?>) -> Expression<String?> { return namespace(column) }
 
@@ -436,14 +439,14 @@ public struct Query {
     /// :param: values A list of values to set.
     ///
     /// :returns: The row id.
-    public func insert(value: Setter, _ more: Setter...) -> Int? { return insert([value] + more).id }
+    public func insert(value: Setter, _ more: Setter...) -> Int64? { return insert([value] + more).id }
 
     /// Runs an INSERT statement against the query.
     ///
     /// :param: values A list of values to set.
     ///
     /// :returns: The row id and statement.
-    public func insert(value: Setter, _ more: Setter...) -> (id: Int?, statement: Statement) {
+    public func insert(value: Setter, _ more: Setter...) -> (id: Int64?, statement: Statement) {
         return insert([value] + more)
     }
 
@@ -452,14 +455,14 @@ public struct Query {
     /// :param: values An array of values to set.
     ///
     /// :returns: The row id.
-    public func insert(values: [Setter]) -> Int? { return insert(values).id }
+    public func insert(values: [Setter]) -> Int64? { return insert(values).id }
 
     /// Runs an INSERT statement against the query.
     ///
     /// :param: values An array of values to set.
     ///
     /// :returns: The row id and statement.
-    public func insert(values: [Setter]) -> (id: Int?, statement: Statement) {
+    public func insert(values: [Setter]) -> (id: Int64?, statement: Statement) {
         let statement = insertStatement(values).run()
         return (statement.failed ? nil : database.lastId, statement)
     }
@@ -474,11 +477,11 @@ public struct Query {
         return (statement.failed ? nil : database.lastChanges, statement)
     }
 
-    public func insert() -> Int? { return insert().id }
+    public func insert() -> Int64? { return insert().id }
 
     public func insert() -> Statement { return insert().statement }
 
-    public func insert() -> (id: Int?, statement: Statement) {
+    public func insert() -> (id: Int64?, statement: Statement) {
         let statement = database.run("INSERT INTO \(quote(identifier: tableName)) DEFAULT VALUES")
         return (statement.failed ? nil : database.lastId, statement)
     }
@@ -495,14 +498,14 @@ public struct Query {
     /// :param: values A list of values to set.
     ///
     /// :returns: The row id.
-    public func replace(values: Setter...) -> Int? { return replace(values).id }
+    public func replace(values: Setter...) -> Int64? { return replace(values).id }
 
     /// Runs a REPLACE statement against the query.
     ///
     /// :param: values A list of values to set.
     ///
     /// :returns: The row id and statement.
-    public func replace(values: Setter...) -> (id: Int?, statement: Statement) {
+    public func replace(values: Setter...) -> (id: Int64?, statement: Statement) {
         return replace(values)
     }
 
@@ -511,14 +514,14 @@ public struct Query {
     /// :param: values An array of values to set.
     ///
     /// :returns: The row id.
-    public func replace(values: [Setter]) -> Int? { return replace(values).id }
+    public func replace(values: [Setter]) -> Int64? { return replace(values).id }
 
     /// Runs a REPLACE statement against the query.
     ///
     /// :param: values An array of values to set.
     ///
     /// :returns: The row id and statement.
-    public func replace(values: [Setter]) -> (id: Int?, statement: Statement) {
+    public func replace(values: [Setter]) -> (id: Int64?, statement: Statement) {
         let statement = insertStatement(values, or: .Replace).run()
         return (statement.failed ? nil : database.lastId, statement)
     }
@@ -639,10 +642,10 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The average value of the given column.
-    public func average<V: Number>(column: Expression<V>) -> Double? {
+    public func average<V: Value where V.Datatype: Number>(column: Expression<V>) -> Double? {
         return calculate(SQLite_average(column))
     }
-    public func average<V: Number>(column: Expression<V?>) -> Double? {
+    public func average<V: Value where V.Datatype: Number>(column: Expression<V?>) -> Double? {
         return calculate(SQLite_average(column))
     }
 
@@ -651,10 +654,10 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The average value of the given column.
-    public func average<V: Number>(distinct column: Expression<V>) -> Double? {
+    public func average<V: Value where V.Datatype: Number>(distinct column: Expression<V>) -> Double? {
         return calculate(SQLite_average(distinct: column))
     }
-    public func average<V: Number>(distinct column: Expression<V?>) -> Double? {
+    public func average<V: Value where V.Datatype: Number>(distinct column: Expression<V?>) -> Double? {
         return calculate(SQLite_average(distinct: column))
     }
 
@@ -663,10 +666,10 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The sum of the given column’s values.
-    public func sum<V: Number>(column: Expression<V>) -> V? {
+    public func sum<V: Value where V.Datatype: Number>(column: Expression<V>) -> V? {
         return calculate(SQLite_sum(column))
     }
-    public func sum<V: Number>(column: Expression<V?>) -> V? {
+    public func sum<V: Value where V.Datatype: Number>(column: Expression<V?>) -> V? {
         return calculate(SQLite_sum(column))
     }
 
@@ -675,10 +678,10 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The sum of the given column’s values.
-    public func sum<V: Number>(distinct column: Expression<V>) -> V? {
+    public func sum<V: Value where V.Datatype: Number>(distinct column: Expression<V>) -> V? {
         return calculate(SQLite_sum(distinct: column))
     }
-    public func sum<V: Number>(distinct column: Expression<V?>) -> V? {
+    public func sum<V: Value where V.Datatype: Number>(distinct column: Expression<V?>) -> V? {
         return calculate(SQLite_sum(distinct: column))
     }
 
@@ -687,10 +690,10 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The total of the given column’s values.
-    public func total<V: Number>(column: Expression<V>) -> Double {
+    public func total<V: Value where V.Datatype: Number>(column: Expression<V>) -> Double {
         return calculate(SQLite_total(column))!
     }
-    public func total<V: Number>(column: Expression<V?>) -> Double {
+    public func total<V: Value where V.Datatype: Number>(column: Expression<V?>) -> Double {
         return calculate(SQLite_total(column))!
     }
 
@@ -699,15 +702,24 @@ public struct Query {
     /// :param: column The column used for the calculation.
     ///
     /// :returns: The total of the given column’s values.
-    public func total<V: Number>(distinct column: Expression<V>) -> Double {
+    public func total<V: Value where V.Datatype: Number>(distinct column: Expression<V>) -> Double {
         return calculate(SQLite_total(distinct: column))!
     }
-    public func total<V: Number>(distinct column: Expression<V?>) -> Double {
+    public func total<V: Value where V.Datatype: Number>(distinct column: Expression<V?>) -> Double {
         return calculate(SQLite_total(distinct: column))!
     }
 
-    private func calculate<T, U>(expression: Expression<T>) -> U? {
-        return select(expression).selectStatement.scalar() as? U
+    private func calculate<V: Value>(expression: Expression<V>) -> V? {
+        if let scalar = select(expression).selectStatement.scalar() as? V.Datatype {
+            return (V.fromDatatypeValue(scalar) as V)
+        }
+        return nil
+    }
+    private func calculate<V: Value>(expression: Expression<V?>) -> V? {
+        if let scalar = select(expression).selectStatement.scalar() as? V.Datatype {
+            return (V.fromDatatypeValue(scalar) as V)
+        }
+        return nil
     }
 
     // MARK: - Array
@@ -785,6 +797,9 @@ public struct Row {
 
     public subscript(column: Expression<Int>) -> Int { return get(column) }
     public subscript(column: Expression<Int?>) -> Int? { return get(column) }
+
+    public subscript(column: Expression<Int64>) -> Int64 { return get(column) }
+    public subscript(column: Expression<Int64?>) -> Int64? { return get(column) }
 
     public subscript(column: Expression<String>) -> String { return get(column) }
     public subscript(column: Expression<String?>) -> String? { return get(column) }

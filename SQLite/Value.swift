@@ -73,15 +73,13 @@ public func ==(lhs: Blob, rhs: Blob) -> Bool {
 
 extension Blob: Binding, Value {
 
-    public typealias Datatype = Blob
-
     public static var declaredDatatype = "BLOB"
 
-    public static func fromDatatypeValue(datatypeValue: Datatype) -> Blob {
+    public static func fromDatatypeValue(datatypeValue: Blob) -> Blob {
         return datatypeValue
     }
 
-    public var datatypeValue: Datatype {
+    public var datatypeValue: Blob {
         return self
     }
 
@@ -97,49 +95,29 @@ extension Blob: Printable {
 
 }
 
-extension Bool: Value {
-
-    public typealias Datatype = Int
-
-    public static var declaredDatatype = Int.declaredDatatype
-
-    public static func fromDatatypeValue(datatypeValue: Datatype) -> Bool {
-        return datatypeValue != 0
-    }
-
-    public var datatypeValue: Datatype {
-        return self ? 1 : 0
-    }
-
-}
-
 extension Double: Number, Value {
-
-    public typealias Datatype = Double
 
     public static var declaredDatatype = "REAL"
 
-    public static func fromDatatypeValue(datatypeValue: Datatype) -> Double {
+    public static func fromDatatypeValue(datatypeValue: Double) -> Double {
         return datatypeValue
     }
 
-    public var datatypeValue: Datatype {
+    public var datatypeValue: Double {
         return self
     }
 
 }
 
-extension Int: Number, Value {
-
-    public typealias Datatype = Int
+extension Int64: Number, Value {
 
     public static var declaredDatatype = "INTEGER"
 
-    public static func fromDatatypeValue(datatypeValue: Datatype) -> Int {
+    public static func fromDatatypeValue(datatypeValue: Int64) -> Int64 {
         return datatypeValue
     }
 
-    public var datatypeValue: Datatype {
+    public var datatypeValue: Int64 {
         return self
     }
 
@@ -147,16 +125,44 @@ extension Int: Number, Value {
 
 extension String: Binding, Value {
 
-    public typealias Datatype = String
-
     public static var declaredDatatype = "TEXT"
 
-    public static func fromDatatypeValue(datatypeValue: Datatype) -> String {
+    public static func fromDatatypeValue(datatypeValue: String) -> String {
         return datatypeValue
     }
 
-    public var datatypeValue: Datatype {
+    public var datatypeValue: String {
         return self
+    }
+
+}
+
+// MARK: -
+
+extension Bool: Binding, Value {
+
+    public static var declaredDatatype = Int64.declaredDatatype
+
+    public static func fromDatatypeValue(datatypeValue: Int64) -> Bool {
+        return datatypeValue != 0
+    }
+
+    public var datatypeValue: Int64 {
+        return self ? 1 : 0
+    }
+
+}
+
+extension Int: Binding, Value {
+
+    public static var declaredDatatype = Int64.declaredDatatype
+
+    public static func fromDatatypeValue(datatypeValue: Int64) -> Int {
+        return Int(datatypeValue)
+    }
+
+    public var datatypeValue: Int64 {
+        return Int64(self)
     }
 
 }
