@@ -46,7 +46,7 @@ class SQLiteTestCase: XCTestCase {
     func insertUser(name: String, age: Int? = nil, admin: Bool = false) -> Statement {
         return db.run(
             "INSERT INTO \"users\" (email, age, admin) values (?, ?, ?)",
-            ["\(name)@example.com", age, admin.datatypeValue]
+            ["\(name)@example.com", age, admin]
         )
     }
 

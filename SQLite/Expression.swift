@@ -27,7 +27,7 @@ public struct Expression<T> {
 
     public let SQL: String
 
-    public let bindings: [Binding?]
+    public let bindings: [Bindable?]
 
     private var ascending: Bool?
 
@@ -39,7 +39,7 @@ public struct Expression<T> {
     /// :param: SQL      A SQL string.
     ///
     /// :param: bindings Values to be bound to the given SQL.
-    public init(literal SQL: String = "", _ bindings: [Binding?] = []) {
+    public init(literal SQL: String = "", _ bindings: [Bindable?] = []) {
         (self.SQL, self.bindings) = (SQL, bindings)
     }
 
@@ -91,7 +91,7 @@ public struct Expression<T> {
     }
 
     internal static func join(separator: String, _ expressions: [Expressible]) -> Expression<()> {
-        var (SQL, bindings) = ([String](), [Binding?]())
+        var (SQL, bindings) = ([String](), [Bindable?]())
         for expressible in expressions {
             let expression = expressible.expression
             SQL.append(expression.SQL)
@@ -932,11 +932,11 @@ public postfix func -- <V: Value where V.Datatype == Int64>(column: Expression<V
 
 internal let rowid = Expression<Int64>("ROWID")
 
-internal func transcode(literal: Binding?) -> String {
+internal func transcode(literal: Bindable?) -> String {
     if let literal = literal {
         if let literal = literal as? Blob { return literal.description }
         if let literal = literal as? String { return quote(literal: literal) }
-        return "\(literal)"
+        return "\(literal.binding)"
     }
     return "NULL"
 }

@@ -54,7 +54,7 @@ public final class Statement {
     /// :param: values A list of parameters to bind to the statement.
     ///
     /// :returns: The statement object (useful for chaining).
-    public func bind(values: Binding?...) -> Statement {
+    public func bind(values: Bindable?...) -> Statement {
         return bind(values)
     }
 
@@ -63,11 +63,11 @@ public final class Statement {
     /// :param: values A list of parameters to bind to the statement.
     ///
     /// :returns: The statement object (useful for chaining).
-    public func bind(values: [Binding?]) -> Statement {
+    public func bind(values: [Bindable?]) -> Statement {
         if values.isEmpty { return self }
         reset()
         assert(values.count == Int(sqlite3_bind_parameter_count(handle)), "\(sqlite3_bind_parameter_count(handle)) values expected, \(values.count) passed")
-        for idx in 1...values.count { bind(values[idx - 1], atIndex: idx) }
+        for idx in 1...values.count { bind(values[idx - 1]?.binding, atIndex: idx) }
         return self
     }
 
@@ -77,12 +77,12 @@ public final class Statement {
     ///                statement.
     ///
     /// :returns: The statement object (useful for chaining).
-    public func bind(values: [String: Binding?]) -> Statement {
+    public func bind(values: [String: Bindable?]) -> Statement {
         reset()
         for (name, value) in values {
             let idx = sqlite3_bind_parameter_index(handle, name)
             assert(idx > 0, "parameter not found: \(name)")
-            bind(value, atIndex: Int(idx))
+            bind(value?.binding, atIndex: Int(idx))
         }
         return self
     }
@@ -98,10 +98,6 @@ public final class Statement {
             try { sqlite3_bind_int64(self.handle, Int32(idx), value) }
         } else if let value = value as? String {
             try { sqlite3_bind_text(self.handle, Int32(idx), value, -1, SQLITE_TRANSIENT) }
-        } else if let value = value as? Bool {
-            bind(value.datatypeValue, atIndex: idx)
-        } else if let value = value as? Int {
-            bind(value.datatypeValue, atIndex: idx)
         } else if let value = value {
             assertionFailure("tried to bind unexpected value \(value)")
         }
@@ -112,7 +108,7 @@ public final class Statement {
     /// :param: bindings A list of parameters to bind to the statement.
     ///
     /// :returns: The statement object (useful for chaining).
-    public func run(bindings: Binding?...) -> Statement {
+    public func run(bindings: Bindable?...) -> Statement {
         if !bindings.isEmpty { return run(bindings) }
         reset(clearBindings: false)
         while step() {}
@@ -122,7 +118,7 @@ public final class Statement {
     /// :param: bindings A list of parameters to bind to the statement.
     ///
     /// :returns: The statement object (useful for chaining).
-    public func run(bindings: [Binding?]) -> Statement {
+    public func run(bindings: [Bindable?]) -> Statement {
         return bind(bindings).run()
     }
 
@@ -130,7 +126,7 @@ public final class Statement {
     ///                  statement.
     ///
     /// :returns: The statement object (useful for chaining).
-    public func run(bindings: [String: Binding?]) -> Statement {
+    public func run(bindings: [String: Bindable?]) -> Statement {
         return bind(bindings).run()
     }
 
@@ -139,7 +135,7 @@ public final class Statement {
     /// :param: bindings A list of parameters to bind to the statement.
     ///
     /// :returns: The first value of the first row returned.
-    public func scalar(bindings: Binding?...) -> Binding? {
+    public func scalar(bindings: Bindable?...) -> Binding? {
         if !bindings.isEmpty { return scalar(bindings) }
         reset(clearBindings: false)
         step()
@@ -149,7 +145,7 @@ public final class Statement {
     /// :param: bindings A list of parameters to bind to the statement.
     ///
     /// :returns: The first value of the first row returned.
-    public func scalar(bindings: [Binding?]) -> Binding? {
+    public func scalar(bindings: [Bindable?]) -> Binding? {
         return bind(bindings).scalar()
     }
 
@@ -157,7 +153,7 @@ public final class Statement {
     ///                  statement.
     ///
     /// :returns: The first value of the first row returned.
-    public func scalar(bindings: [String: Binding?]) -> Binding? {
+    public func scalar(bindings: [String: Bindable?]) -> Binding? {
         return bind(bindings).scalar()
     }
 

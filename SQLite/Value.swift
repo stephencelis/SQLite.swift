@@ -29,7 +29,13 @@ import Foundation
 ///
 /// Do not conform custom types to the Binding protocol. See the Value protocol,
 /// instead.
-public protocol Binding {}
+public protocol Binding: Bindable {}
+
+public protocol Bindable {
+
+     var binding: Binding { get }
+
+}
 
 public protocol Number: Binding {}
 
@@ -83,6 +89,10 @@ extension Blob: Binding, Value {
         return self
     }
 
+    public var binding: Binding {
+        return datatypeValue
+    }
+
 }
 
 extension Blob: Printable {
@@ -107,6 +117,10 @@ extension Double: Number, Value {
         return self
     }
 
+    public var binding: Binding {
+        return datatypeValue
+    }
+
 }
 
 extension Int64: Number, Value {
@@ -119,6 +133,10 @@ extension Int64: Number, Value {
 
     public var datatypeValue: Int64 {
         return self
+    }
+
+    public var binding: Binding {
+        return datatypeValue
     }
 
 }
@@ -135,11 +153,15 @@ extension String: Binding, Value {
         return self
     }
 
+    public var binding: Binding {
+        return datatypeValue
+    }
+
 }
 
 // MARK: -
 
-extension Bool: Binding, Value {
+extension Bool: Bindable, Value {
 
     public static var declaredDatatype = Int64.declaredDatatype
 
@@ -151,9 +173,14 @@ extension Bool: Binding, Value {
         return self ? 1 : 0
     }
 
+    public var binding: Binding {
+        return datatypeValue
+    }
+
 }
 
-extension Int: Binding, Value {
+
+extension Int: Bindable, Value {
 
     public static var declaredDatatype = Int64.declaredDatatype
 
@@ -163,6 +190,10 @@ extension Int: Binding, Value {
 
     public var datatypeValue: Int64 {
         return Int64(self)
+    }
+
+    public var binding: Binding {
+        return datatypeValue
     }
 
 }
