@@ -322,8 +322,11 @@ The `column` function is used for a single column definition. It takes an [expre
   - `collate` adds a `COLLATE` clause to `Expression<String>` (and `Expression<String?>`) column definitions with [a collating sequence](https://www.sqlite.org/datatype3.html#collation) defined in the `Collation` enumeration.
 
     ``` swift
-    t.column(email, collate: .NoCase)
+    t.column(email, collate: .Nocase)
     // "email" TEXT NOT NULL COLLATE "NOCASE"
+
+    t.column(name, collate: .Rtrim)
+    // "name" TEXT COLLATE "RTRIM"
     ```
 
   - `references` adds a `REFERENCES` clause to `Expression<Int64>` (and `Expression<Int64?>`) column definitions and accepts a table (`Query`) or namespaced column expression. (See the `foreignKey` function under [Table Constraints](#table-constraints) for non-integer foreign key support.)
@@ -953,8 +956,11 @@ The `alter` function shares several of the same [`column` function parameters](#
   - `collate` adds a `COLLATE` clause to `Expression<String>` (and `Expression<String?>`) column definitions with [a collating sequence](https://www.sqlite.org/datatype3.html#collation) defined in the `Collation` enumeration.
 
     ``` swift
-    t.column(email, collate: .NoCase)
+    t.column(email, collate: .Nocase)
     // email TEXT NOT NULL COLLATE "NOCASE"
+
+    t.column(name, collate: .Rtrim)
+    // name TEXT COLLATE "RTRIM"
     ```
 
   - `references` adds a `REFERENCES` clause to `Int64` (and `Int64?`) column definitions and accepts a table or namespaced column expression. (See the `foreignKey` function under [Table Constraints](#table-constraints) for non-integer foreign key support.)

@@ -96,7 +96,7 @@ class SchemaTests: XCTestCase {
     func test_createTable_stringColumn_collation_buildsCollateClause() {
         ExpectExecution(db, "CREATE TABLE \"users\" (\"email\" TEXT NOT NULL COLLATE NOCASE)",
             db.create(table: users) { t in
-                t.column(email, collate: .NoCase)
+                t.column(email, collate: .Nocase)
             }
         )
     }
@@ -309,11 +309,11 @@ class SchemaTests: XCTestCase {
         let columnB = Expression<String?>("column_b")
 
         ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN \"column_a\" TEXT NOT NULL DEFAULT '' COLLATE \"NOCASE\"",
-            db.alter(table: users, add: columnA, defaultValue: "", collate: .NoCase)
+            db.alter(table: users, add: columnA, defaultValue: "", collate: .Nocase)
         )
 
         ExpectExecution(db, "ALTER TABLE \"users\" ADD COLUMN \"column_b\" TEXT COLLATE \"NOCASE\"",
-            db.alter(table: users, add: columnB, collate: .NoCase)
+            db.alter(table: users, add: columnB, collate: .Nocase)
         )
     }
 

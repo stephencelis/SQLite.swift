@@ -296,14 +296,13 @@ class ExpressionTests: XCTestCase {
 
     func test_collateOperator_withStringExpression_buildsCollationExpression() {
         ExpectExecutionMatches("('A' COLLATE \"BINARY\")", collate(.Binary, stringA))
-        ExpectExecutionMatches("('B' COLLATE \"NOCASE\")", collate(.NoCase, stringB))
-        ExpectExecutionMatches("('A' COLLATE \"RTRIM\")", collate(.RTrim, stringA))
+        ExpectExecutionMatches("('B' COLLATE \"NOCASE\")", collate(.Nocase, stringB))
+        ExpectExecutionMatches("('A' COLLATE \"RTRIM\")", collate(.Rtrim, stringA))
 
-        let NoDiacritic = "NODIACRITIC"
-        db.create(collation: NoDiacritic) { lhs, rhs in
+        db.create(collation: "NODIACRITIC") { lhs, rhs in
             return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)
         }
-        ExpectExecutionMatches("('A' COLLATE \"NODIACRITIC\")", collate(.Custom(NoDiacritic), stringA))
+        ExpectExecutionMatches("('A' COLLATE \"NODIACRITIC\")", collate(.Custom("NODIACRITIC"), stringA))
 }
 
     func test_cast_buildsCastingExpressions() {

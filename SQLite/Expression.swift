@@ -286,9 +286,9 @@ public enum Collation {
 
     case Binary
 
-    case NoCase
+    case Nocase
 
-    case RTrim
+    case Rtrim
 
     case Custom(String)
 
@@ -300,9 +300,9 @@ extension Collation: Printable {
         switch self {
         case Binary:
             return "BINARY"
-        case NoCase:
+        case Nocase:
             return "NOCASE"
-        case RTrim:
+        case Rtrim:
             return "RTRIM"
         case Custom(let collation):
             return collation
