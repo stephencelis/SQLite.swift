@@ -389,7 +389,7 @@ public struct Query {
     private var selectClause: Expressible {
         var expressions: [Expressible] = [Expression<()>(literal: "SELECT")]
         if distinct { expressions.append(Expression<()>(literal: "DISTINCT")) }
-        expressions.append(Expression<()>.join(", ", columns))
+        expressions.append(Expression<()>.join(", ", columns.map { $0.expression.aliased }))
         expressions.append(Expression<()>(literal: "FROM \(self)"))
         return Expression<()>.join(" ", expressions)
     }

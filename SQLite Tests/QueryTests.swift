@@ -131,6 +131,16 @@ class QueryTests: XCTestCase {
         XCTAssertEqual(alice[email], betty[managers[email]])
     }
 
+    func test_aliasedColumnRowValueAccess() {
+        users.insert(email <- "alice@example.com")!
+
+        let alias = email.alias("user_email")
+        let query = users.select(alias)
+        let alice = query.first!
+
+        XCTAssertEqual("alice@example.com", alice[alias])
+    }
+
     func test_filter_compilesWhereClause() {
         let query = users.filter(admin == true)
 

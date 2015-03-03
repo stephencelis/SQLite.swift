@@ -28,6 +28,11 @@ class ExpressionTests: XCTestCase {
         CreateUsersTable(db)
     }
 
+    func test_alias_aliasesExpression() {
+        let aliased = stringA.alias("string_a")
+        ExpectExecutionMatches("('A') AS \"string_a\"", aliased)
+    }
+
     func test_stringExpressionPlusStringExpression_buildsConcatenatingStringExpression() {
         ExpectExecutionMatches("('A' || 'A')", stringA + stringA)
         ExpectExecutionMatches("('A' || 'B')", stringA + stringB)

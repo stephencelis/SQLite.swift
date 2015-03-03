@@ -29,7 +29,9 @@ public struct Expression<T> {
 
     public let bindings: [Binding?]
 
-    internal var ascending: Bool?
+    private var ascending: Bool?
+
+    private var original: Expressible?
 
     /// Builds a SQL expression with a literal string and an optional list of
     /// bindings.
@@ -76,6 +78,14 @@ public struct Expression<T> {
         return expression
     }
 
+    /// Returns an aliased version of the expression using AS. The expression is
+    /// expanded contextually (e.g., in SELECT clauses).
+    public func alias(alias: String) -> Expression {
+        var expression = Expression(alias)
+        expression.original = self
+        return expression
+    }
+
     internal static func join(separator: String, _ expressions: [Expressible]) -> Expression<()> {
         var (SQL, bindings) = ([String](), [Binding?]())
         for expressible in expressions {
@@ -89,6 +99,7 @@ public struct Expression<T> {
     internal init<V>(_ expression: Expression<V>) {
         self.init(literal: expression.SQL, expression.bindings)
         ascending = expression.ascending
+        original = expression.original
     }
 
     internal var ordered: Expression<()> {
@@ -96,6 +107,13 @@ public struct Expression<T> {
             return Expression.join(" ", [self, Expression(literal: ascending ? "ASC" : "DESC")])
         }
         return Expression<()>(self)
+    }
+
+    internal var aliased: Expression {
+        if let aliased = original?.expression {
+            return Expression(literal: "(\(aliased.SQL)) AS \(SQL)", aliased.bindings + bindings)
+        }
+        return self
     }
 
     internal func reverse() -> Expression {
