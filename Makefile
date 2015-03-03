@@ -18,5 +18,5 @@ repl:
 		swift -F '$(TMPDIR)/SQLite.swift/Build/Products/Debug'
 
 sloc:
-	@zsh -c "grep -vE '^ *//|^$$' SQLite\ Common/*.{swift,h,c} | wc -l"
+	@zsh -c "grep -vE '^ *//|^$$' SQLite/*.{swift,h,c} | wc -l"
 
