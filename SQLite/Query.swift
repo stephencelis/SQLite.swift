@@ -52,7 +52,7 @@ public struct Query {
 
     }
 
-    private var columns: [Expressible] = [Expression<()>(literal: "*")]
+    private var columns: [Expressible]?
     private var distinct: Bool = false
     internal var tableName: Expression<()>
     private var joins: [(type: JoinType, table: Query, condition: Expression<Bool>)] = []
@@ -96,7 +96,9 @@ public struct Query {
     ///
     /// :returns: A query with SELECT * applied.
     public func select(all star: Star) -> Query {
-        return select(star(nil, nil))
+        var query = self
+        (query.distinct, query.columns) = (false, nil)
+        return query
     }
 
     /// Sets the SELECT DISTINCT * clause on the query.
@@ -392,7 +394,7 @@ public struct Query {
     private var selectClause: Expressible {
         var expressions: [Expressible] = [Expression<()>(literal: "SELECT")]
         if distinct { expressions.append(Expression<()>(literal: "DISTINCT")) }
-        expressions.append(Expression<()>.join(", ", columns.map { $0.expression.aliased }))
+        expressions.append(Expression<()>.join(", ", (columns ?? [Expression<()>(literal: "*")]).map { $0.expression.aliased }))
         expressions.append(Expression<()>(literal: "FROM \(tableName.aliased.SQL)"))
         return Expression<()>.join(" ", expressions)
     }
@@ -400,7 +402,8 @@ public struct Query {
     private var joinClause: Expressible? {
         if joins.count == 0 { return nil }
         return Expression<()>.join(" ", joins.map { type, table, condition in
-            Expression<()>(literal: "\(type.rawValue) JOIN \(table.tableName.aliased.SQL) ON \(condition.SQL)", condition.bindings)
+            let join = (table.columns == nil ? table.tableName : table.expression).aliased
+            return Expression<()>(literal: "\(type.rawValue) JOIN \(join.SQL) ON \(condition.SQL)", join.bindings + condition.bindings)
         })
     }
 
@@ -824,7 +827,7 @@ public struct QueryGenerator: GeneratorType {
 
     private lazy var columnNames: [String: Int] = {
         var (columnNames, idx) = ([String: Int](), 0)
-        column: for each in self.query.columns {
+        column: for each in self.query.columns ?? [Expression<()>(literal: "*")] {
             let pair = split(each.expression.SQL) { $0 == "." }
             let (tableName, column) = (pair.count > 1 ? pair.first : nil, pair.last!)
 

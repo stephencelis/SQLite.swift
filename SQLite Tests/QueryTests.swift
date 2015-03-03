@@ -54,6 +54,18 @@ class QueryTests: XCTestCase {
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
+    func test_select_withSubquery() {
+        let subquery = users.select(id)
+
+        var query = users.select(subquery)
+        var SQL = "SELECT (SELECT \"id\" FROM \"users\") FROM \"users\""
+        ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
+
+        query = users.select(subquery.alias("u"))
+        SQL = "SELECT (SELECT \"id\" FROM (\"users\") AS \"u\") AS \"u\" FROM \"users\""
+        ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
+    }
+
     func test_join_compilesJoinClause() {
         let managers = db["users"].alias("managers")
 
@@ -114,6 +126,28 @@ class QueryTests: XCTestCase {
         let SQL = "SELECT \"users\".*, \"managers\".* FROM \"users\" " +
             "INNER JOIN (\"users\") AS \"managers\" " +
             "ON (\"managers\".\"id\" = \"users\".\"manager_id\")"
+        ExpectExecutions(db, [SQL: 1]) { _ in for row in query { println(row) } }
+    }
+
+    func test_join_withSubquery_joinsSubquery() {
+        let maxId = max(id).alias("max_id")
+        let subquery = users.select(maxId).group(age)
+        let query = users.join(subquery, on: maxId == id)
+
+        let SQL = "SELECT * FROM \"users\" " +
+            "INNER JOIN (SELECT (max(\"id\")) AS \"max_id\" FROM \"users\" GROUP BY \"age\") " +
+            "ON (\"max_id\" = \"id\")"
+        ExpectExecutions(db, [SQL: 1]) { _ in for row in query { println(row) } }
+    }
+
+    func test_join_withAliasedSubquery_joinsSubquery() {
+        let maxId = max(id).alias("max_id")
+        let subquery = users.select(maxId).group(age).alias("u")
+        let query = users.join(subquery, on: subquery[maxId] == id)
+
+        let SQL = "SELECT * FROM \"users\" " +
+            "INNER JOIN (SELECT (max(\"id\")) AS \"max_id\" FROM (\"users\") AS \"u\" GROUP BY \"age\") AS \"u\" " +
+            "ON (\"u\".\"max_id\" = \"id\")"
         ExpectExecutions(db, [SQL: 1]) { _ in for row in query { println(row) } }
     }
 

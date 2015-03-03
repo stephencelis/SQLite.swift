@@ -81,6 +81,10 @@ public struct Expression<T> {
     /// Returns an aliased version of the expression using AS. The expression is
     /// expanded contextually (e.g., in SELECT clauses).
     public func alias(alias: String) -> Expression {
+        return self.alias(Expression(alias))
+    }
+
+    private func alias(alias: Expression) -> Expression {
         var expression = Expression(alias)
         expression.original = self
         return expression
@@ -196,6 +200,17 @@ extension Expression: Expressible {
 
     public var expression: Expression<()> {
         return Expression<()>(self)
+    }
+
+}
+
+extension Query: Expressible {
+
+    public var expression: Expression<()> {
+        if tableName.original != nil {
+            return selectExpression.alias(tableName)
+        }
+        return wrap("", selectExpression)
     }
 
 }
