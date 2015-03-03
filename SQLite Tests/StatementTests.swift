@@ -163,6 +163,15 @@ class StatementTests: XCTestCase {
         XCTAssertEqual(3, count)
     }
 
+    func test_generate_allowsReuse() {
+        InsertUsers(db, "alice", "betsy", "cindy")
+        var count = 0
+        let stmt = db.prepare("SELECT id FROM users")
+        for row in stmt { count++ }
+        for row in stmt { count++ }
+        XCTAssertEqual(6, count)
+    }
+
     func test_cursor_returnsValues() {
         InsertUser(db, "alice")
         let stmt = db.prepare("SELECT id, email FROM users")

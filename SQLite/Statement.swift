@@ -197,7 +197,10 @@ public final class Statement {
 // MARK: - SequenceType
 extension Statement: SequenceType {
 
-    public func generate() -> Statement { return self }
+    public func generate() -> Statement {
+        reset(clearBindings: false)
+        return self
+    }
 
 }
 
