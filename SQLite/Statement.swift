@@ -32,7 +32,7 @@ public final class Statement {
 
     private let database: Database
 
-    public lazy var cursor: Cursor = { Cursor(self) }()
+    public lazy var row: Cursor = { Cursor(self) }()
 
     internal init(_ database: Database, _ SQL: String) {
         self.database = database
@@ -115,7 +115,7 @@ public final class Statement {
     public func run(bindings: Binding?...) -> Statement {
         if !bindings.isEmpty { return run(bindings) }
         reset(clearBindings: false)
-        while cursor.step() {}
+        while step() {}
         return self
     }
 
@@ -142,8 +142,8 @@ public final class Statement {
     public func scalar(bindings: Binding?...) -> Binding? {
         if !bindings.isEmpty { return scalar(bindings) }
         reset(clearBindings: false)
-        cursor.step()
-        return cursor[0]
+        step()
+        return row[0]
     }
 
     /// :param: bindings A list of parameters to bind to the statement.
@@ -162,6 +162,11 @@ public final class Statement {
     }
 
     // MARK: -
+
+    public func step() -> Bool {
+        try(sqlite3_step(handle))
+        return status == SQLITE_ROW
+    }
 
     private func reset(clearBindings: Bool = true) {
         (status, reason) = (SQLITE_OK, nil)
@@ -209,7 +214,7 @@ extension Statement: GeneratorType {
 
     /// :returns: The next row from the result set (or nil).
     public func next() -> [Binding?]? {
-        return cursor.step() ? Array(cursor) : nil
+        return step() ? Array(row) : nil
     }
 
 }
@@ -236,33 +241,31 @@ public func || (lhs: Statement, rhs: @autoclosure () -> Statement) -> Statement 
 /// Cursors provide direct access to a statement's current row.
 public struct Cursor {
 
-    private unowned let statement: Statement
+    private let handle: COpaquePointer
+
+    private let columnCount: Int
 
     private init(_ statement: Statement) {
-        self.statement = statement
-    }
-
-    public func step() -> Bool {
-        statement.try(sqlite3_step(statement.handle))
-        return statement.status == SQLITE_ROW
+        handle = statement.handle
+        columnCount = statement.columnCount
     }
 
     public subscript(idx: Int) -> Blob {
-        let bytes = sqlite3_column_blob(statement.handle, Int32(idx))
-        let length = sqlite3_column_bytes(statement.handle, Int32(idx))
+        let bytes = sqlite3_column_blob(handle, Int32(idx))
+        let length = sqlite3_column_bytes(handle, Int32(idx))
         return Blob(bytes: bytes, length: Int(length))
     }
 
     public subscript(idx: Int) -> Double {
-        return sqlite3_column_double(statement.handle, Int32(idx))
+        return sqlite3_column_double(handle, Int32(idx))
     }
 
     public subscript(idx: Int) -> Int64 {
-        return sqlite3_column_int64(statement.handle, Int32(idx))
+        return sqlite3_column_int64(handle, Int32(idx))
     }
 
     public subscript(idx: Int) -> String {
-        return String.fromCString(UnsafePointer(sqlite3_column_text(statement.handle, Int32(idx)))) ?? ""
+        return String.fromCString(UnsafePointer(sqlite3_column_text(handle, Int32(idx)))) ?? ""
     }
 
     public subscript(idx: Int) -> Bool {
@@ -279,7 +282,7 @@ public struct Cursor {
 extension Cursor: SequenceType {
 
     public subscript(idx: Int) -> Binding? {
-        switch sqlite3_column_type(statement.handle, Int32(idx)) {
+        switch sqlite3_column_type(handle, Int32(idx)) {
         case SQLITE_BLOB:
             return self[idx] as Blob
         case SQLITE_FLOAT:
@@ -298,7 +301,7 @@ extension Cursor: SequenceType {
     public func generate() -> GeneratorOf<Binding?> {
         var idx = 0
         return GeneratorOf<Binding?> {
-            idx >= self.statement.columnCount ? Optional<Binding?>.None : self[idx++]
+            idx >= self.columnCount ? Optional<Binding?>.None : self[idx++]
         }
     }
 
