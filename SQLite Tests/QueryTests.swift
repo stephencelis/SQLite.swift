@@ -130,9 +130,13 @@ class QueryTests: XCTestCase {
     }
 
     func test_join_withSubquery_joinsSubquery() {
+        InsertUser(db, "alice", age: 20)
+
         let maxId = max(id).alias("max_id")
         let subquery = users.select(maxId).group(age)
         let query = users.join(subquery, on: maxId == id)
+
+        XCTAssertEqual(Int64(1), query.first![maxId]!)
 
         let SQL = "SELECT * FROM \"users\" " +
             "INNER JOIN (SELECT (max(\"id\")) AS \"max_id\" FROM \"users\" GROUP BY \"age\") " +
@@ -141,9 +145,13 @@ class QueryTests: XCTestCase {
     }
 
     func test_join_withAliasedSubquery_joinsSubquery() {
+        InsertUser(db, "alice", age: 20)
+
         let maxId = max(id).alias("max_id")
         let subquery = users.select(maxId).group(age).alias("u")
         let query = users.join(subquery, on: subquery[maxId] == id)
+
+        XCTAssertEqual(Int64(1), query.first![subquery[maxId]]!)
 
         let SQL = "SELECT * FROM \"users\" " +
             "INNER JOIN (SELECT (max(\"id\")) AS \"max_id\" FROM (\"users\") AS \"u\" GROUP BY \"age\") AS \"u\" " +

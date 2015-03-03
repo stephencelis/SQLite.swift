@@ -787,7 +787,7 @@ public struct Row {
         if similar.count > 1 {
             fatalError("ambiguous column \(quote(literal: column.SQL)) (please disambiguate: \(similar))")
         }
-        fatalError("no such column \(quote(literal: column.SQL)) in columns: \(Array(columnNames.keys))")
+        fatalError("no such column \(quote(literal: column.SQL)) in columns: \(sorted(columnNames.keys))")
     }
 
     // FIXME: rdar://18673897 // ... subscript<T>(expression: Expression<V>) -> Expression<V>
@@ -833,14 +833,16 @@ public struct QueryGenerator: GeneratorType {
 
             func expandGlob(namespace: Bool) -> Query -> () {
                 return { table in
-                    var names = Query(self.query.database, self.query.tableName.unaliased).selectStatement.columnNames.map { quote(identifier: $0) }
+                    var query = Query(table.database, table.tableName.unaliased)
+                    if let columns = table.columns { query.columns = columns  }
+                    var names = query.selectStatement.columnNames.map { quote(identifier: $0) }
                     if namespace { names = names.map { "\(table.tableName.SQL).\($0)" } }
                     for name in names { columnNames[name] = idx++ }
                 }
             }
 
             if column == "*" {
-                let tables = [self.query] + self.query.joins.map { $0.table }
+                let tables = [self.query.select(all: *)] + self.query.joins.map { $0.table }
                 if let tableName = tableName {
                     for table in tables {
                         if table.tableName.SQL == tableName {
