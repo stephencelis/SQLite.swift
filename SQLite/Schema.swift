@@ -43,8 +43,8 @@ public extension Database {
         return run("\(create) AS \(expression.SQL)", expression.bindings)
     }
 
-    public func rename(#table: Query, to tableName: String) -> Statement {
-        return run("ALTER TABLE \(table.tableName.unaliased.SQL) RENAME TO \(quote(identifier: tableName))")
+    public func rename(table tableName: String, to table: Query) -> Statement {
+        return run("ALTER TABLE \(quote(identifier: tableName)) RENAME TO \(table.tableName.unaliased.SQL)")
     }
 
     public func alter<V: Value>(

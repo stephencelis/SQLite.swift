@@ -264,7 +264,8 @@ class SchemaTests: XCTestCase {
 
     func test_alterTable_renamesTable() {
         CreateUsersTable(db)
-        ExpectExecution(db, "ALTER TABLE \"users\" RENAME TO \"people\"", db.rename(table: users, to: "people") )
+        let people = db["people"]
+        ExpectExecution(db, "ALTER TABLE \"users\" RENAME TO \"people\"", db.rename(table: "users", to: people) )
     }
 
     func test_alterTable_addsNotNullColumn() {
