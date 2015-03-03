@@ -53,7 +53,7 @@ public final class Database {
 
     // MARK: -
 
-    /// The last row id inserted into the database via this connection.
+    /// The last rowid inserted into the database via this connection.
     public var lastId: Int64? {
         let lastId = sqlite3_last_insert_rowid(handle)
         return lastId == 0 ? nil : lastId

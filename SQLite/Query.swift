@@ -438,14 +438,14 @@ public struct Query {
     ///
     /// :param: values A list of values to set.
     ///
-    /// :returns: The row id.
+    /// :returns: The rowid.
     public func insert(value: Setter, _ more: Setter...) -> Int64? { return insert([value] + more).id }
 
     /// Runs an INSERT statement against the query.
     ///
     /// :param: values A list of values to set.
     ///
-    /// :returns: The row id and statement.
+    /// :returns: The rowid and statement.
     public func insert(value: Setter, _ more: Setter...) -> (id: Int64?, statement: Statement) {
         return insert([value] + more)
     }
@@ -454,14 +454,14 @@ public struct Query {
     ///
     /// :param: values An array of values to set.
     ///
-    /// :returns: The row id.
+    /// :returns: The rowid.
     public func insert(values: [Setter]) -> Int64? { return insert(values).id }
 
     /// Runs an INSERT statement against the query.
     ///
     /// :param: values An array of values to set.
     ///
-    /// :returns: The row id and statement.
+    /// :returns: The rowid and statement.
     public func insert(values: [Setter]) -> (id: Int64?, statement: Statement) {
         let statement = insertStatement(values).run()
         return (statement.failed ? nil : database.lastId, statement)
@@ -497,14 +497,14 @@ public struct Query {
     ///
     /// :param: values A list of values to set.
     ///
-    /// :returns: The row id.
+    /// :returns: The rowid.
     public func replace(values: Setter...) -> Int64? { return replace(values).id }
 
     /// Runs a REPLACE statement against the query.
     ///
     /// :param: values A list of values to set.
     ///
-    /// :returns: The row id and statement.
+    /// :returns: The rowid and statement.
     public func replace(values: Setter...) -> (id: Int64?, statement: Statement) {
         return replace(values)
     }
@@ -513,14 +513,14 @@ public struct Query {
     ///
     /// :param: values An array of values to set.
     ///
-    /// :returns: The row id.
+    /// :returns: The rowid.
     public func replace(values: [Setter]) -> Int64? { return replace(values).id }
 
     /// Runs a REPLACE statement against the query.
     ///
     /// :param: values An array of values to set.
     ///
-    /// :returns: The row id and statement.
+    /// :returns: The rowid and statement.
     public func replace(values: [Setter]) -> (id: Int64?, statement: Statement) {
         let statement = insertStatement(values, or: .Replace).run()
         return (statement.failed ? nil : database.lastId, statement)
