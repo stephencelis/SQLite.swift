@@ -287,6 +287,9 @@ The `column` function is used for a single column definition. It takes an [expre
     ``` swift
     t.column(id, primaryKey: true)
     // "id" INTEGER PRIMARY KEY NOT NULL
+
+    t.column(id, primaryKey: .Autoincrement)
+    // "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL
     ```
 
     > _Note:_ The `primaryKey` parameter cannot be used alongside `defaultValue` or `references`. If you need to create a column that has a default value and is also a primary and/or foreign key, use the `primaryKey` and `foreignKey` functions mentioned under [Table Constraints](#table-constraints).
