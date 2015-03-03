@@ -29,6 +29,10 @@ public struct Query {
     internal var database: Database
 
     internal init(_ database: Database, _ tableName: String) {
+        (self.database, self.tableName) = (database, Expression(tableName))
+    }
+
+    private init(_ database: Database, _ tableName: Expression<()>) {
         (self.database, self.tableName) = (database, tableName)
     }
 
@@ -50,17 +54,16 @@ public struct Query {
 
     private var columns: [Expressible] = [Expression<()>(literal: "*")]
     private var distinct: Bool = false
-    internal var tableName: String
-    private var alias: String?
+    internal var tableName: Expression<()>
     private var joins: [(type: JoinType, table: Query, condition: Expression<Bool>)] = []
     private var filter: Expression<Bool>?
     private var group: Expressible?
     private var order = [Expressible]()
     private var limit: (to: Int, offset: Int?)? = nil
 
-    public func alias(alias: String?) -> Query {
+    public func alias(alias: String) -> Query {
         var query = self
-        query.alias = alias
+        query.tableName = query.tableName.alias(alias)
         return query
     }
 
@@ -293,7 +296,7 @@ public struct Query {
     /// :returns: A column expression namespaced with the query’s table name or
     ///           alias.
     public func namespace<V>(column: Expression<V>) -> Expression<V> {
-        return Expression(literal: "\(quote(identifier: alias ?? tableName)).\(column.SQL)", column.bindings)
+        return Expression(.join(".", [tableName, column]))
     }
 
     // FIXME: rdar://18673897 // ... subscript<T>(expression: Expression<V>) -> Expression<V>
@@ -361,7 +364,7 @@ public struct Query {
     private func insertStatement(values: [Setter], or: OnConflict? = nil) -> Statement {
         var insertClause = "INSERT"
         if let or = or { insertClause = "\(insertClause) OR \(or.rawValue)" }
-        var expressions: [Expressible] = [Expression<()>(literal: "\(insertClause) INTO \(quote(identifier: tableName))")]
+        var expressions: [Expressible] = [Expression<()>(literal: "\(insertClause) INTO \(tableName.unaliased.SQL)")]
         let (c, v) = (Expression<()>.join(", ", values.map { $0.0 }), Expression<()>.join(", ", values.map { $0.1 }))
         expressions.append(Expression<()>(literal: "(\(c.SQL)) VALUES (\(v.SQL))", c.bindings + v.bindings))
         whereClause.map(expressions.append)
@@ -370,7 +373,7 @@ public struct Query {
     }
 
     private func updateStatement(values: [Setter]) -> Statement {
-        var expressions: [Expressible] = [Expression<()>(literal: "UPDATE \(quote(identifier: tableName)) SET")]
+        var expressions: [Expressible] = [Expression<()>(literal: "UPDATE \(tableName.unaliased.SQL) SET")]
         expressions.append(Expression<()>.join(", ", values.map { Expression<()>.join(" = ", [$0, $1]) }))
         whereClause.map(expressions.append)
         let expression = Expression<()>.join(" ", expressions)
@@ -378,7 +381,7 @@ public struct Query {
     }
 
     private var deleteStatement: Statement {
-        var expressions: [Expressible] = [Expression<()>(literal: "DELETE FROM \(quote(identifier: tableName))")]
+        var expressions: [Expressible] = [Expression<()>(literal: "DELETE FROM \(tableName.unaliased.SQL)")]
         whereClause.map(expressions.append)
         let expression = Expression<()>.join(" ", expressions)
         return database.prepare(expression.SQL, expression.bindings)
@@ -390,14 +393,14 @@ public struct Query {
         var expressions: [Expressible] = [Expression<()>(literal: "SELECT")]
         if distinct { expressions.append(Expression<()>(literal: "DISTINCT")) }
         expressions.append(Expression<()>.join(", ", columns.map { $0.expression.aliased }))
-        expressions.append(Expression<()>(literal: "FROM \(self)"))
+        expressions.append(Expression<()>(literal: "FROM \(tableName.aliased.SQL)"))
         return Expression<()>.join(" ", expressions)
     }
 
     private var joinClause: Expressible? {
         if joins.count == 0 { return nil }
         return Expression<()>.join(" ", joins.map { type, table, condition in
-            Expression<()>(literal: "\(type.rawValue) JOIN \(table) ON \(condition.SQL)", condition.bindings)
+            Expression<()>(literal: "\(type.rawValue) JOIN \(table.tableName.aliased.SQL) ON \(condition.SQL)", condition.bindings)
         })
     }
 
@@ -473,7 +476,7 @@ public struct Query {
 
     public func insert(query: Query) -> (changes: Int?, statement: Statement) {
         let expression = query.selectExpression
-        let statement = database.run("INSERT INTO \(quote(identifier: tableName)) \(expression.SQL)", expression.bindings)
+        let statement = database.run("INSERT INTO \(tableName.unaliased.SQL) \(expression.SQL)", expression.bindings)
         return (statement.failed ? nil : database.lastChanges, statement)
     }
 
@@ -482,7 +485,7 @@ public struct Query {
     public func insert() -> Statement { return insert().statement }
 
     public func insert() -> (id: Int64?, statement: Statement) {
-        let statement = database.run("INSERT INTO \(quote(identifier: tableName)) DEFAULT VALUES")
+        let statement = database.run("INSERT INTO \(tableName.unaliased.SQL) DEFAULT VALUES")
         return (statement.failed ? nil : database.lastId, statement)
     }
 
@@ -827,8 +830,8 @@ public struct QueryGenerator: GeneratorType {
 
             func expandGlob(namespace: Bool) -> Query -> () {
                 return { table in
-                    var names = self.query.database[table.tableName].selectStatement.columnNames.map { quote(identifier: $0) }
-                    if namespace { names = names.map { "\(quote(identifier: table.alias ?? table.tableName)).\($0)" } }
+                    var names = Query(self.query.database, self.query.tableName.unaliased).selectStatement.columnNames.map { quote(identifier: $0) }
+                    if namespace { names = names.map { "\(table.tableName.SQL).\($0)" } }
                     for name in names { columnNames[name] = idx++ }
                 }
             }
@@ -837,7 +840,7 @@ public struct QueryGenerator: GeneratorType {
                 let tables = [self.query] + self.query.joins.map { $0.table }
                 if let tableName = tableName {
                     for table in tables {
-                        if quote(identifier: table.alias ?? table.tableName) == tableName {
+                        if table.tableName.SQL == tableName {
                             expandGlob(true)(table)
                             continue column
                         }
@@ -867,8 +870,7 @@ public struct QueryGenerator: GeneratorType {
 extension Query: Printable {
 
     public var description: String {
-        if let alias = alias { return "\(quote(identifier: tableName)) AS \(quote(identifier: alias))" }
-        return quote(identifier: tableName)
+        return tableName.SQL
     }
 
 }

@@ -60,7 +60,7 @@ class QueryTests: XCTestCase {
         let query = users.join(managers, on: managers[id] == users[manager_id])
 
         let SQL = "SELECT * FROM \"users\" " +
-            "INNER JOIN \"users\" AS \"managers\" ON (\"managers\".\"id\" = \"users\".\"manager_id\")"
+            "INNER JOIN (\"users\") AS \"managers\" ON (\"managers\".\"id\" = \"users\".\"manager_id\")"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
@@ -70,7 +70,7 @@ class QueryTests: XCTestCase {
         let query = users.join(.LeftOuter, managers, on: managers[id] == users[manager_id])
 
         let SQL = "SELECT * FROM \"users\" " +
-            "LEFT OUTER JOIN \"users\" AS \"managers\" ON (\"managers\".\"id\" = \"users\".\"manager_id\")"
+            "LEFT OUTER JOIN (\"users\") AS \"managers\" ON (\"managers\".\"id\" = \"users\".\"manager_id\")"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
     }
 
@@ -81,7 +81,7 @@ class QueryTests: XCTestCase {
         let query = users.join(managers, on: managers[id] == users[manager_id])
 
         let SQL = "SELECT * FROM \"users\" " +
-            "INNER JOIN \"users\" AS \"managers\" " +
+            "INNER JOIN (\"users\") AS \"managers\" " +
             "ON ((\"managers\".\"id\" = \"users\".\"manager_id\") " +
             "AND \"managers\".\"admin\")"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
@@ -96,8 +96,8 @@ class QueryTests: XCTestCase {
             .join(managed, on: managed[manager_id] == users[id])
 
         let SQL = "SELECT * FROM \"users\" " +
-            "INNER JOIN \"users\" AS \"managers\" ON (\"managers\".\"id\" = \"users\".\"manager_id\") " +
-            "INNER JOIN \"users\" AS \"managed\" ON (\"managed\".\"manager_id\" = \"users\".\"id\")"
+            "INNER JOIN (\"users\") AS \"managers\" ON (\"managers\".\"id\" = \"users\".\"manager_id\") " +
+            "INNER JOIN (\"users\") AS \"managed\" ON (\"managed\".\"manager_id\" = \"users\".\"id\")"
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in middleManagers {} }
     }
 
@@ -112,7 +112,7 @@ class QueryTests: XCTestCase {
             .join(managers, on: managers[id] == users[manager_id])
 
         let SQL = "SELECT \"users\".*, \"managers\".* FROM \"users\" " +
-            "INNER JOIN \"users\" AS \"managers\" " +
+            "INNER JOIN (\"users\") AS \"managers\" " +
             "ON (\"managers\".\"id\" = \"users\".\"manager_id\")"
         ExpectExecutions(db, [SQL: 1]) { _ in for row in query { println(row) } }
     }
@@ -265,7 +265,7 @@ class QueryTests: XCTestCase {
 
     func test_alias_compilesAliasInSelectClause() {
         let managers = users.alias("managers")
-        var SQL = "SELECT * FROM \"users\" AS \"managers\""
+        var SQL = "SELECT * FROM (\"users\") AS \"managers\""
         ExpectExecutions(db, [SQL: 1]) { _ in for _ in managers {} }
     }
 
@@ -279,11 +279,11 @@ class QueryTests: XCTestCase {
 
     func test_subscript_withAliasAndExpression_returnsAliasedExpression() {
         let managers = users.alias("managers")
-        ExpectExecution(db, "SELECT \"managers\".\"admin\" FROM \"users\" AS \"managers\"", managers.select(managers[admin]))
-        ExpectExecution(db, "SELECT \"managers\".\"salary\" FROM \"users\" AS \"managers\"", managers.select(managers[salary]))
-        ExpectExecution(db, "SELECT \"managers\".\"age\" FROM \"users\" AS \"managers\"", managers.select(managers[age]))
-        ExpectExecution(db, "SELECT \"managers\".\"email\" FROM \"users\" AS \"managers\"", managers.select(managers[email]))
-        ExpectExecution(db, "SELECT \"managers\".* FROM \"users\" AS \"managers\"", managers.select(managers[*]))
+        ExpectExecution(db, "SELECT \"managers\".\"admin\" FROM (\"users\") AS \"managers\"", managers.select(managers[admin]))
+        ExpectExecution(db, "SELECT \"managers\".\"salary\" FROM (\"users\") AS \"managers\"", managers.select(managers[salary]))
+        ExpectExecution(db, "SELECT \"managers\".\"age\" FROM (\"users\") AS \"managers\"", managers.select(managers[age]))
+        ExpectExecution(db, "SELECT \"managers\".\"email\" FROM (\"users\") AS \"managers\"", managers.select(managers[email]))
+        ExpectExecution(db, "SELECT \"managers\".* FROM (\"users\") AS \"managers\"", managers.select(managers[*]))
     }
 
     func test_SQL_compilesProperly() {
@@ -300,7 +300,7 @@ class QueryTests: XCTestCase {
             .limit(1, offset: 2)
 
         let SQL = "SELECT \"users\".\"email\", count(\"users\".\"age\") FROM \"users\" " +
-            "LEFT OUTER JOIN \"users\" AS \"managers\" " +
+            "LEFT OUTER JOIN (\"users\") AS \"managers\" " +
             "ON ((\"managers\".\"id\" = \"users\".\"manager_id\") AND (\"managers\".\"admin\" = 1)) " +
             "WHERE \"users\".\"age\" BETWEEN 21 AND 32 " +
             "GROUP BY \"users\".\"age\" HAVING (count(\"users\".\"age\") > 1) " +

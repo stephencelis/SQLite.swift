@@ -116,6 +116,10 @@ public struct Expression<T> {
         return self
     }
 
+    internal var unaliased: Expression {
+        return original.map { Expression($0.expression) } ?? self
+    }
+
     internal func reverse() -> Expression {
         var expression = self
         expression.ascending = expression.ascending.map(!) ?? false

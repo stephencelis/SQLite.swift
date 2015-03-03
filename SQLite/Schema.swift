@@ -32,19 +32,19 @@ public extension Database {
     ) -> Statement {
         var builder = SchemaBuilder(table)
         block(builder)
-        let create = createSQL("TABLE", temporary, false, ifNotExists, table.tableName)
+        let create = createSQL("TABLE", temporary, false, ifNotExists, table.tableName.unaliased.SQL)
         let columns = Expression<()>.join(", ", builder.columns).compile()
         return run("\(create) (\(columns))")
     }
 
     public func create(#table: Query, temporary: Bool = false, ifNotExists: Bool = false, from: Query) -> Statement {
-        let create = createSQL("TABLE", temporary, false, ifNotExists, table.tableName)
+        let create = createSQL("TABLE", temporary, false, ifNotExists, table.tableName.unaliased.SQL)
         let expression = from.selectExpression
         return run("\(create) AS \(expression.SQL)", expression.bindings)
     }
 
     public func rename(#table: Query, to tableName: String) -> Statement {
-        return run("ALTER TABLE \(quote(identifier: table.tableName)) RENAME TO \(quote(identifier: tableName))")
+        return run("ALTER TABLE \(table.tableName.unaliased.SQL) RENAME TO \(quote(identifier: tableName))")
     }
 
     public func alter<V: Value>(
@@ -103,11 +103,11 @@ public extension Database {
     }
 
     private func alter(table: Query, _ definition: Expressible) -> Statement {
-        return run("ALTER TABLE \(quote(identifier: table.tableName)) ADD COLUMN \(definition.expression.compile())")
+        return run("ALTER TABLE \(table.tableName.unaliased.SQL) ADD COLUMN \(definition.expression.compile())")
     }
 
     public func drop(#table: Query, ifExists: Bool = false) -> Statement {
-        return run(dropSQL("TABLE", ifExists, table.tableName))
+        return run(dropSQL("TABLE", ifExists, table.tableName.unaliased.SQL))
     }
 
     public func create(
@@ -116,32 +116,33 @@ public extension Database {
         ifNotExists: Bool = false,
         on columns: Expressible...
     ) -> Statement {
-        let create = createSQL("INDEX", false, unique, ifNotExists, indexName(table, on: columns))
+        let tableName = table.tableName.unaliased.SQL
+        let create = createSQL("INDEX", false, unique, ifNotExists, indexName(tableName, on: columns))
         let joined = Expression<()>.join(", ", columns.map { $0.expression.ordered })
-        return run("\(create) ON \(quote(identifier: table.tableName)) (\(joined.compile()))")
+        return run("\(create) ON \(tableName) (\(joined.compile()))")
     }
 
     public func drop(index table: Query, ifExists: Bool = false, on columns: Expressible...) -> Statement {
-        return run(dropSQL("INDEX", ifExists, indexName(table, on: columns)))
+        return run(dropSQL("INDEX", ifExists, indexName(table.tableName.unaliased.SQL, on: columns)))
     }
 
-    private func indexName(table: Query, on columns: [Expressible]) -> String {
-        let string = join(" ", ["index", table.tableName, "on"] + columns.map { $0.expression.SQL })
-        return reduce(string, "") { underscored, character in
+    private func indexName(table: String, on columns: [Expressible]) -> String {
+        let string = join(" ", ["index", table, "on"] + columns.map { $0.expression.SQL })
+        return quote(identifier: reduce(string, "") { underscored, character in
             if character == "\"" { return underscored }
             if "A"..."Z" ~= character || "a"..."z" ~= character { return underscored + String(character) }
             return underscored + "_"
-        }
+        })
     }
 
     public func create(#view: Query, temporary: Bool = false, ifNotExists: Bool = false, from: Query) -> Statement {
-        let create = createSQL("VIEW", temporary, false, ifNotExists, view.tableName)
+        let create = createSQL("VIEW", temporary, false, ifNotExists, view.tableName.unaliased.SQL)
         let expression = from.selectExpression
         return run("\(create) AS \(expression.SQL)", expression.bindings)
     }
 
     public func drop(#view: Query, ifExists: Bool = false) -> Statement {
-        return run(dropSQL("VIEW", ifExists, view.tableName))
+        return run(dropSQL("VIEW", ifExists, view.tableName.unaliased.SQL))
     }
 
 }
@@ -246,7 +247,7 @@ public final class SchemaBuilder {
             name,
             unique: unique,
             check: check,
-            references: Expression(literal: references.tableName)
+            references: Expression(references.tableName)
         )
     }
 
@@ -471,13 +472,13 @@ private func createSQL(
     if unique { parts.append("UNIQUE") }
     parts.append(type)
     if ifNotExists { parts.append("IF NOT EXISTS") }
-    parts.append(quote(identifier: name))
+    parts.append(name)
     return Swift.join(" ", parts)
 }
 
 private func dropSQL(type: String, ifExists: Bool, name: String) -> String {
     var parts: [String] = ["DROP \(type)"]
     if ifExists { parts.append("IF EXISTS") }
-    parts.append(quote(identifier: name))
+    parts.append(name)
     return Swift.join(" ", parts)
 }

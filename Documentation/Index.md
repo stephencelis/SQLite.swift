@@ -617,7 +617,7 @@ let managers = users.alias("managers")
 
 let query = users.join(managers, on: managers[id] == users[manager_id])
 // SELECT * FROM "users"
-// INNER JOIN "users" AS "managers" ON ("managers"."id" = "users"."manager_id")
+// INNER JOIN ("users") AS "managers" ON ("managers"."id" = "users"."manager_id")
 ```
 
 If query results can have ambiguous column names, row values should be accessed with namespaced [column expressions](#expressions). In the above case, `SELECT *` immediately namespaces all columns of the result set.
