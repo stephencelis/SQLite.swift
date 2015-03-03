@@ -809,9 +809,7 @@ public struct Row {
 // MARK: - SequenceType
 extension Query: SequenceType {
 
-    public typealias Generator = QueryGenerator
-
-    public func generate() -> Generator { return Generator(self) }
+    public func generate() -> QueryGenerator { return QueryGenerator(self) }
 
 }
 

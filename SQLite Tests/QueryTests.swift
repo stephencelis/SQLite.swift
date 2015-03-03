@@ -481,15 +481,13 @@ private let formatter: NSDateFormatter = {
 
 extension NSDate: Value {
 
-    public typealias Datatype = String
+    public class var declaredDatatype: String { return String.declaredDatatype }
 
-    public class var declaredDatatype: String { return Datatype.declaredDatatype }
-
-    public class func fromDatatypeValue(datatypeValue: Datatype) -> NSDate {
+    public class func fromDatatypeValue(datatypeValue: String) -> NSDate {
         return formatter.dateFromString(datatypeValue)!
     }
 
-    public var datatypeValue: Datatype {
+    public var datatypeValue: String {
         return formatter.stringFromDate(self)
     }
 
