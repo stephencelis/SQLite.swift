@@ -7,6 +7,7 @@ private let age = Expression<Int?>("age")
 private let salary = Expression<Double>("salary")
 private let admin = Expression<Bool>("admin")
 private let manager_id = Expression<Int64?>("manager_id")
+private let uniqueIdentifier = Expression<UniqueIdentifier>("uniqueIdentifier")
 
 class SchemaTests: XCTestCase {
 
@@ -42,6 +43,18 @@ class SchemaTests: XCTestCase {
             db.create(table: users) { t in
                 t.column(email)
             }
+        )
+    }
+
+    func test_createTable_column_nonIntegerPrimaryKey() {
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"email\" TEXT PRIMARY KEY NOT NULL)",
+            db.create(table: users) { $0.column(email, primaryKey: true) }
+        )
+    }
+    
+    func test_createTable_column_customTypePrimaryKey() {
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"uniqueIdentifier\" TEXT PRIMARY KEY NOT NULL)",
+            db.create(table: users) { $0.column(uniqueIdentifier, primaryKey: true) }
         )
     }
 
