@@ -193,12 +193,8 @@ public final class SchemaBuilder {
     ) {
         column(Expression<V>(name), nil, true, unique, check, value.map { Expression(value: $0) })
     }
-
-    // MARK: - INTEGER Columns
-
-    // MARK: PRIMARY KEY
-
-    public func column<V: Value where V.Datatype == Int64>(
+    
+    public func column<V: Value>(
         name: Expression<V>,
         primaryKey: Bool,
         unique: Bool = false,
@@ -206,6 +202,10 @@ public final class SchemaBuilder {
     ) {
         column(name, primaryKey ? .Default : nil, false, unique, check, nil, nil)
     }
+
+    // MARK: - INTEGER Columns
+
+    // MARK: PRIMARY KEY
 
     public enum PrimaryKey {
 
