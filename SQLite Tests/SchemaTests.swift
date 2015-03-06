@@ -33,6 +33,18 @@ class SchemaTests: SQLiteTestCase {
         AssertSQL("CREATE TABLE \"users\" (\"email\" TEXT NOT NULL)")
     }
 
+    func test_createTable_column_nonIntegerPrimaryKey() {
+        db.create(table: users) { $0.column(email, primaryKey: true) }
+        
+        AssertSQL("CREATE TABLE \"users\" (\"email\" TEXT PRIMARY KEY NOT NULL)")
+    }
+    
+    func test_createTable_column_customTypePrimaryKey() {
+        db.create(table: users) { $0.column(uniqueIdentifier, primaryKey: true) }
+        
+        AssertSQL("CREATE TABLE \"users\" (\"uniqueIdentifier\" TEXT PRIMARY KEY NOT NULL)")
+    }
+
     func test_createTable_column_withPrimaryKey_buildsPrimaryKeyClause() {
         db.create(table: users) { $0.column(id, primaryKey: true) }
 

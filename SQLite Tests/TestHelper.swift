@@ -7,6 +7,7 @@ let age = Expression<Int?>("age")
 let salary = Expression<Double>("salary")
 let admin = Expression<Bool>("admin")
 let manager_id = Expression<Int64?>("manager_id")
+let uniqueIdentifier = Expression<UniqueIdentifier>("uniqueIdentifier")
 
 class SQLiteTestCase: XCTestCase {
 
@@ -70,4 +71,17 @@ class SQLiteTestCase: XCTestCase {
         if let count = trace[SQL] { trace[SQL] = count - 1 }
     }
 
+}
+
+
+public class UniqueIdentifier : NSUUID, Value {
+    public static var declaredDatatype = "TEXT"
+    
+    public static func fromDatatypeValue(datatypeValue: String) -> UniqueIdentifier {
+        return UniqueIdentifier(UUIDString: datatypeValue)!
+    }
+    
+    public var datatypeValue: String {
+        return self.UUIDString
+    }
 }
