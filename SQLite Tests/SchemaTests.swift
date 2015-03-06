@@ -7,7 +7,6 @@ private let age = Expression<Int?>("age")
 private let salary = Expression<Double>("salary")
 private let admin = Expression<Bool>("admin")
 private let manager_id = Expression<Int64?>("manager_id")
-private let uniqueIdentifier = Expression<UniqueIdentifier>("uniqueIdentifier")
 
 class SchemaTests: XCTestCase {
 
@@ -48,13 +47,22 @@ class SchemaTests: XCTestCase {
 
     func test_createTable_column_nonIntegerPrimaryKey() {
         ExpectExecution(db, "CREATE TABLE \"users\" (\"email\" TEXT PRIMARY KEY NOT NULL)",
-            db.create(table: users) { $0.column(email, primaryKey: true) }
+            db.create(table: users) { t in
+                t.column(email, primaryKey: true)
+            }
         )
     }
-    
-    func test_createTable_column_customTypePrimaryKey() {
-        ExpectExecution(db, "CREATE TABLE \"users\" (\"uniqueIdentifier\" TEXT PRIMARY KEY NOT NULL)",
-            db.create(table: users) { $0.column(uniqueIdentifier, primaryKey: true) }
+
+    func test_createTable_column_nonIntegerPrimaryKey_withDefaultValue() {
+        let uuid = Expression<String>("uuid")
+        let uuidgen: () -> Expression<String> = db.create(function: "uuidgen") {
+            return NSUUID().UUIDString
+        }
+
+        ExpectExecution(db, "CREATE TABLE \"users\" (\"uuid\" TEXT PRIMARY KEY NOT NULL DEFAULT (\"uuidgen\"()))",
+            db.create(table: users) { t in
+                t.column(uuid, primaryKey: true, defaultValue: uuidgen())
+            }
         )
     }
 

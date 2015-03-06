@@ -164,7 +164,7 @@ public final class SchemaBuilder {
         check: Expression<Bool>? = nil,
         defaultValue value: Expression<V>?
     ) {
-        column(name, nil, false, unique, check, value)
+        column(name, nil, false, unique, check, value.map { wrap("", $0) })
     }
 
     public func column<V: Value>(
@@ -182,7 +182,7 @@ public final class SchemaBuilder {
         check: Expression<Bool>? = nil,
         defaultValue value: Expression<V>?
     ) {
-        column(Expression<V>(name), nil, true, unique, check, value)
+        column(Expression<V>(name), nil, true, unique, check, value.map { wrap("", $0) })
     }
 
     public func column<V: Value>(
@@ -197,10 +197,10 @@ public final class SchemaBuilder {
     public func column<V: Value>(
         name: Expression<V>,
         primaryKey: Bool,
-        unique: Bool = false,
-        check: Expression<Bool>? = nil
+        check: Expression<Bool>? = nil,
+        defaultValue value: Expression<V>? = nil
     ) {
-        column(name, primaryKey ? .Default : nil, false, unique, check, nil, nil)
+        column(name, primaryKey ? .Default : nil, false, false, check, value.map { wrap("", $0) }, nil)
     }
 
     // MARK: - INTEGER Columns
@@ -218,10 +218,9 @@ public final class SchemaBuilder {
     public func column<V: Value where V.Datatype == Int64>(
         name: Expression<V>,
         primaryKey: PrimaryKey?,
-        unique: Bool = false,
         check: Expression<Bool>? = nil
     ) {
-        column(name, primaryKey, false, unique, check, nil, nil)
+        column(name, primaryKey, false, false, check, nil, nil)
     }
 
     // MARK: REFERENCES

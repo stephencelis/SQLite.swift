@@ -282,7 +282,7 @@ The `create(table:)` function has several default parameters we can override.
 
 The `column` function is used for a single column definition. It takes an [expression](#expressions) describing the column name and type, and accepts several parameters that map to various column constraints and clauses.
 
-  - `primaryKey` adds an `INTEGER PRIMARY KEY` constraint to a single column. (See the `primaryKey` function under [Table Constraints](#table-constraints) for non-integer primary keys).
+  - `primaryKey` adds a `PRIMARY KEY` constraint to a single column.
 
     ``` swift
     t.column(id, primaryKey: true)
@@ -292,9 +292,11 @@ The `column` function is used for a single column definition. It takes an [expre
     // "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL
     ```
 
-    > _Note:_ The `primaryKey` parameter cannot be used alongside `defaultValue` or `references`. If you need to create a column that has a default value and is also a primary and/or foreign key, use the `primaryKey` and `foreignKey` functions mentioned under [Table Constraints](#table-constraints).
+    > _Note:_ The `primaryKey` parameter cannot be used alongside `references`. If you need to create a column that has a default value and is also a primary and/or foreign key, use the `primaryKey` and `foreignKey` functions mentioned under [Table Constraints](#table-constraints).
     >
-    > Primary keys cannot be optional (`Expression<Int64?>`).
+    > Primary keys cannot be optional (_e.g._, `Expression<Int64?>`).
+    >
+    > Only an `INTEGER PRIMARY KEY` can take `.Autoincrement`.
 
   - `unique` adds a `UNIQUE` constraint to the column. (See the `unique` function under [Table Constraints](#table-constraints) for uniqueness over multiple columns).
 

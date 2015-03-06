@@ -55,16 +55,3 @@ func ExpectExecution(db: Database, SQL: String, statement: @autoclosure () -> St
 func ExpectExecution(db: Database, SQL: String, query: Query) {
     ExpectExecutions(db, [SQL: 1]) { _ in for _ in query {} }
 }
-
-
-public class UniqueIdentifier : NSUUID, Value {
-    public class var declaredDatatype:String { get { return "TEXT" } }
-    
-    public class func fromDatatypeValue(datatypeValue: String) -> UniqueIdentifier {
-        return UniqueIdentifier(UUIDString: datatypeValue)!
-    }
-    
-    public var datatypeValue: String {
-        return self.UUIDString
-    }
-}
