@@ -102,8 +102,7 @@ public struct Expression<T> {
 
     internal init<V>(_ expression: Expression<V>) {
         self.init(literal: expression.SQL, expression.bindings)
-        ascending = expression.ascending
-        original = expression.original
+        (ascending, original) = (expression.ascending, expression.original)
     }
 
     internal var ordered: Expression<()> {
