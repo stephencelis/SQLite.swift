@@ -43,6 +43,11 @@ public extension Database {
         return run("\(create) AS \(expression.SQL)", expression.bindings)
     }
 
+    public func create(#vtable: Query, ifNotExists: Bool = false, using: Expression<()>) -> Statement {
+        let create = createSQL("VIRTUAL TABLE", false, false, ifNotExists, vtable.tableName.unaliased.SQL)
+        return run("\(create) USING \(using.SQL)")
+    }
+
     public func rename(table tableName: String, to table: Query) -> Statement {
         return run("ALTER TABLE \(quote(identifier: tableName)) RENAME TO \(table.tableName.unaliased.SQL)")
     }

@@ -60,7 +60,7 @@ public struct Expression<T> {
     /// Builds a SQL expression with the given value.
     ///
     /// :param: binding A raw SQL value.
-    private init(binding: Binding?) {
+    internal init(binding: Binding?) {
         self.init(literal: "?", [binding])
     }
 
@@ -966,7 +966,7 @@ internal func wrap<T, U>(function: String, expression: Expression<T>) -> Express
     return Expression(literal: "\(function)\(surround(expression.SQL))", expression.bindings)
 }
 
-private func infix<T, U, V>(function: String, lhs: Expression<T>, rhs: Expression<U>) -> Expression<V> {
+internal func infix<T, U, V>(function: String, lhs: Expression<T>, rhs: Expression<U>) -> Expression<V> {
     return Expression(literal: surround("\(lhs.SQL) \(function) \(rhs.SQL)"), lhs.bindings + rhs.bindings)
 }
 
