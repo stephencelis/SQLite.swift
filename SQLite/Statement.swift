@@ -300,7 +300,7 @@ extension Cursor: SequenceType {
 
     public func generate() -> GeneratorOf<Binding?> {
         var idx = 0
-        return GeneratorOf<Binding?> {
+        return GeneratorOf {
             idx >= self.columnCount ? Optional<Binding?>.None : self[idx++]
         }
     }
