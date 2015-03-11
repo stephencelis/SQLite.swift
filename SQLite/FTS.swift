@@ -29,7 +29,7 @@ public func fts4(columns: Expression<String>...) -> Expression<()> {
 // TODO: matchinfo, compress, uncompress
 public func fts4(columns: [Expression<String>], tokenize tokenizer: Tokenizer? = nil) -> Expression<()> {
     var options = [String: String]()
-    options["tokenize"] = tokenizer?.rawValue
+    options["tokenize"] = tokenizer?.description
     return fts("fts4", columns, options)
 }
 
@@ -41,14 +41,52 @@ private func fts(function: String, columns: [Expression<String>], options: [Stri
     return wrap(function, Expression<()>.join(", ", definitions))
 }
 
-public enum Tokenizer: String {
+public enum Tokenizer {
 
-    case Simple = "simple"
+    internal static var moduleName = "SQLite.swift"
 
-    case Porter = "porter"
+    case Simple
+
+    case Porter
+
+    case Custom(String)
+
+}
+
+extension Tokenizer: Printable {
+
+    public var description: String {
+        switch self {
+        case .Simple:
+            return "simple"
+        case .Porter:
+            return "porter"
+        case .Custom(let tokenizer):
+            return "\(quote(identifier: Tokenizer.moduleName)) \(quote(literal: tokenizer))"
+        }
+    }
 
 }
 
 public func match(string: String, expression: Query) -> Expression<Bool> {
     return infix("MATCH", Expression<String>(expression.tableName), Expression<String>(binding: string))
+}
+
+extension Database {
+
+    public func register(tokenizer submoduleName: String, next: String -> (String, Range<String.Index>)?) {
+        try {
+            SQLiteRegisterTokenizer(self.handle, Tokenizer.moduleName, submoduleName) { input, offset, length in
+                let string = String.fromCString(input)!
+                if var (token, range) = next(string) {
+                    let view = string.utf8
+                    offset.memory += count(string.substringToIndex(range.startIndex).utf8)
+                    length.memory = Int32(distance(range.startIndex.samePositionIn(view), range.endIndex.samePositionIn(view)))
+                    return token
+                }
+                return nil
+            }
+        }
+    }
+
 }

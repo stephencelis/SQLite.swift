@@ -22,7 +22,11 @@
 // THE SOFTWARE.
 //
 
+@import Foundation;
+
 #include <sqlite3.h>
+
+#include "fts3_tokenizer.h"
 
 typedef int (^SQLiteBusyHandlerCallback)(int times);
 int SQLiteBusyHandler(sqlite3 * handle, SQLiteBusyHandlerCallback callback);
@@ -35,3 +39,6 @@ int SQLiteCreateFunction(sqlite3 * handle, const char * name, int argc, int dete
 
 typedef int (^SQLiteCreateCollationCallback)(const char * lhs, const char * rhs);
 int SQLiteCreateCollation(sqlite3 * handle, const char * name, SQLiteCreateCollationCallback callback);
+
+typedef NSString * (^SQLiteTokenizerNextCallback)(const char * input, int * inputOffset, int * inputLength);
+int SQLiteRegisterTokenizer(sqlite3 * db, const char * module, const char * tokenizer, SQLiteTokenizerNextCallback callback);
