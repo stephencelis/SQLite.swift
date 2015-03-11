@@ -174,7 +174,8 @@ extension Double: Expressible {
 extension Int: Expressible {
 
     public var expression: Expression<()> {
-        return Expression(value: self)
+        // FIXME: rdar://TODO segfaults during archive // return Expression(value: self)
+        return Expression(binding: datatypeValue)
     }
 
 }
@@ -927,26 +928,22 @@ public func ^= <V: Value where V.Datatype == Int64>(column: Expression<V?>, valu
 public func ^= <V: Value where V.Datatype == Int64>(column: Expression<V>, value: V) -> Setter { return set(column, column ^ value) }
 public func ^= <V: Value where V.Datatype == Int64>(column: Expression<V?>, value: V) -> Setter { return set(column, column ^ value) }
 
-public postfix func ++ <V: Value where V.Datatype == Int64>(column: Expression<V>) -> Setter { return Expression<Int>(column) += 1 }
-public postfix func ++ <V: Value where V.Datatype == Int64>(column: Expression<V?>) -> Setter { return Expression<Int>(column) += 1 }
-public postfix func -- <V: Value where V.Datatype == Int64>(column: Expression<V>) -> Setter { return Expression<Int>(column) -= 1 }
-public postfix func -- <V: Value where V.Datatype == Int64>(column: Expression<V?>) -> Setter { return Expression<Int>(column) -= 1 }
-//public postfix func ++ (column: Expression<Int>) -> Setter {
-//    // rdar://18825175 segfaults during archive: // column += 1
-//    return (column, Expression<Int>(literal: "(\(column.SQL) + 1)", column.bindings))
-//}
-//public postfix func ++ (column: Expression<Int?>) -> Setter {
-//    // rdar://18825175 segfaults during archive: // column += 1
-//    return (column, Expression<Int>(literal: "(\(column.SQL) + 1)", column.bindings))
-//}
-//public postfix func -- (column: Expression<Int>) -> Setter {
-//    // rdar://18825175 segfaults during archive: // column -= 1
-//    return (column, Expression<Int>(literal: "(\(column.SQL) - 1)", column.bindings))
-//}
-//public postfix func -- (column: Expression<Int?>) -> Setter {
-//    // rdar://18825175 segfaults during archive: // column -= 1
-//    return (column, Expression<Int>(literal: "(\(column.SQL) - 1)", column.bindings))
-//}
+public postfix func ++ <V: Value where V.Datatype == Int64>(column: Expression<V>) -> Setter {
+    // rdar://18825175 segfaults during archive: // column += 1
+    return (column, Expression<V>(literal: "(\(column.SQL) + 1)", column.bindings))
+}
+public postfix func ++ <V: Value where V.Datatype == Int64>(column: Expression<V?>) -> Setter {
+    // rdar://18825175 segfaults during archive: // column += 1
+    return (column, Expression<V>(literal: "(\(column.SQL) + 1)", column.bindings))
+}
+public postfix func -- <V: Value where V.Datatype == Int64>(column: Expression<V>) -> Setter {
+    // rdar://18825175 segfaults during archive: // column -= 1
+    return (column, Expression<V>(literal: "(\(column.SQL) - 1)", column.bindings))
+}
+public postfix func -- <V: Value where V.Datatype == Int64>(column: Expression<V?>) -> Setter {
+    // rdar://18825175 segfaults during archive: // column -= 1
+    return (column, Expression<V>(literal: "(\(column.SQL) - 1)", column.bindings))
+}
 
 // MARK: - Internal
 
