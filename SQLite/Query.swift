@@ -768,7 +768,7 @@ public struct Row {
     }
     public func get<V: Value>(column: Expression<V?>) -> V? {
         func valueAtIndex(idx: Int) -> V? {
-            if let value = self.values[idx] as? V.Datatype { return (V.fromDatatypeValue(value) as! V) }
+            if let value = values[idx] as? V.Datatype { return (V.fromDatatypeValue(value) as! V) }
             return nil
         }
 
