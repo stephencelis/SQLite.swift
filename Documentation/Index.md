@@ -1342,7 +1342,7 @@ db.create(collation: "NODIACRITIC") { lhs, rhs in
 
 We can reference a custom collation using the `Custom` member of the `Collation` enumeration.
 
-```
+``` swift
 restaurants.order(collate(.Custom("NODIACRITIC"), name))
 // SELECT * FROM "restaurants" ORDER BY "name" COLLATE "NODIACRITIC"
 ```
