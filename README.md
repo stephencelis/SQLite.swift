@@ -19,10 +19,12 @@ syntax _and_ intent.
  - A lightweight, uncomplicated query and parameter binding interface
  - Transactions with implicit commit/rollback
  - Developer-friendly error handling and debugging
+ - [Full-text search][] support
  - [SQLCipher](#sqlcipher) support
  - [Well-documented][See Documentation]
  - Extensively tested
 
+[Full-text search]: Documentation/Index.md#full-text-search
 [See Documentation]: Documentation/Index.md#sqliteswift-documentation
 
 

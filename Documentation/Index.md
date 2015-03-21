@@ -53,6 +53,7 @@
   - [Aggregate SQLite Functions](#aggregate-sqlite-functions)
   - [Custom SQL Functions](#custom-sql-functions)
   - [Custom Collations](#custom-collations)
+  - [Full-text Search](#full-text-search)
   - [Executing Arbitrary SQL](#executing-arbitrary-sql)
   - [Logging](#logging)
 
@@ -81,13 +82,16 @@ You should now be able to `import SQLite` from any of your target’s source fil
 
 ### SQLCipher
 
-To install SQLite.swift with [SQLCipher][] support:
+To install SQLite.swift with [SQLCipher](http://sqlcipher.net) support:
 
  1. Make sure the **sqlcipher** working copy is checked out in Xcode. If **sqlcipher.xcodeproj** (in the **Vendor** group) is unavailable (and appears red), go to the **Source Control** menu and select **Check Out sqlcipher…** from the **sqlcipher** menu item.
 
  2. Follow [the instructions above](#installation) with the **SQLiteCipher** target, instead.
 
-[SQLCipher]: http://sqlcipher.net
+> _Note:_ By default, SQLCipher compiles [without support for full-text search](https://github.com/sqlcipher/sqlcipher/issues/102). If you intend to use [FTS4](#full-text-search), make sure you add the following to **Other C Flags** in the **Build Settings** of the **sqlcipher** target (in the **sqlcipher.xcodeproj** project):
+>
+>  - `-DSQLITE_ENABLE_FTS4`
+>  - `-DSQLITE_ENABLE_FTS3_PARENTHESIS`
 
 
 ### Frameworkless Targets
@@ -101,7 +105,7 @@ It’s possible to use SQLite.swift in a target that doesn’t support framework
  3. Add the following line to your project’s [bridging header](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html#//apple_ref/doc/uid/TP40014216-CH10-XID_79) (a file usually in the form of `$(TARGET_NAME)-Bridging-Header.h`.
 
     ``` swift
-    #import "SQLite-Bridging.h'
+    #import "SQLite-Bridging.h"
     ```
 
 > _Note:_ Adding SQLite.swift source files directly to your application will both remove the `SQLite` module namespace and expose internal functions and variables. Please [report any namespace collisions and bugs](https://github.com/stephencelis/SQLite.swift/issues/new) you encounter.
@@ -144,7 +148,7 @@ var path = NSSearchPathForDirectoriesInDomains(
     .ApplicationSupportDirectory, .UserDomainMask, true
 ).first as String + NSBundle.mainBundle().bundleIdentifier!
 
-// create parent directory iff it doesn't exist
+// create parent directory iff it doesn’t exist
 NSFileManager.defaultManager().createDirectoryAtPath(
     path, withIntermediateDirectories: true, attributes: nil, error: nil
 )
@@ -205,6 +209,8 @@ SQLite.swift comes with a typed expression layer that directly maps [Swift types
 > †SQLite.swift defines its own `Blob` structure, which safely wraps the underlying bytes.
 >
 > See [Custom Types](#custom-types) for more information about extending other classes and structures to work with SQLite.swift.
+>
+> See [Executing Arbitrary SQL](#executing-arbitrary-sql) to forego the typed layer and execute raw SQL, instead.
 
 These expressions (in the form of the structure, [`Expression`](#expressions)) build on one another and, with a query ([`Query`](#queries)), can create and execute SQL statements.
 
@@ -1348,9 +1354,45 @@ restaurants.order(collate(.Custom("NODIACRITIC"), name))
 ```
 
 
+## Full-text Search
+
+We can create a virtual table using the [FTS4 module](http://www.sqlite.org/fts3.html) by calling `create(vtable:)` on a database connection.
+
+``` swift
+let emails = db["emails"]
+let subject = Expression<String>("subject")
+let body = Expression<String>("body")
+
+db.create(vtable: emails, using: fts4(subject, body))
+// CREATE VIRTUAL TABLE "emails" USING fts4("subject", "body")
+```
+
+We can specify a [tokenizer](http://www.sqlite.org/fts3.html#tokenizer) using the `tokenize` parameter.
+
+``` swift
+db.create(vtable: emails, using: fts4([subject, body], tokenize: .Porter))
+// CREATE VIRTUAL TABLE "emails" USING fts4("subject", "body", tokenize=porter)
+```
+
+Once we insert a few rows, we can search using the `match` function, which takes a table or column as its first argument and a query string as its second.
+
+``` swift
+emails.insert(
+    subject <- "Just Checking In",
+    body <- "Hey, I was just wondering...did you get my last email?"
+)!
+
+emails.filter(match(emails, "wonder*"))
+// SELECT * FROM "emails" WHERE "emails" MATCH 'wonder*'
+
+emails.filter(match(subject, "Re:*"))
+// SELECT * FROM "emails" WHERE "subject" MATCH 'Re:*'
+```
+
+
 ## Executing Arbitrary SQL
 
-Though we recommend you stick with SQLite.swift’s type-safe system whenever possible, it is possible to simply and safely prepare and execute raw SQL statements via a `Database` connection using the following functions.
+Though we recommend you stick with SQLite.swift’s [type-safe system](#building-type-safe-sql) whenever possible, it is possible to simply and safely prepare and execute raw SQL statements via a `Database` connection using the following functions.
 
   - `execute` runs an arbitrary number of SQL statements as a convenience.
 
