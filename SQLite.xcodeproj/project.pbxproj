@@ -25,6 +25,9 @@
 		DCAFEAD31AABC818000C21A1 /* FTS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAFEAD21AABC818000C21A1 /* FTS.swift */; };
 		DCAFEAD41AABC818000C21A1 /* FTS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAFEAD21AABC818000C21A1 /* FTS.swift */; };
 		DCAFEAD71AABEFA7000C21A1 /* FTSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAFEAD61AABEFA7000C21A1 /* FTSTests.swift */; };
+		DCBE28411ABDF18F0042A3FC /* RTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBE28401ABDF18F0042A3FC /* RTree.swift */; };
+		DCBE28421ABDF18F0042A3FC /* RTree.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBE28401ABDF18F0042A3FC /* RTree.swift */; };
+		DCBE28451ABDF2A80042A3FC /* RTreeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCBE28441ABDF2A80042A3FC /* RTreeTests.swift */; };
 		DCC6B36F1A9191C300734B78 /* Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAD429619E2E0F1004A51DF /* Query.swift */; };
 		DCC6B3701A9191C300734B78 /* Statement.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC37743A19C8D6C0004FCF85 /* Statement.swift */; };
 		DCC6B3711A9191C300734B78 /* Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC650B9519F0CDC3002FBE91 /* Expression.swift */; };
@@ -106,6 +109,8 @@
 		DCAD429919E2EE50004A51DF /* QueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryTests.swift; sourceTree = "<group>"; };
 		DCAFEAD21AABC818000C21A1 /* FTS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FTS.swift; sourceTree = "<group>"; };
 		DCAFEAD61AABEFA7000C21A1 /* FTSTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FTSTests.swift; sourceTree = "<group>"; };
+		DCBE28401ABDF18F0042A3FC /* RTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTree.swift; sourceTree = "<group>"; };
+		DCBE28441ABDF2A80042A3FC /* RTreeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTreeTests.swift; sourceTree = "<group>"; };
 		DCC6B3801A9191C300734B78 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCC6B3921A9191D100734B78 /* SQLiteCipher Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQLiteCipher Tests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCC6B3961A91938F00734B78 /* sqlcipher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = sqlcipher.xcodeproj; path = sqlcipher/sqlcipher.xcodeproj; sourceTree = "<group>"; };
@@ -161,6 +166,7 @@
 				DCAD429619E2E0F1004A51DF /* Query.swift */,
 				DC109CE01A0C4D970070988E /* Schema.swift */,
 				DCAFEAD21AABC818000C21A1 /* FTS.swift */,
+				DCBE28401ABDF18F0042A3FC /* RTree.swift */,
 			);
 			name = "Query Building";
 			sourceTree = "<group>";
@@ -186,6 +192,7 @@
 				DCAD429919E2EE50004A51DF /* QueryTests.swift */,
 				DC109CE31A0C4F5D0070988E /* SchemaTests.swift */,
 				DCAFEAD61AABEFA7000C21A1 /* FTSTests.swift */,
+				DCBE28441ABDF2A80042A3FC /* RTreeTests.swift */,
 				DC37740319C8CBB3004FCF85 /* Supporting Files */,
 			);
 			path = "SQLite Tests";
@@ -477,6 +484,7 @@
 				DC37743B19C8D6C0004FCF85 /* Statement.swift in Sources */,
 				DC37743819C8D693004FCF85 /* Value.swift in Sources */,
 				DC650B9619F0CDC3002FBE91 /* Expression.swift in Sources */,
+				DCBE28411ABDF18F0042A3FC /* RTree.swift in Sources */,
 				DCAD429719E2E0F1004A51DF /* Query.swift in Sources */,
 				DC109CE11A0C4D970070988E /* Schema.swift in Sources */,
 				DCC6B3A81A91975700734B78 /* Functions.swift in Sources */,
@@ -496,6 +504,7 @@
 				DCAD429A19E2EE50004A51DF /* QueryTests.swift in Sources */,
 				DC109CE41A0C4F5D0070988E /* SchemaTests.swift in Sources */,
 				DCC6B3A71A91974B00734B78 /* FunctionsTests.swift in Sources */,
+				DCBE28451ABDF2A80042A3FC /* RTreeTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -512,6 +521,7 @@
 				DCC6B3A91A91975C00734B78 /* Functions.swift in Sources */,
 				DCAFEAD41AABC818000C21A1 /* FTS.swift in Sources */,
 				DCC6B3751A9191C300734B78 /* SQLite-Bridging.c in Sources */,
+				DCBE28421ABDF18F0042A3FC /* RTree.swift in Sources */,
 				DCC6B3A41A9194A800734B78 /* Cipher.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
