@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import Foundation
+import sqlite3
 
 /// A connection (handle) to a SQLite database.
 public final class Database {

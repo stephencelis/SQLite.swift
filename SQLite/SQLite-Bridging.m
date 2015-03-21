@@ -22,9 +22,9 @@
 // THE SOFTWARE.
 //
 
-#include "SQLite-Bridging.h"
+#import "SQLite-Bridging.h"
 
-@import Foundation;
+#import "fts3_tokenizer.h"
 
 static int _SQLiteBusyHandler(void * context, int tries) {
     return ((__bridge SQLiteBusyHandlerCallback)context)(tries);

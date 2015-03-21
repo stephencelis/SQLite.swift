@@ -102,9 +102,12 @@ It’s possible to use SQLite.swift in a target that doesn’t support framework
 
  2. Copy the SQLite.swift source files (from its **SQLite** directory) into your Xcode project.
 
- 3. Add the following line to your project’s [bridging header](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html#//apple_ref/doc/uid/TP40014216-CH10-XID_79) (a file usually in the form of `$(TARGET_NAME)-Bridging-Header.h`.
+ 3. Remove `import sqlite3` (and `@import sqlite3;`) from the SQLite.swift source files that call it.
+
+ 4. Add the following lines to your project’s [bridging header](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html#//apple_ref/doc/uid/TP40014216-CH10-XID_79) (a file usually in the form of `$(TARGET_NAME)-Bridging-Header.h`.
 
     ``` swift
+    #import <sqlite3.h>
     #import "SQLite-Bridging.h"
     ```
 

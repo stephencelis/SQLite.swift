@@ -22,11 +22,8 @@
 // THE SOFTWARE.
 //
 
+@import sqlite3;
 @import Foundation;
-
-#include <sqlite3.h>
-
-#include "fts3_tokenizer.h"
 
 typedef int (^SQLiteBusyHandlerCallback)(int times);
 int SQLiteBusyHandler(sqlite3 * handle, SQLiteBusyHandlerCallback callback);
