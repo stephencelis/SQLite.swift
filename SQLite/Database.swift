@@ -238,7 +238,7 @@ public final class Database {
     ///               failure.
     ///
     /// :returns: The COMMIT or ROLLBACK statement.
-    public func transaction(_ mode: TransactionMode = .Deferred, _ block: Statement -> TransactionResult) -> Statement {
+    public func transaction(_ mode: TransactionMode = .Deferred, @noescape _ block: Statement -> TransactionResult) -> Statement {
         return run(block(transaction(mode)).rawValue)
     }
 
@@ -312,7 +312,7 @@ public final class Database {
     ///                       depending on success or failure.
     ///
     /// :returns: The RELEASE or ROLLBACK statement.
-    public func savepoint(_ savepointName: String? = nil, _ block: Statement -> SavepointResult) -> Statement {
+    public func savepoint(_ savepointName: String? = nil, @noescape _ block: Statement -> SavepointResult) -> Statement {
         switch block(savepoint(savepointName)) {
         case .Release:
             return release()
