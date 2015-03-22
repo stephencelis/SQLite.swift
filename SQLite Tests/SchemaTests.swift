@@ -92,7 +92,6 @@ class SchemaTests: SQLiteTestCase {
     }
 
     func test_createTable_intColumn_referencingNamespacedColumn_buildsReferencesClause() {
-        let users = self.users
         db.create(table: users) { t in
             t.column(id, primaryKey: true)
             t.column(manager_id, references: users[id])
@@ -104,7 +103,6 @@ class SchemaTests: SQLiteTestCase {
     }
 
     func test_createTable_intColumn_referencingQuery_buildsReferencesClause() {
-        let users = self.users
         db.create(table: users) { t in
             t.column(id, primaryKey: true)
             t.column(manager_id, references: users)
@@ -165,7 +163,6 @@ class SchemaTests: SQLiteTestCase {
     }
 
     func test_createTable_foreignKey_referencingNamespacedColumn_buildsForeignKeyTableConstraint() {
-        let users = self.users
         db.create(table: users) { t in
             t.column(id, primaryKey: true)
             t.column(manager_id)
@@ -179,7 +176,6 @@ class SchemaTests: SQLiteTestCase {
     }
 
     func test_createTable_foreignKey_withUpdateDependency_buildsUpdateDependency() {
-        let users = self.users
         db.create(table: users) { t in
             t.column(id, primaryKey: true)
             t.column(manager_id)
@@ -193,7 +189,6 @@ class SchemaTests: SQLiteTestCase {
     }
 
     func test_create_foreignKey_withDeleteDependency_buildsDeleteDependency() {
-        let users = self.users
         db.create(table: users) { t in
             t.column(id, primaryKey: true)
             t.column(manager_id)
@@ -207,7 +202,6 @@ class SchemaTests: SQLiteTestCase {
     }
 
     func test_createTable_foreignKey_withCompositeKey_buildsForeignKeyTableConstraint() {
-        let users = self.users
         let manager_id = Expression<Int64>("manager_id") // required
 
         db.create(table: users) { t in

@@ -28,7 +28,7 @@ public extension Database {
         #table: Query,
         temporary: Bool = false,
         ifNotExists: Bool = false,
-        _ block: SchemaBuilder -> ()
+        @noescape _ block: SchemaBuilder -> ()
     ) -> Statement {
         var builder = SchemaBuilder(table)
         block(builder)
