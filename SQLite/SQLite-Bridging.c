@@ -54,7 +54,7 @@ void _SQLiteCreateFunction(sqlite3_context * context, int argc, sqlite3_value **
     ((SQLiteCreateFunctionCallback)sqlite3_user_data(context))(context, argc, argv);
 }
 
-int SQLiteCreateFunction(sqlite3 * handle, const char * name, int deterministic, SQLiteCreateFunctionCallback callback) {
+int SQLiteCreateFunction(sqlite3 * handle, const char * name, int argc, int deterministic, SQLiteCreateFunctionCallback callback) {
     if (callback) {
         int flags = SQLITE_UTF8;
         if (deterministic) {
@@ -62,7 +62,7 @@ int SQLiteCreateFunction(sqlite3 * handle, const char * name, int deterministic,
             flags |= SQLITE_DETERMINISTIC;
 #endif
         }
-        return sqlite3_create_function_v2(handle, name, -1, flags, Block_copy(callback), &_SQLiteCreateFunction, 0, 0, 0); // FIXME: leak
+        return sqlite3_create_function_v2(handle, name, argc, flags, Block_copy(callback), &_SQLiteCreateFunction, 0, 0, 0); // FIXME: leak
     } else {
         return sqlite3_create_function_v2(handle, name, 0, 0, 0, 0, 0, 0, 0);
     }

@@ -387,6 +387,10 @@ public final class Database {
     ///
     /// :param: function      The name of the function to create or redefine.
     ///
+    /// :param: argc          The number of arguments that the function takes.
+    ///                       If this parameter is -1, then the SQL function may
+    ///                       take any number of arguments. (Default: -1.)
+    ///
     /// :param: deterministic Whether or not the function is deterministic. If
     ///                       the function always returns the same result for a
     ///                       given input, SQLite can make optimizations.
@@ -396,8 +400,8 @@ public final class Database {
     ///                       called. The block is called with an array of raw
     ///                       SQL values mapped to the function's parameters and
     ///                       should return a raw SQL value (or nil).
-    public func create(#function: String, deterministic: Bool = false, _ block: [Binding?] -> Binding?) {
-        try(SQLiteCreateFunction(handle, function, deterministic ? 1 : 0) { context, argc, argv in
+    public func create(#function: String, argc: Int = -1, deterministic: Bool = false, _ block: [Binding?] -> Binding?) {
+        try(SQLiteCreateFunction(handle, function, Int32(argc), deterministic ? 1 : 0) { context, argc, argv in
             let arguments: [Binding?] = map(0..<Int(argc)) { idx in
                 let value = argv[Int(idx)]
                 switch sqlite3_value_type(value) {
