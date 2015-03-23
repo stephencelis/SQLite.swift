@@ -372,12 +372,16 @@ public final class Database {
     ///                  returns true, it will try again. If it returns false,
     ///                  no further attempts will be made.
     public func busy(callback: (Int -> Bool)?) {
-        if let callback = callback {
-            try { SQLiteBusyHandler(self.handle) { callback(Int($0)) ? 1 : 0 } }
-        } else {
-            try { SQLiteBusyHandler(self.handle, nil) }
+        try {
+            if let callback = callback {
+                self.busy = { callback(Int($0)) ? 1 : 0 }
+            } else {
+                self.busy = nil
+            }
+            return SQLiteBusyHandler(self.handle, self.busy)
         }
     }
+    private var busy: SQLiteBusyHandlerCallback?
 
     /// Sets a handler to call when a statement is executed with the compiled
     /// SQL.
@@ -387,11 +391,13 @@ public final class Database {
     ///                  act as a logger.
     public func trace(callback: (String -> ())?) {
         if let callback = callback {
-            SQLiteTrace(handle) { callback(String.fromCString($0)!) }
+            trace = { callback(String.fromCString($0)!) }
         } else {
-            SQLiteTrace(handle, nil)
+            trace = nil
         }
+        SQLiteTrace(handle, trace)
     }
+    private var trace: SQLiteTraceCallback?
 
     /// Creates or redefines a custom SQL function.
     ///
@@ -412,7 +418,8 @@ public final class Database {
     ///                       should return a raw SQL value (or nil).
     public func create(#function: String, argc: Int = -1, deterministic: Bool = false, _ block: [Binding?] -> Binding?) {
         try {
-            SQLiteCreateFunction(self.handle, function, Int32(argc), deterministic ? 1 : 0) { context, argc, argv in
+            if self.functions[function] == nil { self.functions[function] = [:] }
+            self.functions[function]?[argc] = { context, argc, argv in
                 let arguments: [Binding?] = map(0..<Int(argc)) { idx in
                     let value = argv[idx]
                     switch sqlite3_value_type(value) {
@@ -447,8 +454,10 @@ public final class Database {
                     assertionFailure("unsupported result type: \(result)")
                 }
             }
+            return SQLiteCreateFunction(self.handle, function, Int32(argc), deterministic ? 1 : 0, self.functions[function]?[argc])
         }
     }
+    private var functions = [String: [Int: SQLiteCreateFunctionCallback]]()
 
     /// The return type of a collation comparison function.
     public typealias ComparisonResult = NSComparisonResult
@@ -461,11 +470,13 @@ public final class Database {
     ///                   returns the comparison result.
     public func create(#collation: String, _ block: (String, String) -> ComparisonResult) {
         try {
-            SQLiteCreateCollation(self.handle, collation) { lhs, rhs in
+            self.collations[collation] = { lhs, rhs in
                 return Int32(block(String.fromCString(lhs)!, String.fromCString(rhs)!).rawValue)
             }
+            return SQLiteCreateCollation(self.handle, collation, self.collations[collation])
         }
     }
+    private var collations = [String: SQLiteCreateCollationCallback]()
 
     // MARK: - Error Handling
 

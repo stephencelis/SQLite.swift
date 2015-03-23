@@ -32,7 +32,7 @@ static int _SQLiteBusyHandler(void * context, int tries) {
 
 int SQLiteBusyHandler(sqlite3 * handle, SQLiteBusyHandlerCallback callback) {
     if (callback) {
-        return sqlite3_busy_handler(handle, _SQLiteBusyHandler, (__bridge_retained void *)callback); // FIXME: leak
+        return sqlite3_busy_handler(handle, _SQLiteBusyHandler, (__bridge void *)callback);
     } else {
         return sqlite3_busy_handler(handle, 0, 0);
     }
@@ -44,7 +44,7 @@ static void _SQLiteTrace(void * context, const char * SQL) {
 
 void SQLiteTrace(sqlite3 * handle, SQLiteTraceCallback callback) {
     if (callback) {
-        sqlite3_trace(handle, _SQLiteTrace, (__bridge_retained void *)callback); // FIXME: leak
+        sqlite3_trace(handle, _SQLiteTrace, (__bridge void *)callback);
     } else {
         sqlite3_trace(handle, 0, 0);
     }
@@ -62,7 +62,7 @@ int SQLiteCreateFunction(sqlite3 * handle, const char * name, int argc, int dete
             flags |= SQLITE_DETERMINISTIC;
 #endif
         }
-        return sqlite3_create_function_v2(handle, name, -1, flags, (__bridge_retained void *)callback, &_SQLiteCreateFunction, 0, 0, 0); // FIXME: leak
+        return sqlite3_create_function_v2(handle, name, -1, flags, (__bridge void *)callback, &_SQLiteCreateFunction, 0, 0, 0);
     } else {
         return sqlite3_create_function_v2(handle, name, 0, 0, 0, 0, 0, 0, 0);
     }
@@ -74,7 +74,7 @@ static int _SQLiteCreateCollation(void * context, int len_lhs, const void * lhs,
 
 int SQLiteCreateCollation(sqlite3 * handle, const char * name, SQLiteCreateCollationCallback callback) {
     if (callback) {
-        return sqlite3_create_collation_v2(handle, name, SQLITE_UTF8, (__bridge_retained void *)callback, &_SQLiteCreateCollation, 0); // FIXME: leak
+        return sqlite3_create_collation_v2(handle, name, SQLITE_UTF8, (__bridge void *)callback, &_SQLiteCreateCollation, 0);
     } else {
         return sqlite3_create_collation_v2(handle, name, 0, 0, 0, 0);
     }
