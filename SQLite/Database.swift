@@ -289,15 +289,13 @@ public final class Database {
 
     private var savepointStack = [String]()
 
-    private var uuid: String { return NSUUID().UUIDString }
-
     /// Starts a new transaction with the given savepoint name.
     ///
     /// :param: savepointName A unique identifier for the savepoint.
     ///
     /// :returns: The SAVEPOINT statement.
     public func savepoint(_ savepointName: String? = nil) -> Statement {
-        let name = savepointName ?? uuid
+        let name = savepointName ?? NSUUID().UUIDString
         savepointStack.append(name)
         return run("SAVEPOINT \(quote(literal: name))")
     }
