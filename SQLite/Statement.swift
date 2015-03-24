@@ -194,7 +194,7 @@ public final class Statement {
             self.status = block()
             if self.failed {
                 self.reason = String.fromCString(sqlite3_errmsg(self.database.handle))
-                assert(self.status == SQLITE_CONSTRAINT, "\(self.reason!)")
+                assert(self.status == SQLITE_CONSTRAINT || self.status == SQLITE_INTERRUPT, "\(self.reason!)")
             }
         }
     }

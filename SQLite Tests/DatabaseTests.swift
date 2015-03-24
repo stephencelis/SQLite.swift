@@ -264,6 +264,22 @@ class DatabaseTests: SQLiteTestCase {
         AssertSQL("INSERT INTO users (email, admin) VALUES ('alice@example.com', 1)", 2)
     }
 
+    func test_interrupt_interruptsLongRunningQuery() {
+        insertUsers(map("abcdefghijklmnopqrstuvwxyz") { String($0) })
+        db.create(function: "sleep") { args in
+            usleep(UInt32(Double(args[0] as? Double ?? Double(args[0] as? Int64 ?? 1)) * 1_000_000))
+            return nil
+        }
+
+        let stmt = db.prepare("SELECT *, sleep(?) FROM users", 0.1)
+        stmt.run()
+        XCTAssert(!stmt.failed)
+
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(10 * NSEC_PER_MSEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), db.interrupt)
+        stmt.run()
+        XCTAssert(stmt.failed)
+    }
+
     func test_userVersion_getsAndSetsUserVersion() {
         XCTAssertEqual(0, db.userVersion)
         db.userVersion = 1

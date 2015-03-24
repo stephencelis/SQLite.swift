@@ -343,6 +343,11 @@ public final class Database {
         return run("ROLLBACK TO SAVEPOINT \(quote(literal: savepointName))")
     }
 
+    /// Interrupts any long-running queries.
+    public func interrupt() {
+        sqlite3_interrupt(handle)
+    }
+
     // MARK: - Configuration
 
     public var foreignKeys: Bool {

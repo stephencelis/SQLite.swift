@@ -40,6 +40,10 @@ class SQLiteTestCase: XCTestCase {
     }
 
     func insertUsers(names: String...) {
+        insertUsers(names)
+    }
+
+    func insertUsers(names: [String]) {
         for name in names { insertUser(name) }
     }
 
