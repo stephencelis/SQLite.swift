@@ -238,8 +238,8 @@ public final class Database {
     ///               failure.
     ///
     /// :returns: The COMMIT or ROLLBACK statement.
-    public func transaction(_ mode: TransactionMode = .Deferred, @noescape _ block: Statement -> TransactionResult) -> Statement {
-        return run(block(transaction(mode)).rawValue)
+    public func transaction(_ mode: TransactionMode = .Deferred, @noescape _ block: (txn: Statement) -> TransactionResult) -> Statement {
+        return run(block(txn: transaction(mode)).rawValue)
     }
 
     /// Commits the current transaction (or, if a savepoint is open, releases
@@ -312,8 +312,8 @@ public final class Database {
     ///                       depending on success or failure.
     ///
     /// :returns: The RELEASE or ROLLBACK statement.
-    public func savepoint(_ savepointName: String? = nil, @noescape _ block: Statement -> SavepointResult) -> Statement {
-        switch block(savepoint(savepointName)) {
+    public func savepoint(_ savepointName: String? = nil, @noescape _ block: (txn: Statement) -> SavepointResult) -> Statement {
+        switch block(txn: savepoint(savepointName)) {
         case .Release:
             return release()
         case .Rollback:
@@ -376,10 +376,10 @@ public final class Database {
     ///                  number of times it’s been called for this lock. If it
     ///                  returns true, it will try again. If it returns false,
     ///                  no further attempts will be made.
-    public func busy(callback: (Int -> Bool)?) {
+    public func busy(callback: ((tries: Int) -> Bool)?) {
         try {
             if let callback = callback {
-                self.busy = { callback(Int($0)) ? 1 : 0 }
+                self.busy = { callback(tries: Int($0)) ? 1 : 0 }
             } else {
                 self.busy = nil
             }
@@ -391,12 +391,12 @@ public final class Database {
     /// Sets a handler to call when a statement is executed with the compiled
     /// SQL.
     ///
-    /// :param: callback This block is executed as a statement is executed with
-    ///                  the compiled SQL as an argument. E.g., pass println to
-    ///                  act as a logger.
-    public func trace(callback: (String -> ())?) {
+    /// :param: callback This block is invoked when a statement is executed with
+    ///                  the compiled SQL as its argument. E.g., pass `println`
+    ///                  to act as a logger.
+    public func trace(callback: ((SQL: String) -> ())?) {
         if let callback = callback {
-            trace = { callback(String.fromCString($0)!) }
+            trace = { callback(SQL: String.fromCString($0)!) }
         } else {
             trace = nil
         }
@@ -421,7 +421,7 @@ public final class Database {
     ///                       called. The block is called with an array of raw
     ///                       SQL values mapped to the function's parameters and
     ///                       should return a raw SQL value (or nil).
-    public func create(#function: String, argc: Int = -1, deterministic: Bool = false, _ block: [Binding?] -> Binding?) {
+    public func create(#function: String, argc: Int = -1, deterministic: Bool = false, _ block: (args: [Binding?]) -> Binding?) {
         try {
             if self.functions[function] == nil { self.functions[function] = [:] }
             self.functions[function]?[argc] = { context, argc, argv in
@@ -444,7 +444,7 @@ public final class Database {
                         assertionFailure("unsupported value type: \(type)")
                     }
                 }
-                let result = block(arguments)
+                let result = block(args: arguments)
                 if let result = result as? Blob {
                     sqlite3_result_blob(context, result.bytes, Int32(result.length), nil)
                 } else if let result = result as? Double {
@@ -473,10 +473,10 @@ public final class Database {
     ///
     /// :param: block     A collation function that takes two strings and
     ///                   returns the comparison result.
-    public func create(#collation: String, _ block: (String, String) -> ComparisonResult) {
+    public func create(#collation: String, _ block: (lhs: String, rhs: String) -> ComparisonResult) {
         try {
             self.collations[collation] = { lhs, rhs in
-                return Int32(block(String.fromCString(lhs)!, String.fromCString(rhs)!).rawValue)
+                return Int32(block(lhs: String.fromCString(lhs)!, rhs: String.fromCString(rhs)!).rawValue)
             }
             return SQLiteCreateCollation(self.handle, collation, self.collations[collation])
         }
