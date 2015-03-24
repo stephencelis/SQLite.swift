@@ -404,6 +404,80 @@ public final class Database {
     }
     private var trace: SQLiteTraceCallback?
 
+    /// A SQL operation passed to update callbacks.
+    public enum Operation {
+
+        /// An INSERT operation.
+        case Insert
+
+        /// An UPDATE operation.
+        case Update
+
+        /// A DELETE operation.
+        case Delete
+
+        private static func fromRawValue(rawValue: Int32) -> Operation {
+            switch rawValue {
+            case SQLITE_INSERT:
+                return .Insert
+            case SQLITE_UPDATE:
+                return .Update
+            case SQLITE_DELETE:
+                return .Delete
+            default:
+                fatalError("unhandled operation code: \(rawValue)")
+            }
+        }
+
+    }
+
+    /// Registers a callback to be invoked whenever a row is inserted, updated,
+    /// or deleted in a rowid table.
+    ///
+    /// :param: callback A callback invoked with the `Operation` (one
+    ///                  of `.Insert`, `.Update`, or `.Delete`), database name,
+    ///                  table name, and rowid.
+    public func updateHook(callback: ((operation: Operation, db: String, table: String, rowid: Int64) -> ())?) {
+        if let callback = callback {
+            updateHook = { operation, db, table, rowid in
+                callback(
+                    operation: .fromRawValue(operation),
+                    db: String.fromCString(db)!,
+                    table: String.fromCString(table)!,
+                    rowid: rowid
+                )
+            }
+        } else {
+            updateHook = nil
+        }
+        SQLiteUpdateHook(handle, updateHook)
+    }
+    private var updateHook: SQLiteUpdateHookCallback?
+
+    /// Registers a callback to be invoked whenever a transaction is committed.
+    ///
+    /// :param: callback A callback that must return `.Commit` or `.Rollback` to
+    ///                  determine whether a transaction should be committed or
+    ///                  not.
+    public func commitHook(callback: (() -> TransactionResult)?) {
+        if let callback = callback {
+            commitHook = { callback() == .Commit ? 0 : 1 }
+        } else {
+            commitHook = nil
+        }
+        SQLiteCommitHook(handle, commitHook)
+    }
+    private var commitHook: SQLiteCommitHookCallback?
+
+    /// Registers a callback to be invoked whenever a transaction rolls back.
+    ///
+    /// :param: callback A callback invoked when a transaction is rolled back.
+    public func rollbackHook(callback: (() -> ())?) {
+        rollbackHook = callback.map { $0 }
+        SQLiteRollbackHook(handle, rollbackHook)
+    }
+    private var rollbackHook: SQLiteRollbackHookCallback?
+
     /// Creates or redefines a custom SQL function.
     ///
     /// :param: function      The name of the function to create or redefine.

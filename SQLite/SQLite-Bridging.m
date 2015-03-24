@@ -50,6 +50,30 @@ void SQLiteTrace(sqlite3 * handle, SQLiteTraceCallback callback) {
     }
 }
 
+static void _SQLiteUpdateHook(void * context, int operation, const char * db, const char * table, sqlite3_int64 rowid) {
+    ((__bridge SQLiteUpdateHookCallback)context)(operation, db, table, rowid);
+}
+
+void SQLiteUpdateHook(sqlite3 * handle, SQLiteUpdateHookCallback callback) {
+    sqlite3_update_hook(handle, _SQLiteUpdateHook, (__bridge void *)callback);
+}
+
+static int _SQLiteCommitHook(void * context) {
+    return ((__bridge SQLiteCommitHookCallback)context)();
+}
+
+void SQLiteCommitHook(sqlite3 * handle, SQLiteCommitHookCallback callback) {
+    sqlite3_commit_hook(handle, _SQLiteCommitHook, (__bridge void *)callback);
+}
+
+static void _SQLiteRollbackHook(void * context) {
+    ((__bridge SQLiteRollbackHookCallback)context)();
+}
+
+void SQLiteRollbackHook(sqlite3 * handle, SQLiteRollbackHookCallback callback) {
+    sqlite3_rollback_hook(handle, _SQLiteRollbackHook, (__bridge void *)callback);
+}
+
 static void _SQLiteCreateFunction(sqlite3_context * context, int argc, sqlite3_value ** argv) {
     ((__bridge SQLiteCreateFunctionCallback)sqlite3_user_data(context))(context, argc, argv);
 }

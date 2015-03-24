@@ -31,6 +31,15 @@ int SQLiteBusyHandler(sqlite3 * handle, SQLiteBusyHandlerCallback callback);
 typedef void (^SQLiteTraceCallback)(const char * SQL);
 void SQLiteTrace(sqlite3 * handle, SQLiteTraceCallback callback);
 
+typedef void (^SQLiteUpdateHookCallback)(int operation, const char * db, const char * table, sqlite3_int64 rowid);
+void SQLiteUpdateHook(sqlite3 * handle, SQLiteUpdateHookCallback callback);
+
+typedef int (^SQLiteCommitHookCallback)();
+void SQLiteCommitHook(sqlite3 * handle, SQLiteCommitHookCallback callback);
+
+typedef void (^SQLiteRollbackHookCallback)();
+void SQLiteRollbackHook(sqlite3 * handle, SQLiteRollbackHookCallback callback);
+
 typedef void (^SQLiteCreateFunctionCallback)(sqlite3_context * context, int argc, sqlite3_value ** argv);
 int SQLiteCreateFunction(sqlite3 * handle, const char * name, int argc, int deterministic, SQLiteCreateFunctionCallback callback);
 
