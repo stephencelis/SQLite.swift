@@ -35,7 +35,7 @@ public extension Database {
     /// :param: block    A block of code to run when the function is called.
     ///                  The assigned types must be explicit.
     ///
-    /// :returns: A closure returning a SQL expression to call the function.
+    /// :returns: A closure returning an SQL expression to call the function.
     public func create<Z: Value>(#function: String, deterministic: Bool = false, _ block: () -> Z) -> (() -> Expression<Z>) {
         return { self.create(function, 0, deterministic) { _ in return block() }([]) }
     }

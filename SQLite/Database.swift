@@ -24,7 +24,7 @@
 
 import sqlite3
 
-/// A connection (handle) to a SQLite database.
+/// A connection (handle) to SQLite.
 public final class Database {
 
     internal var handle: COpaquePointer = nil
@@ -402,7 +402,7 @@ public final class Database {
     }
     private var trace: SQLiteTraceCallback?
 
-    /// A SQL operation passed to update callbacks.
+    /// An SQL operation passed to update callbacks.
     public enum Operation {
 
         /// An INSERT operation.

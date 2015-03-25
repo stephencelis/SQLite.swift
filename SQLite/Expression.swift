@@ -33,31 +33,31 @@ public struct Expression<T> {
 
     private var original: Expressible?
 
-    /// Builds a SQL expression with a literal string and an optional list of
+    /// Builds an SQL expression with a literal string and an optional list of
     /// bindings.
     ///
-    /// :param: SQL      A SQL string.
+    /// :param: SQL      An SQL string.
     ///
     /// :param: bindings Values to be bound to the given SQL.
     public init(literal SQL: String = "", _ bindings: [Binding?] = []) {
         (self.SQL, self.bindings) = (SQL, bindings)
     }
 
-    /// Builds a SQL expression with a quoted identifier.
+    /// Builds an SQL expression with a quoted identifier.
     ///
-    /// :param: identifier A SQL identifier (*e.g.*, a column name).
+    /// :param: identifier An SQL identifier (*e.g.*, a column name).
     public init(_ identifier: String) {
         self.init(literal: quote(identifier: identifier))
     }
 
-    /// Builds a SQL expression with the given value.
+    /// Builds an SQL expression with the given value.
     ///
     /// :param: value An encodable SQL value.
     public init<V: Value>(value: V?) {
         self.init(binding: value?.datatypeValue)
     }
 
-    /// Builds a SQL expression with the given value.
+    /// Builds an SQL expression with the given value.
     ///
     /// :param: binding A raw SQL value.
     internal init(binding: Binding?) {
