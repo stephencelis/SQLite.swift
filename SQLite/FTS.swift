@@ -76,7 +76,7 @@ extension Database {
 
     public func register(tokenizer submoduleName: String, next: String -> (String, Range<String.Index>)?) {
         try {
-            SQLiteRegisterTokenizer(self.handle, Tokenizer.moduleName, submoduleName) { input, offset, length in
+            _SQLiteRegisterTokenizer(self.handle, Tokenizer.moduleName, submoduleName) { input, offset, length in
                 let string = String.fromCString(input)!
                 if var (token, range) = next(string) {
                     let view = string.utf8

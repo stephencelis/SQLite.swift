@@ -24,61 +24,63 @@
 
 #import "SQLite-Bridging.h"
 
+@import sqlite3;
+
 #import "fts3_tokenizer.h"
 
-static int _SQLiteBusyHandler(void * context, int tries) {
-    return ((__bridge SQLiteBusyHandlerCallback)context)(tries);
+static int __SQLiteBusyHandler(void * context, int tries) {
+    return ((__bridge _SQLiteBusyHandlerCallback)context)(tries);
 }
 
-int SQLiteBusyHandler(sqlite3 * handle, SQLiteBusyHandlerCallback callback) {
+int _SQLiteBusyHandler(SQLiteHandle * handle, _SQLiteBusyHandlerCallback callback) {
     if (callback) {
-        return sqlite3_busy_handler(handle, _SQLiteBusyHandler, (__bridge void *)callback);
+        return sqlite3_busy_handler((sqlite3 *)handle, __SQLiteBusyHandler, (__bridge void *)callback);
     } else {
-        return sqlite3_busy_handler(handle, 0, 0);
+        return sqlite3_busy_handler((sqlite3 *)handle, 0, 0);
     }
 }
 
-static void _SQLiteTrace(void * context, const char * SQL) {
-    ((__bridge SQLiteTraceCallback)context)(SQL);
+static void __SQLiteTrace(void * context, const char * SQL) {
+    ((__bridge _SQLiteTraceCallback)context)(SQL);
 }
 
-void SQLiteTrace(sqlite3 * handle, SQLiteTraceCallback callback) {
+void _SQLiteTrace(SQLiteHandle * handle, _SQLiteTraceCallback callback) {
     if (callback) {
-        sqlite3_trace(handle, _SQLiteTrace, (__bridge void *)callback);
+        sqlite3_trace((sqlite3 *)handle, __SQLiteTrace, (__bridge void *)callback);
     } else {
-        sqlite3_trace(handle, 0, 0);
+        sqlite3_trace((sqlite3 *)handle, 0, 0);
     }
 }
 
-static void _SQLiteUpdateHook(void * context, int operation, const char * db, const char * table, sqlite3_int64 rowid) {
-    ((__bridge SQLiteUpdateHookCallback)context)(operation, db, table, rowid);
+static void __SQLiteUpdateHook(void * context, int operation, const char * db, const char * table, long long rowid) {
+    ((__bridge _SQLiteUpdateHookCallback)context)(operation, db, table, rowid);
 }
 
-void SQLiteUpdateHook(sqlite3 * handle, SQLiteUpdateHookCallback callback) {
-    sqlite3_update_hook(handle, _SQLiteUpdateHook, (__bridge void *)callback);
+void _SQLiteUpdateHook(SQLiteHandle * handle, _SQLiteUpdateHookCallback callback) {
+    sqlite3_update_hook((sqlite3 *)handle, __SQLiteUpdateHook, (__bridge void *)callback);
 }
 
-static int _SQLiteCommitHook(void * context) {
-    return ((__bridge SQLiteCommitHookCallback)context)();
+static int __SQLiteCommitHook(void * context) {
+    return ((__bridge _SQLiteCommitHookCallback)context)();
 }
 
-void SQLiteCommitHook(sqlite3 * handle, SQLiteCommitHookCallback callback) {
-    sqlite3_commit_hook(handle, _SQLiteCommitHook, (__bridge void *)callback);
+void _SQLiteCommitHook(SQLiteHandle * handle, _SQLiteCommitHookCallback callback) {
+    sqlite3_commit_hook((sqlite3 *)handle, __SQLiteCommitHook, (__bridge void *)callback);
 }
 
-static void _SQLiteRollbackHook(void * context) {
-    ((__bridge SQLiteRollbackHookCallback)context)();
+static void __SQLiteRollbackHook(void * context) {
+    ((__bridge _SQLiteRollbackHookCallback)context)();
 }
 
-void SQLiteRollbackHook(sqlite3 * handle, SQLiteRollbackHookCallback callback) {
-    sqlite3_rollback_hook(handle, _SQLiteRollbackHook, (__bridge void *)callback);
+void _SQLiteRollbackHook(SQLiteHandle * handle, _SQLiteRollbackHookCallback callback) {
+    sqlite3_rollback_hook((sqlite3 *)handle, __SQLiteRollbackHook, (__bridge void *)callback);
 }
 
-static void _SQLiteCreateFunction(sqlite3_context * context, int argc, sqlite3_value ** argv) {
-    ((__bridge SQLiteCreateFunctionCallback)sqlite3_user_data(context))(context, argc, argv);
+static void __SQLiteCreateFunction(sqlite3_context * context, int argc, sqlite3_value ** argv) {
+    ((__bridge _SQLiteCreateFunctionCallback)sqlite3_user_data(context))((SQLiteContext *)context, argc, (SQLiteValue **)argv);
 }
 
-int SQLiteCreateFunction(sqlite3 * handle, const char * name, int argc, int deterministic, SQLiteCreateFunctionCallback callback) {
+int _SQLiteCreateFunction(SQLiteHandle * handle, const char * name, int argc, int deterministic, _SQLiteCreateFunctionCallback callback) {
     if (callback) {
         int flags = SQLITE_UTF8;
         if (deterministic) {
@@ -86,51 +88,50 @@ int SQLiteCreateFunction(sqlite3 * handle, const char * name, int argc, int dete
             flags |= SQLITE_DETERMINISTIC;
 #endif
         }
-        return sqlite3_create_function_v2(handle, name, -1, flags, (__bridge void *)callback, &_SQLiteCreateFunction, 0, 0, 0);
+        return sqlite3_create_function_v2((sqlite3 *)handle, name, -1, flags, (__bridge void *)callback, &__SQLiteCreateFunction, 0, 0, 0);
     } else {
-        return sqlite3_create_function_v2(handle, name, 0, 0, 0, 0, 0, 0, 0);
+        return sqlite3_create_function_v2((sqlite3 *)handle, name, 0, 0, 0, 0, 0, 0, 0);
     }
 }
 
-static int _SQLiteCreateCollation(void * context, int len_lhs, const void * lhs, int len_rhs, const void * rhs) {
-    return ((__bridge SQLiteCreateCollationCallback)context)(lhs, rhs);
+static int __SQLiteCreateCollation(void * context, int len_lhs, const void * lhs, int len_rhs, const void * rhs) {
+    return ((__bridge _SQLiteCreateCollationCallback)context)(lhs, rhs);
 }
 
-int SQLiteCreateCollation(sqlite3 * handle, const char * name, SQLiteCreateCollationCallback callback) {
+int _SQLiteCreateCollation(SQLiteHandle * handle, const char * name, _SQLiteCreateCollationCallback callback) {
     if (callback) {
-        return sqlite3_create_collation_v2(handle, name, SQLITE_UTF8, (__bridge void *)callback, &_SQLiteCreateCollation, 0);
+        return sqlite3_create_collation_v2((sqlite3 *)handle, name, SQLITE_UTF8, (__bridge void *)callback, &__SQLiteCreateCollation, 0);
     } else {
-        return sqlite3_create_collation_v2(handle, name, 0, 0, 0, 0);
+        return sqlite3_create_collation_v2((sqlite3 *)handle, name, 0, 0, 0, 0);
     }
 }
 
 #pragma mark - FTS
 
-typedef struct _SQLiteTokenizer {
+typedef struct __SQLiteTokenizer {
     sqlite3_tokenizer base;
-    __unsafe_unretained SQLiteTokenizerNextCallback callback;
-} _SQLiteTokenizer;
+    __unsafe_unretained _SQLiteTokenizerNextCallback callback;
+} __SQLiteTokenizer;
 
-typedef struct _SQLiteTokenizerCursor {
+typedef struct __SQLiteTokenizerCursor {
     void * base;
     const char * input;
     int inputOffset;
     int inputLength;
     int idx;
-} _SQLiteTokenizerCursor;
+} __SQLiteTokenizerCursor;
 
+static NSMutableDictionary * __SQLiteTokenizerMap;
 
-static NSMutableDictionary * _SQLiteTokenizerMap;
-
-static int _SQLiteTokenizerCreate(int argc, const char * const * argv, sqlite3_tokenizer ** ppTokenizer) {
-    _SQLiteTokenizer * tokenizer = (_SQLiteTokenizer *)sqlite3_malloc(sizeof(_SQLiteTokenizer));
+static int __SQLiteTokenizerCreate(int argc, const char * const * argv, sqlite3_tokenizer ** ppTokenizer) {
+    __SQLiteTokenizer * tokenizer = (__SQLiteTokenizer *)sqlite3_malloc(sizeof(__SQLiteTokenizer));
     if (!tokenizer) {
         return SQLITE_NOMEM;
     }
     memset(tokenizer, 0, sizeof(* tokenizer)); // FIXME: needed?
 
     NSString * key = [NSString stringWithUTF8String:argv[0]];
-    tokenizer->callback = [_SQLiteTokenizerMap objectForKey:key];
+    tokenizer->callback = [__SQLiteTokenizerMap objectForKey:key];
     if (!tokenizer->callback) {
         return SQLITE_ERROR;
     }
@@ -139,13 +140,13 @@ static int _SQLiteTokenizerCreate(int argc, const char * const * argv, sqlite3_t
     return SQLITE_OK;
 }
 
-static int _SQLiteTokenizerDestroy(sqlite3_tokenizer * pTokenizer) {
+static int __SQLiteTokenizerDestroy(sqlite3_tokenizer * pTokenizer) {
     sqlite3_free(pTokenizer);
     return SQLITE_OK;
 }
 
-static int _SQLiteTokenizerOpen(sqlite3_tokenizer * pTokenizer, const char * pInput, int nBytes, sqlite3_tokenizer_cursor ** ppCursor) {
-    _SQLiteTokenizerCursor * cursor = (_SQLiteTokenizerCursor *)sqlite3_malloc(sizeof(_SQLiteTokenizerCursor));
+static int __SQLiteTokenizerOpen(sqlite3_tokenizer * pTokenizer, const char * pInput, int nBytes, sqlite3_tokenizer_cursor ** ppCursor) {
+    __SQLiteTokenizerCursor * cursor = (__SQLiteTokenizerCursor *)sqlite3_malloc(sizeof(__SQLiteTokenizerCursor));
     if (!cursor) {
         return SQLITE_NOMEM;
     }
@@ -159,14 +160,14 @@ static int _SQLiteTokenizerOpen(sqlite3_tokenizer * pTokenizer, const char * pIn
     return SQLITE_OK;
 }
 
-static int _SQLiteTokenizerClose(sqlite3_tokenizer_cursor * pCursor) {
+static int __SQLiteTokenizerClose(sqlite3_tokenizer_cursor * pCursor) {
     sqlite3_free(pCursor);
     return SQLITE_OK;
 }
 
-static int _SQLiteTokenizerNext(sqlite3_tokenizer_cursor * pCursor, const char ** ppToken, int * pnBytes, int * piStartOffset, int * piEndOffset, int * piPosition) {
-    _SQLiteTokenizerCursor * cursor = (_SQLiteTokenizerCursor *)pCursor;
-    _SQLiteTokenizer * tokenizer = (_SQLiteTokenizer *)cursor->base;
+static int __SQLiteTokenizerNext(sqlite3_tokenizer_cursor * pCursor, const char ** ppToken, int * pnBytes, int * piStartOffset, int * piEndOffset, int * piPosition) {
+    __SQLiteTokenizerCursor * cursor = (__SQLiteTokenizerCursor *)pCursor;
+    __SQLiteTokenizer * tokenizer = (__SQLiteTokenizer *)cursor->base;
 
     cursor->inputOffset += cursor->inputLength;
     const char * input = cursor->input + cursor->inputOffset;
@@ -183,27 +184,27 @@ static int _SQLiteTokenizerNext(sqlite3_tokenizer_cursor * pCursor, const char *
     return SQLITE_OK;
 }
 
-static const sqlite3_tokenizer_module _SQLiteTokenizerModule = {
+static const sqlite3_tokenizer_module __SQLiteTokenizerModule = {
     0,
-    _SQLiteTokenizerCreate,
-    _SQLiteTokenizerDestroy,
-    _SQLiteTokenizerOpen,
-    _SQLiteTokenizerClose,
-    _SQLiteTokenizerNext
+    __SQLiteTokenizerCreate,
+    __SQLiteTokenizerDestroy,
+    __SQLiteTokenizerOpen,
+    __SQLiteTokenizerClose,
+    __SQLiteTokenizerNext
 };
 
-int SQLiteRegisterTokenizer(sqlite3 * db, const char * moduleName, const char * submoduleName, SQLiteTokenizerNextCallback callback) {
+int _SQLiteRegisterTokenizer(SQLiteHandle * db, const char * moduleName, const char * submoduleName, _SQLiteTokenizerNextCallback callback) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        _SQLiteTokenizerMap = [NSMutableDictionary new];
+        __SQLiteTokenizerMap = [NSMutableDictionary new];
     });
 
     sqlite3_stmt * stmt;
-    int status = sqlite3_prepare_v2(db, "SELECT fts3_tokenizer(?, ?)", -1, &stmt, 0);
+    int status = sqlite3_prepare_v2((sqlite3 *)db, "SELECT fts3_tokenizer(?, ?)", -1, &stmt, 0);
     if (status != SQLITE_OK ){
         return status;
     }
-    const sqlite3_tokenizer_module * pModule = &_SQLiteTokenizerModule;
+    const sqlite3_tokenizer_module * pModule = &__SQLiteTokenizerModule;
     sqlite3_bind_text(stmt, 1, moduleName, -1, SQLITE_STATIC);
     sqlite3_bind_blob(stmt, 2, &pModule, sizeof(pModule), SQLITE_STATIC);
     sqlite3_step(stmt);
@@ -212,7 +213,7 @@ int SQLiteRegisterTokenizer(sqlite3 * db, const char * moduleName, const char * 
         return status;
     }
 
-    [_SQLiteTokenizerMap setObject:[callback copy] forKey:[NSString stringWithUTF8String:submoduleName]];
+    [__SQLiteTokenizerMap setObject:[callback copy] forKey:[NSString stringWithUTF8String:submoduleName]];
 
     return SQLITE_OK;
 }

@@ -381,10 +381,10 @@ public final class Database {
             } else {
                 self.busy = nil
             }
-            return SQLiteBusyHandler(self.handle, self.busy)
+            return _SQLiteBusyHandler(self.handle, self.busy)
         }
     }
-    private var busy: SQLiteBusyHandlerCallback?
+    private var busy: _SQLiteBusyHandlerCallback?
 
     /// Sets a handler to call when a statement is executed with the compiled
     /// SQL.
@@ -398,9 +398,9 @@ public final class Database {
         } else {
             trace = nil
         }
-        SQLiteTrace(handle, trace)
+        _SQLiteTrace(handle, trace)
     }
-    private var trace: SQLiteTraceCallback?
+    private var trace: _SQLiteTraceCallback?
 
     /// An SQL operation passed to update callbacks.
     public enum Operation {
@@ -448,9 +448,9 @@ public final class Database {
         } else {
             updateHook = nil
         }
-        SQLiteUpdateHook(handle, updateHook)
+        _SQLiteUpdateHook(handle, updateHook)
     }
-    private var updateHook: SQLiteUpdateHookCallback?
+    private var updateHook: _SQLiteUpdateHookCallback?
 
     /// Registers a callback to be invoked whenever a transaction is committed.
     ///
@@ -463,18 +463,18 @@ public final class Database {
         } else {
             commitHook = nil
         }
-        SQLiteCommitHook(handle, commitHook)
+        _SQLiteCommitHook(handle, commitHook)
     }
-    private var commitHook: SQLiteCommitHookCallback?
+    private var commitHook: _SQLiteCommitHookCallback?
 
     /// Registers a callback to be invoked whenever a transaction rolls back.
     ///
     /// :param: callback A callback invoked when a transaction is rolled back.
     public func rollbackHook(callback: (() -> ())?) {
         rollbackHook = callback.map { $0 }
-        SQLiteRollbackHook(handle, rollbackHook)
+        _SQLiteRollbackHook(handle, rollbackHook)
     }
-    private var rollbackHook: SQLiteRollbackHookCallback?
+    private var rollbackHook: _SQLiteRollbackHookCallback?
 
     /// Creates or redefines a custom SQL function.
     ///
@@ -531,10 +531,10 @@ public final class Database {
                     assertionFailure("unsupported result type: \(result)")
                 }
             }
-            return SQLiteCreateFunction(self.handle, function, Int32(argc), deterministic ? 1 : 0, self.functions[function]?[argc])
+            return _SQLiteCreateFunction(self.handle, function, Int32(argc), deterministic ? 1 : 0, self.functions[function]?[argc])
         }
     }
-    private var functions = [String: [Int: SQLiteCreateFunctionCallback]]()
+    private var functions = [String: [Int: _SQLiteCreateFunctionCallback]]()
 
     /// The return type of a collation comparison function.
     public typealias ComparisonResult = NSComparisonResult
@@ -550,10 +550,10 @@ public final class Database {
             self.collations[collation] = { lhs, rhs in
                 return Int32(block(lhs: String.fromCString(lhs)!, rhs: String.fromCString(rhs)!).rawValue)
             }
-            return SQLiteCreateCollation(self.handle, collation, self.collations[collation])
+            return _SQLiteCreateCollation(self.handle, collation, self.collations[collation])
         }
     }
-    private var collations = [String: SQLiteCreateCollationCallback]()
+    private var collations = [String: _SQLiteCreateCollationCallback]()
 
     // MARK: - Error Handling
 
