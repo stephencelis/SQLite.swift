@@ -429,12 +429,12 @@ The `insert` function can return several different types that are useful in diff
     // COMMIT TRANSACTION;
     ```
 
-  - A tuple of the above [`ROWID`][ROWID] and statement: `(id: Int64?, statement: Statement)`, for flexibility.
+  - A tuple of the above [`ROWID`][ROWID] and statement: `(rowid: Int64?, statement: Statement)`, for flexibility.
 
     ``` swift
-    let (id, statement) = users.insert(email <- "alice@mac.com")
-    if let id = id {
-        println("inserted id: \(id)")
+    let (rowid, statement) = users.insert(email <- "alice@mac.com")
+    if let rowid = rowid {
+        println("inserted id: \(rowid)")
     } else if statement.failed {
         println("insertion failed: \(statement.reason)")
     }
@@ -898,11 +898,11 @@ Using the `transaction` and `savepoint` functions, we can run a series of statem
 ``` swift
 db.transaction()
     && users.insert(email <- "betty@icloud.com")
-    && users.insert(email <- "cathy@icloud.com", manager_id <- db.lastId)
+    && users.insert(email <- "cathy@icloud.com", manager_id <- db.lastInsertRowid)
     && db.commit() || db.rollback()
 ```
 
-> _Note:_ Each statement is captured in an auto-closure and won’t execute till the preceding statement succeeds. This means we can use the `lastId` property on `Database` to reference the previous statement’s insert [`ROWID`][ROWID].
+> _Note:_ Each statement is captured in an auto-closure and won’t execute till the preceding statement succeeds. This means we can use the `lastInsertRowid` property on `Database` to reference the previous statement’s insert [`ROWID`][ROWID].
 
 
 ## Altering the Schema
@@ -1414,7 +1414,7 @@ Though we recommend you stick with SQLite.swift’s [type-safe system](#building
 
     ``` swift
     stmt.run("alice@mac.com")
-    db.lastChanges // -> {Some 1}
+    db.changes // -> {Some 1}
     ```
 
     Statements with results may be iterated over.

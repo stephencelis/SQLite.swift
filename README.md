@@ -84,9 +84,9 @@ for email in ["betty@icloud.com", "cathy@icloud.com"] {
     stmt.run(email)
 }
 
-db.totalChanges // 3
-db.lastChanges  // 1
-db.lastId       // 3
+db.totalChanges    // 3
+db.changes         // 1
+db.lastInsertRowid // 3
 
 for row in db.prepare("SELECT id, email FROM users") {
     println("id: \(row[0]), email: \(row[1])")

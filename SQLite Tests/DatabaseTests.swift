@@ -18,24 +18,24 @@ class DatabaseTests: SQLiteTestCase {
         XCTAssert(db.readonly)
     }
 
-    func test_lastId_returnsNilOnNewConnections() {
-        XCTAssert(db.lastId == nil)
+    func test_lastInsertRowid_returnsNilOnNewConnections() {
+        XCTAssert(db.lastInsertRowid == nil)
     }
 
-    func test_lastId_returnsLastIdAfterInserts() {
+    func test_lastInsertRowid_returnsLastIdAfterInserts() {
         insertUser("alice")
-        XCTAssert(db.lastId! == 1)
+        XCTAssert(db.lastInsertRowid! == 1)
     }
 
-    func test_lastChanges_returnsZeroOnNewConnections() {
-        XCTAssertEqual(0, db.lastChanges)
+    func test_changes_returnsZeroOnNewConnections() {
+        XCTAssertEqual(0, db.changes)
     }
 
-    func test_lastChanges_returnsNumberOfChanges() {
+    func test_changes_returnsNumberOfChanges() {
         insertUser("alice")
-        XCTAssertEqual(1, db.lastChanges)
+        XCTAssertEqual(1, db.changes)
         insertUser("betsy")
-        XCTAssertEqual(1, db.lastChanges)
+        XCTAssertEqual(1, db.changes)
     }
 
     func test_totalChanges_returnsTotalNumberOfChanges() {

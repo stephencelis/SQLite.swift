@@ -54,14 +54,14 @@ public final class Database {
     // MARK: -
 
     /// The last rowid inserted into the database via this connection.
-    public var lastId: Int64? {
-        let lastId = sqlite3_last_insert_rowid(handle)
-        return lastId == 0 ? nil : lastId
+    public var lastInsertRowid: Int64? {
+        let rowid = sqlite3_last_insert_rowid(handle)
+        return rowid == 0 ? nil : rowid
     }
 
     /// The last number of changes (inserts, updates, or deletes) made to the
     /// database via this connection.
-    public var lastChanges: Int {
+    public var changes: Int {
         return Int(sqlite3_changes(handle))
     }
 
@@ -363,7 +363,7 @@ public final class Database {
     /// Sets a busy timeout to retry after encountering a busy signal (lock).
     ///
     /// :param: ms Milliseconds to wait before retrying.
-    public func timeout(ms: Int) {
+    public func busyTimeout(ms: Int) {
         sqlite3_busy_timeout(handle, Int32(ms))
     }
 
@@ -374,17 +374,17 @@ public final class Database {
     ///                  number of times it’s been called for this lock. If it
     ///                  returns true, it will try again. If it returns false,
     ///                  no further attempts will be made.
-    public func busy(callback: ((tries: Int) -> Bool)?) {
+    public func busyHandler(callback: ((tries: Int) -> Bool)?) {
         try {
             if let callback = callback {
-                self.busy = { callback(tries: Int($0)) ? 1 : 0 }
+                self.busyHandler = { callback(tries: Int($0)) ? 1 : 0 }
             } else {
-                self.busy = nil
+                self.busyHandler = nil
             }
-            return _SQLiteBusyHandler(self.handle, self.busy)
+            return _SQLiteBusyHandler(self.handle, self.busyHandler)
         }
     }
-    private var busy: _SQLiteBusyHandlerCallback?
+    private var busyHandler: _SQLiteBusyHandlerCallback?
 
     /// Sets a handler to call when a statement is executed with the compiled
     /// SQL.

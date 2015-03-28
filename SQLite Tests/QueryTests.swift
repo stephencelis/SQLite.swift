@@ -296,11 +296,11 @@ class QueryTests: SQLiteTestCase {
     }
 
     func test_insert_insertsRows() {
-        XCTAssertEqual(1, users.insert(email <- "alice@example.com", age <- 30).id!)
+        XCTAssertEqual(1, users.insert(email <- "alice@example.com", age <- 30).rowid!)
 
         AssertSQL("INSERT INTO \"users\" (\"email\", \"age\") VALUES ('alice@example.com', 30)")
 
-        XCTAssert(users.insert(email <- "alice@example.com", age <- 30).id == nil)
+        XCTAssert(users.insert(email <- "alice@example.com", age <- 30).rowid == nil)
     }
 
     func test_insert_withQuery_insertsRows() {
@@ -316,15 +316,15 @@ class QueryTests: SQLiteTestCase {
         db.execute("CREATE TABLE \"timestamps\" (\"id\" INTEGER PRIMARY KEY, \"timestamp\" TEXT DEFAULT CURRENT_DATETIME)")
         let table = db["timestamps"]
 
-        XCTAssertEqual(1, table.insert().id!)
+        XCTAssertEqual(1, table.insert().rowid!)
         AssertSQL("INSERT INTO \"timestamps\" DEFAULT VALUES")
     }
 
     func test_replace_replaceRows() {
-        XCTAssertEqual(1, users.replace(email <- "alice@example.com", age <- 30).id!)
+        XCTAssertEqual(1, users.replace(email <- "alice@example.com", age <- 30).rowid!)
         AssertSQL("INSERT OR REPLACE INTO \"users\" (\"email\", \"age\") VALUES ('alice@example.com', 30)")
 
-        XCTAssertEqual(1, users.replace(id <- 1, email <- "betty@example.com", age <- 30).id!)
+        XCTAssertEqual(1, users.replace(id <- 1, email <- "betty@example.com", age <- 30).rowid!)
         AssertSQL("INSERT OR REPLACE INTO \"users\" (\"id\", \"email\", \"age\") VALUES (1, 'betty@example.com', 30)")
     }
 
