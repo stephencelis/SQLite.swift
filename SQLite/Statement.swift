@@ -297,6 +297,7 @@ extension Cursor: SequenceType {
             return self[idx] as String
         case let type:
             assertionFailure("unsupported column type: \(type)")
+            return nil
         }
     }
 

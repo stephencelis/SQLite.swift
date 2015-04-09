@@ -514,6 +514,7 @@ public final class Database {
                         return String.fromCString(UnsafePointer(sqlite3_value_text(value)))!
                     case let type:
                         assertionFailure("unsupported value type: \(type)")
+                        return nil
                     }
                 }
                 let result = block(args: arguments)
