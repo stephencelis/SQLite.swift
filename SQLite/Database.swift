@@ -513,7 +513,7 @@ public final class Database {
                     case SQLITE_TEXT:
                         return String.fromCString(UnsafePointer(sqlite3_value_text(value)))!
                     case let type:
-                        assertionFailure("unsupported value type: \(type)")
+                        fatalError("unsupported value type: \(type)")
                     }
                 }
                 let result = block(args: arguments)
@@ -528,7 +528,7 @@ public final class Database {
                 } else if result == nil {
                     sqlite3_result_null(context)
                 } else {
-                    assertionFailure("unsupported result type: \(result)")
+                    fatalError("unsupported result type: \(result)")
                 }
             }
             return _SQLiteCreateFunction(self.handle, function, Int32(argc), deterministic ? 1 : 0, self.functions[function]?[argc])

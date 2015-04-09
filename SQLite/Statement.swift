@@ -105,7 +105,7 @@ public final class Statement {
         } else if let value = value as? Int {
             bind(value.datatypeValue, atIndex: idx)
         } else if let value = value {
-            assertionFailure("tried to bind unexpected value \(value)")
+            fatalError("tried to bind unexpected value \(value)")
         }
     }
 
@@ -296,7 +296,7 @@ extension Cursor: SequenceType {
         case SQLITE_TEXT:
             return self[idx] as String
         case let type:
-            assertionFailure("unsupported column type: \(type)")
+            fatalError("unsupported column type: \(type)")
         }
     }
 
