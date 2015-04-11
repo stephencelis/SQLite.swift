@@ -536,6 +536,11 @@ class ExpressionTests: SQLiteTestCase {
         AssertSQLContains("(\"age\" IN (20))", contains(Set([20]), age))
     }
 
+    func test_containsFunction_withValueExpressionAndQuery_buildsInExpression() {
+        let query = users.select(max(age)).group(id)
+        AssertSQLContains("(\"id\" IN (SELECT max(\"age\") FROM \"users\" GROUP BY \"id\"))", contains(query, id))
+    }
+
     func test_plusEquals_withStringExpression_buildsSetter() {
         users.update(email += email)!
         users.update(email += email2)!

@@ -769,13 +769,15 @@ public typealias Star = (Expression<Binding>?, Expression<Binding>?) -> Expressi
 public func * (Expression<Binding>?, Expression<Binding>?) -> Expression<()> {
     return Expression(literal: "*")
 }
-
 public func contains<V: Value, C: CollectionType where C.Generator.Element == V, C.Index.Distance == Int>(values: C, column: Expression<V>) -> Expression<Bool> {
     let templates = join(", ", [String](count: count(values), repeatedValue: "?"))
     return infix("IN", column, Expression<V>(literal: "(\(templates))", map(values) { $0.datatypeValue }))
 }
 public func contains<V: Value, C: CollectionType where C.Generator.Element == V, C.Index.Distance == Int>(values: C, column: Expression<V?>) -> Expression<Bool> {
     return contains(values, Expression<V>(column))
+}
+public func contains<V: Value>(values: Query, column: Expression<V>) -> Expression<Bool> {
+    return infix("IN", column, wrap("", values.selectExpression) as Expression<()>)
 }
 
 // MARK: - Modifying
