@@ -13,8 +13,6 @@
 		DC2393C91ABE35F8003FF113 /* SQLite-Bridging.h in Headers */ = {isa = PBXBuildFile; fileRef = DC2393C61ABE35F8003FF113 /* SQLite-Bridging.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		DC2393CA1ABE35F8003FF113 /* SQLite-Bridging.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2393C71ABE35F8003FF113 /* SQLite-Bridging.m */; };
 		DC2393CB1ABE35F8003FF113 /* SQLite-Bridging.m in Sources */ = {isa = PBXBuildFile; fileRef = DC2393C71ABE35F8003FF113 /* SQLite-Bridging.m */; };
-		DC2393D11ABE37B6003FF113 /* sqlite3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCAE4D151ABE0B3300EFCE7A /* sqlite3.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		DC2393D31ABE37D9003FF113 /* sqlite3.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DCAE4D151ABE0B3300EFCE7A /* sqlite3.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DC2DD6B01ABE437500C2C71A /* libsqlcipher.a in Frameworks */ = {isa = PBXBuildFile; fileRef = DC2DD6AC1ABE428E00C2C71A /* libsqlcipher.a */; };
 		DC2DD6B31ABE439A00C2C71A /* libsqlcipher.a in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DC2DD6AC1ABE428E00C2C71A /* libsqlcipher.a */; };
 		DC3773F919C8CBB3004FCF85 /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = DC3773F819C8CBB3004FCF85 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -27,13 +25,10 @@
 		DC650B9619F0CDC3002FBE91 /* Expression.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC650B9519F0CDC3002FBE91 /* Expression.swift */; };
 		DC70AC991AC2331000371524 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC37744219C8DC91004FCF85 /* libsqlite3.dylib */; };
 		DC70AC9A1AC2331100371524 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC37744219C8DC91004FCF85 /* libsqlite3.dylib */; };
-		DC70AC9B1AC2331400371524 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = DC5B12121ABE3298000DA146 /* libsqlite3.dylib */; };
 		DC9D389C1AAD458500780AE7 /* fts3_tokenizer.h in Headers */ = {isa = PBXBuildFile; fileRef = DC9D389B1AAD458500780AE7 /* fts3_tokenizer.h */; };
 		DC9D389D1AAD458500780AE7 /* fts3_tokenizer.h in Headers */ = {isa = PBXBuildFile; fileRef = DC9D389B1AAD458500780AE7 /* fts3_tokenizer.h */; };
 		DCAD429719E2E0F1004A51DF /* Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAD429619E2E0F1004A51DF /* Query.swift */; };
 		DCAD429A19E2EE50004A51DF /* QueryTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAD429919E2EE50004A51DF /* QueryTests.swift */; };
-		DCAE4D331ABE0C2100EFCE7A /* sqlite3.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DCAE4D151ABE0B3300EFCE7A /* sqlite3.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
-		DCAE4D371ABE0C4C00EFCE7A /* sqlite3.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = DCAE4D151ABE0B3300EFCE7A /* sqlite3.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		DCAFEAD31AABC818000C21A1 /* FTS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAFEAD21AABC818000C21A1 /* FTS.swift */; };
 		DCAFEAD41AABC818000C21A1 /* FTS.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAFEAD21AABC818000C21A1 /* FTS.swift */; };
 		DCAFEAD71AABEFA7000C21A1 /* FTSTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DCAFEAD61AABEFA7000C21A1 /* FTSTests.swift */; };
@@ -112,18 +107,6 @@
 			dstSubfolderSpec = 10;
 			files = (
 				DC2DD6B31ABE439A00C2C71A /* libsqlcipher.a in Embed Frameworks */,
-				DC2393D31ABE37D9003FF113 /* sqlite3.framework in Embed Frameworks */,
-			);
-			name = "Embed Frameworks";
-			runOnlyForDeploymentPostprocessing = 0;
-		};
-		DCAE4D361ABE0C3700EFCE7A /* Embed Frameworks */ = {
-			isa = PBXCopyFilesBuildPhase;
-			buildActionMask = 2147483647;
-			dstPath = "";
-			dstSubfolderSpec = 10;
-			files = (
-				DCAE4D371ABE0C4C00EFCE7A /* sqlite3.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -181,7 +164,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				DC70AC991AC2331000371524 /* libsqlite3.dylib in Frameworks */,
-				DCAE4D331ABE0C2100EFCE7A /* sqlite3.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -207,7 +189,6 @@
 			files = (
 				DC2DD6B01ABE437500C2C71A /* libsqlcipher.a in Frameworks */,
 				DC70AC9A1AC2331100371524 /* libsqlite3.dylib in Frameworks */,
-				DC2393D11ABE37B6003FF113 /* sqlite3.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -403,7 +384,6 @@
 				DC3773EF19C8CBB3004FCF85 /* Frameworks */,
 				DC3773F019C8CBB3004FCF85 /* Headers */,
 				DC3773F119C8CBB3004FCF85 /* Resources */,
-				DCAE4D361ABE0C3700EFCE7A /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
