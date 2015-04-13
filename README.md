@@ -140,9 +140,9 @@ To install SQLite.swift:
 To install SQLite.swift with [SQLCipher][] support:
 
  1. Make sure the **sqlcipher** working copy is checked out in Xcode. If
-    **sqlcipher.xcodeproj** (in the **Vendor** group) is unavailable
-    (and appears red), go to the **Source Control** menu and select
-    **Check Out sqlcipher…** from the **sqlcipher** menu item.
+    **sqlcipher.xcodeproj** is unavailable (_i.e._, it appears red), go to the
+    **Source Control** menu and select **Check Out sqlcipher…** from the
+    **sqlcipher** menu item.
 
  2. Follow [the instructions above](#installation) with the
     **SQLiteCipher** target, instead.
