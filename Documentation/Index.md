@@ -902,6 +902,16 @@ db.transaction()
     && db.commit() || db.rollback()
 ```
 
+The former statement can also be written as
+``` swift
+db.transaction { _ in
+    for obj in objects {
+        stmt.run(obj.email)
+    }
+    return .Commit || .Rollback
+}
+```
+
 > _Note:_ Each statement is captured in an auto-closure and won’t execute till the preceding statement succeeds. This means we can use the `lastInsertRowid` property on `Database` to reference the previous statement’s insert [`ROWID`][ROWID].
 
 
