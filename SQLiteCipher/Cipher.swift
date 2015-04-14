@@ -22,6 +22,8 @@
 // THE SOFTWARE.
 //
 
+import sqlite3
+
 extension Database {
 
     public func key(key: String) {
