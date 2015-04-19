@@ -731,7 +731,7 @@ public struct Query {
 
     /// The first row (or nil if the query returns no rows).
     public var first: Row? {
-        var generator = limit(1).generate()
+        var generator = limit(to: 1, offset: limit?.offset).generate()
         return generator.next()
     }
 

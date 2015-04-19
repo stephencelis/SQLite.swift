@@ -285,6 +285,13 @@ class QueryTests: SQLiteTestCase {
         AssertSQL("SELECT * FROM \"users\" LIMIT 1")
     }
 
+    func test_first_withOffset_retainsOffset() {
+        insertUsers("alice", "betsy")
+
+        XCTAssertEqual(2, users.limit(2, offset: 1).first![id])
+        AssertSQL("SELECT * FROM \"users\" LIMIT 1 OFFSET 1")
+    }
+
     func test_isEmpty_returnsWhetherOrNotTheQueryIsEmpty() {
         XCTAssertTrue(users.isEmpty)
 
