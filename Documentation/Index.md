@@ -111,7 +111,7 @@ It’s possible to use SQLite.swift in a target that doesn’t support framework
     #import "SQLite-Bridging.h"
     ```
 
-> _Note:_ Adding SQLite.swift source files directly to your application will both remove the `SQLite` module namespace (no need—or ability—to `import SQLite`) and expose internal functions and variables. Please [report any namespace collisions and bugs](https://github.com/stephencelis/SQLite.swift/issues/new) you encounter.
+> _Note:_ Adding SQLite.swift source files directly to your application will both remove the `SQLite` module namespace (no need—or ability—to `import SQLite`) and expose internal functions and variables. You will need to rename anything that conflicts with code of your own. Please [report any bugs](https://github.com/stephencelis/SQLite.swift/issues/new) (_e.g._, segfaults) you encounter.
 
 
 ## Getting Started
