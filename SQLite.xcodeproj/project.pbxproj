@@ -140,10 +140,7 @@
 		DCAD429919E2EE50004A51DF /* QueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryTests.swift; sourceTree = "<group>"; };
 		DCAE4D151ABE0B3300EFCE7A /* sqlite3.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = sqlite3.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		DCAE4D181ABE0B3300EFCE7A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		DCAE4D2E1ABE0B6300EFCE7A /* sqlite3.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = sqlite3.xcconfig; sourceTree = "<group>"; };
-		DCAE4D2F1ABE0B8B00EFCE7A /* iphoneos.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = iphoneos.modulemap; sourceTree = "<group>"; };
-		DCAE4D301ABE0B8B00EFCE7A /* iphonesimulator.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = iphonesimulator.modulemap; sourceTree = "<group>"; };
-		DCAE4D311ABE0B8B00EFCE7A /* macosx.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = macosx.modulemap; sourceTree = "<group>"; };
+		DCAE4D2F1ABE0B8B00EFCE7A /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		DCAFEAD21AABC818000C21A1 /* FTS.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FTS.swift; sourceTree = "<group>"; };
 		DCAFEAD61AABEFA7000C21A1 /* FTSTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FTSTests.swift; sourceTree = "<group>"; };
 		DCBE28401ABDF18F0042A3FC /* RTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTree.swift; sourceTree = "<group>"; };
@@ -319,10 +316,7 @@
 			children = (
 				DCAE4D181ABE0B3300EFCE7A /* Info.plist */,
 				DC5B12121ABE3298000DA146 /* libsqlite3.dylib */,
-				DCAE4D2E1ABE0B6300EFCE7A /* sqlite3.xcconfig */,
-				DCAE4D2F1ABE0B8B00EFCE7A /* iphoneos.modulemap */,
-				DCAE4D301ABE0B8B00EFCE7A /* iphonesimulator.modulemap */,
-				DCAE4D311ABE0B8B00EFCE7A /* macosx.modulemap */,
+				DCAE4D2F1ABE0B8B00EFCE7A /* module.modulemap */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -799,7 +793,7 @@
 		};
 		DCAE4D291ABE0B3400EFCE7A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DCAE4D2E1ABE0B6300EFCE7A /* sqlite3.xcconfig */;
+			baseConfigurationReference = DC37742E19C8CE67004FCF85 /* SQLite.xcconfig */;
 			buildSettings = {
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEFINES_MODULE = YES;
@@ -811,6 +805,7 @@
 				INFOPLIST_FILE = sqlite3/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "$(SRCROOT)/sqlite3/module.modulemap";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
@@ -818,7 +813,7 @@
 		};
 		DCAE4D2A1ABE0B3400EFCE7A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = DCAE4D2E1ABE0B6300EFCE7A /* sqlite3.xcconfig */;
+			baseConfigurationReference = DC37742E19C8CE67004FCF85 /* SQLite.xcconfig */;
 			buildSettings = {
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
@@ -830,6 +825,7 @@
 				INFOPLIST_FILE = sqlite3/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MODULEMAP_FILE = "$(SRCROOT)/sqlite3/module.modulemap";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
 			};
