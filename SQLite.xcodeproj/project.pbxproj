@@ -774,6 +774,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DC37742E19C8CE67004FCF85 /* SQLite.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				INFOPLIST_FILE = "SQLite Tests/Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -785,6 +786,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DC37742E19C8CE67004FCF85 /* SQLite.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				INFOPLIST_FILE = "SQLite Tests/Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_WHOLE_MODULE_OPTIMIZATION = NO;
@@ -878,6 +880,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DC37742E19C8CE67004FCF85 /* SQLite.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				GCC_PREPROCESSOR_DEFINITIONS = "$(inherited)";
 				INFOPLIST_FILE = "SQLite Tests/Info.plist";
 				PRODUCT_NAME = "SQLiteCipher Tests";
@@ -889,6 +892,7 @@
 			isa = XCBuildConfiguration;
 			baseConfigurationReference = DC37742E19C8CE67004FCF85 /* SQLite.xcconfig */;
 			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = NO;
 				INFOPLIST_FILE = "SQLite Tests/Info.plist";
 				PRODUCT_NAME = "SQLiteCipher Tests";
 				SWIFT_WHOLE_MODULE_OPTIMIZATION = NO;
