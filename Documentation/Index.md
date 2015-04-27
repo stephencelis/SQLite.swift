@@ -965,11 +965,13 @@ The `alter` function shares several of the same [`column` function parameters](#
   - `collate` adds a `COLLATE` clause to `Expression<String>` (and `Expression<String?>`) column definitions with [a collating sequence](https://www.sqlite.org/datatype3.html#collation) defined in the `Collation` enumeration.
 
     ``` swift
-    t.column(email, collate: .Nocase)
-    // email TEXT NOT NULL COLLATE "NOCASE"
+    t.alter(table: users, add: email, collate: .Nocase)
+    // ALTER TABLE "users"
+    // ADD COLUMN "email" TEXT NOT NULL COLLATE "NOCASE"
 
-    t.column(name, collate: .Rtrim)
-    // name TEXT COLLATE "RTRIM"
+    t.alter(table: users, add: name, collate: .Rtrim)
+    // ALTER TABLE "users"
+    // ADD COLUMN "name" TEXT COLLATE "RTRIM"
     ```
 
   - `references` adds a `REFERENCES` clause to `Int64` (and `Int64?`) column definitions and accepts a table or namespaced column expression. (See the `foreignKey` function under [Table Constraints](#table-constraints) for non-integer foreign key support.)
