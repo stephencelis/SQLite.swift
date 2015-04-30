@@ -732,6 +732,8 @@ private func wrapDistinct<V, U>(function: String, expression: Expression<V>) -> 
 
 // MARK: - Helper
 
+public let rowid = Expression<Int64>("ROWID")
+
 public typealias Star = (Expression<Binding>?, Expression<Binding>?) -> Expression<()>
 
 public func * (Expression<Binding>?, Expression<Binding>?) -> Expression<()> {
@@ -899,8 +901,6 @@ public postfix func -- <V: Value where V.Datatype == Int64>(column: Expression<V
 public postfix func -- <V: Value where V.Datatype == Int64>(column: Expression<V?>) -> Setter { return Expression<Int>(column) -= 1 }
 
 // MARK: - Internal
-
-internal let rowid = Expression<Int64>("ROWID")
 
 internal func transcode(literal: Binding?) -> String {
     if let literal = literal {
