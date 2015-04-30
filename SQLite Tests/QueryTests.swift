@@ -328,10 +328,10 @@ class QueryTests: SQLiteTestCase {
     }
 
     func test_replace_replaceRows() {
-        XCTAssertEqual(1, users.replace(email <- "alice@example.com", age <- 30).rowid!)
+        XCTAssertEqual(1, users.insert(or: .Replace, email <- "alice@example.com", age <- 30).rowid!)
         AssertSQL("INSERT OR REPLACE INTO \"users\" (\"email\", \"age\") VALUES ('alice@example.com', 30)")
 
-        XCTAssertEqual(1, users.replace(id <- 1, email <- "betty@example.com", age <- 30).rowid!)
+        XCTAssertEqual(1, users.insert(or: .Replace, id <- 1, email <- "betty@example.com", age <- 30).rowid!)
         AssertSQL("INSERT OR REPLACE INTO \"users\" (\"id\", \"email\", \"age\") VALUES (1, 'betty@example.com', 30)")
     }
 

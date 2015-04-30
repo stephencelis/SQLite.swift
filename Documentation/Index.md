@@ -398,6 +398,9 @@ We can insert rows into a table by calling a [query’s](#queries) `insert` func
 ``` swift
 users.insert(email <- "alice@mac.com", name <- "Alice")?
 // INSERT INTO "users" ("email", "name") VALUES ('alice@mac.com', 'Alice')
+
+users.insert(or: .Replace, email <- "alice@mac.com", name <- "Alice B.")
+// INSERT OR REPLACE INTO "users" ("email", "name") VALUES ('alice@mac.com', 'Alice B.')
 ```
 
 The `insert` function can return several different types that are useful in different contexts.

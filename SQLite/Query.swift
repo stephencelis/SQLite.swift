@@ -362,7 +362,7 @@ public struct Query {
 
     }
 
-    private func insertStatement(values: [Setter], or: OnConflict? = nil) -> Statement {
+    private func insertStatement(or: OnConflict? = nil, _ values: [Setter]) -> Statement {
         var insertClause = "INSERT"
         if let or = or { insertClause = "\(insertClause) OR \(or.rawValue)" }
         var expressions: [Expressible] = [Expression<()>(literal: "\(insertClause) INTO \(tableName.unaliased.SQL)")]
@@ -434,41 +434,55 @@ public struct Query {
 
     /// Runs an INSERT statement against the query.
     ///
-    /// :param: values A list of values to set.
+    /// :param: action An action to run in case of a conflict.
+    /// :param: value  A value to set.
+    /// :param: more   A list of additional values to set.
     ///
     /// :returns: The statement.
-    public func insert(value: Setter, _ more: Setter...) -> Statement { return insert([value] + more).statement }
-
-    /// Runs an INSERT statement against the query.
-    ///
-    /// :param: values A list of values to set.
-    ///
-    /// :returns: The rowid.
-    public func insert(value: Setter, _ more: Setter...) -> Int64? { return insert([value] + more).rowid }
-
-    /// Runs an INSERT statement against the query.
-    ///
-    /// :param: values A list of values to set.
-    ///
-    /// :returns: The rowid and statement.
-    public func insert(value: Setter, _ more: Setter...) -> (rowid: Int64?, statement: Statement) {
-        return insert([value] + more)
+    public func insert(or action: OnConflict? = nil, _ value: Setter, _ more: Setter...) -> Statement {
+        return insert([value] + more).statement
     }
 
     /// Runs an INSERT statement against the query.
     ///
-    /// :param: values An array of values to set.
+    /// :param: action An action to run in case of a conflict.
+    /// :param: value  A value to set.
+    /// :param: more   A list of additional values to set.
     ///
     /// :returns: The rowid.
-    public func insert(values: [Setter]) -> Int64? { return insert(values).rowid }
+    public func insert(or action: OnConflict? = nil, _ value: Setter, _ more: Setter...) -> Int64? {
+        return insert(or: action, [value] + more).rowid
+    }
 
     /// Runs an INSERT statement against the query.
     ///
+    /// :param: action An action to run in case of a conflict.
+    /// :param: value  A value to set.
+    /// :param: more   A list of additional values to set.
+    ///
+    /// :returns: The rowid and statement.
+    public func insert(or action: OnConflict? = nil, _ value: Setter, _ more: Setter...) -> (rowid: Int64?, statement: Statement) {
+        return insert(or: action, [value] + more)
+    }
+
+    /// Runs an INSERT statement against the query.
+    ///
+    /// :param: action An action to run in case of a conflict.
+    /// :param: values An array of values to set.
+    ///
+    /// :returns: The rowid.
+    public func insert(or action: OnConflict? = nil, _ values: [Setter]) -> Int64? {
+        return insert(or: action, values).rowid
+    }
+
+    /// Runs an INSERT statement against the query.
+    ///
+    /// :param: action An action to run in case of a conflict.
     /// :param: values An array of values to set.
     ///
     /// :returns: The rowid and statement.
-    public func insert(values: [Setter]) -> (rowid: Int64?, statement: Statement) {
-        let statement = insertStatement(values).run()
+    public func insert(or action: OnConflict? = nil, _ values: [Setter]) -> (rowid: Int64?, statement: Statement) {
+        let statement = insertStatement(or: action, values).run()
         return (statement.failed ? nil : database.lastInsertRowid, statement)
     }
 
@@ -488,46 +502,6 @@ public struct Query {
 
     public func insert() -> (rowid: Int64?, statement: Statement) {
         let statement = database.run("INSERT INTO \(tableName.unaliased.SQL) DEFAULT VALUES")
-        return (statement.failed ? nil : database.lastInsertRowid, statement)
-    }
-
-    /// Runs a REPLACE statement against the query.
-    ///
-    /// :param: values A list of values to set.
-    ///
-    /// :returns: The statement.
-    public func replace(values: Setter...) -> Statement { return replace(values).statement }
-
-    /// Runs a REPLACE statement against the query.
-    ///
-    /// :param: values A list of values to set.
-    ///
-    /// :returns: The rowid.
-    public func replace(values: Setter...) -> Int64? { return replace(values).rowid }
-
-    /// Runs a REPLACE statement against the query.
-    ///
-    /// :param: values A list of values to set.
-    ///
-    /// :returns: The rowid and statement.
-    public func replace(values: Setter...) -> (rowid: Int64?, statement: Statement) {
-        return replace(values)
-    }
-
-    /// Runs a REPLACE statement against the query.
-    ///
-    /// :param: values An array of values to set.
-    ///
-    /// :returns: The rowid.
-    public func replace(values: [Setter]) -> Int64? { return replace(values).rowid }
-
-    /// Runs a REPLACE statement against the query.
-    ///
-    /// :param: values An array of values to set.
-    ///
-    /// :returns: The rowid and statement.
-    public func replace(values: [Setter]) -> (rowid: Int64?, statement: Statement) {
-        let statement = insertStatement(values, or: .Replace).run()
         return (statement.failed ? nil : database.lastInsertRowid, statement)
     }
 
