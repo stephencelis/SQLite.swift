@@ -597,7 +597,7 @@ public struct Query {
     ///
     /// :returns: The number of rows matching the given column.
     public func count<V: Value>(column: Expression<V?>) -> Int {
-        return calculate(SQLite_count(column))!
+        return calculate(_count(column))!
     }
 
     /// Runs count() with DISTINCT against the query.
@@ -606,7 +606,7 @@ public struct Query {
     ///
     /// :returns: The number of rows matching the given column.
     public func count<V: Value>(distinct column: Expression<V>) -> Int {
-        return calculate(SQLite_count(distinct: column))!
+        return calculate(_count(distinct: column))!
     }
 
     /// Runs count() with DISTINCT against the query.
@@ -615,7 +615,7 @@ public struct Query {
     ///
     /// :returns: The number of rows matching the given column.
     public func count<V: Value>(distinct column: Expression<V?>) -> Int {
-        return calculate(SQLite_count(distinct: column))!
+        return calculate(_count(distinct: column))!
     }
 
     /// Runs max() against the query.
@@ -624,10 +624,10 @@ public struct Query {
     ///
     /// :returns: The largest value of the given column.
     public func max<V: Value where V.Datatype: Comparable>(column: Expression<V>) -> V? {
-        return calculate(SQLite_max(column))
+        return calculate(_max(column))
     }
     public func max<V: Value where V.Datatype: Comparable>(column: Expression<V?>) -> V? {
-        return calculate(SQLite_max(column))
+        return calculate(_max(column))
     }
 
     /// Runs min() against the query.
@@ -636,10 +636,10 @@ public struct Query {
     ///
     /// :returns: The smallest value of the given column.
     public func min<V: Value where V.Datatype: Comparable>(column: Expression<V>) -> V? {
-        return calculate(SQLite_min(column))
+        return calculate(_min(column))
     }
     public func min<V: Value where V.Datatype: Comparable>(column: Expression<V?>) -> V? {
-        return calculate(SQLite_min(column))
+        return calculate(_min(column))
     }
 
     /// Runs avg() against the query.
@@ -648,10 +648,10 @@ public struct Query {
     ///
     /// :returns: The average value of the given column.
     public func average<V: Value where V.Datatype: Number>(column: Expression<V>) -> Double? {
-        return calculate(SQLite_average(column))
+        return calculate(_average(column))
     }
     public func average<V: Value where V.Datatype: Number>(column: Expression<V?>) -> Double? {
-        return calculate(SQLite_average(column))
+        return calculate(_average(column))
     }
 
     /// Runs avg() with DISTINCT against the query.
@@ -660,10 +660,10 @@ public struct Query {
     ///
     /// :returns: The average value of the given column.
     public func average<V: Value where V.Datatype: Number>(distinct column: Expression<V>) -> Double? {
-        return calculate(SQLite_average(distinct: column))
+        return calculate(_average(distinct: column))
     }
     public func average<V: Value where V.Datatype: Number>(distinct column: Expression<V?>) -> Double? {
-        return calculate(SQLite_average(distinct: column))
+        return calculate(_average(distinct: column))
     }
 
     /// Runs sum() against the query.
@@ -672,10 +672,10 @@ public struct Query {
     ///
     /// :returns: The sum of the given column’s values.
     public func sum<V: Value where V.Datatype: Number>(column: Expression<V>) -> V? {
-        return calculate(SQLite_sum(column))
+        return calculate(_sum(column))
     }
     public func sum<V: Value where V.Datatype: Number>(column: Expression<V?>) -> V? {
-        return calculate(SQLite_sum(column))
+        return calculate(_sum(column))
     }
 
     /// Runs sum() with DISTINCT against the query.
@@ -684,10 +684,10 @@ public struct Query {
     ///
     /// :returns: The sum of the given column’s values.
     public func sum<V: Value where V.Datatype: Number>(distinct column: Expression<V>) -> V? {
-        return calculate(SQLite_sum(distinct: column))
+        return calculate(_sum(distinct: column))
     }
     public func sum<V: Value where V.Datatype: Number>(distinct column: Expression<V?>) -> V? {
-        return calculate(SQLite_sum(distinct: column))
+        return calculate(_sum(distinct: column))
     }
 
     /// Runs total() against the query.
@@ -696,10 +696,10 @@ public struct Query {
     ///
     /// :returns: The total of the given column’s values.
     public func total<V: Value where V.Datatype: Number>(column: Expression<V>) -> Double {
-        return calculate(SQLite_total(column))!
+        return calculate(_total(column))!
     }
     public func total<V: Value where V.Datatype: Number>(column: Expression<V?>) -> Double {
-        return calculate(SQLite_total(column))!
+        return calculate(_total(column))!
     }
 
     /// Runs total() with DISTINCT against the query.
@@ -708,10 +708,10 @@ public struct Query {
     ///
     /// :returns: The total of the given column’s values.
     public func total<V: Value where V.Datatype: Number>(distinct column: Expression<V>) -> Double {
-        return calculate(SQLite_total(distinct: column))!
+        return calculate(_total(distinct: column))!
     }
     public func total<V: Value where V.Datatype: Number>(distinct column: Expression<V?>) -> Double {
-        return calculate(SQLite_total(distinct: column))!
+        return calculate(_total(distinct: column))!
     }
 
     private func calculate<V: Value>(expression: Expression<V>) -> V? {
@@ -724,7 +724,7 @@ public struct Query {
     // MARK: - Array
 
     /// Runs count(*) against the query and returns it.
-    public var count: Int { return calculate(SQLite_count(*))! }
+    public var count: Int { return calculate(_count(*))! }
 
     /// Returns true if the query has no rows.
     public var isEmpty: Bool { return first == nil }
@@ -880,3 +880,44 @@ extension Database {
     }
 
 }
+
+// Private shims provide frameworkless support by avoiding the SQLite module namespace.
+
+private func _count<V: Value>(expression: Expression<V?>) -> Expression<Int> { return count(expression) }
+
+private func _count<V: Value>(#distinct: Expression<V>) -> Expression<Int> { return count(distinct: distinct) }
+private func _count<V: Value>(#distinct: Expression<V?>) -> Expression<Int> { return count(distinct: distinct) }
+
+private func _count(star: Star) -> Expression<Int> { return count(star) }
+
+private func _max<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V?> {
+    return max(expression)
+}
+private func _max<V: Value where V.Datatype: Comparable>(expression: Expression<V?>) -> Expression<V?> {
+    return max(expression)
+}
+
+private func _min<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V?> {
+    return min(expression)
+}
+private func _min<V: Value where V.Datatype: Comparable>(expression: Expression<V?>) -> Expression<V?> {
+    return min(expression)
+}
+
+private func _average<V: Value where V.Datatype: Number>(expression: Expression<V>) -> Expression<Double?> { return average(expression) }
+private func _average<V: Value where V.Datatype: Number>(expression: Expression<V?>) -> Expression<Double?> { return average(expression) }
+
+private func _average<V: Value where V.Datatype: Number>(#distinct: Expression<V>) -> Expression<Double?> { return average(distinct: distinct) }
+private func _average<V: Value where V.Datatype: Number>(#distinct: Expression<V?>) -> Expression<Double?> { return average(distinct: distinct) }
+
+private func _sum<V: Value where V.Datatype: Number>(expression: Expression<V>) -> Expression<V?> { return sum(expression) }
+private func _sum<V: Value where V.Datatype: Number>(expression: Expression<V?>) -> Expression<V?> { return sum(expression) }
+
+private func _sum<V: Value where V.Datatype: Number>(#distinct: Expression<V>) -> Expression<V?> { return sum(distinct: distinct) }
+private func _sum<V: Value where V.Datatype: Number>(#distinct: Expression<V?>) -> Expression<V?> { return sum(distinct: distinct) }
+
+private func _total<V: Value where V.Datatype: Number>(expression: Expression<V>) -> Expression<Double> { return total(expression) }
+private func _total<V: Value where V.Datatype: Number>(expression: Expression<V?>) -> Expression<Double> { return total(expression) }
+
+private func _total<V: Value where V.Datatype: Number>(#distinct: Expression<V>) -> Expression<Double> { return total(distinct: distinct) }
+private func _total<V: Value where V.Datatype: Number>(#distinct: Expression<V?>) -> Expression<Double> { return total(distinct: distinct) }

@@ -719,45 +719,6 @@ public func total<V: Value where V.Datatype: Number>(expression: Expression<V?>)
 public func total<V: Value where V.Datatype: Number>(#distinct: Expression<V>) -> Expression<Double> { return wrapDistinct("total", distinct) }
 public func total<V: Value where V.Datatype: Number>(#distinct: Expression<V?>) -> Expression<Double> { return wrapDistinct("total", distinct) }
 
-internal func SQLite_count<V: Value>(expression: Expression<V?>) -> Expression<Int> { return count(expression) }
-
-internal func SQLite_count<V: Value>(#distinct: Expression<V>) -> Expression<Int> { return count(distinct: distinct) }
-internal func SQLite_count<V: Value>(#distinct: Expression<V?>) -> Expression<Int> { return count(distinct: distinct) }
-
-internal func SQLite_count(star: Star) -> Expression<Int> { return count(star) }
-
-internal func SQLite_max<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V?> {
-    return max(expression)
-}
-internal func SQLite_max<V: Value where V.Datatype: Comparable>(expression: Expression<V?>) -> Expression<V?> {
-    return max(expression)
-}
-
-internal func SQLite_min<V: Value where V.Datatype: Comparable>(expression: Expression<V>) -> Expression<V?> {
-    return min(expression)
-}
-internal func SQLite_min<V: Value where V.Datatype: Comparable>(expression: Expression<V?>) -> Expression<V?> {
-    return min(expression)
-}
-
-internal func SQLite_average<V: Value where V.Datatype: Number>(expression: Expression<V>) -> Expression<Double?> { return average(expression) }
-internal func SQLite_average<V: Value where V.Datatype: Number>(expression: Expression<V?>) -> Expression<Double?> { return average(expression) }
-
-internal func SQLite_average<V: Value where V.Datatype: Number>(#distinct: Expression<V>) -> Expression<Double?> { return average(distinct: distinct) }
-internal func SQLite_average<V: Value where V.Datatype: Number>(#distinct: Expression<V?>) -> Expression<Double?> { return average(distinct: distinct) }
-
-internal func SQLite_sum<V: Value where V.Datatype: Number>(expression: Expression<V>) -> Expression<V?> { return sum(expression) }
-internal func SQLite_sum<V: Value where V.Datatype: Number>(expression: Expression<V?>) -> Expression<V?> { return sum(expression) }
-
-internal func SQLite_sum<V: Value where V.Datatype: Number>(#distinct: Expression<V>) -> Expression<V?> { return sum(distinct: distinct) }
-internal func SQLite_sum<V: Value where V.Datatype: Number>(#distinct: Expression<V?>) -> Expression<V?> { return sum(distinct: distinct) }
-
-internal func SQLite_total<V: Value where V.Datatype: Number>(expression: Expression<V>) -> Expression<Double> { return total(expression) }
-internal func SQLite_total<V: Value where V.Datatype: Number>(expression: Expression<V?>) -> Expression<Double> { return total(expression) }
-
-internal func SQLite_total<V: Value where V.Datatype: Number>(#distinct: Expression<V>) -> Expression<Double> { return total(distinct: distinct) }
-internal func SQLite_total<V: Value where V.Datatype: Number>(#distinct: Expression<V?>) -> Expression<Double> { return total(distinct: distinct) }
-
 private func wrapDistinct<V, U>(function: String, expression: Expression<V>) -> Expression<U> {
     return wrap(function, Expression<()>.join(" ", [Expression<()>(literal: "DISTINCT"), expression]))
 }
