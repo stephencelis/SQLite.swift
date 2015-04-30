@@ -529,18 +529,18 @@ public func ~= <I: IntervalType, V: Value where V.Datatype: protocol<Binding, Co
 
 // MARK: Operators
 
-public func like(string: String, expression: Expression<String>) -> Expression<Bool> {
-    return infix("LIKE", expression, Expression<String>(binding: string))
+public func like(pattern: String, expression: Expression<String>) -> Expression<Bool> {
+    return infix("LIKE", expression, Expression<String>(binding: pattern))
 }
-public func like(string: String, expression: Expression<String?>) -> Expression<Bool?> {
-    return infix("LIKE", expression, Expression<String>(binding: string))
+public func like(pattern: String, expression: Expression<String?>) -> Expression<Bool?> {
+    return infix("LIKE", expression, Expression<String>(binding: pattern))
 }
 
-public func glob(string: String, expression: Expression<String>) -> Expression<Bool> {
-    return infix("GLOB", expression, Expression<String>(binding: string))
+public func glob(pattern: String, expression: Expression<String>) -> Expression<Bool> {
+    return infix("GLOB", expression, Expression<String>(binding: pattern))
 }
-public func glob(string: String, expression: Expression<String?>) -> Expression<Bool?> {
-    return infix("GLOB", expression, Expression<String>(binding: string))
+public func glob(pattern: String, expression: Expression<String?>) -> Expression<Bool?> {
+    return infix("GLOB", expression, Expression<String>(binding: pattern))
 }
 
 public func match(string: String, expression: Expression<String>) -> Expression<Bool> {
@@ -548,6 +548,13 @@ public func match(string: String, expression: Expression<String>) -> Expression<
 }
 public func match(string: String, expression: Expression<String?>) -> Expression<Bool?> {
     return infix("MATCH", expression, Expression<String>(binding: string))
+}
+
+public func regexp(pattern: String, expression: Expression<String>) -> Expression<Bool> {
+    return infix("REGEXP", expression, Expression<String>(binding: pattern))
+}
+public func regexp(pattern: String, expression: Expression<String?>) -> Expression<Bool> {
+    return infix("REGEXP", expression, Expression<String>(binding: pattern))
 }
 
 // MARK: Compound
