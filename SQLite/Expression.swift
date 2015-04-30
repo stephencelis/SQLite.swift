@@ -129,7 +129,7 @@ public struct Expression<T> {
         return expression
     }
 
-    // naïve compiler for statements that can't be bound, e.g., CREATE TABLE
+    // naïve compiler for statements that can’t be bound, e.g., CREATE TABLE
     internal func compile() -> String {
         var idx = 0
         return reduce(SQL, "") { SQL, character in
@@ -791,7 +791,7 @@ public typealias Setter = (Expressible, Expressible)
 ///
 /// :param: value  The value the column is being set to.
 ///
-/// :returns: A setter that can be used in a Query's insert and update
+/// :returns: A setter that can be used in a Query’s insert and update
 ///           functions.
 public func set<V: Value>(column: Expression<V>, value: V) -> Setter {
     return (column, Expression<()>(value: value))

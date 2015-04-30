@@ -240,7 +240,7 @@ public func || (lhs: Statement, @autoclosure rhs: () -> Statement) -> Statement 
     return lhs.failed ? rhs() : lhs
 }
 
-/// Cursors provide direct access to a statement's current row.
+/// Cursors provide direct access to a statement’s current row.
 public struct Cursor {
 
     private let handle: COpaquePointer

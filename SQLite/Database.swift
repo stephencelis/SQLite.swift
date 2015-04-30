@@ -491,7 +491,7 @@ public final class Database {
     ///
     /// :param: block         A block of code to run when the function is
     ///                       called. The block is called with an array of raw
-    ///                       SQL values mapped to the function's parameters and
+    ///                       SQL values mapped to the function’s parameters and
     ///                       should return a raw SQL value (or nil).
     public func create(#function: String, argc: Int = -1, deterministic: Bool = false, _ block: (args: [Binding?]) -> Binding?) {
         try {
