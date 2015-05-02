@@ -537,18 +537,23 @@ let query = users.select(email)           // SELECT "email" FROM "users"
 By default, [`Query`](#queries) objects select every column of the result set (using `SELECT *`). We can use the `select` function with a list of [expressions](#expressions) to return specific columns instead.
 
 ``` swift
-let query = users.select(id, email)
+for user in users.select(id, email) {
+    println("id: \(user[id]), email: \(user[email])")
+    // id: 1, email: alice@mac.com
+}
 // SELECT "id", "email" FROM "users"
 ```
 
-<!-- TODO
-We can select aggregate values using [aggregate functions](#aggregate-sqlite-functions).
+We can access the results of more complex expressions by holding onto a reference of the expression itself.
 
 ``` swift
-let query = users.select(count(*))
-// SELECT count(*) FROM "users"
+let sentence = name + " is " + cast(age) as Expression<String?> + " years old!"
+for user in users.select(sentence) {
+    println(user[sentence])
+    // Optional("Alice is 30 years old!")
+}
+// SELECT ((("name" || ' is ') || CAST ("age" AS TEXT)) || ' years old!') FROM "users"
 ```
--->
 
 
 #### Joining Other Tables
