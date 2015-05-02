@@ -170,7 +170,7 @@ let path = NSBundle.mainBundle().pathForResource("db", ofType: "sqlite3")!
 let db = Database(path, readonly: true)
 ```
 
-> _Note_: Signed applications cannot modify their bundle resources. If you bundle a database file with your app for the purpose of bootstrapping, copy it to a writable location _before_ establishing a connection (see [Read-Write Databases](#read-write-databases), above, for typical, writable locations).
+> _Note:_ Signed applications cannot modify their bundle resources. If you bundle a database file with your app for the purpose of bootstrapping, copy it to a writable location _before_ establishing a connection (see [Read-Write Databases](#read-write-databases), above, for typical, writable locations).
 
 
 #### In-Memory Databases
