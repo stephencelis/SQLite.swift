@@ -542,209 +542,209 @@ class ExpressionTests: SQLiteTestCase {
     }
 
     func test_plusEquals_withStringExpression_buildsSetter() {
-        users.update(email += email)!
-        users.update(email += email2)!
-        users.update(email2 += email)!
-        users.update(email2 += email2)!
+        users.update(email += email)
+        users.update(email += email2)
+        users.update(email2 += email)
+        users.update(email2 += email2)
         AssertSQL("UPDATE \"users\" SET \"email\" = (\"email\" || \"email\")", 4)
     }
 
     func test_plusEquals_withStringValue_buildsSetter() {
-        users.update(email += ".com")!
-        users.update(email2 += ".com")!
+        users.update(email += ".com")
+        users.update(email2 += ".com")
 
         AssertSQL("UPDATE \"users\" SET \"email\" = (\"email\" || '.com')", 2)
     }
 
     func test_plusEquals_withNumberExpression_buildsSetter() {
-        users.update(age += age)!
-        users.update(age += age2)!
-        users.update(age2 += age)!
-        users.update(age2 += age2)!
+        users.update(age += age)
+        users.update(age += age2)
+        users.update(age2 += age)
+        users.update(age2 += age2)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" + \"age\")", 4)
 
-        users.update(salary += salary)!
-        users.update(salary += salary2)!
-        users.update(salary2 += salary)!
-        users.update(salary2 += salary2)!
+        users.update(salary += salary)
+        users.update(salary += salary2)
+        users.update(salary2 += salary)
+        users.update(salary2 += salary2)
         AssertSQL("UPDATE \"users\" SET \"salary\" = (\"salary\" + \"salary\")", 4)
     }
 
     func test_plusEquals_withNumberValue_buildsSetter() {
-        users.update(age += 1)!
-        users.update(age2 += 1)!
+        users.update(age += 1)
+        users.update(age2 += 1)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" + 1)", 2)
 
-        users.update(salary += 100)!
-        users.update(salary2 += 100)!
+        users.update(salary += 100)
+        users.update(salary2 += 100)
         AssertSQL("UPDATE \"users\" SET \"salary\" = (\"salary\" + 100.0)", 2)
     }
 
     func test_minusEquals_withNumberExpression_buildsSetter() {
-        users.update(age -= age)!
-        users.update(age -= age2)!
-        users.update(age2 -= age)!
-        users.update(age2 -= age2)!
+        users.update(age -= age)
+        users.update(age -= age2)
+        users.update(age2 -= age)
+        users.update(age2 -= age2)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" - \"age\")", 4)
 
-        users.update(salary -= salary)!
-        users.update(salary -= salary2)!
-        users.update(salary2 -= salary)!
-        users.update(salary2 -= salary2)!
+        users.update(salary -= salary)
+        users.update(salary -= salary2)
+        users.update(salary2 -= salary)
+        users.update(salary2 -= salary2)
         AssertSQL("UPDATE \"users\" SET \"salary\" = (\"salary\" - \"salary\")", 4)
     }
 
     func test_minusEquals_withNumberValue_buildsSetter() {
-        users.update(age -= 1)!
-        users.update(age2 -= 1)!
+        users.update(age -= 1)
+        users.update(age2 -= 1)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" - 1)", 2)
 
-        users.update(salary -= 100)!
-        users.update(salary2 -= 100)!
+        users.update(salary -= 100)
+        users.update(salary2 -= 100)
         AssertSQL("UPDATE \"users\" SET \"salary\" = (\"salary\" - 100.0)", 2)
     }
 
     func test_timesEquals_withNumberExpression_buildsSetter() {
-        users.update(age *= age)!
-        users.update(age *= age2)!
-        users.update(age2 *= age)!
-        users.update(age2 *= age2)!
+        users.update(age *= age)
+        users.update(age *= age2)
+        users.update(age2 *= age)
+        users.update(age2 *= age2)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" * \"age\")", 4)
 
-        users.update(salary *= salary)!
-        users.update(salary *= salary2)!
-        users.update(salary2 *= salary)!
-        users.update(salary2 *= salary2)!
+        users.update(salary *= salary)
+        users.update(salary *= salary2)
+        users.update(salary2 *= salary)
+        users.update(salary2 *= salary2)
         AssertSQL("UPDATE \"users\" SET \"salary\" = (\"salary\" * \"salary\")", 4)
     }
 
     func test_timesEquals_withNumberValue_buildsSetter() {
-        users.update(age *= 1)!
-        users.update(age2 *= 1)!
+        users.update(age *= 1)
+        users.update(age2 *= 1)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" * 1)", 2)
 
-        users.update(salary *= 100)!
-        users.update(salary2 *= 100)!
+        users.update(salary *= 100)
+        users.update(salary2 *= 100)
         AssertSQL("UPDATE \"users\" SET \"salary\" = (\"salary\" * 100.0)", 2)
     }
 
     func test_divideEquals_withNumberExpression_buildsSetter() {
-        users.update(age /= age)!
-        users.update(age /= age2)!
-        users.update(age2 /= age)!
-        users.update(age2 /= age2)!
+        users.update(age /= age)
+        users.update(age /= age2)
+        users.update(age2 /= age)
+        users.update(age2 /= age2)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" / \"age\")", 4)
 
-        users.update(salary /= salary)!
-        users.update(salary /= salary2)!
-        users.update(salary2 /= salary)!
-        users.update(salary2 /= salary2)!
+        users.update(salary /= salary)
+        users.update(salary /= salary2)
+        users.update(salary2 /= salary)
+        users.update(salary2 /= salary2)
         AssertSQL("UPDATE \"users\" SET \"salary\" = (\"salary\" / \"salary\")", 4)
     }
 
     func test_divideEquals_withNumberValue_buildsSetter() {
-        users.update(age /= 1)!
-        users.update(age2 /= 1)!
+        users.update(age /= 1)
+        users.update(age2 /= 1)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" / 1)", 2)
 
-        users.update(salary /= 100)!
-        users.update(salary2 /= 100)!
+        users.update(salary /= 100)
+        users.update(salary2 /= 100)
         AssertSQL("UPDATE \"users\" SET \"salary\" = (\"salary\" / 100.0)", 2)
     }
 
     func test_moduloEquals_withIntegerExpression_buildsSetter() {
-        users.update(age %= age)!
-        users.update(age %= age2)!
-        users.update(age2 %= age)!
-        users.update(age2 %= age2)!
+        users.update(age %= age)
+        users.update(age %= age2)
+        users.update(age2 %= age)
+        users.update(age2 %= age2)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" % \"age\")", 4)
     }
 
     func test_moduloEquals_withIntegerValue_buildsSetter() {
-        users.update(age %= 10)!
-        users.update(age2 %= 10)!
+        users.update(age %= 10)
+        users.update(age2 %= 10)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" % 10)", 2)
     }
 
     func test_rightShiftEquals_withIntegerExpression_buildsSetter() {
-        users.update(age >>= age)!
-        users.update(age >>= age2)!
-        users.update(age2 >>= age)!
-        users.update(age2 >>= age2)!
+        users.update(age >>= age)
+        users.update(age >>= age2)
+        users.update(age2 >>= age)
+        users.update(age2 >>= age2)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" >> \"age\")", 4)
     }
 
     func test_rightShiftEquals_withIntegerValue_buildsSetter() {
-        users.update(age >>= 1)!
-        users.update(age2 >>= 1)!
+        users.update(age >>= 1)
+        users.update(age2 >>= 1)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" >> 1)", 2)
     }
 
     func test_leftShiftEquals_withIntegerExpression_buildsSetter() {
-        users.update(age <<= age)!
-        users.update(age <<= age2)!
-        users.update(age2 <<= age)!
-        users.update(age2 <<= age2)!
+        users.update(age <<= age)
+        users.update(age <<= age2)
+        users.update(age2 <<= age)
+        users.update(age2 <<= age2)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" << \"age\")", 4)
     }
 
     func test_leftShiftEquals_withIntegerValue_buildsSetter() {
-        users.update(age <<= 1)!
-        users.update(age2 <<= 1)!
+        users.update(age <<= 1)
+        users.update(age2 <<= 1)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" << 1)", 2)
     }
 
     func test_bitwiseAndEquals_withIntegerExpression_buildsSetter() {
-        users.update(age &= age)!
-        users.update(age &= age2)!
-        users.update(age2 &= age)!
-        users.update(age2 &= age2)!
+        users.update(age &= age)
+        users.update(age &= age2)
+        users.update(age2 &= age)
+        users.update(age2 &= age2)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" & \"age\")", 4)
     }
 
     func test_bitwiseAndEquals_withIntegerValue_buildsSetter() {
-        users.update(age &= 1)!
-        users.update(age2 &= 1)!
+        users.update(age &= 1)
+        users.update(age2 &= 1)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" & 1)", 2)
     }
 
     func test_bitwiseOrEquals_withIntegerExpression_buildsSetter() {
-        users.update(age |= age)!
-        users.update(age |= age2)!
-        users.update(age2 |= age)!
-        users.update(age2 |= age2)!
+        users.update(age |= age)
+        users.update(age |= age2)
+        users.update(age2 |= age)
+        users.update(age2 |= age2)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" | \"age\")", 4)
     }
 
     func test_bitwiseOrEquals_withIntegerValue_buildsSetter() {
-        users.update(age |= 1)!
-        users.update(age2 |= 1)!
+        users.update(age |= 1)
+        users.update(age2 |= 1)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" | 1)", 2)
     }
 
     func test_bitwiseExclusiveOrEquals_withIntegerExpression_buildsSetter() {
-        users.update(age ^= age)!
-        users.update(age ^= age2)!
-        users.update(age2 ^= age)!
-        users.update(age2 ^= age2)!
+        users.update(age ^= age)
+        users.update(age ^= age2)
+        users.update(age2 ^= age)
+        users.update(age2 ^= age2)
         AssertSQL("UPDATE \"users\" SET \"age\" = (~((\"age\" & \"age\")) & (\"age\" | \"age\"))", 4)
     }
 
     func test_bitwiseExclusiveOrEquals_withIntegerValue_buildsSetter() {
-        users.update(age ^= 1)!
-        users.update(age2 ^= 1)!
+        users.update(age ^= 1)
+        users.update(age2 ^= 1)
         AssertSQL("UPDATE \"users\" SET \"age\" = (~((\"age\" & 1)) & (\"age\" | 1))", 2)
     }
 
     func test_postfixPlus_withIntegerValue_buildsSetter() {
-        users.update(age++)!
-        users.update(age2++)!
+        users.update(age++)
+        users.update(age2++)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" + 1)", 2)
     }
 
     func test_postfixMinus_withIntegerValue_buildsSetter() {
-        users.update(age--)!
-        users.update(age2--)!
+        users.update(age--)
+        users.update(age2--)
         AssertSQL("UPDATE \"users\" SET \"age\" = (\"age\" - 1)", 2)
     }
 

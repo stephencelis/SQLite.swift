@@ -83,8 +83,8 @@ class QueryTests: SQLiteTestCase {
     func test_join_withNamespacedStar_expandsColumnNames() {
         let managers = db["users"].alias("managers")
 
-        let aliceId = users.insert(email <- "alice@example.com")!
-        users.insert(email <- "betty@example.com", manager_id <- Int64(aliceId))!
+        let aliceId = users.insert(email <- "alice@example.com").rowid!
+        users.insert(email <- "betty@example.com", manager_id <- Int64(aliceId)).rowid!
 
         let query = users
             .select(users[*], managers[*])
@@ -127,8 +127,8 @@ class QueryTests: SQLiteTestCase {
     }
 
     func test_namespacedColumnRowValueAccess() {
-        let aliceId = users.insert(email <- "alice@example.com")!
-        let bettyId = users.insert(email <- "betty@example.com", manager_id <- Int64(aliceId))!
+        let aliceId = users.insert(email <- "alice@example.com").rowid!
+        let bettyId = users.insert(email <- "betty@example.com", manager_id <- Int64(aliceId)).rowid!
 
         let alice = users.first!
         XCTAssertEqual(Int64(aliceId), alice[id])
@@ -141,7 +141,7 @@ class QueryTests: SQLiteTestCase {
     }
 
     func test_aliasedColumnRowValueAccess() {
-        users.insert(email <- "alice@example.com")!
+        users.insert(email <- "alice@example.com").rowid!
 
         let alias = email.alias("user_email")
         let query = users.select(alias)
@@ -315,7 +315,7 @@ class QueryTests: SQLiteTestCase {
         let emails = db["emails"]
         let admins = users.select(email).filter(admin == true)
 
-        emails.insert(admins)!
+        emails.insert(admins)
         AssertSQL("INSERT INTO \"emails\" SELECT \"email\" FROM \"users\" WHERE (\"admin\" = 1)")
     }
 
@@ -430,12 +430,41 @@ class QueryTests: SQLiteTestCase {
         }
 
         let date = NSDate(timeIntervalSince1970: 0)
-        touches.insert(timestamp <- date)!
+        touches.insert(timestamp <- date)
         XCTAssertEqual(touches.first!.get(timestamp)!, date)
 
-        XCTAssertNil(touches.filter(id == Int64(touches.insert()!)).first!.get(timestamp))
+        XCTAssertNil(touches.filter(id == Int64(touches.insert().rowid!)).first!.get(timestamp))
 
         XCTAssert(touches.filter(timestamp < NSDate()).first != nil)
+    }
+
+    func test_shortCircuitingInserts() {
+        db.transaction()
+            && users.insert(email <- "alice@example.com")
+            && users.insert(email <- "alice@example.com")
+            && users.insert(email <- "alice@example.com")
+            && db.commit()
+            || db.rollback()
+
+        AssertSQL("BEGIN DEFERRED TRANSACTION")
+        AssertSQL("INSERT INTO \"users\" (\"email\") VALUES ('alice@example.com')", 2)
+        AssertSQL("ROLLBACK TRANSACTION")
+        AssertSQL("COMMIT TRANSACTION", 0)
+    }
+
+    func test_shortCircuitingChanges() {
+        db.transaction()
+            && users.insert(email <- "foo@example.com")
+            && users.insert(email <- "bar@example.com")
+            && users.filter(email == "bar@example.com").update(email <- "foo@example.com")
+            && users.filter(email == "bar@example.com").update(email <- "foo@example.com")
+            && db.commit()
+            || db.rollback()
+
+        AssertSQL("BEGIN DEFERRED TRANSACTION")
+        AssertSQL("UPDATE \"users\" SET \"email\" = 'foo@example.com' WHERE (\"email\" = 'bar@example.com')")
+        AssertSQL("ROLLBACK TRANSACTION")
+        AssertSQL("COMMIT TRANSACTION", 0)
     }
 
 }

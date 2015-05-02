@@ -9,7 +9,7 @@ class FunctionsTests: SQLiteTestCase {
 
         let table = db["table"]
         db.create(table: table) { $0.column(Expression<Int>("id"), primaryKey: true) }
-        table.insert()!
+        table.insert().rowid!
 
         XCTAssert(table.select(f1()).first![f1()])
         AssertSQL("SELECT \"f1\"() FROM \"table\" LIMIT 1")
@@ -31,7 +31,7 @@ class FunctionsTests: SQLiteTestCase {
             t.column(s1)
             t.column(s2)
         }
-        table.insert(s1 <- "s1")!
+        table.insert(s1 <- "s1").rowid!
 
         let null = Expression<String?>(value: nil as String?)
 
@@ -60,7 +60,7 @@ class FunctionsTests: SQLiteTestCase {
         db.create(table: table) { t in
             t.column(b)
         }
-        table.insert(b <- true)!
+        table.insert(b <- true).rowid!
 
         XCTAssert(table.select(f1(b)).first![f1(b)])
         AssertSQL("SELECT \"f1\"(\"b\") FROM \"table\" LIMIT 1")
@@ -74,7 +74,7 @@ class FunctionsTests: SQLiteTestCase {
             t.column(b1)
             t.column(b2)
         }
-        table.insert(b1 <- true)!
+        table.insert(b1 <- true).rowid!
 
         let f1: (Bool, Expression<Bool>) -> Expression<Bool> = db.create(function: "f1") { $0 && $1 }
         let f2: (Bool?, Expression<Bool>) -> Expression<Bool> = db.create(function: "f2") { $0 ?? $1 }

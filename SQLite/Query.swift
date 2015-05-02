@@ -438,30 +438,8 @@ public struct Query {
     /// :param: value  A value to set.
     /// :param: more   A list of additional values to set.
     ///
-    /// :returns: The statement.
-    public func insert(or action: OnConflict? = nil, _ value: Setter, _ more: Setter...) -> Statement {
-        return insert([value] + more).statement
-    }
-
-    /// Runs an INSERT statement against the query.
-    ///
-    /// :param: action An action to run in case of a conflict.
-    /// :param: value  A value to set.
-    /// :param: more   A list of additional values to set.
-    ///
-    /// :returns: The rowid.
-    public func insert(or action: OnConflict? = nil, _ value: Setter, _ more: Setter...) -> Int64? {
-        return insert(or: action, [value] + more).rowid
-    }
-
-    /// Runs an INSERT statement against the query.
-    ///
-    /// :param: action An action to run in case of a conflict.
-    /// :param: value  A value to set.
-    /// :param: more   A list of additional values to set.
-    ///
     /// :returns: The rowid and statement.
-    public func insert(or action: OnConflict? = nil, _ value: Setter, _ more: Setter...) -> (rowid: Int64?, statement: Statement) {
+    public func insert(or action: OnConflict? = nil, _ value: Setter, _ more: Setter...) -> Insert {
         return insert(or: action, [value] + more)
     }
 
@@ -470,61 +448,38 @@ public struct Query {
     /// :param: action An action to run in case of a conflict.
     /// :param: values An array of values to set.
     ///
-    /// :returns: The rowid.
-    public func insert(or action: OnConflict? = nil, _ values: [Setter]) -> Int64? {
-        return insert(or: action, values).rowid
-    }
-
-    /// Runs an INSERT statement against the query.
-    ///
-    /// :param: action An action to run in case of a conflict.
-    /// :param: values An array of values to set.
-    ///
     /// :returns: The rowid and statement.
-    public func insert(or action: OnConflict? = nil, _ values: [Setter]) -> (rowid: Int64?, statement: Statement) {
+    public func insert(or action: OnConflict? = nil, _ values: [Setter]) -> Insert {
         let statement = insertStatement(or: action, values).run()
         return (statement.failed ? nil : database.lastInsertRowid, statement)
     }
 
-    public func insert(query: Query) -> Int? { return insert(query).changes }
-
-    public func insert(query: Query) -> Statement { return insert(query).statement }
-
-    public func insert(query: Query) -> (changes: Int?, statement: Statement) {
-        let expression = query.selectExpression
-        let statement = database.run("INSERT INTO \(tableName.unaliased.SQL) \(expression.SQL)", expression.bindings)
-        return (statement.failed ? nil : database.changes, statement)
-    }
-
-    public func insert() -> Int64? { return insert().rowid }
-
-    public func insert() -> Statement { return insert().statement }
-
-    public func insert() -> (rowid: Int64?, statement: Statement) {
+    /// Runs an INSERT statement against the query with DEFAULT VALUES.
+    ///
+    /// :returns: The rowid and statement.
+    public func insert() -> Insert {
         let statement = database.run("INSERT INTO \(tableName.unaliased.SQL) DEFAULT VALUES")
         return (statement.failed ? nil : database.lastInsertRowid, statement)
     }
 
-    /// Runs an UPDATE statement against the query.
+    /// Runs an INSERT statement against the query with the results of another
+    /// query.
     ///
-    /// :param: values A list of values to set.
+    /// :param: query A query to SELECT results from.
     ///
-    /// :returns: The statement.
-    public func update(values: Setter...) -> Statement { return update(values).statement }
-
-    /// Runs an UPDATE statement against the query.
-    ///
-    /// :param: values A list of values to set.
-    ///
-    /// :returns: The number of updated rows.
-    public func update(values: Setter...) -> Int? { return update(values).changes }
+    /// :returns: The number of updated rows and statement.
+    public func insert(query: Query) -> Change {
+        let expression = query.selectExpression
+        let statement = database.run("INSERT INTO \(tableName.unaliased.SQL) \(expression.SQL)", expression.bindings)
+        return (statement.failed ? nil : database.changes, statement)
+    }
 
     /// Runs an UPDATE statement against the query.
     ///
     /// :param: values A list of values to set.
     ///
     /// :returns: The number of updated rows and statement.
-    public func update(values: Setter...) -> (changes: Int?, statement: Statement) {
+    public func update(values: Setter...) -> Change {
         return update(values)
     }
 
@@ -532,33 +487,16 @@ public struct Query {
     ///
     /// :param: values An array of of values to set.
     ///
-    /// :returns: The number of updated rows.
-    public func update(values: [Setter]) -> Int? { return update(values).changes }
-
-    /// Runs an UPDATE statement against the query.
-    ///
-    /// :param: values An array of of values to set.
-    ///
     /// :returns: The number of updated rows and statement.
-    public func update(values: [Setter]) -> (changes: Int?, statement: Statement) {
+    public func update(values: [Setter]) -> Change {
         let statement = updateStatement(values).run()
         return (statement.failed ? nil : database.changes, statement)
     }
 
     /// Runs a DELETE statement against the query.
     ///
-    /// :returns: The statement.
-    public func delete() -> Statement { return delete().statement }
-
-    /// Runs a DELETE statement against the query.
-    ///
-    /// :returns: The number of deleted rows.
-    public func delete() -> Int? { return delete().changes }
-
-    /// Runs a DELETE statement against the query.
-    ///
     /// :returns: The number of deleted rows and statement.
-    public func delete() -> (changes: Int?, statement: Statement) {
+    public func delete() -> Change {
         let statement = deleteStatement.run()
         return (statement.failed ? nil : database.changes, statement)
     }
@@ -845,6 +783,28 @@ extension Query: Printable {
         return tableName.SQL
     }
 
+}
+
+/// The result of an INSERT executed by a query.
+public typealias Insert = (rowid: Int64?, statement: Statement)
+
+/// The result of an UPDATE or DELETE executed by a query.
+public typealias Change = (changes: Int?, statement: Statement)
+
+public func && (lhs: Statement, @autoclosure rhs: () -> Insert) -> Statement {
+    return lhs && rhs().statement
+}
+
+public func || (lhs: Statement, @autoclosure rhs: () -> Insert) -> Statement {
+    return lhs || rhs().statement
+}
+
+public func && (lhs: Statement, @autoclosure rhs: () -> Change) -> Statement {
+    return lhs && rhs().statement
+}
+
+public func || (lhs: Statement, @autoclosure rhs: () -> Change) -> Statement {
+    return lhs || rhs().statement
 }
 
 extension Database {

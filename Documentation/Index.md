@@ -393,62 +393,33 @@ Additional constraints may be provided outside the scope of a single column usin
 
 ## Inserting Rows
 
-We can insert rows into a table by calling a [query’s](#queries) `insert` function with a list of [setters](#setters), typically [typed column expressions](#expressions) and values (which can also be expressions), each joined by the `<-` operator.
+We can insert rows into a table by calling a [query’s](#queries) `insert` function with a list of [setters](#setters)—typically [typed column expressions](#expressions) and values (which can also be expressions)—each joined by the `<-` operator.
 
 ``` swift
-users.insert(email <- "alice@mac.com", name <- "Alice")?
+users.insert(email <- "alice@mac.com", name <- "Alice")
 // INSERT INTO "users" ("email", "name") VALUES ('alice@mac.com', 'Alice')
 
 users.insert(or: .Replace, email <- "alice@mac.com", name <- "Alice B.")
 // INSERT OR REPLACE INTO "users" ("email", "name") VALUES ('alice@mac.com', 'Alice B.')
 ```
 
-The `insert` function can return several different types that are useful in different contexts.
+The `insert` function returns a tuple with an `Int64?` representing the inserted row’s [`ROWID`][ROWID] (or `nil` on failure) and the associated `Statement`.
 
-  - An `Int64?` representing the inserted row’s [`ROWID`][ROWID] (or `nil` on failure), for simplicity.
-
-    ``` swift
-    if let insertId = users.insert(email <- "alice@mac.com") {
-        println("inserted id: \(insertId)")
-    }
-    ```
-
-    If a value is always expected, we can disambiguate with a `!`.
-
-    ``` swift
-    users.insert(email <- "alice@mac.com")!
-    ```
-
-  - A `Statement`, for [the transaction and savepoint helpers](#transactions-and-savepoints) that take a list of statements.
-
-    ``` swift
-    db.transaction()
-        && users.insert(email <- "alice@mac.com")
-        && users.insert(email <- "betty@mac.com")
-        && db.commit() || db.rollback()
-    // BEGIN DEFERRED TRANSACTION;
-    // INSERT INTO "users" ("email") VALUES ('alice@mac.com');
-    // INSERT INTO "users" ("email") VALUES ('betty@mac.com');
-    // COMMIT TRANSACTION;
-    ```
-
-  - A tuple of the above [`ROWID`][ROWID] and statement: `(rowid: Int64?, statement: Statement)`, for flexibility.
-
-    ``` swift
-    let (rowid, statement) = users.insert(email <- "alice@mac.com")
-    if let rowid = rowid {
-        println("inserted id: \(rowid)")
-    } else if statement.failed {
-        println("insertion failed: \(statement.reason)")
-    }
-    ```
+``` swift
+let insert = users.insert(email <- "alice@mac.com")
+if let rowid = insert.rowid {
+    println("inserted id: \(rowid)")
+} else if insert.statement.failed {
+    println("insertion failed: \(insert.statement.reason)")
+}
+```
 
 The [`update`](#updating-rows) and [`delete`](#deleting-rows) functions follow similar patterns.
 
 > _Note:_ If `insert` is called without any arguments, the statement will run with a `DEFAULT VALUES` clause. The table must not have any constraints that aren’t fulfilled by default values.
 >
 > ``` swift
-> timestamps.insert()!
+> timestamps.insert()
 > // INSERT INTO "timestamps" DEFAULT VALUES
 > ```
 
@@ -816,12 +787,12 @@ users.filter(name != nil).count
 
 ## Updating Rows
 
-We can update a table’s rows by calling a [query’s](#queries) `update` function with a list of [setters](#setters), typically [typed column expressions](#expressions) and values (which can also be expressions), each joined by the `<-` operator.
+We can update a table’s rows by calling a [query’s](#queries) `update` function with a list of [setters](#setters)—typically [typed column expressions](#expressions) and values (which can also be expressions)—each joined by the `<-` operator.
 
 When an unscoped query calls `update`, it will update _every_ row in the table.
 
 ``` swift
-users.update(email <- "alice@me.com")?
+users.update(email <- "alice@me.com")
 // UPDATE "users" SET "email" = 'alice@me.com'
 ```
 
@@ -829,29 +800,20 @@ Be sure to scope `UPDATE` statements beforehand using [the `filter` function](#f
 
 ``` swift
 let alice = users.filter(id == 1)
-alice.update(email <- "alice@me.com")?
+alice.update(email <- "alice@me.com")
 // UPDATE "users" SET "email" = 'alice@me.com' WHERE ("id" = 1)
 ```
 
-Like [`insert`](#inserting-rows) (and [`delete`](#updating-rows)), `update` can return several different types that are useful in different contexts.
+The `update` function returns a tuple with an `Int?` representing the number of updates (or `nil` on failure) and the associated `Statement`.
 
-  - An `Int?` representing the number of updated rows (or `nil` on failure), for simplicity.
-
-    ``` swift
-    if alice.update(email <- "alice@me.com") > 0 {
-        println("updated Alice")
-    }
-    ```
-
-    If a value is always expected, we can disambiguate with a `!`.
-
-    ``` swift
-    alice.update(email <- "alice@me.com")!
-    ```
-
-  - A `Statement`, for [the transaction and savepoint helpers](#transactions-and-savepoints) that take a list of statements.
-
-  - A tuple of the above number of updated rows and statement: `(changes: Int?, Statement)`, for flexibility.
+``` swift
+let update = alice.update(email <- "alice@me.com")
+if let changes = update.changes where changes > 0 {
+    println("updated alice")
+} else if update.statement.failed {
+    println("update failed: \(update.statement.reason)")
+}
+```
 
 
 ## Deleting Rows
@@ -861,7 +823,7 @@ We can delete rows from a table by calling a [query’s](#queries) `delete` func
 When an unscoped query calls `delete`, it will delete _every_ row in the table.
 
 ``` swift
-users.delete()?
+users.delete()
 // DELETE FROM "users"
 ```
 
@@ -869,34 +831,25 @@ Be sure to scope `DELETE` statements beforehand using [the `filter` function](#f
 
 ``` swift
 let alice = users.filter(id == 1)
-alice.delete()?
+alice.delete()
 // DELETE FROM "users" WHERE ("id" = 1)
 ```
 
-Like [`insert`](#inserting-rows) and [`update`](#updating-rows), `delete` can return several different types that are useful in different contexts.
+The `delete` function returns a tuple with an `Int?` representing the number of deletes (or `nil` on failure) and the associated `Statement`.
 
-  - An `Int?` representing the number of deleted rows (or `nil` on failure), for simplicity.
-
-    ``` swift
-    if alice.delete() > 0 {
-        println("deleted Alice")
-    }
-    ```
-
-    If a value is always expected, we can disambiguate with a `!`.
-
-    ``` swift
-    alice.delete()!
-    ```
-
-  - A `Statement`, for [the transaction and savepoint helpers](#transactions-and-savepoints) that take a list of statements.
-
-  - A tuple of the above number of deleted rows and statement: `(changes: Int?, Statement)`, for flexibility.
+``` swift
+let delete = delete.update(email <- "alice@me.com")
+if let changes = delete.changes where changes > 0 {
+    println("deleted alice")
+} else if delete.statement.failed {
+    println("delete failed: \(delete.statement.reason)")
+}
+```
 
 
 ## Transactions and Savepoints
 
-Using the `transaction` and `savepoint` functions, we can run a series of statements, committing the changes to the database if they all succeed. If a single statement fails, we can bail out early and roll back.
+Using the `transaction` and `savepoint` functions, we can run a series of statements chained together (using `&&`). If a single statement fails, we can short-circuit the series (using `||`) and roll back the changes.
 
 ``` swift
 db.transaction()
@@ -905,17 +858,20 @@ db.transaction()
     && db.commit() || db.rollback()
 ```
 
-The former statement can also be written as
+> _Note:_ Each statement is captured in an auto-closure and won’t execute till the preceding statement succeeds. This is why we can use the `lastInsertRowid` property on `Database` to reference the previous statement’s insert [`ROWID`][ROWID].
+
+For more complex transactions and savepoints, block helpers exist. Using a block helper, the former statement can be written (more verbosely) as follows:
+
 ``` swift
-db.transaction { _ in
-    for obj in objects {
-        stmt.run(obj.email)
+db.transaction { txn in
+    if let rowid = users.insert(email <- "betty@icloud.com").rowid {
+        if users.insert(email <- "cathy@icloud.com", manager_id <- db.lastInsertRowid).rowid != nil {
+            return .Commit
+        }
     }
-    return .Commit || .Rollback
+    return .Rollback
 }
 ```
-
-> _Note:_ Each statement is captured in an auto-closure and won’t execute till the preceding statement succeeds. This means we can use the `lastInsertRowid` property on `Database` to reference the previous statement’s insert [`ROWID`][ROWID].
 
 
 ## Altering the Schema
