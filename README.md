@@ -51,10 +51,10 @@ db.create(table: users) { t in
 // )
 
 var alice: Query?
-if let insertId = users.insert(name <- "Alice", email <- "alice@mac.com") {
-    println("inserted id: \(insertId)")
+if let rowid = users.insert(name <- "Alice", email <- "alice@mac.com").rowid {
+    println("inserted id: \(rowid)")
     // inserted id: 1
-    alice = users.filter(id == insertId)
+    alice = users.filter(id == rowid)
 }
 // INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
 
@@ -64,11 +64,11 @@ for user in users {
 }
 // SELECT * FROM "users"
 
-alice?.update(email <- replace(email, "mac.com", "me.com"))?
+alice?.update(email <- replace(email, "mac.com", "me.com"))
 // UPDATE "users" SET "email" = replace("email", 'mac.com', 'me.com')
 // WHERE ("id" = 1)
 
-alice?.delete()?
+alice?.delete()
 // DELETE FROM "users" WHERE ("id" = 1)
 
 users.count
