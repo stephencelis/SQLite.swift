@@ -601,7 +601,7 @@ Occasionally, we need to join a table to itself, in which case we must alias the
 ``` swift
 let managers = users.alias("managers")
 
-let query = users.join(managers, on: managers[id] == users[manager_id])
+let query = users.join(managers, on: managers[id] == users[managerId])
 // SELECT * FROM "users"
 // INNER JOIN ("users") AS "managers" ON ("managers"."id" = "users"."manager_id")
 ```
@@ -859,7 +859,7 @@ Using the `transaction` and `savepoint` functions, we can run a series of statem
 ``` swift
 db.transaction()
     && users.insert(email <- "betty@icloud.com")
-    && users.insert(email <- "cathy@icloud.com", manager_id <- db.lastInsertRowid)
+    && users.insert(email <- "cathy@icloud.com", managerId <- db.lastInsertRowid)
     && db.commit() || db.rollback()
 ```
 
@@ -870,7 +870,7 @@ For more complex transactions and savepoints, block helpers exist. Using a block
 ``` swift
 db.transaction { txn in
     if let rowid = users.insert(email <- "betty@icloud.com").rowid {
-        if users.insert(email <- "cathy@icloud.com", manager_id <- db.lastInsertRowid).rowid != nil {
+        if users.insert(email <- "cathy@icloud.com", managerId <- db.lastInsertRowid).rowid != nil {
             return .Commit
         }
     }

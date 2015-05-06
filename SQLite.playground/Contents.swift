@@ -111,7 +111,7 @@ let id = Expression<Int64>("id")
 let email = Expression<String>("email")
 let age = Expression<Int?>("age")
 let admin = Expression<Bool>("admin")
-let manager_id = Expression<Int64?>("manager_id")
+let managerId = Expression<Int64?>("manager_id")
 /*:
 The query-building interface is provided via the `Query` struct. We can access this interface by subscripting our database connection with a table name.
 */
@@ -129,7 +129,7 @@ The `insert` function can return a `rowid` (which will be `nil` in the case of f
 */
 db.transaction()
     && users.insert(email <- "julie@acme.com")
-    && users.insert(email <- "kelly@acme.com", manager_id <- db.lastInsertRowid)
+    && users.insert(email <- "kelly@acme.com", managerId <- db.lastInsertRowid)
     && db.commit()
     || db.rollback()
 /*:
