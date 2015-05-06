@@ -162,11 +162,14 @@ To install SQLite.swift with [SQLCipher][] support:
 
 ## Communication
 
+[Read the contributing guidelines][]. The _TL;DR_ (but please; _R_):
+
  - Need **help** or have a **general question**? [Ask on Stack
    Overflow][] (tag `sqlite.swift`).
  - Found a **bug** or have a **feature request**? [Open an issue][].
  - Want to **contribute**? [Submit a pull request][].
 
+[Read the contributing guidelines]: ./CONTRIBUTING.md#contributing
 [Ask on Stack Overflow]: http://stackoverflow.com/questions/tagged/sqlite.swift
 [Open an issue]: https://github.com/stephencelis/SQLite.swift/issues/new
 [Submit a pull request]: https://github.com/stephencelis/SQLite.swift/fork
