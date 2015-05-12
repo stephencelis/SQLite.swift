@@ -90,14 +90,14 @@ public struct Expression<T> {
         return expression
     }
 
-    internal static func join(separator: String, _ expressions: [Expressible]) -> Expression<()> {
+    internal static func join(separator: String, _ expressions: [Expressible]) -> Expression<Void> {
         var (SQL, bindings) = ([String](), [Binding?]())
         for expressible in expressions {
             let expression = expressible.expression
             SQL.append(expression.SQL)
             bindings.extend(expression.bindings)
         }
-        return Expression<()>(literal: Swift.join(separator, SQL), bindings)
+        return Expression<Void>(literal: Swift.join(separator, SQL), bindings)
     }
 
     internal init<V>(_ expression: Expression<V>) {
@@ -105,11 +105,11 @@ public struct Expression<T> {
         (ascending, original) = (expression.ascending, expression.original)
     }
 
-    internal var ordered: Expression<()> {
+    internal var ordered: Expression<Void> {
         if let ascending = ascending {
             return Expression.join(" ", [self, Expression(literal: ascending ? "ASC" : "DESC")])
         }
-        return Expression<()>(self)
+        return Expression<Void>(self)
     }
 
     internal var aliased: Expression {
@@ -142,13 +142,13 @@ public struct Expression<T> {
 
 public protocol Expressible {
 
-    var expression: Expression<()> { get }
+    var expression: Expression<Void> { get }
 
 }
 
 extension Blob: Expressible {
 
-    public var expression: Expression<()> {
+    public var expression: Expression<Void> {
         return Expression(binding: self)
     }
 
@@ -156,7 +156,7 @@ extension Blob: Expressible {
 
 extension Bool: Expressible {
 
-    public var expression: Expression<()> {
+    public var expression: Expression<Void> {
         return Expression(value: self)
     }
 
@@ -164,7 +164,7 @@ extension Bool: Expressible {
 
 extension Double: Expressible {
 
-    public var expression: Expression<()> {
+    public var expression: Expression<Void> {
         return Expression(binding: self)
     }
 
@@ -172,7 +172,7 @@ extension Double: Expressible {
 
 extension Int: Expressible {
 
-    public var expression: Expression<()> {
+    public var expression: Expression<Void> {
         // FIXME: rdar://TODO segfaults during archive // return Expression(value: self)
         return Expression(binding: datatypeValue)
     }
@@ -181,7 +181,7 @@ extension Int: Expressible {
 
 extension Int64: Expressible {
 
-    public var expression: Expression<()> {
+    public var expression: Expression<Void> {
         return Expression(binding: self)
     }
 
@@ -189,7 +189,7 @@ extension Int64: Expressible {
 
 extension String: Expressible {
 
-    public var expression: Expression<()> {
+    public var expression: Expression<Void> {
         return Expression(binding: self)
     }
 
@@ -197,15 +197,15 @@ extension String: Expressible {
 
 extension Expression: Expressible {
 
-    public var expression: Expression<()> {
-        return Expression<()>(self)
+    public var expression: Expression<Void> {
+        return Expression<Void>(self)
     }
 
 }
 
 extension Query: Expressible {
 
-    public var expression: Expression<()> {
+    public var expression: Expression<Void> {
         if tableName.original != nil {
             return selectExpression.alias(tableName)
         }
@@ -587,17 +587,17 @@ public func abs<V: Value where V.Datatype: Number>(expression: Expression<V?>) -
 
 // FIXME: support Expression<V?>..., Expression<V> when Swift supports inner variadic signatures
 public func coalesce<V>(expressions: Expression<V?>...) -> Expression<V?> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", expressions.map { $0 } as [Expressible]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", expressions.map { $0 } as [Expressible]))
 }
 
 public func ifnull<V: Expressible>(expression: Expression<V?>, defaultValue: V) -> Expression<V> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, defaultValue]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, defaultValue]))
 }
 public func ifnull<V: Expressible>(expression: Expression<V?>, defaultValue: Expression<V>) -> Expression<V> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, defaultValue]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, defaultValue]))
 }
 public func ifnull<V: Expressible>(expression: Expression<V?>, defaultValue: Expression<V?>) -> Expression<V> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, defaultValue]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, defaultValue]))
 }
 public func ?? <V: Expressible>(expression: Expression<V?>, defaultValue: V) -> Expression<V> {
     return ifnull(expression, defaultValue)
@@ -619,51 +619,51 @@ public func ltrim(expression: Expression<String>) -> Expression<String> { return
 public func ltrim(expression: Expression<String?>) -> Expression<String?> { return wrap(__FUNCTION__, expression) }
 
 public func ltrim(expression: Expression<String>, characters: String) -> Expression<String> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, characters]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, characters]))
 }
 public func ltrim(expression: Expression<String?>, characters: String) -> Expression<String?> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, characters]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, characters]))
 }
 
 public func random() -> Expression<Int> { return Expression(literal: __FUNCTION__) }
 
 public func replace(expression: Expression<String>, match: String, subtitute: String) -> Expression<String> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, match, subtitute]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, match, subtitute]))
 }
 public func replace(expression: Expression<String?>, match: String, subtitute: String) -> Expression<String?> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, match, subtitute]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, match, subtitute]))
 }
 
 public func round(expression: Expression<Double>) -> Expression<Double> { return wrap(__FUNCTION__, expression) }
 public func round(expression: Expression<Double?>) -> Expression<Double?> { return wrap(__FUNCTION__, expression) }
 public func round(expression: Expression<Double>, precision: Int) -> Expression<Double> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, precision]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, precision]))
 }
 public func round(expression: Expression<Double?>, precision: Int) -> Expression<Double?> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, precision]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, precision]))
 }
 
 public func rtrim(expression: Expression<String>) -> Expression<String> { return wrap(__FUNCTION__, expression) }
 public func rtrim(expression: Expression<String?>) -> Expression<String?> { return wrap(__FUNCTION__, expression) }
 public func rtrim(expression: Expression<String>, characters: String) -> Expression<String> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, characters]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, characters]))
 }
 public func rtrim(expression: Expression<String?>, characters: String) -> Expression<String?> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, characters]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, characters]))
 }
 
 public func substr(expression: Expression<String>, startIndex: Int) -> Expression<String> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, startIndex]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, startIndex]))
 }
 public func substr(expression: Expression<String?>, startIndex: Int) -> Expression<String?> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, startIndex]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, startIndex]))
 }
 
 public func substr(expression: Expression<String>, position: Int, length: Int) -> Expression<String> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, position, length]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, position, length]))
 }
 public func substr(expression: Expression<String?>, position: Int, length: Int) -> Expression<String?> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, position, length]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, position, length]))
 }
 
 public func substr(expression: Expression<String>, subRange: Range<Int>) -> Expression<String> {
@@ -676,10 +676,10 @@ public func substr(expression: Expression<String?>, subRange: Range<Int>) -> Exp
 public func trim(expression: Expression<String>) -> Expression<String> { return wrap(__FUNCTION__, expression) }
 public func trim(expression: Expression<String?>) -> Expression<String?> { return wrap(__FUNCTION__, expression) }
 public func trim(expression: Expression<String>, characters: String) -> Expression<String> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, characters]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, characters]))
 }
 public func trim(expression: Expression<String?>, characters: String) -> Expression<String?> {
-    return wrap(__FUNCTION__, Expression<()>.join(", ", [expression, characters]))
+    return wrap(__FUNCTION__, Expression<Void>.join(", ", [expression, characters]))
 }
 
 public func upper(expression: Expression<String>) -> Expression<String> { return wrap(__FUNCTION__, expression) }
@@ -727,16 +727,16 @@ public func total<V: Value where V.Datatype: Number>(#distinct: Expression<V>) -
 public func total<V: Value where V.Datatype: Number>(#distinct: Expression<V?>) -> Expression<Double> { return wrapDistinct("total", distinct) }
 
 private func wrapDistinct<V, U>(function: String, expression: Expression<V>) -> Expression<U> {
-    return wrap(function, Expression<()>.join(" ", [Expression<()>(literal: "DISTINCT"), expression]))
+    return wrap(function, Expression<Void>.join(" ", [Expression<Void>(literal: "DISTINCT"), expression]))
 }
 
 // MARK: - Helper
 
 public let rowid = Expression<Int64>("ROWID")
 
-public typealias Star = (Expression<Binding>?, Expression<Binding>?) -> Expression<()>
+public typealias Star = (Expression<Binding>?, Expression<Binding>?) -> Expression<Void>
 
-public func * (Expression<Binding>?, Expression<Binding>?) -> Expression<()> {
+public func * (Expression<Binding>?, Expression<Binding>?) -> Expression<Void> {
     return Expression(literal: "*")
 }
 public func contains<V: Value, C: CollectionType where C.Generator.Element == V, C.Index.Distance == Int>(values: C, column: Expression<V>) -> Expression<Bool> {
@@ -747,7 +747,7 @@ public func contains<V: Value, C: CollectionType where C.Generator.Element == V,
     return contains(values, Expression<V>(column))
 }
 public func contains<V: Value>(values: Query, column: Expression<V>) -> Expression<Bool> {
-    return infix("IN", column, wrap("", values.selectExpression) as Expression<()>)
+    return infix("IN", column, wrap("", values.selectExpression) as Expression<Void>)
 }
 
 // MARK: - Modifying
@@ -764,10 +764,10 @@ public typealias Setter = (Expressible, Expressible)
 /// :returns: A setter that can be used in a Query’s insert and update
 ///           functions.
 public func set<V: Value>(column: Expression<V>, value: V) -> Setter {
-    return (column, Expression<()>(value: value))
+    return (column, Expression<Void>(value: value))
 }
 public func set<V: Value>(column: Expression<V?>, value: V?) -> Setter {
-    return (column, Expression<()>(value: value))
+    return (column, Expression<Void>(value: value))
 }
 public func set<V: Value>(column: Expression<V>, value: Expression<V>) -> Setter { return (column, value) }
 public func set<V: Value>(column: Expression<V>, value: Expression<V?>) -> Setter { return (column, value) }

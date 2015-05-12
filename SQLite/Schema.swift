@@ -28,12 +28,12 @@ public extension Database {
         #table: Query,
         temporary: Bool = false,
         ifNotExists: Bool = false,
-        @noescape _ block: SchemaBuilder -> ()
+        @noescape _ block: SchemaBuilder -> Void
     ) -> Statement {
         var builder = SchemaBuilder(table)
         block(builder)
         let create = createSQL("TABLE", temporary, false, ifNotExists, table.tableName.unaliased.SQL)
-        let columns = Expression<()>.join(", ", builder.columns).compile()
+        let columns = Expression<Void>.join(", ", builder.columns).compile()
         return run("\(create) (\(columns))")
     }
 
@@ -43,7 +43,7 @@ public extension Database {
         return run("\(create) AS \(expression.SQL)", expression.bindings)
     }
 
-    public func create(#vtable: Query, ifNotExists: Bool = false, using: Expression<()>) -> Statement {
+    public func create(#vtable: Query, ifNotExists: Bool = false, using: Expression<Void>) -> Statement {
         let create = createSQL("VIRTUAL TABLE", false, false, ifNotExists, vtable.tableName.unaliased.SQL)
         return run("\(create) USING \(using.SQL)")
     }
@@ -78,7 +78,7 @@ public extension Database {
         references: Expression<V>
     ) -> Statement {
         return alter(table, define(Expression<V>(column), nil, true, false, check, nil, [
-            Expression<()>(literal: "REFERENCES"), namespace(references)
+            Expression<Void>(literal: "REFERENCES"), namespace(references)
         ]))
     }
 
@@ -90,7 +90,7 @@ public extension Database {
         collate: Collation
     ) -> Statement {
         return alter(table, define(Expression<V>(column), nil, false, false, check, Expression(value: defaultValue), [
-            Expression<()>(literal: "COLLATE"), Expression<()>(collate.description)
+            Expression<Void>(literal: "COLLATE"), Expression<Void>(collate.description)
         ]))
     }
 
@@ -103,7 +103,7 @@ public extension Database {
     ) -> Statement {
         let value = defaultValue.map { Expression<V>(value: $0) }
         return alter(table, define(Expression<V>(column), nil, true, false, check, value, [
-            Expression<()>(literal: "COLLATE"), Expression<()>(collate.description)
+            Expression<Void>(literal: "COLLATE"), Expression<Void>(collate.description)
         ]))
     }
 
@@ -123,7 +123,7 @@ public extension Database {
     ) -> Statement {
         let tableName = table.tableName.unaliased.SQL
         let create = createSQL("INDEX", false, unique, ifNotExists, indexName(tableName, on: columns))
-        let joined = Expression<()>.join(", ", columns.map { $0.expression.ordered })
+        let joined = Expression<Void>.join(", ", columns.map { $0.expression.ordered })
         return run("\(create) ON \(tableName) (\(joined.compile()))")
     }
 
@@ -237,7 +237,7 @@ public final class SchemaBuilder {
         references: Expression<V>
     ) {
         assertForeignKeysEnabled()
-        let expressions: [Expressible] = [Expression<()>(literal: "REFERENCES"), namespace(references)]
+        let expressions: [Expressible] = [Expression<Void>(literal: "REFERENCES"), namespace(references)]
         column(name, nil, false, unique, check, nil, expressions)
     }
 
@@ -262,7 +262,7 @@ public final class SchemaBuilder {
         references: Expression<V>
     ) {
         assertForeignKeysEnabled()
-        let expressions: [Expressible] = [Expression<()>(literal: "REFERENCES"), namespace(references)]
+        let expressions: [Expressible] = [Expression<Void>(literal: "REFERENCES"), namespace(references)]
         column(Expression<Int>(name), nil, true, unique, check, nil, expressions)
     }
 
@@ -289,7 +289,7 @@ public final class SchemaBuilder {
         defaultValue value: Expression<V>?,
         collate: Collation
     ) {
-        let expressions: [Expressible] = [Expression<()>(literal: "COLLATE \(collate)")]
+        let expressions: [Expressible] = [Expression<Void>(literal: "COLLATE \(collate)")]
         column(name, nil, false, unique, check, value, expressions)
     }
 
@@ -353,17 +353,17 @@ public final class SchemaBuilder {
     }
 
     private func primaryKey(composite: [Expressible]) {
-        let primaryKey = Expression<()>.join(", ", composite)
-        columns.append(Expression<()>(literal: "PRIMARY KEY(\(primaryKey.SQL))", primaryKey.bindings))
+        let primaryKey = Expression<Void>.join(", ", composite)
+        columns.append(Expression<Void>(literal: "PRIMARY KEY(\(primaryKey.SQL))", primaryKey.bindings))
     }
 
     public func unique(column: Expressible...) {
-        let unique = Expression<()>.join(", ", column)
-        columns.append(Expression<()>(literal: "UNIQUE(\(unique.SQL))", unique.bindings))
+        let unique = Expression<Void>.join(", ", column)
+        columns.append(Expression<Void>(literal: "UNIQUE(\(unique.SQL))", unique.bindings))
     }
 
     public func check(condition: Expression<Bool>) {
-        columns.append(Expression<()>(literal: "CHECK (\(condition.SQL))", condition.bindings))
+        columns.append(Expression<Void>(literal: "CHECK (\(condition.SQL))", condition.bindings))
     }
 
     public enum Dependency: String {
@@ -387,11 +387,11 @@ public final class SchemaBuilder {
         delete: Dependency? = nil
     ) {
         assertForeignKeysEnabled()
-        var parts: [Expressible] = [Expression<()>(literal: "FOREIGN KEY(\(column.SQL)) REFERENCES", column.bindings)]
+        var parts: [Expressible] = [Expression<Void>(literal: "FOREIGN KEY(\(column.SQL)) REFERENCES", column.bindings)]
         parts.append(namespace(references))
-        if let update = update { parts.append(Expression<()>(literal: "ON UPDATE \(update.rawValue)")) }
-        if let delete = delete { parts.append(Expression<()>(literal: "ON DELETE \(delete.rawValue)")) }
-        columns.append(Expression<()>.join(" ", parts))
+        if let update = update { parts.append(Expression<Void>(literal: "ON UPDATE \(update.rawValue)")) }
+        if let delete = delete { parts.append(Expression<Void>(literal: "ON DELETE \(delete.rawValue)")) }
+        columns.append(Expression<Void>.join(" ", parts))
     }
 
     public func foreignKey<T: Value>(
@@ -410,8 +410,8 @@ public final class SchemaBuilder {
         update: Dependency? = nil,
         delete: Dependency? = nil
     ) {
-        let compositeA = Expression<T>(Expression<()>.join(", ", [columns.0, columns.1]))
-        let compositeB = Expression<T>(Expression<()>.join(", ", [references.0, references.1]))
+        let compositeA = Expression<T>(Expression<Void>.join(", ", [columns.0, columns.1]))
+        let compositeB = Expression<T>(Expression<Void>.join(", ", [references.0, references.1]))
         foreignKey(compositeA, references: compositeB, update: update, delete: delete)
     }
 
@@ -421,8 +421,8 @@ public final class SchemaBuilder {
         update: Dependency? = nil,
         delete: Dependency? = nil
     ) {
-        let compositeA = Expression<T>(Expression<()>.join(", ", [columns.0, columns.1, columns.2]))
-        let compositeB = Expression<T>(Expression<()>.join(", ", [references.0, references.1, references.2]))
+        let compositeA = Expression<T>(Expression<Void>.join(", ", [columns.0, columns.1, columns.2]))
+        let compositeB = Expression<T>(Expression<Void>.join(", ", [references.0, references.1, references.2]))
         foreignKey(compositeA, references: compositeB, update: update, delete: delete)
     }
 
@@ -439,7 +439,7 @@ private func namespace(column: Expressible) -> Expressible {
         let string = String(character)
         return SQL + (string == "." ? "(" : string)
     }
-    return Expression<()>(literal: "\(reference))", expression.bindings)
+    return Expression<Void>(literal: "\(reference))", expression.bindings)
 }
 
 private func define<V: Value>(
@@ -451,17 +451,17 @@ private func define<V: Value>(
     defaultValue: Expression<V>?,
     expressions: [Expressible]?
 ) -> Expressible {
-    var parts: [Expressible] = [Expression<()>(column), Expression<()>(literal: V.declaredDatatype)]
+    var parts: [Expressible] = [Expression<Void>(column), Expression<Void>(literal: V.declaredDatatype)]
     if let primaryKey = primaryKey {
-        parts.append(Expression<()>(literal: "PRIMARY KEY"))
-        if primaryKey == .Autoincrement { parts.append(Expression<()>(literal: "AUTOINCREMENT")) }
+        parts.append(Expression<Void>(literal: "PRIMARY KEY"))
+        if primaryKey == .Autoincrement { parts.append(Expression<Void>(literal: "AUTOINCREMENT")) }
     }
-    if !null { parts.append(Expression<()>(literal: "NOT NULL")) }
-    if unique { parts.append(Expression<()>(literal: "UNIQUE")) }
-    if let check = check { parts.append(Expression<()>(literal: "CHECK (\(check.SQL))", check.bindings)) }
-    if let value = defaultValue { parts.append(Expression<()>(literal: "DEFAULT \(value.SQL)", value.bindings)) }
+    if !null { parts.append(Expression<Void>(literal: "NOT NULL")) }
+    if unique { parts.append(Expression<Void>(literal: "UNIQUE")) }
+    if let check = check { parts.append(Expression<Void>(literal: "CHECK (\(check.SQL))", check.bindings)) }
+    if let value = defaultValue { parts.append(Expression<Void>(literal: "DEFAULT \(value.SQL)", value.bindings)) }
     if let expressions = expressions { parts += expressions }
-    return Expression<()>.join(" ", parts)
+    return Expression<Void>.join(" ", parts)
 }
 
 private func createSQL(

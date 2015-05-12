@@ -32,7 +32,7 @@ public struct Query {
         (self.database, self.tableName) = (database, Expression(tableName))
     }
 
-    private init(_ database: Database, _ tableName: Expression<()>) {
+    private init(_ database: Database, _ tableName: Expression<Void>) {
         (self.database, self.tableName) = (database, tableName)
     }
 
@@ -54,7 +54,7 @@ public struct Query {
 
     private var columns: [Expressible]?
     private var distinct: Bool = false
-    internal var tableName: Expression<()>
+    internal var tableName: Expression<Void>
     private var joins: [(type: JoinType, table: Query, condition: Expression<Bool>)] = []
     private var filter: Expression<Bool>?
     private var group: Expressible?
@@ -220,8 +220,8 @@ public struct Query {
     /// :returns: A query with the given GROUP BY clause applied.
     public func group(by: [Expressible], having: Expression<Bool>? = nil) -> Query {
         var query = self
-        var group = Expression<()>.join(" ", [Expression<()>(literal: "GROUP BY"), Expression<()>.join(", ", by)])
-        if let having = having { group = Expression<()>.join(" ", [group, Expression<()>(literal: "HAVING"), having]) }
+        var group = Expression<Void>.join(" ", [Expression<Void>(literal: "GROUP BY"), Expression<Void>.join(", ", by)])
+        if let having = having { group = Expression<Void>.join(" ", [group, Expression<Void>(literal: "HAVING"), having]) }
         query.group = group
         return query
     }
@@ -326,7 +326,7 @@ public struct Query {
     ///
     /// :returns: A * expression namespaced with the query’s table name or
     ///           alias.
-    public subscript(star: Star) -> Expression<()> {
+    public subscript(star: Star) -> Expression<Void> {
         return namespace(star(nil, nil))
     }
 
@@ -337,14 +337,14 @@ public struct Query {
         return database.prepare(expression.SQL, expression.bindings)
     }
 
-    internal var selectExpression: Expression<()> {
+    internal var selectExpression: Expression<Void> {
         var expressions = [selectClause]
         joinClause.map(expressions.append)
         whereClause.map(expressions.append)
         group.map(expressions.append)
         orderClause.map(expressions.append)
         limitClause.map(expressions.append)
-        return Expression<()>.join(" ", expressions)
+        return Expression<Void>.join(" ", expressions)
     }
 
     /// ON CONFLICT resolutions.
@@ -365,65 +365,65 @@ public struct Query {
     private func insertStatement(or: OnConflict? = nil, _ values: [Setter]) -> Statement {
         var insertClause = "INSERT"
         if let or = or { insertClause = "\(insertClause) OR \(or.rawValue)" }
-        var expressions: [Expressible] = [Expression<()>(literal: "\(insertClause) INTO \(tableName.unaliased.SQL)")]
-        let (c, v) = (Expression<()>.join(", ", values.map { $0.0 }), Expression<()>.join(", ", values.map { $0.1 }))
-        expressions.append(Expression<()>(literal: "(\(c.SQL)) VALUES (\(v.SQL))", c.bindings + v.bindings))
+        var expressions: [Expressible] = [Expression<Void>(literal: "\(insertClause) INTO \(tableName.unaliased.SQL)")]
+        let (c, v) = (Expression<Void>.join(", ", values.map { $0.0 }), Expression<Void>.join(", ", values.map { $0.1 }))
+        expressions.append(Expression<Void>(literal: "(\(c.SQL)) VALUES (\(v.SQL))", c.bindings + v.bindings))
         whereClause.map(expressions.append)
-        let expression = Expression<()>.join(" ", expressions)
+        let expression = Expression<Void>.join(" ", expressions)
         return database.prepare(expression.SQL, expression.bindings)
     }
 
     private func updateStatement(values: [Setter]) -> Statement {
-        var expressions: [Expressible] = [Expression<()>(literal: "UPDATE \(tableName.unaliased.SQL) SET")]
-        expressions.append(Expression<()>.join(", ", values.map { Expression<()>.join(" = ", [$0, $1]) }))
+        var expressions: [Expressible] = [Expression<Void>(literal: "UPDATE \(tableName.unaliased.SQL) SET")]
+        expressions.append(Expression<Void>.join(", ", values.map { Expression<Void>.join(" = ", [$0, $1]) }))
         whereClause.map(expressions.append)
-        let expression = Expression<()>.join(" ", expressions)
+        let expression = Expression<Void>.join(" ", expressions)
         return database.prepare(expression.SQL, expression.bindings)
     }
 
     private var deleteStatement: Statement {
-        var expressions: [Expressible] = [Expression<()>(literal: "DELETE FROM \(tableName.unaliased.SQL)")]
+        var expressions: [Expressible] = [Expression<Void>(literal: "DELETE FROM \(tableName.unaliased.SQL)")]
         whereClause.map(expressions.append)
-        let expression = Expression<()>.join(" ", expressions)
+        let expression = Expression<Void>.join(" ", expressions)
         return database.prepare(expression.SQL, expression.bindings)
     }
 
     // MARK: -
 
     private var selectClause: Expressible {
-        var expressions: [Expressible] = [Expression<()>(literal: "SELECT")]
-        if distinct { expressions.append(Expression<()>(literal: "DISTINCT")) }
-        expressions.append(Expression<()>.join(", ", (columns ?? [Expression<()>(literal: "*")]).map { $0.expression.aliased }))
-        expressions.append(Expression<()>(literal: "FROM \(tableName.aliased.SQL)"))
-        return Expression<()>.join(" ", expressions)
+        var expressions: [Expressible] = [Expression<Void>(literal: "SELECT")]
+        if distinct { expressions.append(Expression<Void>(literal: "DISTINCT")) }
+        expressions.append(Expression<Void>.join(", ", (columns ?? [Expression<Void>(literal: "*")]).map { $0.expression.aliased }))
+        expressions.append(Expression<Void>(literal: "FROM \(tableName.aliased.SQL)"))
+        return Expression<Void>.join(" ", expressions)
     }
 
     private var joinClause: Expressible? {
         if joins.count == 0 { return nil }
-        return Expression<()>.join(" ", joins.map { type, table, condition in
+        return Expression<Void>.join(" ", joins.map { type, table, condition in
             let join = (table.columns == nil ? table.tableName : table.expression).aliased
-            return Expression<()>(literal: "\(type.rawValue) JOIN \(join.SQL) ON \(condition.SQL)", join.bindings + condition.bindings)
+            return Expression<Void>(literal: "\(type.rawValue) JOIN \(join.SQL) ON \(condition.SQL)", join.bindings + condition.bindings)
         })
     }
 
     internal var whereClause: Expressible? {
         if let filter = filter {
-            return Expression<()>(literal: "WHERE \(filter.SQL)", filter.bindings)
+            return Expression<Void>(literal: "WHERE \(filter.SQL)", filter.bindings)
         }
         return nil
     }
 
     private var orderClause: Expressible? {
         if order.count == 0 { return nil }
-        let clause = Expression<()>.join(", ", order.map { $0.expression.ordered })
-        return Expression<()>(literal: "ORDER BY \(clause.SQL)", clause.bindings)
+        let clause = Expression<Void>.join(", ", order.map { $0.expression.ordered })
+        return Expression<Void>(literal: "ORDER BY \(clause.SQL)", clause.bindings)
     }
 
     private var limitClause: Expressible? {
         if let limit = limit {
-            var clause = Expression<()>(literal: "LIMIT \(limit.to)")
+            var clause = Expression<Void>(literal: "LIMIT \(limit.to)")
             if let offset = limit.offset {
-                clause = Expression<()>.join(" ", [clause, Expression<()>(literal: "OFFSET \(offset)")])
+                clause = Expression<Void>.join(" ", [clause, Expression<Void>(literal: "OFFSET \(offset)")])
             }
             return clause
         }
@@ -732,11 +732,11 @@ public struct QueryGenerator: GeneratorType {
 
     private lazy var columnNames: [String: Int] = {
         var (columnNames, idx) = ([String: Int](), 0)
-        column: for each in self.query.columns ?? [Expression<()>(literal: "*")] {
+        column: for each in self.query.columns ?? [Expression<Void>(literal: "*")] {
             let pair = split(each.expression.SQL) { $0 == "." }
             let (tableName, column) = (pair.count > 1 ? pair.first : nil, pair.last!)
 
-            func expandGlob(namespace: Bool) -> Query -> () {
+            func expandGlob(namespace: Bool) -> Query -> Void {
                 return { table in
                     var query = Query(table.database, table.tableName.unaliased)
                     if let columns = table.columns { query.columns = columns  }

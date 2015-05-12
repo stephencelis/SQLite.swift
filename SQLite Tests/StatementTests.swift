@@ -150,10 +150,10 @@ class StatementTests: SQLiteTestCase {
 
 }
 
-func withBlob(block: Blob -> ()) {
+func withBlob(block: Blob -> Void) {
     let length = 1
     let buflen = Int(length) + 1
-    let buffer = UnsafeMutablePointer<()>.alloc(buflen)
+    let buffer = UnsafeMutablePointer<Void>.alloc(buflen)
     memcpy(buffer, "4", length)
     block(Blob(bytes: buffer, length: length))
     buffer.dealloc(buflen)

@@ -392,7 +392,7 @@ public final class Database {
     /// :param: callback This block is invoked when a statement is executed with
     ///                  the compiled SQL as its argument. E.g., pass `println`
     ///                  to act as a logger.
-    public func trace(callback: ((SQL: String) -> ())?) {
+    public func trace(callback: ((SQL: String) -> Void)?) {
         if let callback = callback {
             trace = { callback(SQL: String.fromCString($0)!) }
         } else {
@@ -435,7 +435,7 @@ public final class Database {
     /// :param: callback A callback invoked with the `Operation` (one
     ///                  of `.Insert`, `.Update`, or `.Delete`), database name,
     ///                  table name, and rowid.
-    public func updateHook(callback: ((operation: Operation, db: String, table: String, rowid: Int64) -> ())?) {
+    public func updateHook(callback: ((operation: Operation, db: String, table: String, rowid: Int64) -> Void)?) {
         if let callback = callback {
             updateHook = { operation, db, table, rowid in
                 callback(
@@ -470,7 +470,7 @@ public final class Database {
     /// Registers a callback to be invoked whenever a transaction rolls back.
     ///
     /// :param: callback A callback invoked when a transaction is rolled back.
-    public func rollbackHook(callback: (() -> ())?) {
+    public func rollbackHook(callback: (() -> Void)?) {
         rollbackHook = callback.map { $0 }
         _SQLiteRollbackHook(handle, rollbackHook)
     }
@@ -570,7 +570,7 @@ public final class Database {
 
     private let queue = dispatch_queue_create("SQLite.Database", DISPATCH_QUEUE_SERIAL)
 
-    internal func perform(block: () -> ()) { dispatch_sync(queue, block) }
+    internal func perform(block: () -> Void) { dispatch_sync(queue, block) }
 
 }
 

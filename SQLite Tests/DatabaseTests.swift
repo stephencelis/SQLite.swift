@@ -378,7 +378,7 @@ class DatabaseTests: SQLiteTestCase {
         XCTAssertEqual(1, db.scalar("SELECT ? = ? COLLATE \"NO DIACRITIC\"", "cafe", "café") as! Int64)
     }
 
-    func executeAndWait(block: () -> ()) {
+    func executeAndWait(block: () -> Void) {
         dispatch_async(dispatch_get_main_queue(), block)
         waitForExpectationsWithTimeout(5) { error in
             if let error = error {

@@ -51,7 +51,7 @@ public struct Blob {
 
     private let data: NSData
 
-    public var bytes: UnsafePointer<()> {
+    public var bytes: UnsafePointer<Void> {
         return data.bytes
     }
 
@@ -59,7 +59,7 @@ public struct Blob {
         return data.length
     }
 
-    public init(bytes: UnsafePointer<()>, length: Int) {
+    public init(bytes: UnsafePointer<Void>, length: Int) {
         data = NSData(bytes: bytes, length: length)
     }
 

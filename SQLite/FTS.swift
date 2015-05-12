@@ -22,23 +22,23 @@
 // THE SOFTWARE.
 //
 
-public func fts4(columns: Expression<String>...) -> Expression<()> {
+public func fts4(columns: Expression<String>...) -> Expression<Void> {
     return fts4(columns)
 }
 
 // TODO: matchinfo, compress, uncompress
-public func fts4(columns: [Expression<String>], tokenize tokenizer: Tokenizer? = nil) -> Expression<()> {
+public func fts4(columns: [Expression<String>], tokenize tokenizer: Tokenizer? = nil) -> Expression<Void> {
     var options = [String: String]()
     options["tokenize"] = tokenizer?.description
     return fts("fts4", columns, options)
 }
 
-private func fts(function: String, columns: [Expression<String>], options: [String: String]) -> Expression<()> {
+private func fts(function: String, columns: [Expression<String>], options: [String: String]) -> Expression<Void> {
     var definitions: [Expressible] = columns.map { $0.expression }
     for (key, value) in options {
-        definitions.append(Expression<()>(literal: "\(key)=\(value)"))
+        definitions.append(Expression<Void>(literal: "\(key)=\(value)"))
     }
-    return wrap(function, Expression<()>.join(", ", definitions))
+    return wrap(function, Expression<Void>.join(", ", definitions))
 }
 
 public enum Tokenizer {
