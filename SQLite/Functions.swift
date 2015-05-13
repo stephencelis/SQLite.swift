@@ -30,10 +30,16 @@ public extension Database {
 
     /// Creates or redefines a custom SQL function.
     ///
-    /// :param: function The name of the function to create or redefine.
+    /// :param: function      The name of the function to create or redefine.
     ///
-    /// :param: block    A block of code to run when the function is called.
-    ///                  The assigned types must be explicit.
+    /// :param: deterministic Whether or not the function is deterministic. If
+    ///                       the function always returns the same result for a
+    ///                       given input, SQLite can make optimizations.
+    ///
+    ///                       Default: `false`
+    ///
+    /// :param: block         A block of code to run when the function is
+    ///                       called. The assigned types must be explicit.
     ///
     /// :returns: A closure returning an SQL expression to call the function.
     public func create<Z: Value>(#function: String, deterministic: Bool = false, _ block: () -> Z) -> (() -> Expression<Z>) {

@@ -257,8 +257,9 @@ public final class Database {
 
     /// Starts a new transaction with the given mode.
     ///
-    /// :param: mode The mode in which a transaction acquires a lock. (Default:
-    ///              .Deferred.)
+    /// :param: mode The mode in which a transaction acquires a lock.
+    ///
+    ///              Default: `.Deferred`
     ///
     /// :returns: The BEGIN TRANSACTION statement.
     public func transaction(_ mode: TransactionMode = .Deferred) -> Statement {
@@ -268,8 +269,9 @@ public final class Database {
     /// Runs a transaction with the given savepoint name (if omitted, it will
     /// generate a UUID).
     ///
-    /// :param: mode  The mode in which a transaction acquires a lock. (Default:
-    ///               .Deferred.)
+    /// :param: mode  The mode in which a transaction acquires a lock.
+    ///
+    ///               Default: `.Deferred`
     ///
     /// :param: block A closure to run SQL statements within the transaction.
     ///               Should return a TransactionResult depending on success or
@@ -285,7 +287,8 @@ public final class Database {
     ///
     /// :param: all Only applicable if a savepoint is open. If true, commits all
     ///             open savepoints, otherwise releases the current savepoint.
-    ///             (Default: false.)
+    ///
+    ///             Default: `false`
     ///
     /// :returns: The COMMIT (or RELEASE) statement.
     public func commit(all: Bool = false) -> Statement {
@@ -301,7 +304,9 @@ public final class Database {
     ///
     /// :param: all Only applicable if a savepoint is open. If true, rolls back
     ///             all open savepoints, otherwise rolls back the current
-    ///             savepoint. (Default: false.)
+    ///             savepoint.
+    ///
+    ///             Default: `false`
     ///
     /// :returns: The ROLLBACK statement.
     public func rollback(all: Bool = false) -> Statement {
@@ -519,13 +524,16 @@ public final class Database {
     /// :param: function      The name of the function to create or redefine.
     ///
     /// :param: argc          The number of arguments that the function takes.
-    ///                       If this parameter is -1, then the SQL function may
-    ///                       take any number of arguments. (Default: -1.)
+    ///                       If this parameter is `-1`, then the SQL function
+    ///                       may take any number of arguments.
+    ///
+    ///                       Default: `-1`
     ///
     /// :param: deterministic Whether or not the function is deterministic. If
     ///                       the function always returns the same result for a
     ///                       given input, SQLite can make optimizations.
-    ///                       (Default: false.)
+    ///
+    ///                       Default: `false`
     ///
     /// :param: block         A block of code to run when the function is
     ///                       called. The block is called with an array of raw
