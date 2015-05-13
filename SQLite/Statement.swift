@@ -180,7 +180,7 @@ public final class Statement {
 
     /// :returns: Whether or not a statement has produced an error.
     public var failed: Bool {
-        return !(status == SQLITE_OK || status == SQLITE_ROW || status == SQLITE_DONE)
+        return reason != nil
     }
 
     /// :returns: The reason for an error.
@@ -192,9 +192,9 @@ public final class Statement {
         if failed { return }
         database.perform {
             self.status = block()
-            if self.failed {
-                self.reason = String.fromCString(sqlite3_errmsg(self.database.handle))
-                assert(self.status == SQLITE_CONSTRAINT || self.status == SQLITE_INTERRUPT, "\(self.reason!)")
+            if let error = self.database.lastError {
+                self.reason = error
+                assert(self.status == SQLITE_CONSTRAINT || self.status == SQLITE_INTERRUPT, "\(error)")
             }
         }
     }

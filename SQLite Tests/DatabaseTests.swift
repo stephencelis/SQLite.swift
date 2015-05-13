@@ -396,4 +396,27 @@ class DatabaseTests: SQLiteTestCase {
         XCTAssertEqual(1, db.scalar("SELECT ? = ? COLLATE \"NO DIACRITIC\"", "cafe", "café") as! Int64)
     }
 
+    func test_lastError_withOK_returnsNil() {
+        XCTAssertNil(db.lastError)
+    }
+
+    func test_lastError_withRow_returnsNil() {
+        insertUsers("alice", "betty")
+        db.prepare("SELECT * FROM users").step()
+
+        XCTAssertNil(db.lastError)
+    }
+
+    func test_lastError_withDone_returnsNil() {
+        db.prepare("SELECT * FROM users").step()
+
+        XCTAssertNil(db.lastError)
+    }
+
+    func test_lastError_withError_returnsError() {
+        insertUsers("alice", "alice")
+
+        XCTAssertNotNil(db.lastError)
+    }
+
 }

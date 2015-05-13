@@ -604,12 +604,15 @@ public final class Database {
     // MARK: - Error Handling
 
     /// Returns the last error produced on this connection.
-    public var lastError: String {
+    public var lastError: String? {
+        if successCodes.contains(sqlite3_errcode(handle)) {
+            return nil
+        }
         return String.fromCString(sqlite3_errmsg(handle))!
     }
 
     internal func try(block: () -> Int32) {
-        perform { if block() != SQLITE_OK { assertionFailure("\(self.lastError)") } }
+        perform { if block() != SQLITE_OK { assertionFailure("\(self.lastError!)") } }
     }
 
     // MARK: - Threading
@@ -643,6 +646,8 @@ extension Database.Location: Printable {
     }
 
 }
+
+internal let successCodes: Set<Int32> = [SQLITE_OK, SQLITE_ROW, SQLITE_DONE]
 
 internal func quote(#literal: String) -> String {
     return quote(literal, "'")
