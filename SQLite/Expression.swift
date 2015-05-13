@@ -38,8 +38,8 @@ public struct Expression<T> {
     ///
     /// :param: SQL      An SQL string.
     ///
-    /// :param: bindings Values to be bound to the given SQL.
-    public init(literal SQL: String = "", _ bindings: [Binding?] = []) {
+    /// :param: bindings An optional list of values to be bound to the SQL.
+    public init(literal SQL: String, _ bindings: [Binding?] = []) {
         (self.SQL, self.bindings) = (SQL, bindings)
     }
 
