@@ -230,11 +230,15 @@ extension Statement: Printable {
 
 }
 
+/// If `lhs` fails, return it. Otherwise, execute `rhs` and return its
+/// associated statement.
 public func && (lhs: Statement, @autoclosure rhs: () -> Statement) -> Statement {
     if lhs.status == SQLITE_OK { lhs.run() }
     return lhs.failed ? lhs : rhs()
 }
 
+/// If `lhs` succeeds, return it. Otherwise, execute `rhs` and return its
+/// associated statement.
 public func || (lhs: Statement, @autoclosure rhs: () -> Statement) -> Statement {
     if lhs.status == SQLITE_OK { lhs.run() }
     return lhs.failed ? rhs() : lhs

@@ -311,9 +311,9 @@ public struct Query {
 
     /// Prefixes a star with the query’s table name or alias.
     ///
-    /// :param: star A literal *.
+    /// :param: star A literal `*`.
     ///
-    /// :returns: A * expression namespaced with the query’s table name or
+    /// :returns: A `*` expression namespaced with the query’s table name or
     ///           alias.
     public subscript(star: Star) -> Expression<Void> {
         return namespace(star(nil, nil))
@@ -423,7 +423,7 @@ public struct Query {
 
     /// Runs an INSERT statement against the query.
     ///
-    /// :param: action An action to run in case of a conflict.
+    /// :param: action An optional action to run in case of a conflict.
     /// :param: value  A value to set.
     /// :param: more   A list of additional values to set.
     ///
@@ -434,7 +434,7 @@ public struct Query {
 
     /// Runs an INSERT statement against the query.
     ///
-    /// :param: action An action to run in case of a conflict.
+    /// :param: action An optional action to run in case of a conflict.
     /// :param: values An array of values to set.
     ///
     /// :returns: The rowid and statement.
@@ -492,7 +492,7 @@ public struct Query {
 
     // MARK: - Aggregate Functions
 
-    /// Runs count() against the query.
+    /// Runs `count()` against the query.
     ///
     /// :param: column The column used for the calculation.
     ///
@@ -501,7 +501,7 @@ public struct Query {
         return calculate(_count(column))!
     }
 
-    /// Runs count() with DISTINCT against the query.
+    /// Runs `count()` with DISTINCT against the query.
     ///
     /// :param: column The column used for the calculation.
     ///
@@ -510,7 +510,7 @@ public struct Query {
         return calculate(_count(distinct: column))!
     }
 
-    /// Runs count() with DISTINCT against the query.
+    /// Runs `count()` with DISTINCT against the query.
     ///
     /// :param: column The column used for the calculation.
     ///
@@ -519,7 +519,7 @@ public struct Query {
         return calculate(_count(distinct: column))!
     }
 
-    /// Runs max() against the query.
+    /// Runs `max()` against the query.
     ///
     /// :param: column The column used for the calculation.
     ///
@@ -531,7 +531,7 @@ public struct Query {
         return calculate(_max(column))
     }
 
-    /// Runs min() against the query.
+    /// Runs `min()` against the query.
     ///
     /// :param: column The column used for the calculation.
     ///
@@ -543,7 +543,7 @@ public struct Query {
         return calculate(_min(column))
     }
 
-    /// Runs avg() against the query.
+    /// Runs `avg()` against the query.
     ///
     /// :param: column The column used for the calculation.
     ///
@@ -555,7 +555,7 @@ public struct Query {
         return calculate(_average(column))
     }
 
-    /// Runs avg() with DISTINCT against the query.
+    /// Runs `avg()` with DISTINCT against the query.
     ///
     /// :param: column The column used for the calculation.
     ///
@@ -567,7 +567,7 @@ public struct Query {
         return calculate(_average(distinct: column))
     }
 
-    /// Runs sum() against the query.
+    /// Runs `sum()` against the query.
     ///
     /// :param: column The column used for the calculation.
     ///
@@ -579,7 +579,7 @@ public struct Query {
         return calculate(_sum(column))
     }
 
-    /// Runs sum() with DISTINCT against the query.
+    /// Runs `sum()` with DISTINCT against the query.
     ///
     /// :param: column The column used for the calculation.
     ///
@@ -591,7 +591,7 @@ public struct Query {
         return calculate(_sum(distinct: column))
     }
 
-    /// Runs total() against the query.
+    /// Runs `total()` against the query.
     ///
     /// :param: column The column used for the calculation.
     ///
@@ -603,7 +603,7 @@ public struct Query {
         return calculate(_total(column))!
     }
 
-    /// Runs total() with DISTINCT against the query.
+    /// Runs `total()` with DISTINCT against the query.
     ///
     /// :param: column The column used for the calculation.
     ///
@@ -624,19 +624,19 @@ public struct Query {
 
     // MARK: - Array
 
-    /// Runs count(*) against the query and returns it.
+    /// Runs `count(*)` against the query and returns the number of rows.
     public var count: Int { return calculate(_count(*))! }
 
-    /// Returns true if the query has no rows.
+    /// Returns `true` iff the query has no rows.
     public var isEmpty: Bool { return first == nil }
 
-    /// The first row (or nil if the query returns no rows).
+    /// The first row (or `nil` if the query returns no rows).
     public var first: Row? {
         var generator = limit(to: 1, offset: limit?.offset).generate()
         return generator.next()
     }
 
-    /// The last row (or nil if the query returns no rows).
+    /// The last row (or `nil` if the query returns no rows).
     public var last: Row? {
         return reverse().first
     }
@@ -775,23 +775,39 @@ extension Query: Printable {
 }
 
 /// The result of an INSERT executed by a query.
+///
+/// :param: rowid     The insert rowid of the result (or `nil` on failure).
+///
+/// :param: statement The associated statement.
 public typealias Insert = (rowid: Int64?, statement: Statement)
 
-/// The result of an UPDATE or DELETE executed by a query.
+/// The result of an bulk INSERT, UPDATE or DELETE executed by a query.
+///
+/// :param: changes   The number of rows affected (or `nil` on failure).
+///
+/// :param: statement The associated statement.
 public typealias Change = (changes: Int?, statement: Statement)
 
+/// If `lhs` fails, return it. Otherwise, execute `rhs` and return its
+/// associated statement.
 public func && (lhs: Statement, @autoclosure rhs: () -> Insert) -> Statement {
     return lhs && rhs().statement
 }
 
+/// If `lhs` succeeds, return it. Otherwise, execute `rhs` and return its
+/// associated statement.
 public func || (lhs: Statement, @autoclosure rhs: () -> Insert) -> Statement {
     return lhs || rhs().statement
 }
 
+/// If `lhs` fails, return it. Otherwise, execute `rhs` and return its
+/// associated statement.
 public func && (lhs: Statement, @autoclosure rhs: () -> Change) -> Statement {
     return lhs && rhs().statement
 }
 
+/// If `lhs` succeeds, return it. Otherwise, execute `rhs` and return its
+/// associated statement.
 public func || (lhs: Statement, @autoclosure rhs: () -> Change) -> Statement {
     return lhs || rhs().statement
 }
