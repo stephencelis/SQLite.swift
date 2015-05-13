@@ -273,11 +273,7 @@ public struct Query {
     // prevents limit(nil, offset: 5)
     private func limit(#to: Int?, offset: Int? = nil) -> Query {
         var query = self
-        if let to = to {
-            query.limit = (to, offset)
-        } else {
-            query.limit = nil
-        }
+        query.limit = to.map { ($0, offset) }
         return query
     }
 
