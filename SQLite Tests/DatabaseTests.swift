@@ -9,6 +9,32 @@ class DatabaseTests: SQLiteTestCase {
         createUsersTable()
     }
 
+    func test_init_withInMemory_returnsInMemoryConnection() {
+        let db = Database(.InMemory)
+        XCTAssertEqual("", db.description)
+        XCTAssertEqual(":memory:", Database.Location.InMemory.description)
+    }
+
+    func test_init_returnsInMemoryByDefault() {
+        let db = Database()
+        XCTAssertEqual("", db.description)
+    }
+
+    func test_init_withTemporary_returnsTemporaryConnection() {
+        let db = Database(.Temporary)
+        XCTAssertEqual("", db.description)
+    }
+
+    func test_init_withURI_returnsURIConnection() {
+        let db = Database(.URI("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3"))
+        XCTAssertEqual("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3", db.description)
+    }
+
+    func test_init_withString_returnsURIConnection() {
+        let db = Database("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3")
+        XCTAssertEqual("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3", db.description)
+    }
+
     func test_readonly_returnsFalseOnReadWriteConnections() {
         XCTAssert(!db.readonly)
     }
