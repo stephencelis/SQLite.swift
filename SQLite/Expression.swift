@@ -318,14 +318,23 @@ public func ^ <V: Value where V.Datatype == Int64>(lhs: V, rhs: Expression<V?>) 
 public prefix func ~ <V: Value where V.Datatype == Int64>(rhs: Expression<V>) -> Expression<V> { return wrap(__FUNCTION__, rhs) }
 public prefix func ~ <V: Value where V.Datatype == Int64>(rhs: Expression<V?>) -> Expression<V?> { return wrap(__FUNCTION__, rhs) }
 
+/// A collating function used to compare to strings.
+///
+/// See: <https://www.sqlite.org/datatype3.html#collation>
 public enum Collation {
 
+    /// Compares string by raw data.
     case Binary
 
+    /// Like binary, but folds uppercase ASCII letters into their lowercase
+    /// equivalents.
     case Nocase
 
+    /// Like binary, but strips trailing space.
     case Rtrim
 
+    /// A custom collating sequence identified by the given string, registered
+    /// using `Database.create(collation:…)`
     case Custom(String)
 
 }
