@@ -293,60 +293,52 @@ class DatabaseTests: SQLiteTestCase {
     }
 
     func test_updateHook_setsUpdateHook() {
-        let updateHook = expectationWithDescription("updateHook")
-        db.updateHook { operation, db, table, rowid in
-            XCTAssertEqual(.Insert, operation)
-            XCTAssertEqual("main", db)
-            XCTAssertEqual("users", table)
-            XCTAssertEqual(1, rowid)
-            updateHook.fulfill()
-        }
-        executeAndWait {
+        async { done in
+            db.updateHook { operation, db, table, rowid in
+                XCTAssertEqual(.Insert, operation)
+                XCTAssertEqual("main", db)
+                XCTAssertEqual("users", table)
+                XCTAssertEqual(1, rowid)
+                done()
+            }
             insertUser("alice")
         }
     }
 
     func test_commitHook_setsCommitHook() {
-        let commitHook = expectationWithDescription("commitHook")
-        db.commitHook {
-            commitHook.fulfill()
-            return .Commit
-        }
-        executeAndWait {
-            self.db.transaction { _ in
-                self.insertUser("alice")
+        async { done in
+            db.commitHook {
+                done()
                 return .Commit
             }
-            XCTAssertEqual(1, self.db.scalar("SELECT count(*) FROM users") as! Int64)
+            db.transaction { _ in
+                insertUser("alice")
+                return .Commit
+            }
+            XCTAssertEqual(1, db.scalar("SELECT count(*) FROM users") as! Int64)
         }
     }
 
     func test_rollbackHook_setsRollbackHook() {
-        let rollbackHook = expectationWithDescription("commitHook")
-        db.rollbackHook {
-            rollbackHook.fulfill()
-        }
-        executeAndWait {
-            self.db.transaction { _ in
-                self.insertUser("alice")
+        async { done in
+            db.rollbackHook(done)
+            db.transaction { _ in
+                insertUser("alice")
                 return .Rollback
             }
-            XCTAssertEqual(0, self.db.scalar("SELECT count(*) FROM users") as! Int64)
+            XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users") as! Int64)
         }
     }
 
     func test_commitHook_withRollback_rollsBack() {
-        let rollbackHook = expectationWithDescription("commitHook")
-        db.commitHook { .Rollback }
-        db.rollbackHook {
-            rollbackHook.fulfill()
-        }
-        executeAndWait {
-            self.db.transaction { _ in
-                self.insertUser("alice")
+        async { done in
+            db.commitHook { .Rollback }
+            db.rollbackHook(done)
+            db.transaction { _ in
+                insertUser("alice")
                 return .Commit
             }
-            XCTAssertEqual(0, self.db.scalar("SELECT count(*) FROM users") as! Int64)
+            XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users") as! Int64)
         }
     }
 
@@ -376,15 +368,6 @@ class DatabaseTests: SQLiteTestCase {
             return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)
         }
         XCTAssertEqual(1, db.scalar("SELECT ? = ? COLLATE \"NO DIACRITIC\"", "cafe", "café") as! Int64)
-    }
-
-    func executeAndWait(block: () -> Void) {
-        dispatch_async(dispatch_get_main_queue(), block)
-        waitForExpectationsWithTimeout(5) { error in
-            if let error = error {
-                fatalError(error.localizedDescription)
-            }
-        }
     }
 
 }

@@ -74,4 +74,10 @@ class SQLiteTestCase: XCTestCase {
         if let count = trace[SQL] { trace[SQL] = count - 1 }
     }
 
+    func async(expect description: String = "async", timeout: Double = 5, @noescape block: (() -> Void) -> Void) {
+        let expectation = expectationWithDescription(description)
+        block(expectation.fulfill)
+        waitForExpectationsWithTimeout(timeout, handler: nil)
+    }
+
 }
