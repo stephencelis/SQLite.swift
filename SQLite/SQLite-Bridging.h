@@ -28,26 +28,29 @@ typedef struct SQLiteHandle SQLiteHandle;
 typedef struct SQLiteContext SQLiteContext;
 typedef struct SQLiteValue SQLiteValue;
 
+NS_ASSUME_NONNULL_BEGIN
 typedef int (^_SQLiteBusyHandlerCallback)(int times);
-int _SQLiteBusyHandler(SQLiteHandle * handle, _SQLiteBusyHandlerCallback callback);
+int _SQLiteBusyHandler(SQLiteHandle * handle, _SQLiteBusyHandlerCallback __nullable callback);
 
 typedef void (^_SQLiteTraceCallback)(const char * SQL);
-void _SQLiteTrace(SQLiteHandle * handle, _SQLiteTraceCallback callback);
+void _SQLiteTrace(SQLiteHandle * handle, _SQLiteTraceCallback __nullable callback);
 
 typedef void (^_SQLiteUpdateHookCallback)(int operation, const char * db, const char * table, long long rowid);
-void _SQLiteUpdateHook(SQLiteHandle * handle, _SQLiteUpdateHookCallback callback);
+void _SQLiteUpdateHook(SQLiteHandle * handle, _SQLiteUpdateHookCallback __nullable callback);
 
 typedef int (^_SQLiteCommitHookCallback)();
-void _SQLiteCommitHook(SQLiteHandle * handle, _SQLiteCommitHookCallback callback);
+void _SQLiteCommitHook(SQLiteHandle * handle, _SQLiteCommitHookCallback __nullable callback);
 
 typedef void (^_SQLiteRollbackHookCallback)();
-void _SQLiteRollbackHook(SQLiteHandle * handle, _SQLiteRollbackHookCallback callback);
+void _SQLiteRollbackHook(SQLiteHandle * handle, _SQLiteRollbackHookCallback __nullable callback);
 
-typedef void (^_SQLiteCreateFunctionCallback)(SQLiteContext * context, int argc, SQLiteValue ** argv);
-int _SQLiteCreateFunction(SQLiteHandle * handle, const char * name, int argc, int deterministic, _SQLiteCreateFunctionCallback callback);
+typedef void (^_SQLiteCreateFunctionCallback)(SQLiteContext * context, int argc, SQLiteValue * __nonnull * __nonnull argv);
+int _SQLiteCreateFunction(SQLiteHandle * handle, const char * name, int argc, int deterministic, _SQLiteCreateFunctionCallback __nullable callback);
 
 typedef int (^_SQLiteCreateCollationCallback)(const char * lhs, const char * rhs);
-int _SQLiteCreateCollation(SQLiteHandle * handle, const char * name, _SQLiteCreateCollationCallback callback);
+int _SQLiteCreateCollation(SQLiteHandle * handle, const char * name, _SQLiteCreateCollationCallback __nullable callback);
 
-typedef NSString * (^_SQLiteTokenizerNextCallback)(const char * input, int * inputOffset, int * inputLength);
-int _SQLiteRegisterTokenizer(SQLiteHandle * db, const char * module, const char * tokenizer, _SQLiteTokenizerNextCallback callback);
+typedef NSString * __nullable (^_SQLiteTokenizerNextCallback)(const char * input, int * inputOffset, int * inputLength);
+int _SQLiteRegisterTokenizer(SQLiteHandle * db, const char * module, const char * tokenizer, __nullable _SQLiteTokenizerNextCallback callback);
+NS_ASSUME_NONNULL_END
+
