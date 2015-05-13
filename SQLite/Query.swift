@@ -218,23 +218,16 @@ public struct Query {
     /// :param: having   A condition determining which groups are returned.
     ///
     /// :returns: A query with the given GROUP BY clause applied.
-    public func group(by: [Expressible], having: Expression<Bool>? = nil) -> Query {
+    public func group(by: [Expressible], having: Expression<Bool?>) -> Query {
+        return group(by, having: Expression<Bool>(having))
+    }
+
+    private func group(by: [Expressible], having: Expression<Bool>? = nil) -> Query {
         var query = self
         var group = Expression<Void>.join(" ", [Expression<Void>(literal: "GROUP BY"), Expression<Void>.join(", ", by)])
         if let having = having { group = Expression<Void>.join(" ", [group, Expression<Void>(literal: "HAVING"), having]) }
         query.group = group
         return query
-    }
-
-    /// Sets a GROUP BY-HAVING clause on the query.
-    ///
-    /// :param: by       A list of columns to group by.
-    ///
-    /// :param: having   A condition determining which groups are returned.
-    ///
-    /// :returns: A query with the given GROUP BY clause applied.
-    public func group(by: [Expressible], having: Expression<Bool?>) -> Query {
-        return group(by, having: Expression<Bool>(having))
     }
 
     /// Sets an ORDER BY clause on the query.
