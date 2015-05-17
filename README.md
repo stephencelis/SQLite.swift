@@ -113,7 +113,31 @@ interactively, from the Xcode project’s playground.
 > tool, please read the [Frameworkless Targets][] section of the
 > documentation.
 
-To install SQLite.swift:
+
+### CocoaPods
+
+[CocoaPods][] is a dependency manager for Cocoa projects. To install
+SQLite.swift with CocoaPods:
+
+  1. Make sure CocoaPods is [installed][CocoaPods Installation] (SQLite.swift
+     requires version 0.37 or greater).
+
+  2. Update your Podfile to include the following:
+
+     ``` ruby
+     use_frameworks!
+     pod 'SQLite.swift', git: 'https://github.com/stephencelis/SQLite.swift.git'
+     ```
+
+  3. Run `pod install`.
+
+[CocoaPods]: https://cocoapods.org
+[CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
+
+
+### Manual
+
+To install SQLite.swift as an Xcode sub-project:
 
  1. Drag the **SQLite.xcodeproj** file into your own project.
     ([Submodule][], clone, or [download][] the project first.)

@@ -1,6 +1,8 @@
 # SQLite.swift Documentation
 
   - [Installation](#installation)
+    - [CocoaPods](#cocoapods)
+    - [Manual](#manual)
     - [SQLCipher](#sqlcipher)
     - [Frameworkless Targets](#frameworkless-targets)
   - [Getting Started](#getting-started)
@@ -64,6 +66,28 @@
 ## Installation
 
 > _Note:_ SQLite.swift requires Swift 1.2 (and [Xcode 6.3](https://developer.apple.com/xcode/downloads/)) or greater.
+
+
+### CocoaPods
+
+[CocoaPods][] is a dependency manager for Cocoa projects. To install SQLite.swift with CocoaPods:
+
+ 1. Make sure CocoaPods is [installed][CocoaPods Installation] (SQLite.swift requires version 0.37 or greater).
+
+ 2. Update your Podfile to include the following:
+
+    ``` ruby
+    use_frameworks!
+    pod 'SQLite.swift', git: 'https://github.com/stephencelis/SQLite.swift.git'
+    ```
+
+ 3. Run `pod install`.
+
+[CocoaPods]: https://cocoapods.org
+[CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
+
+
+### Manual
 
 To install SQLite.swift as an Xcode sub-project:
 
