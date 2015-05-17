@@ -24,8 +24,6 @@
 
 #import "SQLite-Bridging.h"
 
-@import sqlite3;
-
 #import "fts3_tokenizer.h"
 
 static int __SQLiteBusyHandler(void * context, int tries) {

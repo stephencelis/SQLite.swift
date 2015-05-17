@@ -22,8 +22,6 @@
 // THE SOFTWARE.
 //
 
-import sqlite3
-
 internal let SQLITE_STATIC = sqlite3_destructor_type(COpaquePointer(bitPattern: 0))
 internal let SQLITE_TRANSIENT = sqlite3_destructor_type(COpaquePointer(bitPattern: -1))
 

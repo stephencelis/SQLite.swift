@@ -1,6 +1,8 @@
 APPLICATION_EXTENSION_API_ONLY          = YES
 SWIFT_WHOLE_MODULE_OPTIMIZATION         = YES
 
+MODULEMAP_FILE                          = $(SRCROOT)/SQLite/module.modulemap
+
 // Universal Framework
 
 SUPPORTED_PLATFORMS                     = iphoneos iphonesimulator macosx

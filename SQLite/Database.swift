@@ -22,8 +22,6 @@
 // THE SOFTWARE.
 //
 
-import sqlite3
-
 /// A connection (handle) to SQLite.
 public final class Database {
 
