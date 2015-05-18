@@ -11,13 +11,13 @@ import SQLite
 
 let db = Database()
 /*:
-This implicitly opens a database in `":memory:"`. To open a database at a specific location, pass the path as a parameter during instantiation, *e.g.*, 
+This implicitly opens a database in memory (using `.InMemory`). To open a database at a specific location, pass the path as a parameter during instantiation, *e.g.*,
 
     Database("path/to/database.sqlite3")
 
-Pass `nil` or an empty string (`""`) to open a temporary, disk-backed database, instead.
+Pass `.Temporary` to open a temporary, disk-backed database, instead.
 
-Once we instantiate a database connection, we can execute SQL statements directly against it. Let’s create a table.
+Once we initialize a database connection, we can execute SQL statements directly against it. Let’s create a table.
 */
 db.execute(
     "CREATE TABLE users (" +
@@ -32,7 +32,7 @@ db.execute(
 /*:
 The `execute` function can run multiple SQL statements at once as a convenience and will throw an assertion failure if an error occurs during execution. This is useful for seeding and migrating databases with well-tested statements that are guaranteed to succeed (or where failure can be graceful and silent).
 
-It’s generally safer to prepare SQL statements individually. Let’s instantiate a `Statement` object and insert a couple rows.
+It’s generally safer to prepare SQL statements individually. Let’s build a `Statement` object and insert a couple rows.
 
 */
 let stmt = db.prepare("INSERT INTO users (email, admin) VALUES (?, ?)")
