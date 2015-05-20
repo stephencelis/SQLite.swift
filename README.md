@@ -119,17 +119,18 @@ interactively, from the Xcode project’s playground.
 [CocoaPods][] is a dependency manager for Cocoa projects. To install
 SQLite.swift with CocoaPods:
 
-  1. Make sure CocoaPods is [installed][CocoaPods Installation] (SQLite.swift
-     requires version 0.37 or greater).
+ 1. Make sure CocoaPods is [installed][CocoaPods Installation] (SQLite.swift
+    requires version 0.37 or greater).
 
-  2. Update your Podfile to include the following:
+ 2. Update your Podfile to include the following:
 
-     ``` ruby
-     use_frameworks!
-     pod 'SQLite.swift', git: 'https://github.com/stephencelis/SQLite.swift.git'
-     ```
+    ``` ruby
+    use_frameworks!
+    pod 'SQLite.swift', git: 'https://github.com/stephencelis/SQLite.swift.git'
+    # pod 'SQLite.swift/Cipher', git: ... # instead, for SQLCipher support
+    ```
 
-  3. Run `pod install`.
+ 3. Run `pod install`.
 
 [CocoaPods]: https://cocoapods.org
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
@@ -168,8 +169,8 @@ To install SQLite.swift with [SQLCipher][] support:
     **Source Control** menu and select **Check Out sqlcipher…** from the
     **sqlcipher** menu item.
 
- 2. Follow [the instructions above](#installation) with the
-    **SQLiteCipher** target, instead.
+ 2. Follow [the instructions above](#manual) with the **SQLiteCipher** target,
+    instead.
 
 > _Note:_ By default, SQLCipher compiles [without support for full-text
 > search][]. If you intend to use [FTS4][], make sure you add the

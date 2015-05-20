@@ -15,15 +15,34 @@ Pod::Spec.new do |s|
   s.author = { 'Stephen Celis' => 'stephen@stephencelis.com' }
   s.social_media_url = 'https://twitter.com/stephencelis'
 
-  s.library = 'sqlite3'
-
   s.source = {
     git: 'https://github.com/stephencelis/SQLite.swift.git',
     tag: s.version
   }
 
-  s.source_files = 'SQLite/**/*.{swift,c,h,m}'
-  s.private_header_files = 'SQLite/fts3_tokenizer.h'
-
   s.module_map = 'SQLite/module.modulemap'
+
+  s.default_subspec = 'Library'
+
+  s.subspec 'Core' do |ss|
+    ss.source_files = 'SQLite/**/*.{swift,c,h,m}'
+    ss.private_header_files = 'SQLite/fts3_tokenizer.h'
+  end
+
+  s.subspec 'Library' do |ss|
+    ss.dependency 'SQLite.swift/Core'
+
+    ss.library = 'sqlite3'
+  end
+
+  s.subspec 'Cipher' do |ss|
+    ss.dependency 'SQLCipher'
+    ss.dependency 'SQLite.swift/Core'
+
+    ss.source_files = 'SQLiteCipher/**/*.{swift,c,h,m}'
+
+    ss.xcconfig = {
+      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1'
+    }
+  end
 end

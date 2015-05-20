@@ -79,6 +79,7 @@
     ``` ruby
     use_frameworks!
     pod 'SQLite.swift', git: 'https://github.com/stephencelis/SQLite.swift.git'
+    # pod 'SQLite.swift/Cipher', git: ... # instead, for SQLCipher support
     ```
 
  3. Run `pod install`.
@@ -104,13 +105,13 @@ To install SQLite.swift as an Xcode sub-project:
 You should now be able to `import SQLite` from any of your target’s source files and begin using SQLite.swift.
 
 
-### SQLCipher
+#### SQLCipher
 
 To install SQLite.swift with [SQLCipher](http://sqlcipher.net) support:
 
  1. Make sure the **sqlcipher** working copy is checked out in Xcode. If **sqlcipher.xcodeproj** is unavailable (_i.e._, it appears red), go to the **Source Control** menu and select **Check Out sqlcipher…** from the **sqlcipher** menu item.
 
- 2. Follow [the instructions above](#installation) with the **SQLiteCipher** target, instead.
+ 2. Follow [the instructions above](#manual) with the **SQLiteCipher** target, instead.
 
 > _Note:_ By default, SQLCipher compiles [without support for full-text search](https://github.com/sqlcipher/sqlcipher/issues/102). If you intend to use [FTS4](#full-text-search), make sure you add the following to **Other C Flags** in the **Build Settings** of the **sqlcipher** target (in the **sqlcipher.xcodeproj** project):
 >
