@@ -162,6 +162,8 @@ To install SQLite.swift as an Xcode sub-project:
 
 ### SQLCipher
 
+> _Note_: To install with CocoaPods, [see above](#cocoapods).
+
 To install SQLite.swift with [SQLCipher][] support:
 
  1. Make sure the **sqlcipher** working copy is checked out in Xcode. If

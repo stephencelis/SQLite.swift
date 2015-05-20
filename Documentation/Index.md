@@ -107,6 +107,8 @@ You should now be able to `import SQLite` from any of your target’s source fil
 
 #### SQLCipher
 
+> _Note_: To install with CocoaPods, [see above](#cocoapods).
+
 To install SQLite.swift with [SQLCipher](http://sqlcipher.net) support:
 
  1. Make sure the **sqlcipher** working copy is checked out in Xcode. If **sqlcipher.xcodeproj** is unavailable (_i.e._, it appears red), go to the **Source Control** menu and select **Check Out sqlcipher…** from the **sqlcipher** menu item.
