@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "B34350CC1AF7C46600EB5715"
-               BuildableName = "SQLite copy.framework"
+               BuildableName = "SQLite.framework"
                BlueprintName = "SQLite-iOS"
                ReferencedContainer = "container:SQLite.xcodeproj">
             </BuildableReference>
@@ -32,8 +32,8 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "B34350A01AF7BA3200EB5715"
-            BuildableName = "SQLite-iOS.framework"
+            BlueprintIdentifier = "B34350CC1AF7C46600EB5715"
+            BuildableName = "SQLite.framework"
             BlueprintName = "SQLite-iOS"
             ReferencedContainer = "container:SQLite.xcodeproj">
          </BuildableReference>
@@ -48,6 +48,15 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       allowLocationSimulation = "YES">
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "B34350CC1AF7C46600EB5715"
+            BuildableName = "SQLite.framework"
+            BlueprintName = "SQLite-iOS"
+            ReferencedContainer = "container:SQLite.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </LaunchAction>
