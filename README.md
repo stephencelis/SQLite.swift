@@ -162,7 +162,7 @@ To install SQLite.swift as an Xcode sub-project:
 [download]: https://github.com/stephencelis/SQLite.swift/archive/master.zip
 
 
-### SQLCipher
+#### SQLCipher
 
 > _Note_: To install with CocoaPods, [see above](#cocoapods).
 
