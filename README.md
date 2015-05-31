@@ -1,10 +1,12 @@
-# SQLite.swift
+# SQLite.swift [![Build Status][Badge]][Travis]
 
 A type-safe, [Swift][]-language layer over [SQLite3][].
 
 [SQLite.swift][] provides compile-time confidence in SQL statement
 syntax _and_ intent.
 
+[Badge]: https://img.shields.io/travis/stephencelis/SQLite.swift/master.svg?style=flat
+[Travis]: https://travis-ci.org/stephencelis/SQLite.swift
 [Swift]: https://developer.apple.com/swift/
 [SQLite3]: http://www.sqlite.org
 [SQLite.swift]: https://github.com/stephencelis/SQLite.swift
