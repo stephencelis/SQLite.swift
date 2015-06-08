@@ -14,6 +14,12 @@ class FTSTests: SQLiteTestCase {
         AssertSQL("CREATE VIRTUAL TABLE \"emails\" USING fts4(\"subject\", \"body\")")
     }
 
+    func test_createVtable_usingFts4_withSimpleTokenizer_createsVirtualTableWithTokenizer() {
+        db.create(vtable: emails, using: fts4([subject, body], tokenize: .Simple))
+
+        AssertSQL("CREATE VIRTUAL TABLE \"emails\" USING fts4(\"subject\", \"body\", tokenize=simple)")
+    }
+
     func test_createVtable_usingFts4_withPorterTokenizer_createsVirtualTableWithTokenizer() {
         db.create(vtable: emails, using: fts4([subject, body], tokenize: .Porter))
 

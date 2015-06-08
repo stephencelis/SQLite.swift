@@ -454,7 +454,7 @@ class ExpressionTests: SQLiteTestCase {
     }
 
     let email2 = Expression<String?>("email")
-    let age2 = Expression<Int?>("age")
+    let age2 = Expression<Int>("age")
     let salary2 = Expression<Double?>("salary")
     let admin2 = Expression<Bool?>("admin")
 
