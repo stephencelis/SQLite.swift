@@ -559,7 +559,7 @@ let query = users.select(email)           // SELECT "email" FROM "users"
 
 #### Selecting Columns
 
-By default, [`Query`](#queries) objects select every column of the result set (using `SELECT *`). We can use the `select` function with a list of [expressions](#expressions) to return specific columns instead.
+By default, [`Query`](#queries) objects select every column of the result set (using `SELECT *`). We can use the `select` function with a list of [expressions](#expressions) to return specific columns instead. In this example, id and email are expressions (not strings.)
 
 ``` swift
 for user in users.select(id, email) {
@@ -568,6 +568,13 @@ for user in users.select(id, email) {
 }
 // SELECT "id", "email" FROM "users"
 ```
+
+> _Note:_ id and e-mail in
+>
+> ``` swift
+> let query = users.select(users[*])
+> // SELECT "users".* FROM "users"
+> ```
 
 We can access the results of more complex expressions by holding onto a reference of the expression itself.
 
