@@ -73,6 +73,15 @@ public struct Query {
     ///
     /// :returns: A query with the given SELECT clause applied.
     public func select(all: Expressible...) -> Query {
+        return select(all)
+    }
+    
+    /// Sets the SELECT clause on the query.
+    ///
+    /// :param: all A list of expressions to select.
+    ///
+    /// :returns: A query with the given SELECT clause applied.
+    public func select(all: [Expressible]) -> Query {
         var query = self
         (query.distinct, query.columns) = (false, all)
         return query
@@ -84,6 +93,15 @@ public struct Query {
     ///
     /// :returns: A query with the given SELECT DISTINCT clause applied.
     public func select(distinct columns: Expressible...) -> Query {
+        return select(distinct: columns)
+    }
+    
+    /// Sets the SELECT DISTINCT clause on the query.
+    ///
+    /// :param: columns A list of expressions to select.
+    ///
+    /// :returns: A query with the given SELECT DISTINCT clause applied.
+    public func select(distinct columns: [Expressible]) -> Query {
         var query = self
         (query.distinct, query.columns) = (true, columns)
         return query
