@@ -1,9 +1,0 @@
-language: objective-c
-env:
-  - BUILD_SDK=iphonesimulator ONLY_ACTIVE_ARCH=NO
-  - BUILD_SDK=macosx
-before_install:
-  - gem install xcpretty --no-document
-script:
-  - make test
-osx_image: beta-xcode6.3
