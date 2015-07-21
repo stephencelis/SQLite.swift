@@ -1,6 +1,6 @@
 BUILD_TOOL = xcodebuild
-BUILD_SDK = macosx
-BUILD_ARGUMENTS = -scheme SQLite -sdk $(BUILD_SDK)
+BUILD_SCHEME = SQLite Mac
+BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)"
 
 XCPRETTY := $(shell command -v xcpretty)
 SWIFTCOV := $(shell command -v swiftcov)
