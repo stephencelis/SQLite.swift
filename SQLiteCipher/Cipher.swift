@@ -32,8 +32,8 @@ extension Database {
         try { sqlite3_rekey(self.handle, key, Int32(count(key.utf8))) }
     }
 	
-	public func key(key: NSData, length: Int32) {
-		try { sqlite3_key(self.handle, key.bytes, length) }
+	public func key(key: NSData) {
+		try { sqlite3_key(self.handle, key.bytes, Int32(key.length)) }
 	}
 
 }
