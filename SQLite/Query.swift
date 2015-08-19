@@ -676,6 +676,11 @@ public struct Row {
     private init(_ columnNames: [String: Int], _ values: [Binding?]) {
         (self.columnNames, self.values) = (columnNames, values)
     }
+    
+    /// Returns columnNames variable - for mapping select * queries
+    public func getColumnNames() -> [String: Int] {
+        return self.columnNames
+    }
 
     /// Returns a row’s value for the given column.
     ///
