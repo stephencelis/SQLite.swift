@@ -868,7 +868,7 @@ alice.delete()
 The `delete` function returns a tuple with an `Int?` representing the number of deletes (or `nil` on failure) and the associated `Statement`.
 
 ``` swift
-let delete = delete.update(email <- "alice@me.com")
+let delete = alice.delete()
 if let changes = delete.changes where changes > 0 {
     println("deleted alice")
 } else if delete.statement.failed {
