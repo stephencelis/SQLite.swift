@@ -1,6 +1,6 @@
 require_relative 'Supporting Files/podspec.rb'
 
-Pod::Spec.new do |s|
+Pod::Spec.new do |spec|
   spec.name = 'SQLite.swift'
   spec.summary = 'A type-safe, Swift-language layer over SQLite3.'
 
