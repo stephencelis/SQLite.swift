@@ -849,7 +849,7 @@ extension Connection {
         let columnNames: [String: Int] = {
             var (columnNames, idx) = ([String: Int](), 0)
             column: for each in query.clauses.select.columns ?? [Expression<Void>(literal: "*")] {
-                var names = each.expression.template.characters.split { $0 == "." }.map(String.init)
+                var names = each.expression.template.componentsSeparatedByString(".")
                 let column = names.removeLast()
                 let namespace = ".".join(names)
 
