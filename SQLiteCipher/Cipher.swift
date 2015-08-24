@@ -32,12 +32,12 @@ extension Database {
         try { sqlite3_rekey(self.handle, key, Int32(count(key.utf8))) }
     }
 	
-	public func key(key: NSData) {
-		try { sqlite3_key(self.handle, key.bytes, Int32(key.length)) }
-	}
+    public func key(key: Blob) {
+        try { sqlite3_key(self.handle, key.bytes, Int32(key.length)) }
+    }
 	
-	public func rekey(key: NSData) {
-		try { sqlite3_rekey(self.handle, key.bytes, Int32(key.length)) }
-	}
+    public func rekey(key: Blob) {
+        try { sqlite3_rekey(self.handle, key.bytes, Int32(key.length)) }
+    }
 
 }

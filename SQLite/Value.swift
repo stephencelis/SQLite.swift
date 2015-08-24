@@ -62,6 +62,10 @@ public struct Blob {
     public init(bytes: UnsafePointer<Void>, length: Int) {
         data = NSData(bytes: bytes, length: length)
     }
+    
+    public init (data: NSData) {
+        self.data = data
+    }
 
 }
 
