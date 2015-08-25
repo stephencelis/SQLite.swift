@@ -152,7 +152,7 @@ extension Table {
     }
 
     private func indexName(columns: [Expressible]) -> Expressible {
-        let string = " ".join(["index", clauses.from.name, "on"] + columns.map { $0.expression.template }).lowercaseString
+        let string = (["index", clauses.from.name, "on"] + columns.map { $0.expression.template }).joinWithSeparator(" ").lowercaseString
 
         let index = string.characters.reduce("") { underscored, character in
             guard character != "\"" else {

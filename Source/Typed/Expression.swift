@@ -108,13 +108,13 @@ extension ExpressionType where UnderlyingType : Value {
 
 }
 
-extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wrapped : Value {
+extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.WrappedType : Value {
 
     public static var null: Self {
         return self.init(value: nil)
     }
 
-    public init(value: UnderlyingType.Wrapped?) {
+    public init(value: UnderlyingType.WrappedType?) {
         self.init("?", [value?.datatypeValue])
     }
 
