@@ -851,7 +851,7 @@ extension Connection {
             column: for each in query.clauses.select.columns ?? [Expression<Void>(literal: "*")] {
                 var names = each.expression.template.characters.split { $0 == "." }.map(String.init)
                 let column = names.removeLast()
-                let namespace = ".".join(names)
+                let namespace = names.joinWithSeparator(".")
 
                 func expandGlob(namespace: Bool) -> QueryType -> Void {
                     return { query in

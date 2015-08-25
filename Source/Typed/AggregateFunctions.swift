@@ -53,7 +53,7 @@ extension ExpressionType where UnderlyingType : Value {
 
 }
 
-extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wrapped : Value {
+extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.WrappedType : Value {
 
     /// Builds a copy of the expression prefixed with the `DISTINCT` keyword.
     ///
@@ -114,7 +114,7 @@ extension ExpressionType where UnderlyingType : protocol<Value, Comparable> {
 
 }
 
-extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wrapped : protocol<Value, Comparable> {
+extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.WrappedType : protocol<Value, Comparable> {
 
     /// Builds a copy of the expression wrapped with the `max` aggregate
     /// function.
@@ -187,7 +187,7 @@ extension ExpressionType where UnderlyingType : Value, UnderlyingType.Datatype :
 
 }
 
-extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wrapped : Value, UnderlyingType.Wrapped.Datatype : Number {
+extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.WrappedType : Value, UnderlyingType.WrappedType.Datatype : Number {
 
     /// Builds a copy of the expression wrapped with the `avg` aggregate
     /// function.
