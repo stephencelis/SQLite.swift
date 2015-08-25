@@ -37,7 +37,7 @@ extension ExpressionType where UnderlyingType : Number {
 
 }
 
-extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wrapped : Number {
+extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.WrappedType : Number {
 
     /// Builds a copy of the expression wrapped with the `abs` function.
     ///
@@ -598,7 +598,7 @@ extension CollectionType where Generator.Element : Value, Index.Distance == Int 
     /// - Returns: A copy of the expression prepended with an `IN` check against
     ///   the collection.
     @warn_unused_result public func contains(expression: Expression<Generator.Element>) -> Expression<Bool> {
-        let templates = ", ".join([String](count: count, repeatedValue: "?"))
+        let templates = [String](count: count, repeatedValue: "?").joinWithSeparator(", ")
         return "IN".infix(expression, Expression<Void>("(\(templates))", map { $0.datatypeValue }))
     }
 
@@ -614,7 +614,7 @@ extension CollectionType where Generator.Element : Value, Index.Distance == Int 
     /// - Returns: A copy of the expression prepended with an `IN` check against
     ///   the collection.
     @warn_unused_result public func contains(expression: Expression<Generator.Element?>) -> Expression<Bool?> {
-        let templates = ", ".join([String](count: count, repeatedValue: "?"))
+        let templates = [String](count: count, repeatedValue: "?").joinWithSeparator(", ")
         return "IN".infix(expression, Expression<Void>("(\(templates))", map { $0.datatypeValue }))
     }
 

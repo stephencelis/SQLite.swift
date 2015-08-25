@@ -30,13 +30,13 @@ public func *(_: Expression<Binding>?, _: Expression<Binding>?) -> Expression<Vo
 
 public protocol _OptionalType {
 
-    typealias Wrapped
+    typealias WrappedType
 
 }
 
 extension Optional : _OptionalType {
 
-    public typealias Wrapped = T
+    public typealias WrappedType = Wrapped
 
 }
 
@@ -57,9 +57,9 @@ extension String {
         for expressible in expressions {
             let expression = expressible.expression
             template.append(expression.template)
-            bindings.extend(expression.bindings)
+            bindings.appendContentsOf(expression.bindings)
         }
-        return Expression<Void>(join(template), bindings)
+        return Expression<Void>(template.joinWithSeparator(self), bindings)
     }
 
     @warn_unused_result func infix<T>(lhs: Expressible, _ rhs: Expressible, wrap: Bool = true) -> Expression<T> {
@@ -104,7 +104,7 @@ extension String {
     if let literal = literal {
         if let literal = literal as? NSData {
             let buf = UnsafeBufferPointer(start: UnsafePointer<UInt8>(literal.bytes), count: literal.length)
-            let hex = "".join(buf.map { String(format: "%02x", $0) })
+            let hex = buf.map { String(format: "%02x", $0) }.joinWithSeparator("")
             return "x'\(hex)'"
         }
         if let literal = literal as? String { return literal.quote("'") }
