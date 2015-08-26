@@ -28,33 +28,9 @@
 #import "sqlite3.h"
 #endif
 
-// CocoaPods workaround
-typedef struct SQLiteHandle SQLiteHandle;
-typedef struct SQLiteContext SQLiteContext;
-typedef struct SQLiteValue SQLiteValue;
+typedef struct SQLiteHandle SQLiteHandle; // CocoaPods workaround
 
 NS_ASSUME_NONNULL_BEGIN
-typedef int (^_SQLiteBusyHandlerCallback)(int times);
-int _SQLiteBusyHandler(SQLiteHandle * db, _SQLiteBusyHandlerCallback _Nullable callback);
-
-typedef void (^_SQLiteTraceCallback)(const char * SQL);
-void _SQLiteTrace(SQLiteHandle * db, _SQLiteTraceCallback _Nullable callback);
-
-typedef void (^_SQLiteUpdateHookCallback)(int operation, const char * db, const char * table, long long rowid);
-void _SQLiteUpdateHook(SQLiteHandle * db, _SQLiteUpdateHookCallback _Nullable callback);
-
-typedef int (^_SQLiteCommitHookCallback)();
-void _SQLiteCommitHook(SQLiteHandle * db, _SQLiteCommitHookCallback _Nullable callback);
-
-typedef void (^_SQLiteRollbackHookCallback)();
-void _SQLiteRollbackHook(SQLiteHandle * db, _SQLiteRollbackHookCallback _Nullable callback);
-
-typedef void (^_SQLiteCreateFunctionCallback)(SQLiteContext * context, int argc, SQLiteValue * _Nonnull * _Nonnull argv);
-int _SQLiteCreateFunction(SQLiteHandle * db, const char * name, int argc, int deterministic, _SQLiteCreateFunctionCallback _Nullable callback);
-
-typedef int (^_SQLiteCreateCollationCallback)(const char * lhs, const char * rhs);
-int _SQLiteCreateCollation(SQLiteHandle * db, const char * name, _SQLiteCreateCollationCallback _Nullable callback);
-
 typedef NSString * _Nullable (^_SQLiteTokenizerNextCallback)(const char * input, int * inputOffset, int * inputLength);
 int _SQLiteRegisterTokenizer(SQLiteHandle * db, const char * module, const char * tokenizer, _Nullable _SQLiteTokenizerNextCallback callback);
 NS_ASSUME_NONNULL_END

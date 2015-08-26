@@ -357,31 +357,45 @@ public final class Connection {
     ///   times it’s been called for this lock. If it returns `true`, it will
     ///   try again. If it returns `false`, no further attempts will be made.
     public func busyHandler(callback: ((tries: Int) -> Bool)?) {
-        if let callback = callback {
-            busyHandler = { callback(tries: Int($0)) ? 1 : 0 }
-        } else {
+        guard let callback = callback else {
+            sqlite3_busy_handler(handle, nil, nil)
             busyHandler = nil
+            return
         }
+
+        let box: BusyHandler = {
+            callback(tries: Int($0)) ? 1 : 0
+        }
+        sqlite3_busy_handler(handle, { callback, tries in
+            unsafeBitCast(callback, BusyHandler.self)(tries)
+        }, unsafeBitCast(box, UnsafeMutablePointer<Void>.self))
+        busyHandler = box
     }
-    private var busyHandler: _SQLiteBusyHandlerCallback?
+    private typealias BusyHandler = @convention(block) Int32 -> Int32
+    private var busyHandler: BusyHandler?
 
     /// Sets a handler to call when a statement is executed with the compiled
     /// SQL.
     ///
     /// - Parameter callback: This block is invoked when a statement is executed
-    ///   with the compiled SQL as its argument. E.g., pass `print` to act as a
-    ///   logger.
+    ///   with the compiled SQL as its argument.
     ///
-    ///       db.trace(print)
+    ///       db.trace { SQL in print(SQL) }
     public func trace(callback: (String -> Void)?) {
-        if let callback = callback {
-            trace = { callback(String.fromCString($0)!) }
-        } else {
+        guard let callback = callback else {
+            sqlite3_trace(handle, nil, nil)
             trace = nil
+            return
         }
-        _SQLiteTrace(handle, trace)
+
+        let box: Trace = { callback(String.fromCString($0)!) }
+        sqlite3_trace(handle, { callback, SQL in
+            unsafeBitCast(callback, Trace.self)(SQL)
+        }, unsafeBitCast(box, UnsafeMutablePointer<Void>.self))
+        trace = box
     }
-    private var trace: _SQLiteTraceCallback?
+    private typealias Trace = @convention(block) UnsafePointer<Int8> -> Void
+    private var trace: Trace?
 
     /// Registers a callback to be invoked whenever a row is inserted, updated,
     /// or deleted in a rowid table.
@@ -390,21 +404,27 @@ public final class Connection {
     ///   `.Insert`, `.Update`, or `.Delete`), database name, table name, and
     ///   rowid.
     public func updateHook(callback: ((operation: Operation, db: String, table: String, rowid: Int64) -> Void)?) {
-        if let callback = callback {
-            updateHook = { operation, db, table, rowid in
-                callback(
-                    operation: Operation(rawValue: operation),
-                    db: String.fromCString(db)!,
-                    table: String.fromCString(table)!,
-                    rowid: rowid
-                )
-            }
-        } else {
+        guard let callback = callback else {
+            sqlite3_update_hook(handle, nil, nil)
             updateHook = nil
+            return
         }
-        _SQLiteUpdateHook(handle, updateHook)
+
+        let box: UpdateHook = {
+            callback(
+                operation: Operation(rawValue: $0),
+                db: String.fromCString($1)!,
+                table: String.fromCString($2)!,
+                rowid: $3
+            )
+        }
+        sqlite3_update_hook(handle, { callback, operation, db, table, rowid in
+            unsafeBitCast(callback, UpdateHook.self)(operation, db, table, rowid)
+        }, unsafeBitCast(box, UnsafeMutablePointer<Void>.self))
+        updateHook = box
     }
-    private var updateHook: _SQLiteUpdateHookCallback?
+    private typealias UpdateHook = @convention(block) (Int32, UnsafePointer<Int8>, UnsafePointer<Int8>, Int64) -> Void
+    private var updateHook: UpdateHook?
 
     /// Registers a callback to be invoked whenever a transaction is committed.
     ///
@@ -412,31 +432,47 @@ public final class Connection {
     ///   committed. If this callback throws, the transaction will be rolled
     ///   back.
     public func commitHook(callback: (() throws -> Void)?) {
-        if let callback = callback {
-            commitHook = {
-                do {
-                    try callback()
-                    return 0
-                } catch {
-                    return 1
-                }
-            }
-        } else {
+        guard let callback = callback else {
+            sqlite3_commit_hook(handle, nil, nil)
             commitHook = nil
+            return
         }
-        _SQLiteCommitHook(handle, commitHook)
+
+        let box: CommitHook = {
+            do {
+                try callback()
+            } catch {
+                return 1
+            }
+            return 0
+        }
+        sqlite3_commit_hook(handle, { callback in
+            unsafeBitCast(callback, CommitHook.self)()
+        }, unsafeBitCast(box, UnsafeMutablePointer<Void>.self))
+        commitHook = box
     }
-    private var commitHook: _SQLiteCommitHookCallback?
+    private typealias CommitHook = @convention(block) () -> Int32
+    private var commitHook: CommitHook?
 
     /// Registers a callback to be invoked whenever a transaction rolls back.
     ///
     /// - Parameter callback: A callback invoked when a transaction is rolled
     ///   back.
-    public func rollbackHook(callback: _SQLiteRollbackHookCallback?) {
-        rollbackHook = callback
-        _SQLiteRollbackHook(handle, rollbackHook)
+    public func rollbackHook(callback: (() -> Void)?) {
+        guard let callback = callback else {
+            sqlite3_rollback_hook(handle, nil, nil)
+            rollbackHook = nil
+            return
+        }
+
+        let box: RollbackHook = { callback() }
+        sqlite3_rollback_hook(handle, { callback in
+            unsafeBitCast(callback, RollbackHook.self)()
+        }, unsafeBitCast(box, UnsafeMutablePointer<Void>.self))
+        rollbackHook = box
     }
-    private var rollbackHook: _SQLiteRollbackHookCallback?
+    private typealias RollbackHook = @convention(block) () -> Void
+    private var rollbackHook: RollbackHook?
 
     /// Creates or redefines a custom SQL function.
     ///
@@ -459,8 +495,7 @@ public final class Connection {
     ///     parameters and should return a raw SQL value (or nil).
     public func createFunction(function: String, argumentCount: UInt? = nil, deterministic: Bool = false, _ block: (args: [Binding?]) -> Binding?) {
         let argc = argumentCount.map { Int($0) } ?? -1
-        if functions[function] == nil { self.functions[function] = [:] }
-        functions[function]?[argc] = { context, argc, argv in
+        let box: Function = { context, argc, argv in
             let arguments: [Binding?] = (0..<Int(argc)).map { idx in
                 let value = argv[idx]
                 switch sqlite3_value_type(value) {
@@ -493,10 +528,18 @@ public final class Connection {
                 fatalError("unsupported result type: \(result)")
             }
         }
-        try! check(_SQLiteCreateFunction(handle, function, Int32(argc), deterministic ? 1 : 0, functions[function]?[argc]))
+        var flags = SQLITE_UTF8
+        if deterministic {
+            flags |= SQLITE_DETERMINISTIC
+        }
+        sqlite3_create_function_v2(handle, function, Int32(argc), flags, unsafeBitCast(box, UnsafeMutablePointer<Void>.self), { context, argc, value in
+            unsafeBitCast(sqlite3_user_data(context), Function.self)(context, argc, value)
+        }, nil, nil, nil)
+        if functions[function] == nil { self.functions[function] = [:] }
+        functions[function]?[argc] = box
     }
-    private var functions = [String: [Int: _SQLiteCreateFunctionCallback]]()
-
+    private typealias Function = @convention(block) (COpaquePointer, Int32, UnsafeMutablePointer<COpaquePointer>) -> Void
+    private var functions = [String: [Int: Function]]()
 
     /// The return type of a collation comparison function.
     public typealias ComparisonResult = NSComparisonResult
@@ -510,12 +553,16 @@ public final class Connection {
     ///   - block: A collation function that takes two strings and returns the
     ///     comparison result.
     public func createCollation(collation: String, _ block: (lhs: String, rhs: String) -> ComparisonResult) {
-        collations[collation] = { lhs, rhs in
-            Int32(block(lhs: String.fromCString(lhs)!, rhs: String.fromCString(rhs)!).rawValue)
+        let box: Collation = { lhs, rhs in
+            Int32(block(lhs: String.fromCString(UnsafePointer<Int8>(lhs))!, rhs: String.fromCString(UnsafePointer<Int8>(rhs))!).rawValue)
         }
-        try! check(_SQLiteCreateCollation(handle, collation, collations[collation]))
+        try! check(sqlite3_create_collation_v2(handle, collation, SQLITE_UTF8, unsafeBitCast(box, UnsafeMutablePointer<Void>.self), { callback, _, lhs, _, rhs in
+            unsafeBitCast(callback, Collation.self)(lhs, rhs)
+        }, nil))
+        collations[collation] = box
     }
-    private var collations = [String: _SQLiteCreateCollationCallback]()
+    private typealias Collation = @convention(block) (UnsafePointer<Void>, UnsafePointer<Void>) -> Int32
+    private var collations = [String: Collation]()
 
     // MARK: - Error Handling
 
