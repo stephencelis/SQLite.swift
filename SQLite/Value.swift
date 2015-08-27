@@ -22,8 +22,6 @@
 // THE SOFTWARE.
 //
 
-import Foundation
-
 /// Binding is a protocol that SQLite.swift uses internally to directly map
 /// SQLite types to Swift types.
 ///
@@ -47,28 +45,35 @@ public protocol Value {
 
 }
 
-public struct Blob {
+public struct Blob: Equatable {
 
-    private let data: NSData
-
-    public var bytes: UnsafePointer<Void> {
-        return data.bytes
+    public let data: [UInt8]
+    
+    public init(data: [UInt8]) {
+        self.data = data
     }
-
-    public var length: Int {
-        return data.length
-    }
-
+    
     public init(bytes: UnsafePointer<Void>, length: Int) {
-        data = NSData(bytes: bytes, length: length)
+        self.data = [UInt8](UnsafeBufferPointer<UInt8>(
+            start: UnsafePointer<UInt8>(bytes),
+            count: length
+        ))
     }
 
 }
 
-extension Blob: Equatable {}
-
 public func ==(lhs: Blob, rhs: Blob) -> Bool {
     return lhs.data == rhs.data
+}
+
+extension Blob {
+    public var bytes: UnsafePointer<Void> {
+        return UnsafePointer<Void>(data)
+    }
+    
+    public var length: Int {
+        return data.count
+    }
 }
 
 extension Blob: Binding, Value {
