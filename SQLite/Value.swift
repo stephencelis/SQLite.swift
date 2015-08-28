@@ -77,6 +77,10 @@ public struct Blob: Equatable, Printable {
     public var description: String {
         return "x'\(toHex())'"
     }
+    
+    public init (data: NSData) {
+        self.data = data
+    }
 
 }
 
