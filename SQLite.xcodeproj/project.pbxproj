@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		8E7D32B61B8FB67C003C1892 /* ValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E7D32B51B8FB67C003C1892 /* ValueTests.swift */; };
 		DC109CE11A0C4D970070988E /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC109CE01A0C4D970070988E /* Schema.swift */; };
 		DC109CE41A0C4F5D0070988E /* SchemaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DC109CE31A0C4F5D0070988E /* SchemaTests.swift */; };
 		DC2393C81ABE35F8003FF113 /* SQLite-Bridging.h in Headers */ = {isa = PBXBuildFile; fileRef = DC2393C61ABE35F8003FF113 /* SQLite-Bridging.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -99,6 +100,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		8E7D32B51B8FB67C003C1892 /* ValueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueTests.swift; sourceTree = "<group>"; };
 		DC109CE01A0C4D970070988E /* Schema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; lineEnding = 0; path = Schema.swift; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		DC109CE31A0C4F5D0070988E /* SchemaTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaTests.swift; sourceTree = "<group>"; };
 		DC2393C61ABE35F8003FF113 /* SQLite-Bridging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SQLite-Bridging.h"; sourceTree = "<group>"; };
@@ -199,6 +201,7 @@
 				DC109CE31A0C4F5D0070988E /* SchemaTests.swift */,
 				DCAFEAD61AABEFA7000C21A1 /* FTSTests.swift */,
 				DCBE28441ABDF2A80042A3FC /* RTreeTests.swift */,
+				8E7D32B51B8FB67C003C1892 /* ValueTests.swift */,
 				DC37740319C8CBB3004FCF85 /* Supporting Files */,
 			);
 			path = "SQLite Tests";
@@ -505,6 +508,7 @@
 				DC475EA219F219AF00788FBD /* ExpressionTests.swift in Sources */,
 				DCAD429A19E2EE50004A51DF /* QueryTests.swift in Sources */,
 				DC109CE41A0C4F5D0070988E /* SchemaTests.swift in Sources */,
+				8E7D32B61B8FB67C003C1892 /* ValueTests.swift in Sources */,
 				DCC6B3A71A91974B00734B78 /* FunctionsTests.swift in Sources */,
 				DCBE28451ABDF2A80042A3FC /* RTreeTests.swift in Sources */,
 			);

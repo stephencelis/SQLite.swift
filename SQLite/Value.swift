@@ -45,7 +45,9 @@ public protocol Value {
 
 }
 
-public struct Blob: Equatable {
+private let hexChars: [Character] = Array("0123456789abcdef")
+
+public struct Blob: Equatable, Printable {
 
     public let data: [UInt8]
     
@@ -59,12 +61,29 @@ public struct Blob: Equatable {
             count: length
         ))
     }
+    
+    public func toHex() -> String {
+        var string: String = ""
+        string.reserveCapacity(data.count*2)
+        for byte in data {
+            let a = hexChars[Int(byte >> 4)]
+            let b = hexChars[Int(byte & 0xF)]
+            string.append(a)
+            string.append(b)
+        }
+        return string
+    }
+    
+    public var description: String {
+        return "x'\(toHex())'"
+    }
 
 }
 
 public func ==(lhs: Blob, rhs: Blob) -> Bool {
     return lhs.data == rhs.data
 }
+
 
 extension Blob {
     public var bytes: UnsafePointer<Void> {
@@ -86,16 +105,6 @@ extension Blob: Binding, Value {
 
     public var datatypeValue: Blob {
         return self
-    }
-
-}
-
-extension Blob: Printable {
-
-    public var description: String {
-        let buf = UnsafeBufferPointer(start: UnsafePointer<UInt8>(bytes), count: length)
-        let hex = join("", map(buf) { String(format: "%02x", $0) })
-        return "x'\(hex)'"
     }
 
 }
