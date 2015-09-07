@@ -48,6 +48,7 @@ public final class Database {
     }
 
     internal var handle: COpaquePointer = nil
+	 private var owned: Bool = true
 
     /// Whether or not the database was opened in a read-only state.
     public var readonly: Bool { return sqlite3_db_readonly(handle, nil) == 1 }
@@ -72,6 +73,15 @@ public final class Database {
 
     /// Initializes a new connection to a database.
     ///
+    /// :param: db A pre-existing database handle
+    ///
+    /// :returns: A new database connection.
+    public init(_ db: COpaquePointer, closeWhenDone: Bool = false) {
+        handle = db; owned = closeWhenDone
+    }
+
+    /// Initializes a new connection to a database.
+    ///
     /// :param: filename The location of the database. Creates a new database if
     ///                  it doesn’t already exist (unless in read-only mode).
     ///
@@ -85,7 +95,13 @@ public final class Database {
         self.init(.URI(filename), readonly: readonly)
     }
 
-    deinit { try { sqlite3_close(self.handle) } } // sqlite3_close_v2 in Yosemite/iOS 8?
+    deinit {
+        if owned == true {
+            try {
+                sqlite3_close(self.handle) // sqlite3_close_v2 in Yosemite/iOS 8?
+            }
+        }
+    }
 
     // MARK: -
 
