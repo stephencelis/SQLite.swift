@@ -858,7 +858,7 @@ extension Connection {
                         q.clauses.select = query.clauses.select
                         let e = q.expression
                         var names = self.prepare(e.template, e.bindings).columnNames.map { $0.quote() }
-                        if namespace { names = names.map { "\(query.tableName()).\($0)" } }
+                        if namespace { names = names.map { "\(query.tableName().expression.template).\($0)" } }
                         for name in names { columnNames[name] = idx++ }
                     }
                 }
