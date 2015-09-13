@@ -101,16 +101,16 @@ extension String {
 }
 
 @warn_unused_result func transcode(literal: Binding?) -> String {
-    if let literal = literal {
-        if let literal = literal as? NSData {
-            let buf = UnsafeBufferPointer(start: UnsafePointer<UInt8>(literal.bytes), count: literal.length)
-            let hex = buf.map { String(format: "%02x", $0) }.joinWithSeparator("")
-            return "x'\(hex)'"
-        }
-        if let literal = literal as? String { return literal.quote("'") }
-        return "\(literal)"
+    guard let literal = literal else { return "NULL" }
+
+    switch literal {
+    case let blob as Blob:
+        return blob.description
+    case let string as String:
+        return string.quote("'")
+    case let binding:
+        return "\(binding)"
     }
-    return "NULL"
 }
 
 @warn_unused_result func value<A: Value>(v: Binding) -> A {

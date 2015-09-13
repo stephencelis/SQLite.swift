@@ -143,13 +143,13 @@ extension Connection {
     public func registerTokenizer(submoduleName: String, next: String -> (String, Range<String.Index>)?) throws {
         try check(_SQLiteRegisterTokenizer(handle, Tokenizer.moduleName, submoduleName) { input, offset, length in
             let string = String.fromCString(input)!
-            if let (token, range) = next(string) {
-                let view = string.utf8
-                offset.memory += string.substringToIndex(range.startIndex).utf8.count
-                length.memory = Int32(range.startIndex.samePositionIn(view).distanceTo(range.endIndex.samePositionIn(view)))
-                return token
-            }
-            return nil
+
+            guard let (token, range) = next(string) else { return nil }
+
+            let view = string.utf8
+            offset.memory += string.substringToIndex(range.startIndex).utf8.count
+            length.memory = Int32(range.startIndex.samePositionIn(view).distanceTo(range.endIndex.samePositionIn(view)))
+            return token
         })
     }
 

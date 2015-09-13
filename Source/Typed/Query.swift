@@ -1006,19 +1006,24 @@ public struct Row {
     }
     public func get<V: Value>(column: Expression<V?>) -> V? {
         func valueAtIndex(idx: Int) -> V? {
-            if let value = values[idx] as? V.Datatype { return (V.fromDatatypeValue(value) as! V) }
-            return nil
+            guard let value = values[idx] as? V.Datatype else { return nil }
+            return (V.fromDatatypeValue(value) as? V)!
         }
 
-        if let idx = columnNames[column.template] { return valueAtIndex(idx) }
+        guard let idx = columnNames[column.template] else {
+            let similar = Array(columnNames.keys).filter { $0.hasSuffix(".\(column.template)") }
 
-        let similar = Array(columnNames.keys).filter { $0.hasSuffix(".\(column.template)") }
-        if similar.count == 1 { return valueAtIndex(columnNames[similar[0]]!) }
-
-        if similar.count > 1 {
-            fatalError("ambiguous column '\(column.template)' (please disambiguate: \(similar))")
+            switch similar.count {
+            case 0:
+                fatalError("no such column '\(column.template)' in columns: \(columnNames.keys.sort())")
+            case 1:
+                return valueAtIndex(columnNames[similar[0]]!)
+            default:
+                fatalError("ambiguous column '\(column.template)' (please disambiguate: \(similar))")
+            }
         }
-        fatalError("no such column '\(column.template)' in columns: \(columnNames.keys.sort())")
+
+        return valueAtIndex(idx)
     }
 
     // FIXME: rdar://problem/18673897 // subscript<T>…
