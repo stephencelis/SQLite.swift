@@ -857,23 +857,23 @@ public struct Delete : ExpressionType {
 
 extension Connection {
 
-    public func prepare(query: QueryType) -> AnySequence<Row> {
+    public func prepare(query: QueryType) throws -> AnySequence<Row> {
         let expression = query.expression
-        let statement = prepare(expression.template, expression.bindings)
+        let statement = try prepare(expression.template, expression.bindings)
 
-        let columnNames: [String: Int] = {
+        let columnNames: [String: Int] = try {
             var (columnNames, idx) = ([String: Int](), 0)
             column: for each in query.clauses.select.columns ?? [Expression<Void>(literal: "*")] {
                 var names = each.expression.template.characters.split { $0 == "." }.map(String.init)
                 let column = names.removeLast()
                 let namespace = names.joinWithSeparator(".")
 
-                func expandGlob(namespace: Bool) -> QueryType -> Void {
-                    return { query in
+                func expandGlob(namespace: Bool) -> (QueryType throws -> Void) {
+                    return { (query: QueryType) throws -> (Void) in
                         var q = query.dynamicType.init(query.clauses.from.name, database: query.clauses.from.database)
                         q.clauses.select = query.clauses.select
                         let e = q.expression
-                        var names = self.prepare(e.template, e.bindings).columnNames.map { $0.quote() }
+                        var names = try self.prepare(e.template, e.bindings).columnNames.map { $0.quote() }
                         if namespace { names = names.map { "\(query.tableName().expression.template).\($0)" } }
                         for name in names { columnNames[name] = idx++ }
                     }
@@ -886,14 +886,14 @@ extension Connection {
                     if !namespace.isEmpty {
                         for q in queries {
                             if q.tableName().expression.template == namespace {
-                                expandGlob(true)(q)
+                                try expandGlob(true)(q)
                                 continue column
                             }
                         }
                         fatalError("no such table: \(namespace)")
                     }
                     for q in queries {
-                        expandGlob(query.clauses.join.count > 0)(q)
+                        try expandGlob(query.clauses.join.count > 0)(q)
                     }
                     continue
                 }
@@ -908,30 +908,30 @@ extension Connection {
         }
     }
 
-    public func scalar<V : Value>(query: ScalarQuery<V>) -> V {
+    public func scalar<V : Value>(query: ScalarQuery<V>) throws -> V {
         let expression = query.expression
-        return value(scalar(expression.template, expression.bindings))
+        return value(try scalar(expression.template, expression.bindings))
     }
 
-    public func scalar<V : Value>(query: ScalarQuery<V?>) -> V.ValueType? {
+    public func scalar<V : Value>(query: ScalarQuery<V?>) throws -> V.ValueType? {
         let expression = query.expression
-        guard let value = scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
+        guard let value = try scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
         return V.fromDatatypeValue(value)
     }
 
-    public func scalar<V : Value>(query: Select<V>) -> V {
+    public func scalar<V : Value>(query: Select<V>) throws -> V {
         let expression = query.expression
-        return value(scalar(expression.template, expression.bindings))
+        return value(try scalar(expression.template, expression.bindings))
     }
 
-    public func scalar<V : Value>(query: Select<V?>) ->  V.ValueType? {
+    public func scalar<V : Value>(query: Select<V?>) throws ->  V.ValueType? {
         let expression = query.expression
-        guard let value = scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
+        guard let value = try scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
         return V.fromDatatypeValue(value)
     }
 
-    public func pluck(query: QueryType) -> Row? {
-        return prepare(query.limit(1, query.clauses.limit?.offset)).generate().next()
+    public func pluck(query: QueryType) throws -> Row? {
+        return try prepare(query.limit(1, query.clauses.limit?.offset)).generate().next()
     }
 
     /// Runs an `Insert` query.
