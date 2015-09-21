@@ -91,7 +91,7 @@ public final class Connection {
     }
 
     deinit {
-        sqlite3_close_v2(handle)
+        sqlite3_close(handle)
     }
 
     // MARK: -
