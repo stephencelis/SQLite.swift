@@ -944,11 +944,11 @@ extension Connection {
     /// - Parameter query: An insert query.
     ///
     /// - Returns: The insert’s rowid.
-    public func run(query: Insert) throws -> Int64 {
+    public func run(query: Insert) throws -> Int64? {
         let expression = query.expression
         return try sync {
             try self.run(expression.template, expression.bindings)
-            return self.lastInsertRowid!
+            return self.lastInsertRowid
         }
     }
 
