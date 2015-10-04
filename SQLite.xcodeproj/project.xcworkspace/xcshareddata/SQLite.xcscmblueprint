@@ -1,0 +1,30 @@
+{
+  "DVTSourceControlWorkspaceBlueprintPrimaryRemoteRepositoryKey" : "3AE8ED2E684071AF4FB151FA51BF266B82FF45BD",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyRepositoryLocationsKey" : {
+
+  },
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyStatesKey" : {
+    "55011AEBD444630C0E9DF47BD2E18FDBBDCC285D" : 0,
+    "3AE8ED2E684071AF4FB151FA51BF266B82FF45BD" : 0
+  },
+  "DVTSourceControlWorkspaceBlueprintIdentifierKey" : "E427014D-8915-4E3B-859D-5EB72D455321",
+  "DVTSourceControlWorkspaceBlueprintWorkingCopyPathsKey" : {
+    "55011AEBD444630C0E9DF47BD2E18FDBBDCC285D" : "SQLite\/Vendor\/sqlcipher",
+    "3AE8ED2E684071AF4FB151FA51BF266B82FF45BD" : "SQLite"
+  },
+  "DVTSourceControlWorkspaceBlueprintNameKey" : "SQLite",
+  "DVTSourceControlWorkspaceBlueprintVersion" : 204,
+  "DVTSourceControlWorkspaceBlueprintRelativePathToProjectKey" : "SQLite.xcodeproj",
+  "DVTSourceControlWorkspaceBlueprintRemoteRepositoriesKey" : [
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "github.com:stephencelis\/SQLite.swift.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "3AE8ED2E684071AF4FB151FA51BF266B82FF45BD"
+    },
+    {
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryURLKey" : "https:\/\/github.com\/sqlcipher\/sqlcipher.git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositorySystemKey" : "com.apple.dt.Xcode.sourcecontrol.Git",
+      "DVTSourceControlWorkspaceBlueprintRemoteRepositoryIdentifierKey" : "55011AEBD444630C0E9DF47BD2E18FDBBDCC285D"
+    }
+  ]
+}

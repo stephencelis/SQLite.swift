@@ -45,9 +45,9 @@ public protocol Value {
 
 }
 
-private let hexChars: [Character] = Array("0123456789abcdef")
+private let hexChars: [Character] = Array("0123456789abcdef".characters)
 
-public struct Blob: Equatable, Printable {
+public struct Blob: Equatable, CustomStringConvertible {
 
     public let data: [UInt8]
     
