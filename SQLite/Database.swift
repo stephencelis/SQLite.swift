@@ -42,7 +42,7 @@ public final class Database {
         ///
         /// See: <https://www.sqlite.org/uri.html>
         ///
-        /// :param: filename A URI filename
+        /// - parameter filename: A URI filename
         case URI(String)
 
     }
@@ -54,38 +54,38 @@ public final class Database {
 
     /// Initializes a new connection to a database.
     ///
-    /// :param: location The location of the database. Creates a new database if
+    /// - parameter location: The location of the database. Creates a new database if
     ///                  it doesn’t already exist (unless in read-only mode).
     ///
     ///                  Default: `.InMemory`.
     ///
-    /// :param: readonly Whether or not to open the database in a read-only
+    /// - parameter readonly: Whether or not to open the database in a read-only
     ///                  state.
     ///
     ///                  Default: `false`.
     ///
-    /// :returns: A new database connection.
+    /// - returns: A new database connection.
     public init(_ location: Location = .InMemory, readonly: Bool = false) {
         let flags = readonly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE
-        try { sqlite3_open_v2(location.description, &self.handle, flags | SQLITE_OPEN_FULLMUTEX, nil) }
+        `try` { sqlite3_open_v2(location.description, &self.handle, flags | SQLITE_OPEN_FULLMUTEX, nil) }
     }
 
     /// Initializes a new connection to a database.
     ///
-    /// :param: filename The location of the database. Creates a new database if
+    /// - parameter filename: The location of the database. Creates a new database if
     ///                  it doesn’t already exist (unless in read-only mode).
     ///
-    /// :param: readonly Whether or not to open the database in a read-only
+    /// - parameter readonly: Whether or not to open the database in a read-only
     ///                  state.
     ///
     ///                  Default: `false`.
     ///
-    /// :returns: A new database connection.
+    /// - returns: A new database connection.
     public convenience init(_ filename: String, readonly: Bool = false) {
         self.init(.URI(filename), readonly: readonly)
     }
 
-    deinit { try { sqlite3_close(self.handle) } } // sqlite3_close_v2 in Yosemite/iOS 8?
+    deinit { `try` { sqlite3_close(self.handle) } } // sqlite3_close_v2 in Yosemite/iOS 8?
 
     // MARK: -
 
@@ -109,20 +109,20 @@ public final class Database {
 
     /// Executes a batch of SQL statements.
     ///
-    /// :param: SQL A batch of zero or more semicolon-separated SQL statements.
+    /// - parameter SQL: A batch of zero or more semicolon-separated SQL statements.
     public func execute(SQL: String) {
-        try { sqlite3_exec(self.handle, SQL, nil, nil, nil) }
+        `try` { sqlite3_exec(self.handle, SQL, nil, nil, nil) }
     }
 
     // MARK: - Prepare
 
     /// Prepares a single SQL statement (with optional parameter bindings).
     ///
-    /// :param: statement A single SQL statement.
+    /// - parameter statement: A single SQL statement.
     ///
-    /// :param: bindings  A list of parameters to bind to the statement.
+    /// - parameter bindings:  A list of parameters to bind to the statement.
     ///
-    /// :returns: A prepared statement.
+    /// - returns: A prepared statement.
     public func prepare(statement: String, _ bindings: Binding?...) -> Statement {
         if !bindings.isEmpty { return prepare(statement, bindings) }
         return Statement(self, statement)
@@ -130,23 +130,23 @@ public final class Database {
 
     /// Prepares a single SQL statement and binds parameters to it.
     ///
-    /// :param: statement A single SQL statement.
+    /// - parameter statement: A single SQL statement.
     ///
-    /// :param: bindings  A list of parameters to bind to the statement.
+    /// - parameter bindings:  A list of parameters to bind to the statement.
     ///
-    /// :returns: A prepared statement.
+    /// - returns: A prepared statement.
     public func prepare(statement: String, _ bindings: [Binding?]) -> Statement {
         return prepare(statement).bind(bindings)
     }
 
     /// Prepares a single SQL statement and binds parameters to it.
     ///
-    /// :param: statement A single SQL statement.
+    /// - parameter statement: A single SQL statement.
     ///
-    /// :param: bindings  A dictionary of named parameters to bind to the
+    /// - parameter bindings:  A dictionary of named parameters to bind to the
     ///                   statement.
     ///
-    /// :returns: A prepared statement.
+    /// - returns: A prepared statement.
     public func prepare(statement: String, _ bindings: [String: Binding?]) -> Statement {
         return prepare(statement).bind(bindings)
     }
@@ -155,34 +155,34 @@ public final class Database {
 
     /// Runs a single SQL statement (with optional parameter bindings).
     ///
-    /// :param: statement A single SQL statement.
+    /// - parameter statement: A single SQL statement.
     ///
-    /// :param: bindings  A list of parameters to bind to the statement.
+    /// - parameter bindings:  A list of parameters to bind to the statement.
     ///
-    /// :returns: The statement.
+    /// - returns: The statement.
     public func run(statement: String, _ bindings: Binding?...) -> Statement {
         return run(statement, bindings)
     }
 
     /// Prepares, binds, and runs a single SQL statement.
     ///
-    /// :param: statement A single SQL statement.
+    /// - parameter statement: A single SQL statement.
     ///
-    /// :param: bindings  A list of parameters to bind to the statement.
+    /// - parameter bindings:  A list of parameters to bind to the statement.
     ///
-    /// :returns: The statement.
+    /// - returns: The statement.
     public func run(statement: String, _ bindings: [Binding?]) -> Statement {
         return prepare(statement).run(bindings)
     }
 
     /// Prepares, binds, and runs a single SQL statement.
     ///
-    /// :param: statement A single SQL statement.
+    /// - parameter statement: A single SQL statement.
     ///
-    /// :param: bindings  A dictionary of named parameters to bind to the
+    /// - parameter bindings:  A dictionary of named parameters to bind to the
     ///                   statement.
     ///
-    /// :returns: The statement.
+    /// - returns: The statement.
     public func run(statement: String, _ bindings: [String: Binding?]) -> Statement {
         return prepare(statement).run(bindings)
     }
@@ -192,11 +192,11 @@ public final class Database {
     /// Runs a single SQL statement (with optional parameter bindings),
     /// returning the first value of the first row.
     ///
-    /// :param: statement A single SQL statement.
+    /// - parameter statement: A single SQL statement.
     ///
-    /// :param: bindings  A list of parameters to bind to the statement.
+    /// - parameter bindings:  A list of parameters to bind to the statement.
     ///
-    /// :returns: The first value of the first row returned.
+    /// - returns: The first value of the first row returned.
     public func scalar(statement: String, _ bindings: Binding?...) -> Binding? {
         return scalar(statement, bindings)
     }
@@ -204,11 +204,11 @@ public final class Database {
     /// Prepares, binds, and runs a single SQL statement, returning the first
     /// value of the first row.
     ///
-    /// :param: statement A single SQL statement.
+    /// - parameter statement: A single SQL statement.
     ///
-    /// :param: bindings  A list of parameters to bind to the statement.
+    /// - parameter bindings:  A list of parameters to bind to the statement.
     ///
-    /// :returns: The first value of the first row returned.
+    /// - returns: The first value of the first row returned.
     public func scalar(statement: String, _ bindings: [Binding?]) -> Binding? {
         return prepare(statement).scalar(bindings)
     }
@@ -216,12 +216,12 @@ public final class Database {
     /// Prepares, binds, and runs a single SQL statement, returning the first
     /// value of the first row.
     ///
-    /// :param: statement A single SQL statement.
+    /// - parameter statement: A single SQL statement.
     ///
-    /// :param: bindings  A dictionary of named parameters to bind to the
+    /// - parameter bindings:  A dictionary of named parameters to bind to the
     ///                   statement.
     ///
-    /// :returns: The first value of the first row returned.
+    /// - returns: The first value of the first row returned.
     public func scalar(statement: String, _ bindings: [String: Binding?]) -> Binding? {
         return prepare(statement).scalar(bindings)
     }
@@ -255,40 +255,40 @@ public final class Database {
 
     /// Starts a new transaction with the given mode.
     ///
-    /// :param: mode The mode in which a transaction acquires a lock.
+    /// - parameter mode: The mode in which a transaction acquires a lock.
     ///
     ///              Default: `.Deferred`
     ///
-    /// :returns: The BEGIN TRANSACTION statement.
-    public func transaction(_ mode: TransactionMode = .Deferred) -> Statement {
+    /// - returns: The BEGIN TRANSACTION statement.
+    public func transaction(mode: TransactionMode = .Deferred) -> Statement {
         return run("BEGIN \(mode.rawValue) TRANSACTION")
     }
 
     /// Runs a transaction with the given savepoint name (if omitted, it will
     /// generate a UUID).
     ///
-    /// :param: mode  The mode in which a transaction acquires a lock.
+    /// - parameter mode:  The mode in which a transaction acquires a lock.
     ///
     ///               Default: `.Deferred`
     ///
-    /// :param: block A closure to run SQL statements within the transaction.
+    /// - parameter block: A closure to run SQL statements within the transaction.
     ///               Should return a TransactionResult depending on success or
     ///               failure.
     ///
-    /// :returns: The COMMIT or ROLLBACK statement.
-    public func transaction(_ mode: TransactionMode = .Deferred, @noescape _ block: (txn: Statement) -> TransactionResult) -> Statement {
+    /// - returns: The COMMIT or ROLLBACK statement.
+    public func transaction(mode: TransactionMode = .Deferred, @noescape _ block: (txn: Statement) -> TransactionResult) -> Statement {
         return run(block(txn: transaction(mode)).rawValue)
     }
 
     /// Commits the current transaction (or, if a savepoint is open, releases
     /// the current savepoint).
     ///
-    /// :param: all Only applicable if a savepoint is open. If true, commits all
+    /// - parameter all: Only applicable if a savepoint is open. If true, commits all
     ///             open savepoints, otherwise releases the current savepoint.
     ///
     ///             Default: `false`
     ///
-    /// :returns: The COMMIT (or RELEASE) statement.
+    /// - returns: The COMMIT (or RELEASE) statement.
     public func commit(all: Bool = false) -> Statement {
         if !savepointStack.isEmpty && !all {
             return release()
@@ -300,13 +300,13 @@ public final class Database {
     /// Rolls back the current transaction (or, if a savepoint is open, the
     /// current savepoint).
     ///
-    /// :param: all Only applicable if a savepoint is open. If true, rolls back
+    /// - parameter all: Only applicable if a savepoint is open. If true, rolls back
     ///             all open savepoints, otherwise rolls back the current
     ///             savepoint.
     ///
     ///             Default: `false`
     ///
-    /// :returns: The ROLLBACK statement.
+    /// - returns: The ROLLBACK statement.
     public func rollback(all: Bool = false) -> Statement {
         if !savepointStack.isEmpty && !all {
             return rollback(savepointStack.removeLast())
@@ -332,10 +332,10 @@ public final class Database {
 
     /// Starts a new transaction with the given savepoint name.
     ///
-    /// :param: savepointName A unique identifier for the savepoint.
+    /// - parameter savepointName: A unique identifier for the savepoint.
     ///
-    /// :returns: The SAVEPOINT statement.
-    public func savepoint(_ savepointName: String? = nil) -> Statement {
+    /// - returns: The SAVEPOINT statement.
+    public func savepoint(savepointName: String? = nil) -> Statement {
         let name = savepointName ?? NSUUID().UUIDString
         savepointStack.append(name)
         return run("SAVEPOINT \(quote(literal: name))")
@@ -344,14 +344,14 @@ public final class Database {
     /// Runs a transaction with the given savepoint name (if omitted, it will
     /// generate a UUID).
     ///
-    /// :param: savepointName A unique identifier for the savepoint (optional).
+    /// - parameter savepointName: A unique identifier for the savepoint (optional).
     ///
-    /// :param: block         A closure to run SQL statements within the
+    /// - parameter block:         A closure to run SQL statements within the
     ///                       transaction. Should return a SavepointResult
     ///                       depending on success or failure.
     ///
-    /// :returns: The RELEASE or ROLLBACK statement.
-    public func savepoint(_ savepointName: String? = nil, @noescape _ block: (txn: Statement) -> SavepointResult) -> Statement {
+    /// - returns: The RELEASE or ROLLBACK statement.
+    public func savepoint(savepointName: String? = nil, @noescape _ block: (txn: Statement) -> SavepointResult) -> Statement {
         switch block(txn: savepoint(savepointName)) {
         case .Release:
             return release()
@@ -363,22 +363,22 @@ public final class Database {
     /// Releases a savepoint with the given savepoint name (or the most
     /// recently-opened savepoint).
     ///
-    /// :param: savepointName A unique identifier for the savepoint (optional).
+    /// - parameter savepointName: A unique identifier for the savepoint (optional).
     ///
-    /// :returns: The RELEASE SAVEPOINT statement.
-    public func release(_ savepointName: String? = nil) -> Statement {
+    /// - returns: The RELEASE SAVEPOINT statement.
+    public func release(savepointName: String? = nil) -> Statement {
         let name = savepointName ?? savepointStack.removeLast()
-        if let idx = find(savepointStack, name) { savepointStack.removeRange(idx..<savepointStack.count) }
+        if let idx = savepointStack.indexOf(name) { savepointStack.removeRange(idx..<savepointStack.count) }
         return run("RELEASE SAVEPOINT \(quote(literal: name))")
     }
 
     /// Rolls a transaction back to the given savepoint name.
     ///
-    /// :param: savepointName A unique identifier for the savepoint.
+    /// - parameter savepointName: A unique identifier for the savepoint.
     ///
-    /// :returns: The ROLLBACK TO SAVEPOINT statement.
+    /// - returns: The ROLLBACK TO SAVEPOINT statement.
     public func rollback(savepointName: String) -> Statement {
-        if let idx = find(savepointStack, savepointName) { savepointStack.removeRange(idx..<savepointStack.count) }
+        if let idx = savepointStack.indexOf(savepointName) { savepointStack.removeRange(idx..<savepointStack.count) }
         return run("ROLLBACK TO SAVEPOINT \(quote(literal: savepointName))")
     }
 
@@ -403,20 +403,20 @@ public final class Database {
 
     /// Sets a busy timeout to retry after encountering a busy signal (lock).
     ///
-    /// :param: ms Milliseconds to wait before retrying.
+    /// - parameter ms: Milliseconds to wait before retrying.
     public func busyTimeout(ms: Int) {
         sqlite3_busy_timeout(handle, Int32(ms))
     }
 
     /// Sets a busy handler to call after encountering a busy signal (lock).
     ///
-    /// :param: callback This block is executed during a lock in which a busy
+    /// - parameter callback: This block is executed during a lock in which a busy
     ///                  error would otherwise be returned. It’s passed the
     ///                  number of times it’s been called for this lock. If it
     ///                  returns true, it will try again. If it returns false,
     ///                  no further attempts will be made.
     public func busyHandler(callback: ((tries: Int) -> Bool)?) {
-        try {
+        `try` {
             if let callback = callback {
                 self.busyHandler = { callback(tries: Int($0)) ? 1 : 0 }
             } else {
@@ -430,7 +430,7 @@ public final class Database {
     /// Sets a handler to call when a statement is executed with the compiled
     /// SQL.
     ///
-    /// :param: callback This block is invoked when a statement is executed with
+    /// - parameter callback: This block is invoked when a statement is executed with
     ///                  the compiled SQL as its argument. E.g., pass `println`
     ///                  to act as a logger.
     public func trace(callback: ((SQL: String) -> Void)?) {
@@ -473,7 +473,7 @@ public final class Database {
     /// Registers a callback to be invoked whenever a row is inserted, updated,
     /// or deleted in a rowid table.
     ///
-    /// :param: callback A callback invoked with the `Operation` (one
+    /// - parameter callback: A callback invoked with the `Operation` (one
     ///                  of `.Insert`, `.Update`, or `.Delete`), database name,
     ///                  table name, and rowid.
     public func updateHook(callback: ((operation: Operation, db: String, table: String, rowid: Int64) -> Void)?) {
@@ -495,7 +495,7 @@ public final class Database {
 
     /// Registers a callback to be invoked whenever a transaction is committed.
     ///
-    /// :param: callback A callback that must return `.Commit` or `.Rollback` to
+    /// - parameter callback: A callback that must return `.Commit` or `.Rollback` to
     ///                  determine whether a transaction should be committed or
     ///                  not.
     public func commitHook(callback: (() -> TransactionResult)?) {
@@ -510,7 +510,7 @@ public final class Database {
 
     /// Registers a callback to be invoked whenever a transaction rolls back.
     ///
-    /// :param: callback A callback invoked when a transaction is rolled back.
+    /// - parameter callback: A callback invoked when a transaction is rolled back.
     public func rollbackHook(callback: (() -> Void)?) {
         rollbackHook = callback.map { $0 }
         _SQLiteRollbackHook(handle, rollbackHook)
@@ -519,29 +519,29 @@ public final class Database {
 
     /// Creates or redefines a custom SQL function.
     ///
-    /// :param: function      The name of the function to create or redefine.
+    /// - parameter function:      The name of the function to create or redefine.
     ///
-    /// :param: argc          The number of arguments that the function takes.
+    /// - parameter argc:          The number of arguments that the function takes.
     ///                       If this parameter is `-1`, then the SQL function
     ///                       may take any number of arguments.
     ///
     ///                       Default: `-1`
     ///
-    /// :param: deterministic Whether or not the function is deterministic. If
+    /// - parameter deterministic: Whether or not the function is deterministic. If
     ///                       the function always returns the same result for a
     ///                       given input, SQLite can make optimizations.
     ///
     ///                       Default: `false`
     ///
-    /// :param: block         A block of code to run when the function is
+    /// - parameter block:         A block of code to run when the function is
     ///                       called. The block is called with an array of raw
     ///                       SQL values mapped to the function’s parameters and
     ///                       should return a raw SQL value (or nil).
-    public func create(#function: String, argc: Int = -1, deterministic: Bool = false, _ block: (args: [Binding?]) -> Binding?) {
-        try {
+    public func create(function function: String, argc: Int = -1, deterministic: Bool = false, _ block: (args: [Binding?]) -> Binding?) {
+        `try` {
             if self.functions[function] == nil { self.functions[function] = [:] }
             self.functions[function]?[argc] = { context, argc, argv in
-                let arguments: [Binding?] = map(0..<Int(argc)) { idx in
+                let arguments: [Binding?] = (0..<Int(argc)).map { idx in
                     let value = argv[idx]
                     switch sqlite3_value_type(value) {
                     case SQLITE_BLOB:
@@ -568,7 +568,7 @@ public final class Database {
                 } else if let result = result as? Int64 {
                     sqlite3_result_int64(context, result)
                 } else if let result = result as? String {
-                    sqlite3_result_text(context, result, Int32(count(result)), SQLITE_TRANSIENT)
+                    sqlite3_result_text(context, result, Int32(result.characters.count), SQLITE_TRANSIENT)
                 } else if result == nil {
                     sqlite3_result_null(context)
                 } else {
@@ -585,12 +585,12 @@ public final class Database {
 
     /// Defines a new collating sequence.
     ///
-    /// :param: collation The name of the collation added.
+    /// - parameter collation: The name of the collation added.
     ///
-    /// :param: block     A collation function that takes two strings and
+    /// - parameter block:     A collation function that takes two strings and
     ///                   returns the comparison result.
-    public func create(#collation: String, _ block: (lhs: String, rhs: String) -> ComparisonResult) {
-        try {
+    public func create(collation collation: String, _ block: (lhs: String, rhs: String) -> ComparisonResult) {
+        `try` {
             self.collations[collation] = { lhs, rhs in
                 return Int32(block(lhs: String.fromCString(lhs)!, rhs: String.fromCString(rhs)!).rawValue)
             }
@@ -609,7 +609,7 @@ public final class Database {
         return String.fromCString(sqlite3_errmsg(handle))!
     }
 
-    internal func try(block: () -> Int32) {
+    internal func `try`(block: () -> Int32) {
         perform { if block() != SQLITE_OK { assertionFailure("\(self.lastError!)") } }
     }
 
@@ -622,7 +622,7 @@ public final class Database {
 }
 
 // MARK: - Printable
-extension Database: Printable {
+extension Database: CustomStringConvertible {
 
     public var description: String {
         return String.fromCString(sqlite3_db_filename(handle, nil))!
@@ -630,7 +630,7 @@ extension Database: Printable {
 
 }
 
-extension Database.Location: Printable {
+extension Database.Location: CustomStringConvertible {
 
     public var description: String {
         switch self {
@@ -647,16 +647,16 @@ extension Database.Location: Printable {
 
 internal let successCodes: Set<Int32> = [SQLITE_OK, SQLITE_ROW, SQLITE_DONE]
 
-internal func quote(#literal: String) -> String {
-    return quote(literal, "'")
+internal func quote(literal literal: String) -> String {
+    return quote(literal, mark: "'")
 }
 
-internal func quote(#identifier: String) -> String {
-    return quote(identifier, "\"")
+internal func quote(identifier identifier: String) -> String {
+    return quote(identifier, mark: "\"")
 }
 
 private func quote(string: String, mark: Character) -> String {
-    let escaped = reduce(string, "") { string, character in
+    let escaped = string.characters.reduce("") { string, character in
         string + (character == mark ? "\(mark)\(mark)" : "\(character)")
     }
     return "\(mark)\(escaped)\(mark)"

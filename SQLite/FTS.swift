@@ -30,7 +30,7 @@ public func fts4(columns: Expression<String>...) -> Expression<Void> {
 public func fts4(columns: [Expression<String>], tokenize tokenizer: Tokenizer? = nil) -> Expression<Void> {
     var options = [String: String]()
     options["tokenize"] = tokenizer?.description
-    return fts("fts4", columns, options)
+    return fts("fts4", columns: columns, options: options)
 }
 
 private func fts(function: String, columns: [Expression<String>], options: [String: String]) -> Expression<Void> {
@@ -38,7 +38,7 @@ private func fts(function: String, columns: [Expression<String>], options: [Stri
     for (key, value) in options {
         definitions.append(Expression<Void>(literal: "\(key)=\(value)"))
     }
-    return wrap(function, Expression<Void>.join(", ", definitions))
+    return wrap(function, expression: Expression<Void>.join(", ", definitions))
 }
 
 public enum Tokenizer {
@@ -53,7 +53,7 @@ public enum Tokenizer {
 
 }
 
-extension Tokenizer: Printable {
+extension Tokenizer: CustomStringConvertible {
 
     public var description: String {
         switch self {
@@ -69,19 +69,19 @@ extension Tokenizer: Printable {
 }
 
 public func match(string: String, expression: Query) -> Expression<Bool> {
-    return infix("MATCH", Expression<String>(expression.tableName), Expression<String>(binding: string))
+    return infix("MATCH", lhs: Expression<String>(expression.tableName), rhs: Expression<String>(binding: string))
 }
 
 extension Database {
 
     public func register(tokenizer submoduleName: String, next: String -> (String, Range<String.Index>)?) {
-        try {
+        `try` {
             _SQLiteRegisterTokenizer(self.handle, Tokenizer.moduleName, submoduleName) { input, offset, length in
                 let string = String.fromCString(input)!
                 if var (token, range) = next(string) {
                     let view = string.utf8
-                    offset.memory += count(string.substringToIndex(range.startIndex).utf8)
-                    length.memory = Int32(distance(range.startIndex.samePositionIn(view), range.endIndex.samePositionIn(view)))
+                    offset.memory += string.substringToIndex(range.startIndex).utf8.count
+                    length.memory = Int32(range.startIndex.samePositionIn(view).distanceTo(range.endIndex.samePositionIn(view)))
                     return token
                 }
                 return nil

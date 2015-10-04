@@ -22,8 +22,8 @@
 // THE SOFTWARE.
 //
 
-internal let SQLITE_STATIC = sqlite3_destructor_type(COpaquePointer(bitPattern: 0))
-internal let SQLITE_TRANSIENT = sqlite3_destructor_type(COpaquePointer(bitPattern: -1))
+internal let SQLITE_STATIC = unsafeBitCast(0, sqlite3_destructor_type.self)
+internal let SQLITE_TRANSIENT = unsafeBitCast(-1, sqlite3_destructor_type.self)
 
 /// A single SQL statement.
 public final class Statement {
@@ -37,7 +37,7 @@ public final class Statement {
 
     internal init(_ database: Database, _ SQL: String) {
         self.database = database
-        database.try { sqlite3_prepare_v2(database.handle, SQL, -1, &self.handle, nil) }
+        database.`try` { sqlite3_prepare_v2(database.handle, SQL, -1, &self.handle, nil) }
     }
 
     deinit { sqlite3_finalize(handle) }
@@ -52,18 +52,18 @@ public final class Statement {
 
     /// Binds a list of parameters to a statement.
     ///
-    /// :param: values A list of parameters to bind to the statement.
+    /// - parameter values: A list of parameters to bind to the statement.
     ///
-    /// :returns: The statement object (useful for chaining).
+    /// - returns: The statement object (useful for chaining).
     public func bind(values: Binding?...) -> Statement {
         return bind(values)
     }
 
     /// Binds a list of parameters to a statement.
     ///
-    /// :param: values A list of parameters to bind to the statement.
+    /// - parameter values: A list of parameters to bind to the statement.
     ///
-    /// :returns: The statement object (useful for chaining).
+    /// - returns: The statement object (useful for chaining).
     public func bind(values: [Binding?]) -> Statement {
         if values.isEmpty { return self }
         reset()
@@ -74,10 +74,10 @@ public final class Statement {
 
     /// Binds a dictionary of named parameters to a statement.
     ///
-    /// :param: values A dictionary of named parameters to bind to the
+    /// - parameter values: A dictionary of named parameters to bind to the
     ///                statement.
     ///
-    /// :returns: The statement object (useful for chaining).
+    /// - returns: The statement object (useful for chaining).
     public func bind(values: [String: Binding?]) -> Statement {
         reset()
         for (name, value) in values {
@@ -90,15 +90,15 @@ public final class Statement {
 
     private func bind(value: Binding?, atIndex idx: Int) {
         if value == nil {
-            try { sqlite3_bind_null(self.handle, Int32(idx)) }
+            `try` { sqlite3_bind_null(self.handle, Int32(idx)) }
         } else if let value = value as? Blob {
-            try { sqlite3_bind_blob(self.handle, Int32(idx), value.bytes, Int32(value.length), SQLITE_TRANSIENT) }
+            `try` { sqlite3_bind_blob(self.handle, Int32(idx), value.bytes, Int32(value.length), SQLITE_TRANSIENT) }
         } else if let value = value as? Double {
-            try { sqlite3_bind_double(self.handle, Int32(idx), value) }
+            `try` { sqlite3_bind_double(self.handle, Int32(idx), value) }
         } else if let value = value as? Int64 {
-            try { sqlite3_bind_int64(self.handle, Int32(idx), value) }
+            `try` { sqlite3_bind_int64(self.handle, Int32(idx), value) }
         } else if let value = value as? String {
-            try { sqlite3_bind_text(self.handle, Int32(idx), value, -1, SQLITE_TRANSIENT) }
+            `try` { sqlite3_bind_text(self.handle, Int32(idx), value, -1, SQLITE_TRANSIENT) }
         } else if let value = value as? Bool {
             bind(value.datatypeValue, atIndex: idx)
         } else if let value = value as? Int {
@@ -110,54 +110,54 @@ public final class Statement {
 
     // MARK: - Run
 
-    /// :param: bindings A list of parameters to bind to the statement.
+    /// - parameter bindings: A list of parameters to bind to the statement.
     ///
-    /// :returns: The statement object (useful for chaining).
+    /// - returns: The statement object (useful for chaining).
     public func run(bindings: Binding?...) -> Statement {
         if !bindings.isEmpty { return run(bindings) }
-        reset(clearBindings: false)
+        reset(false)
         while step() {}
         return self
     }
 
-    /// :param: bindings A list of parameters to bind to the statement.
+    /// - parameter bindings: A list of parameters to bind to the statement.
     ///
-    /// :returns: The statement object (useful for chaining).
+    /// - returns: The statement object (useful for chaining).
     public func run(bindings: [Binding?]) -> Statement {
         return bind(bindings).run()
     }
 
-    /// :param: bindings A dictionary of named parameters to bind to the
+    /// - parameter bindings: A dictionary of named parameters to bind to the
     ///                  statement.
     ///
-    /// :returns: The statement object (useful for chaining).
+    /// - returns: The statement object (useful for chaining).
     public func run(bindings: [String: Binding?]) -> Statement {
         return bind(bindings).run()
     }
 
     // MARK: - Scalar
 
-    /// :param: bindings A list of parameters to bind to the statement.
+    /// - parameter bindings: A list of parameters to bind to the statement.
     ///
-    /// :returns: The first value of the first row returned.
+    /// - returns: The first value of the first row returned.
     public func scalar(bindings: Binding?...) -> Binding? {
         if !bindings.isEmpty { return scalar(bindings) }
-        reset(clearBindings: false)
+        reset(false)
         step()
         return row[0]
     }
 
-    /// :param: bindings A list of parameters to bind to the statement.
+    /// - parameter bindings: A list of parameters to bind to the statement.
     ///
-    /// :returns: The first value of the first row returned.
+    /// - returns: The first value of the first row returned.
     public func scalar(bindings: [Binding?]) -> Binding? {
         return bind(bindings).scalar()
     }
 
-    /// :param: bindings A dictionary of named parameters to bind to the
+    /// - parameter bindings: A dictionary of named parameters to bind to the
     ///                  statement.
     ///
-    /// :returns: The first value of the first row returned.
+    /// - returns: The first value of the first row returned.
     public func scalar(bindings: [String: Binding?]) -> Binding? {
         return bind(bindings).scalar()
     }
@@ -165,7 +165,7 @@ public final class Statement {
     // MARK: -
 
     public func step() -> Bool {
-        try { sqlite3_step(self.handle) }
+        `try` { sqlite3_step(self.handle) }
         return status == SQLITE_ROW
     }
 
@@ -177,17 +177,17 @@ public final class Statement {
 
     // MARK: - Error Handling
 
-    /// :returns: Whether or not a statement has produced an error.
+    /// - returns: Whether or not a statement has produced an error.
     public var failed: Bool {
         return reason != nil
     }
 
-    /// :returns: The reason for an error.
+    /// - returns: The reason for an error.
     public var reason: String?
 
     private var status: Int32 = SQLITE_OK
 
-    private func try(block: () -> Int32) {
+    private func `try`(block: () -> Int32) {
         if failed { return }
         database.perform {
             self.status = block()
@@ -204,7 +204,7 @@ public final class Statement {
 extension Statement: SequenceType {
 
     public func generate() -> Statement {
-        reset(clearBindings: false)
+        reset(false)
         return self
     }
 
@@ -213,7 +213,7 @@ extension Statement: SequenceType {
 // MARK: - GeneratorType
 extension Statement: GeneratorType {
 
-    /// :returns: The next row from the result set (or nil).
+    /// - returns: The next row from the result set (or nil).
     public func next() -> [Binding?]? {
         return step() ? Array(row) : nil
     }
@@ -221,7 +221,7 @@ extension Statement: GeneratorType {
 }
 
 // MARK: - Printable
-extension Statement: Printable {
+extension Statement: CustomStringConvertible {
 
     public var description: String {
         return String.fromCString(sqlite3_sql(handle))!
@@ -303,9 +303,9 @@ extension Cursor: SequenceType {
         }
     }
 
-    public func generate() -> GeneratorOf<Binding?> {
+    public func generate() -> AnyGenerator<Binding?> {
         var idx = 0
-        return GeneratorOf {
+        return anyGenerator {
             idx >= self.columnCount ? Optional<Binding?>.None : self[idx++]
         }
     }

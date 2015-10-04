@@ -25,26 +25,26 @@
 public extension Database {
 
     public func create(
-        #table: Query,
+        table table: Query,
         temporary: Bool = false,
         ifNotExists: Bool = false,
         @noescape _ block: SchemaBuilder -> Void
     ) -> Statement {
         var builder = SchemaBuilder(table)
         block(builder)
-        let create = createSQL("TABLE", temporary, false, ifNotExists, table.tableName.unaliased.SQL)
+        let create = createSQL("TABLE", temporary: temporary, unique: false, ifNotExists: ifNotExists, name: table.tableName.unaliased.SQL)
         let columns = Expression<Void>.join(", ", builder.columns).compile()
         return run("\(create) (\(columns))")
     }
 
-    public func create(#table: Query, temporary: Bool = false, ifNotExists: Bool = false, from: Query) -> Statement {
-        let create = createSQL("TABLE", temporary, false, ifNotExists, table.tableName.unaliased.SQL)
+    public func create(table table: Query, temporary: Bool = false, ifNotExists: Bool = false, from: Query) -> Statement {
+        let create = createSQL("TABLE", temporary: temporary, unique: false, ifNotExists: ifNotExists, name: table.tableName.unaliased.SQL)
         let expression = from.selectExpression
         return run("\(create) AS \(expression.SQL)", expression.bindings)
     }
 
-    public func create(#vtable: Query, ifNotExists: Bool = false, using: Expression<Void>) -> Statement {
-        let create = createSQL("VIRTUAL TABLE", false, false, ifNotExists, vtable.tableName.unaliased.SQL)
+    public func create(vtable vtable: Query, ifNotExists: Bool = false, using: Expression<Void>) -> Statement {
+        let create = createSQL("VIRTUAL TABLE", temporary: false, unique: false, ifNotExists: ifNotExists, name: vtable.tableName.unaliased.SQL)
         return run("\(create) USING \(using.SQL)")
     }
 
@@ -53,56 +53,56 @@ public extension Database {
     }
 
     public func alter<V: Value>(
-        #table: Query,
+        table table: Query,
         add column: Expression<V>,
         check: Expression<Bool>? = nil,
         defaultValue: V
     ) -> Statement {
-        return alter(table, define(column, nil, false, false, check, Expression(value: defaultValue), nil))
+        return alter(table, define(column, primaryKey: nil, null: false, unique: false, check: check, defaultValue: Expression(value: defaultValue), expressions: nil))
     }
 
     public func alter<V: Value>(
-        #table: Query,
+        table table: Query,
         add column: Expression<V?>,
         check: Expression<Bool>? = nil,
         defaultValue: V? = nil
     ) -> Statement {
         let value = defaultValue.map { Expression<V>(value: $0) }
-        return alter(table, define(Expression<V>(column), nil, true, false, check, value, nil))
+        return alter(table, define(Expression<V>(column), primaryKey: nil, null: true, unique: false, check: check, defaultValue: value, expressions: nil))
     }
 
     public func alter<V: Value>(
-        #table: Query,
+        table table: Query,
         add column: Expression<V?>,
         check: Expression<Bool>? = nil,
         references: Expression<V>
     ) -> Statement {
-        return alter(table, define(Expression<V>(column), nil, true, false, check, nil, [
+        return alter(table, define(Expression<V>(column), primaryKey: nil, null: true, unique: false, check: check, defaultValue: nil, expressions: [
             Expression<Void>(literal: "REFERENCES"), namespace(references)
         ]))
     }
 
     public func alter<V: Value where V.Datatype == String>(
-        #table: Query,
+        table table: Query,
         add column: Expression<V>,
         check: Expression<Bool>? = nil,
         defaultValue: V,
         collate: Collation
     ) -> Statement {
-        return alter(table, define(Expression<V>(column), nil, false, false, check, Expression(value: defaultValue), [
+        return alter(table, define(Expression<V>(column), primaryKey: nil, null: false, unique: false, check: check, defaultValue: Expression(value: defaultValue), expressions: [
             Expression<Void>(literal: "COLLATE"), Expression<Void>(collate.description)
         ]))
     }
 
     public func alter<V: Value where V.Datatype == String>(
-        #table: Query,
+        table table: Query,
         add column: Expression<V?>,
         check: Expression<Bool>? = nil,
         defaultValue: V? = nil,
         collate: Collation
     ) -> Statement {
         let value = defaultValue.map { Expression<V>(value: $0) }
-        return alter(table, define(Expression<V>(column), nil, true, false, check, value, [
+        return alter(table, define(Expression<V>(column), primaryKey: nil, null: true, unique: false, check: check, defaultValue: value, expressions: [
             Expression<Void>(literal: "COLLATE"), Expression<Void>(collate.description)
         ]))
     }
@@ -111,8 +111,8 @@ public extension Database {
         return run("ALTER TABLE \(table.tableName.unaliased.SQL) ADD COLUMN \(definition.expression.compile())")
     }
 
-    public func drop(#table: Query, ifExists: Bool = false) -> Statement {
-        return run(dropSQL("TABLE", ifExists, table.tableName.unaliased.SQL))
+    public func drop(table table: Query, ifExists: Bool = false) -> Statement {
+        return run(dropSQL("TABLE", ifExists: ifExists, name: table.tableName.unaliased.SQL))
     }
 
     public func create(
@@ -122,32 +122,32 @@ public extension Database {
         on columns: Expressible...
     ) -> Statement {
         let tableName = table.tableName.unaliased.SQL
-        let create = createSQL("INDEX", false, unique, ifNotExists, indexName(tableName, on: columns))
+        let create = createSQL("INDEX", temporary: false, unique: unique, ifNotExists: ifNotExists, name: indexName(tableName, on: columns))
         let joined = Expression<Void>.join(", ", columns.map { $0.expression.ordered })
         return run("\(create) ON \(tableName) (\(joined.compile()))")
     }
 
     public func drop(index table: Query, ifExists: Bool = false, on columns: Expressible...) -> Statement {
-        return run(dropSQL("INDEX", ifExists, indexName(table.tableName.unaliased.SQL, on: columns)))
+        return run(dropSQL("INDEX", ifExists: ifExists, name: indexName(table.tableName.unaliased.SQL, on: columns)))
     }
 
     private func indexName(table: String, on columns: [Expressible]) -> String {
-        let string = join(" ", ["index", table, "on"] + columns.map { $0.expression.SQL })
-        return quote(identifier: reduce(string, "") { underscored, character in
+        let string = (["index", table, "on"] + columns.map { $0.expression.SQL }).joinWithSeparator(" ")
+        return quote(identifier: string.characters.reduce("") { underscored, character in
             if character == "\"" { return underscored }
             if "A"..."Z" ~= character || "a"..."z" ~= character { return underscored + String(character) }
             return underscored + "_"
         })
     }
 
-    public func create(#view: Query, temporary: Bool = false, ifNotExists: Bool = false, from: Query) -> Statement {
-        let create = createSQL("VIEW", temporary, false, ifNotExists, view.tableName.unaliased.SQL)
+    public func create(view view: Query, temporary: Bool = false, ifNotExists: Bool = false, from: Query) -> Statement {
+        let create = createSQL("VIEW", temporary: temporary, unique: false, ifNotExists: ifNotExists, name: view.tableName.unaliased.SQL)
         let expression = from.selectExpression
         return run("\(create) AS \(expression.SQL)", expression.bindings)
     }
 
-    public func drop(#view: Query, ifExists: Bool = false) -> Statement {
-        return run(dropSQL("VIEW", ifExists, view.tableName.unaliased.SQL))
+    public func drop(view view: Query, ifExists: Bool = false) -> Statement {
+        return run(dropSQL("VIEW", ifExists: ifExists, name: view.tableName.unaliased.SQL))
     }
 
 }
@@ -169,7 +169,7 @@ public final class SchemaBuilder {
         check: Expression<Bool>? = nil,
         defaultValue value: Expression<V>?
     ) {
-        column(name, nil, false, unique, check, value.map { wrap("", $0) })
+        column(name, nil, false, unique, check, value.map { wrap("", expression: $0) })
     }
 
     public func column<V: Value>(
@@ -187,7 +187,7 @@ public final class SchemaBuilder {
         check: Expression<Bool>? = nil,
         defaultValue value: Expression<V>?
     ) {
-        column(Expression<V>(name), nil, true, unique, check, value.map { wrap("", $0) })
+        column(Expression<V>(name), nil, true, unique, check, value.map { wrap("", expression: $0) })
     }
 
     public func column<V: Value>(
@@ -205,7 +205,7 @@ public final class SchemaBuilder {
         check: Expression<Bool>? = nil,
         defaultValue value: Expression<V>? = nil
     ) {
-        column(name, primaryKey ? .Default : nil, false, false, check, value.map { wrap("", $0) }, nil)
+        column(name, primaryKey ? .Default : nil, false, false, check, value.map { wrap("", expression: $0) }, nil)
     }
 
     // MARK: - INTEGER Columns
@@ -335,7 +335,7 @@ public final class SchemaBuilder {
         _ defaultValue: Expression<V>?,
         _ expressions: [Expressible]? = nil
     ) {
-        columns.append(define(name, primaryKey, null, unique, check, defaultValue, expressions))
+        columns.append(define(name, primaryKey: primaryKey, null: null, unique: unique, check: check, defaultValue: defaultValue, expressions: expressions))
     }
 
     // MARK: - Table Constraints
@@ -434,8 +434,8 @@ public final class SchemaBuilder {
 
 private func namespace(column: Expressible) -> Expressible {
     let expression = column.expression
-    if !contains(expression.SQL, ".") { return expression }
-    let reference = reduce(expression.SQL, "") { SQL, character in
+    if !expression.SQL.characters.contains(".") { return expression }
+    let reference = expression.SQL.characters.reduce("") { SQL, character in
         let string = String(character)
         return SQL + (string == "." ? "(" : string)
     }
@@ -477,12 +477,12 @@ private func createSQL(
     parts.append(type)
     if ifNotExists { parts.append("IF NOT EXISTS") }
     parts.append(name)
-    return Swift.join(" ", parts)
+    return parts.joinWithSeparator(" ")
 }
 
 private func dropSQL(type: String, ifExists: Bool, name: String) -> String {
     var parts: [String] = ["DROP \(type)"]
     if ifExists { parts.append("IF EXISTS") }
     parts.append(name)
-    return Swift.join(" ", parts)
+    return parts.joinWithSeparator(" ")
 }

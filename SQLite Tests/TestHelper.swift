@@ -20,7 +20,7 @@ class SQLiteTestCase: XCTestCase {
         super.setUp()
 
         db.trace { SQL in
-            println(SQL)
+            print(SQL)
             self.trace[SQL] = (self.trace[SQL] ?? 0) + 1
         }
     }

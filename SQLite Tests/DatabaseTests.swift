@@ -291,7 +291,7 @@ class DatabaseTests: SQLiteTestCase {
     }
 
     func test_interrupt_interruptsLongRunningQuery() {
-        insertUsers(map("abcdefghijklmnopqrstuvwxyz") { String($0) })
+        insertUsers("abcdefghijklmnopqrstuvwxyz".characters.map { String($0) })
         db.create(function: "sleep") { args in
             usleep(UInt32(Double(args[0] as? Double ?? Double(args[0] as? Int64 ?? 1)) * 1_000_000))
             return nil

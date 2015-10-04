@@ -24,6 +24,6 @@
 
 public func rtree<T: Value, U: Value where T.Datatype == Int64, U.Datatype == Double>(primaryKey: Expression<T>, columns: Expression<U>...) -> Expression<Void> {
     var definitions: [Expressible] = [primaryKey]
-    definitions.extend(columns.map { $0 })
-    return wrap(__FUNCTION__, Expression<Void>.join(", ", definitions))
+    definitions.appendContentsOf(columns.map { $0 })
+    return wrap(__FUNCTION__, expression: Expression<Void>.join(", ", definitions))
 }
