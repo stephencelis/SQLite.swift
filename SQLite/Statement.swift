@@ -47,6 +47,12 @@ public final class Statement {
     public lazy var columnNames: [String] = (0..<Int32(self.columnCount)).map {
         String.fromCString(sqlite3_column_name(self.handle, $0))!
     }
+    
+    /// Handle associative getter on the current row
+    public subscript(columnName: String) -> Binding? {
+        guard let index = self.columnNames.indexOf(columnName) else { return nil }
+        return row[index]
+    }
 
     // MARK: - Binding
 
