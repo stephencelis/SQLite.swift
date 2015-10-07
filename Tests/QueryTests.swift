@@ -278,7 +278,7 @@ class QueryIntegrationTests : SQLiteTestCase {
     // MARK: -
 
     func test_select() {
-        for _ in db.prepare(users) {
+        for _ in try! db.prepare(users) {
             // FIXME
         }
 
@@ -288,22 +288,22 @@ class QueryIntegrationTests : SQLiteTestCase {
         let alice = try! db.run(users.insert(email <- "alice@example.com"))
         try! db.run(users.insert(email <- "betsy@example.com", managerId <- alice))
 
-        for user in db.prepare(users.join(managers, on: managers[id] == users[managerId])) {
+        for user in try! db.prepare(users.join(managers, on: managers[id] == users[managerId])) {
             user[users[managerId]]
         }
     }
 
     func test_scalar() {
-        XCTAssertEqual(0, db.scalar(users.count))
-        XCTAssertEqual(false, db.scalar(users.exists))
+        XCTAssertEqual(0, try! db.scalar(users.count))
+        XCTAssertEqual(false, try! db.scalar(users.exists))
 
         try! InsertUsers("alice")
-        XCTAssertEqual(1, db.scalar(users.select(id.average)))
+        XCTAssertEqual(1, try! db.scalar(users.select(id.average)))
     }
 
     func test_pluck() {
         let rowid = try! db.run(users.insert(email <- "alice@example.com"))
-        XCTAssertEqual(rowid, db.pluck(users)![id])
+        XCTAssertEqual(rowid, try! db.pluck(users)![id])
     }
 
     func test_insert() {

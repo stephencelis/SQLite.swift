@@ -72,10 +72,10 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_prepare_preparesAndReturnsStatements() {
-        _ = db.prepare("SELECT * FROM users WHERE admin = 0")
-        _ = db.prepare("SELECT * FROM users WHERE admin = ?", 0)
-        _ = db.prepare("SELECT * FROM users WHERE admin = ?", [0])
-        _ = db.prepare("SELECT * FROM users WHERE admin = $admin", ["$admin": 0])
+        _ = try! db.prepare("SELECT * FROM users WHERE admin = 0")
+        _ = try! db.prepare("SELECT * FROM users WHERE admin = ?", 0)
+        _ = try! db.prepare("SELECT * FROM users WHERE admin = ?", [0])
+        _ = try! db.prepare("SELECT * FROM users WHERE admin = $admin", ["$admin": 0])
     }
 
     func test_run_preparesRunsAndReturnsStatements() {
@@ -87,10 +87,10 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_scalar_preparesRunsAndReturnsScalarValues() {
-        XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = 0") as? Int64)
-        XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = ?", 0) as? Int64)
-        XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = ?", [0]) as? Int64)
-        XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users WHERE admin = $admin", ["$admin": 0]) as? Int64)
+        XCTAssertEqual(0, try! db.scalar("SELECT count(*) FROM users WHERE admin = 0") as? Int64)
+        XCTAssertEqual(0, try! db.scalar("SELECT count(*) FROM users WHERE admin = ?", 0) as? Int64)
+        XCTAssertEqual(0, try! db.scalar("SELECT count(*) FROM users WHERE admin = ?", [0]) as? Int64)
+        XCTAssertEqual(0, try! db.scalar("SELECT count(*) FROM users WHERE admin = $admin", ["$admin": 0]) as? Int64)
         AssertSQL("SELECT count(*) FROM users WHERE admin = 0", 4)
     }
 
@@ -113,7 +113,7 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_transaction_beginsAndCommitsTransactions() {
-        let stmt = db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
+        let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
         try! db.transaction {
             try stmt.run()
@@ -126,7 +126,7 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_transaction_beginsAndRollsTransactionsBack() {
-        let stmt = db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
+        let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
         do {
             try db.transaction {
@@ -162,7 +162,7 @@ class ConnectionTests : SQLiteTestCase {
 
     func test_savepoint_beginsAndRollsSavepointsBack() {
         let db = self.db
-        let stmt = db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
+        let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
         do {
             try db.savepoint("1") {
@@ -238,7 +238,7 @@ class ConnectionTests : SQLiteTestCase {
             try! db.transaction {
                 try InsertUser("alice")
             }
-            XCTAssertEqual(1, db.scalar("SELECT count(*) FROM users") as? Int64)
+            XCTAssertEqual(1, try! db.scalar("SELECT count(*) FROM users") as? Int64)
         }
     }
 
@@ -252,7 +252,7 @@ class ConnectionTests : SQLiteTestCase {
                 }
             } catch {
             }
-            XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users") as? Int64)
+            XCTAssertEqual(0, try! db.scalar("SELECT count(*) FROM users") as? Int64)
         }
     }
 
@@ -268,36 +268,36 @@ class ConnectionTests : SQLiteTestCase {
                 }
             } catch {
             }
-            XCTAssertEqual(0, db.scalar("SELECT count(*) FROM users") as? Int64)
+            XCTAssertEqual(0, try! db.scalar("SELECT count(*) FROM users") as? Int64)
         }
     }
 
     func test_createFunction_withArrayArguments() {
         db.createFunction("hello") { $0[0].map { "Hello, \($0)!" } }
 
-        XCTAssertEqual("Hello, world!", db.scalar("SELECT hello('world')") as? String)
-        XCTAssert(db.scalar("SELECT hello(NULL)") == nil)
+        XCTAssertEqual("Hello, world!", try! db.scalar("SELECT hello('world')") as? String)
+        XCTAssert(try! db.scalar("SELECT hello(NULL)") == nil)
     }
 
     func test_createFunction_createsQuotableFunction() {
         db.createFunction("hello world") { $0[0].map { "Hello, \($0)!" } }
 
-        XCTAssertEqual("Hello, world!", db.scalar("SELECT \"hello world\"('world')") as? String)
-        XCTAssert(db.scalar("SELECT \"hello world\"(NULL)") == nil)
+        XCTAssertEqual("Hello, world!", try! db.scalar("SELECT \"hello world\"('world')") as? String)
+        XCTAssert(try! db.scalar("SELECT \"hello world\"(NULL)") == nil)
     }
 
     func test_createCollation_createsCollation() {
         db.createCollation("NODIACRITIC") { lhs, rhs in
             return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)
         }
-        XCTAssertEqual(1, db.scalar("SELECT ? = ? COLLATE NODIACRITIC", "cafe", "café") as? Int64)
+        XCTAssertEqual(1, try! db.scalar("SELECT ? = ? COLLATE NODIACRITIC", "cafe", "café") as? Int64)
     }
 
     func test_createCollation_createsQuotableCollation() {
         db.createCollation("NO DIACRITIC") { lhs, rhs in
             return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)
         }
-        XCTAssertEqual(1, db.scalar("SELECT ? = ? COLLATE \"NO DIACRITIC\"", "cafe", "café") as? Int64)
+        XCTAssertEqual(1, try! db.scalar("SELECT ? = ? COLLATE \"NO DIACRITIC\"", "cafe", "café") as? Int64)
     }
 
     func test_interrupt_interruptsLongRunningQuery() {
@@ -307,7 +307,7 @@ class ConnectionTests : SQLiteTestCase {
             return nil
         }
 
-        let stmt = db.prepare("SELECT *, sleep(?) FROM users", 0.1)
+        let stmt = try! db.prepare("SELECT *, sleep(?) FROM users", 0.1)
         try! stmt.run()
 
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(10 * NSEC_PER_MSEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), db.interrupt)
