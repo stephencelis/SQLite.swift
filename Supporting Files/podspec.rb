@@ -1,4 +1,4 @@
-$podspec_version = '1.0.0.pre'
+$podspec_version = '1.0.0'
 $podspec_source_git = 'https://github.com/stephencelis/SQLite.swift.git'
 
 def apply_shared_config spec, name

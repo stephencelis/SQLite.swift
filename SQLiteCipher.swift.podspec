@@ -2,7 +2,6 @@ require_relative 'Supporting Files/podspec.rb'
 
 Pod::Spec.new do |spec|
   spec.name = 'SQLiteCipher.swift'
-  spec.version = '1.0.0.pre'
   spec.summary = 'The SQLCipher flavor of SQLite.swift.'
 
   spec.description = <<-DESC
