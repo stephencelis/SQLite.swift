@@ -230,8 +230,8 @@ public final class Connection {
     ///   - bindings: A list of parameters to bind to the statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(statement: String, _ bindings: Binding?...) throws -> Binding? {
-        return try scalar(statement, bindings)
+    @warn_unused_result public func scalar(statement: String, _ bindings: Binding?...) -> Binding? {
+        return scalar(statement, bindings)
     }
 
     /// Runs a single SQL statement (with optional parameter bindings),
@@ -244,8 +244,8 @@ public final class Connection {
     ///   - bindings: A list of parameters to bind to the statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(statement: String, _ bindings: [Binding?]) throws -> Binding? {
-        return try prepare(statement).scalar(bindings)
+    @warn_unused_result public func scalar(statement: String, _ bindings: [Binding?]) -> Binding? {
+        return try! prepare(statement).scalar(bindings)
     }
 
     /// Runs a single SQL statement (with optional parameter bindings),
@@ -258,8 +258,8 @@ public final class Connection {
     ///   - bindings: A dictionary of named parameters to bind to the statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(statement: String, _ bindings: [String: Binding?]) throws -> Binding? {
-        return try prepare(statement).scalar(bindings)
+    @warn_unused_result public func scalar(statement: String, _ bindings: [String: Binding?]) -> Binding? {
+        return try! prepare(statement).scalar(bindings)
     }
 
     // MARK: - Transactions
