@@ -1,4 +1,5 @@
-require_relative 'Supporting Files/podspec.rb'
+$LOAD_PATH << '.'
+require 'Supporting Files/podspec.rb'
 
 Pod::Spec.new do |spec|
   spec.name = 'SQLite.swift'
