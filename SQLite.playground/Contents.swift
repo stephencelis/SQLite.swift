@@ -2,7 +2,7 @@ import SQLite
 
 let db = try! Connection()
 
-db.trace(print)
+db.trace { print($0) }
 
 let users = Table("users")
 
