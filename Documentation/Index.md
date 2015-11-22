@@ -1156,15 +1156,16 @@ We can bridge any type that can be initialized from and encoded to `NSData`.
 ``` swift
 // assumes NSData conformance, above
 extension UIImage: Value {
-    class var declaredDatatype: String {
-        return NSData.declaredDatatype
+    public class var declaredDatatype: String {
+        return Blob.declaredDatatype
     }
-    class func fromDatatypeValue(blobValue: Blob) -> Self {
-        return self(data: NSData.fromDatatypeValue(blobValue))
+    public class func fromDatatypeValue(blobValue: Blob) -> UIImage {
+        return UIImage(data: NSData.fromDatatypeValue(blobValue))!
     }
-    var datatypeValue: Blob {
-        return UIImagePNGRepresentation(self).datatypeValue
+    public var datatypeValue: Blob {
+        return UIImagePNGRepresentation(self)!.datatypeValue
     }
+
 }
 ```
 
