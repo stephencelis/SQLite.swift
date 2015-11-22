@@ -26,6 +26,10 @@ extension Connection {
 
     public func key(key: String) throws {
         try check(sqlite3_key(handle, key, Int32(key.utf8.count)))
+        try execute(
+            "CREATE TABLE \"__SQLCipher.swift__\" (\"cipher key check\");\n" +
+            "DROP TABLE \"__SQLCipher.swift__\";"
+        )
     }
 
     public func rekey(key: String) throws {
