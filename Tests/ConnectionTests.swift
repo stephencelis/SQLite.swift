@@ -236,7 +236,7 @@ class ConnectionTests : SQLiteTestCase {
                 done()
             }
             try! db.transaction {
-                try InsertUser("alice")
+                try self.InsertUser("alice")
             }
             XCTAssertEqual(1, db.scalar("SELECT count(*) FROM users") as? Int64)
         }
