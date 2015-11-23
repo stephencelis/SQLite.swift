@@ -9,8 +9,8 @@ class SchemaTests : XCTestCase {
     }
 
     func test_drop_compilesDropVirtualTableExpression() {
-        XCTAssertEqual("DROP VIRTUAL TABLE \"virtual_table\"", virtualTable.drop())
-        XCTAssertEqual("DROP VIRTUAL TABLE IF EXISTS \"virtual_table\"", virtualTable.drop(ifExists: true))
+        XCTAssertEqual("DROP TABLE \"virtual_table\"", virtualTable.drop())
+        XCTAssertEqual("DROP TABLE IF EXISTS \"virtual_table\"", virtualTable.drop(ifExists: true))
     }
 
     func test_drop_compilesDropViewExpression() {
