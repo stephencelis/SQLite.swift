@@ -84,7 +84,7 @@ extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wr
 
 }
 
-extension ExpressionType where UnderlyingType : protocol<Value, Comparable> {
+extension ExpressionType where UnderlyingType : Value, UnderlyingType.Datatype : Comparable {
 
     /// Builds a copy of the expression wrapped with the `max` aggregate
     /// function.
@@ -114,7 +114,7 @@ extension ExpressionType where UnderlyingType : protocol<Value, Comparable> {
 
 }
 
-extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.WrappedType : protocol<Value, Comparable> {
+extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.WrappedType : Value, UnderlyingType.WrappedType.Datatype : Comparable {
 
     /// Builds a copy of the expression wrapped with the `max` aggregate
     /// function.

@@ -25,6 +25,8 @@ class AggregateFunctionsTests : XCTestCase {
         AssertSQL("max(\"doubleOptional\")", doubleOptional.max)
         AssertSQL("max(\"string\")", string.max)
         AssertSQL("max(\"stringOptional\")", stringOptional.max)
+        AssertSQL("max(\"date\")", date.max)
+        AssertSQL("max(\"dateOptional\")", dateOptional.max)
     }
 
     func test_min_wrapsComparableExpressionsWithMinFunction() {
@@ -34,6 +36,8 @@ class AggregateFunctionsTests : XCTestCase {
         AssertSQL("min(\"doubleOptional\")", doubleOptional.min)
         AssertSQL("min(\"string\")", string.min)
         AssertSQL("min(\"stringOptional\")", stringOptional.min)
+        AssertSQL("min(\"date\")", date.min)
+        AssertSQL("min(\"dateOptional\")", dateOptional.min)
     }
 
     func test_average_wrapsNumericExpressionsWithAvgFunction() {
