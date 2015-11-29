@@ -28,7 +28,7 @@ import Foundation
 /// Connection pool delegate
 public protocol ConnectionPoolDelegate {
     
-    func pool(pool: ConnectionPool, shouldAddConnection: Connection)
+    func poolShouldAddConnection(pool: ConnectionPool) -> Bool
     func pool(pool: ConnectionPool, didAddConnection: Connection)
     
 }
@@ -45,11 +45,21 @@ public final class ConnectionPool {
     private let lockQueue : dispatch_queue_t
     private var writeConnection : Connection!
     
+    public var delegate : ConnectionPoolDelegate?
+    
     public init(_ location: Connection.Location) throws {
         self.location = location
         self.lockQueue = dispatch_queue_create("SQLite.ConnectionPool", DISPATCH_QUEUE_SERIAL)
         
         try writable.execute("PRAGMA locking_mode = EXCLUSIVE; PRAGMA journal_mode = WAL;")
+    }
+    
+    public var totalReadableConnectionCount : Int {
+        return availableReadConnections.count + unavailableReadConnections.count
+    }
+    
+    public var availableReadableConnectionCount : Int {
+        return availableReadConnections.count
     }
     
     // Connection that automatically returns itself
@@ -98,7 +108,7 @@ public final class ConnectionPool {
     
     
     // Acquires a read/write connection to the database
-    public var writable : Connection {
+    public var writable : ConnectionType {
         
         var writeConnectionInit = dispatch_once_t()
         dispatch_once(&writeConnectionInit) {
@@ -115,23 +125,34 @@ public final class ConnectionPool {
         
         var borrowed : BorrowedConnection!
         
-        dispatch_sync(lockQueue) {
+        repeat {
             
-            let connection : Connection
-            
-            if let availableConnection = self.availableReadConnections.popLast() {
-                connection = availableConnection
+            dispatch_sync(lockQueue) {
+                
+                let connection : Connection
+                
+                if let availableConnection = self.availableReadConnections.popLast() {
+                    connection = availableConnection
+                }
+                else if self.delegate?.poolShouldAddConnection(self) ?? true {
+        
+                    let flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_WAL
+                    connection = try! Connection(self.location, flags: flags, dispatcher: ImmediateDispatcher())
+                    connection.busyTimeout = 2
+                
+                    self.delegate?.pool(self, didAddConnection: connection)
+                    
+                }
+                else {
+                    return
+                }
+                
+                self.unavailableReadConnections.append(connection)
+                
+                borrowed = BorrowedConnection(pool: self, connection: connection)
             }
-            else {
-                let flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_WAL
-                connection = try! Connection(self.location, flags: flags, dispatcher: ImmediateDispatcher())
-                connection.busyTimeout = 2
-            }
             
-            self.unavailableReadConnections.append(connection)
-            
-            borrowed = BorrowedConnection(pool: self, connection: connection)
-        }
+        } while borrowed == nil
         
         return borrowed
     }

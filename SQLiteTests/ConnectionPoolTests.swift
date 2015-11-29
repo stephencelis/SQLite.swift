@@ -9,7 +9,7 @@ class ConnectionPoolTests : SQLiteTestCase {
 
     func testConcurrentAccess() {
         
-        let _ = try? NSFileManager.defaultManager().removeItemAtPath("\(NSTemporaryDirectory())/SQLiteswiftTests.sqlite")
+        let _ = try? NSFileManager.defaultManager().removeItemAtPath("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite")
         let pool = try! ConnectionPool(.URI("\(NSTemporaryDirectory())/SQLiteswiftTests.sqlite"))
         
         let conn = pool.writable
@@ -25,33 +25,63 @@ class ConnectionPoolTests : SQLiteTestCase {
         let queue = dispatch_queue_create("Readers", DISPATCH_QUEUE_CONCURRENT)
         for x in 0..<5 {
             var reads = 0
+
             let ex = expectationWithDescription("thread" + String(x))
+            
             dispatch_async(queue) {
+                
                 print("started", x)
+
                 let conn = pool.readable
-                var curr = conn.scalar("SELECT name FROM test WHERE id = ?", x) as! String
+                
+                let stmt = conn.prepare("SELECT name FROM test WHERE id = ?")
+                var curr = stmt.scalar(x) as! String
                 while !quit {
-                    let now = conn.scalar("SELECT name FROM test WHERE id = ?", x) as! String
+                    
+                    let now = stmt.scalar(x) as! String
                     if now != curr {
                         print(now)
                         curr = now
                     }
                     reads += 1
                 }
+                
                 print("ended at", reads, "reads")
+                
                 ex.fulfill()
             }
+            
         }
         
         for x in 10..<500 {
+            
             let name = "test" + String(x)
             let idx = Int(rand()) % 5
-            try! conn.run("UPDATE test SET name=? WHERE id=?", name, idx)
+            
+            do {
+                try conn.run("UPDATE test SET name=? WHERE id=?", name, idx)
+            }
+            catch let error {
+                XCTFail((error as? CustomStringConvertible)?.description ?? "Unknown")
+            }
+            
             usleep(15000)
         }
         
         quit = true
         waitForExpectationsWithTimeout(1000, handler: nil)
+    }
+    
+    func testAutoRelease() {
+        
+        let _ = try? NSFileManager.defaultManager().removeItemAtPath("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite")
+        let pool = try! ConnectionPool(.URI("\(NSTemporaryDirectory())/SQLiteswiftTests.sqlite"))
+        
+        do {
+            try! pool.readable.execute("SELECT 1")
+        }
+        
+        XCTAssertEqual(pool.totalReadableConnectionCount, pool.availableReadableConnectionCount)
     }
   
 }
