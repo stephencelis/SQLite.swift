@@ -477,7 +477,7 @@ SQLite.swift typically uses the `<-` operator to set values during [inserts](#in
 
 ``` swift
 try db.run(counter.update(count <- 0))
-// UPDATE "counters" SET "count" = 0 WHERE ("id" = 1)
+// UPDATE "counters" SET "count" = 0
 ```
 
 There are also a number of convenience setters that take the existing value into account using native Swift operators.
@@ -486,7 +486,7 @@ For example, to atomically increment a column, we can use `++`:
 
 ``` swift
 try db.run(counter.update(count++)) // equivalent to `counter.update(count -> count + 1)`
-// UPDATE "counters" SET "count" = "count" + 1 WHERE ("id" = 1)
+// UPDATE "counters" SET "count" = "count" + 1
 ```
 
 To take an amount and “move” it via transaction, we can use `-=` and `+=`:
