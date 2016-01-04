@@ -19,7 +19,7 @@ try! db.run(users.create { t in
 let rowid = try! db.run(users.insert(email <- "alice@mac.com"))
 let alice = users.filter(id == rowid)
 
-for user in db.prepare(users) {
+for user in try! db.prepare(users) {
     print("id: \(user[id]), email: \(user[email])")
 }
 
@@ -37,7 +37,7 @@ try! db.run(emails.insert(
 
 let row = db.pluck(emails.match("hello"))
 
-let query = db.prepare(emails.match("hello"))
+let query = try! db.prepare(emails.match("hello"))
 for row in query {
     print(row[subject])
 }

@@ -278,7 +278,7 @@ class QueryIntegrationTests : SQLiteTestCase {
     // MARK: -
 
     func test_select() {
-        for _ in db.prepare(users) {
+        for _ in try! db.prepare(users) {
             // FIXME
         }
 
@@ -288,7 +288,7 @@ class QueryIntegrationTests : SQLiteTestCase {
         let alice = try! db.run(users.insert(email <- "alice@example.com"))
         try! db.run(users.insert(email <- "betsy@example.com", managerId <- alice))
 
-        for user in db.prepare(users.join(managers, on: managers[id] == users[managerId])) {
+        for user in try! db.prepare(users.join(managers, on: managers[id] == users[managerId])) {
             user[users[managerId]]
         }
     }

@@ -56,15 +56,15 @@ let insert = users.insert(name <- "Alice", email <- "alice@mac.com")
 let rowid = try db.run(insert)
 // INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
 
-for user in db.prepare(users) {
-    println("id: \(user[id]), name: \(user[name]), email: \(user[email])")
+for user in try db.prepare(users) {
+    print("id: \(user[id]), name: \(user[name]), email: \(user[email])")
     // id: 1, name: Optional("Alice"), email: alice@mac.com
 }
 // SELECT * FROM "users"
 
 let alice = users.filter(id == rowid)
 
-try db.run(alice.update(email <- email.replace("mac.com", "me.com")))
+try db.run(alice.update(email <- email.replace("mac.com", with: "me.com")))
 // UPDATE "users" SET "email" = replace("email", 'mac.com', 'me.com')
 // WHERE ("id" = 1)
 
@@ -79,17 +79,17 @@ SQLite.swift also works as a lightweight, Swift-friendly wrapper over the C
 API.
 
 ``` swift
-let stmt = db.prepare("INSERT INTO users (email) VALUES (?)")
+let stmt = try db.prepare("INSERT INTO users (email) VALUES (?)")
 for email in ["betty@icloud.com", "cathy@icloud.com"] {
-    stmt.run(email)
+    try stmt.run(email)
 }
 
 db.totalChanges    // 3
 db.changes         // 1
 db.lastInsertRowid // 3
 
-for row in db.prepare("SELECT id, email FROM users") {
-    println("id: \(row[0]), email: \(row[1])")
+for row in try db.prepare("SELECT id, email FROM users") {
+    print("id: \(row[0]), email: \(row[1])")
     // id: Optional(2), email: Optional("betty@icloud.com")
     // id: Optional(3), email: Optional("cathy@icloud.com")
 }

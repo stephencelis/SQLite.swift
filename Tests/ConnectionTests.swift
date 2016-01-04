@@ -72,10 +72,10 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_prepare_preparesAndReturnsStatements() {
-        _ = db.prepare("SELECT * FROM users WHERE admin = 0")
-        _ = db.prepare("SELECT * FROM users WHERE admin = ?", 0)
-        _ = db.prepare("SELECT * FROM users WHERE admin = ?", [0])
-        _ = db.prepare("SELECT * FROM users WHERE admin = $admin", ["$admin": 0])
+        _ = try! db.prepare("SELECT * FROM users WHERE admin = 0")
+        _ = try! db.prepare("SELECT * FROM users WHERE admin = ?", 0)
+        _ = try! db.prepare("SELECT * FROM users WHERE admin = ?", [0])
+        _ = try! db.prepare("SELECT * FROM users WHERE admin = $admin", ["$admin": 0])
     }
 
     func test_run_preparesRunsAndReturnsStatements() {
@@ -113,7 +113,7 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_transaction_beginsAndCommitsTransactions() {
-        let stmt = db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
+        let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
         try! db.transaction {
             try stmt.run()
@@ -126,7 +126,7 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_transaction_beginsAndRollsTransactionsBack() {
-        let stmt = db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
+        let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
         do {
             try db.transaction {
@@ -162,7 +162,7 @@ class ConnectionTests : SQLiteTestCase {
 
     func test_savepoint_beginsAndRollsSavepointsBack() {
         let db = self.db
-        let stmt = db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
+        let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
         do {
             try db.savepoint("1") {
@@ -307,7 +307,7 @@ class ConnectionTests : SQLiteTestCase {
             return nil
         }
 
-        let stmt = db.prepare("SELECT *, sleep(?) FROM users", 0.1)
+        let stmt = try! db.prepare("SELECT *, sleep(?) FROM users", 0.1)
         try! stmt.run()
 
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(10 * NSEC_PER_MSEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), db.interrupt)
