@@ -390,7 +390,7 @@ extension QueryType {
     ///
     ///     let users = Table("users")
     ///     let email = Expression<String>("email")
-    ///     let email = Expression<String?>("name")
+    ///     let name = Expression<String?>("name")
     ///
     ///     users.order(email.desc, name.asc)
     ///     // SELECT * FROM "users" ORDER BY "email" DESC, "name" ASC
@@ -399,6 +399,22 @@ extension QueryType {
     ///
     /// - Returns: A query with the given `ORDER BY` clause applied.
     public func order(by: Expressible...) -> Self {
+        return order(by)
+    }
+    
+    /// Sets an `ORDER BY` clause on the query.
+    ///
+    ///     let users = Table("users")
+    ///     let email = Expression<String>("email")
+    ///     let name = Expression<String?>("name")
+    ///
+    ///     users.order([email.desc, name.asc])
+    ///     // SELECT * FROM "users" ORDER BY "email" DESC, "name" ASC
+    ///
+    /// - Parameter by: An ordered list of columns and directions to sort by.
+    ///
+    /// - Returns: A query with the given `ORDER BY` clause applied.
+    public func order(by: [Expressible]) -> Self {
         var query = self
         query.clauses.order = by
         return query
