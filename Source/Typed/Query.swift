@@ -390,7 +390,7 @@ extension QueryType {
     ///
     ///     let users = Table("users")
     ///     let email = Expression<String>("email")
-    ///     let email = Expression<String?>("name")
+    ///     let name = Expression<String?>("name")
     ///
     ///     users.order(email.desc, name.asc)
     ///     // SELECT * FROM "users" ORDER BY "email" DESC, "name" ASC
