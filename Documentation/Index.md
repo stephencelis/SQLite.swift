@@ -1,6 +1,7 @@
 # SQLite.swift Documentation
 
   - [Installation](#installation)
+    - [Carthage](#carthage)
     - [CocoaPods](#cocoapods)
     - [Manual](#manual)
     - [SQLCipher](#sqlcipher)
@@ -66,6 +67,27 @@
 ## Installation
 
 > _Note:_ SQLite.swift requires Swift 2 (and [Xcode 7](https://developer.apple.com/xcode/downloads/)) or greater.
+
+
+### Carthage
+
+[Carthage][] is a simple, decentralized dependency manager for Cocoa. To
+install SQLite.swift with Carthage:
+
+ 1. Make sure Carthage is [installed][Carthage Installation].
+
+ 2. Update your Cartfile to include the following:
+
+    ```
+    github "stephencelis/SQLite.swift" "master"
+    ```
+
+ 3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
+
+
+[Carthage]: https://github.com/Carthage/Carthage
+[Carthage Installation]: https://github.com/Carthage/Carthage#installing-carthage
+[Carthage Usage]: https://github.com/Carthage/Carthage#adding-frameworks-to-an-application
 
 
 ### CocoaPods
