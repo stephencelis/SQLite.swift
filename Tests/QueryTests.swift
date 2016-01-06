@@ -120,6 +120,10 @@ class QueryTests : XCTestCase {
         AssertSQL("SELECT * FROM \"users\" ORDER BY \"age\", \"email\"", users.order(age, email))
     }
 
+    func test_order_withArrayExpressionNames_compilesOrderClause() {
+        AssertSQL("SELECT * FROM \"users\" ORDER BY \"age\", \"email\"", users.order([age, email]))
+    }
+
     func test_order_withExpressionAndSortDirection_compilesOrderClause() {
 //        AssertSQL("SELECT * FROM \"users\" ORDER BY \"age\" DESC, \"email\" ASC", users.order(age.desc, email.asc))
     }
