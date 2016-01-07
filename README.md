@@ -102,6 +102,7 @@ interactively, from the Xcode project’s playground.
 
 ![SQLite.playground Screen Shot](Documentation/Resources/playground@2x.png)
 
+For a more comprehensive example, see [this article](http://masteringswift.blogspot.com/2015/09/create-data-access-layer-with.html) and the [companion repository](https://github.com/hoffmanjon/SQLiteDataAccessLayer2/tree/master).
 
 ## Installation
 
