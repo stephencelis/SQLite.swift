@@ -23,6 +23,7 @@
 //
 
 import Dispatch
+import SQLite3
 
 /// A connection to SQLite.
 public final class Connection {

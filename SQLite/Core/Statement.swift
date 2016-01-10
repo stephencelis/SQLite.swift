@@ -22,6 +22,8 @@
 // THE SOFTWARE.
 //
 
+import SQLite3
+
 /// A single SQL statement.
 public final class Statement {
 

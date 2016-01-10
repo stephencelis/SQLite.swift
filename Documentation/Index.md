@@ -4,7 +4,6 @@
     - [Carthage](#carthage)
     - [CocoaPods](#cocoapods)
     - [Manual](#manual)
-    - [SQLCipher](#sqlcipher)
     - [Frameworkless Targets](#frameworkless-targets)
   - [Getting Started](#getting-started)
     - [Connecting to a Database](#connecting-to-a-database)
@@ -103,10 +102,6 @@ install SQLite.swift with Carthage:
 
     pod 'SQLite.swift',
       git: 'https://github.com/stephencelis/SQLite.swift.git'
-
-    # instead, for SQLCipher support
-    pod 'SQLiteCipher.swift',
-      git: 'https://github.com/stephencelis/SQLite.swift.git'
     ```
 
  3. Run `pod install`.
@@ -130,22 +125,6 @@ To install SQLite.swift as an Xcode sub-project:
  4. **Add**.
 
 You should now be able to `import SQLite` from any of your target’s source files and begin using SQLite.swift.
-
-
-#### SQLCipher
-
-> _Note_: To install with CocoaPods, [see above](#cocoapods).
-
-To install SQLite.swift with [SQLCipher](http://sqlcipher.net) support:
-
- 1. Make sure the **sqlcipher** working copy is checked out in Xcode. If **sqlcipher.xcodeproj** is unavailable (_i.e._, it appears red), go to the **Source Control** menu and select **Check Out sqlcipher…** from the **sqlcipher** menu item.
-
- 2. Follow [the instructions above](#manual) with the **SQLiteCipher** target, instead.
-
-> _Note:_ By default, SQLCipher compiles [without support for full-text search](https://github.com/sqlcipher/sqlcipher/issues/102). If you intend to use [FTS4](#full-text-search), make sure you add the following to **Other C Flags** in the **Build Settings** of the **sqlcipher** target (in the **sqlcipher.xcodeproj** project):
->
->  - `-DSQLITE_ENABLE_FTS4`
->  - `-DSQLITE_ENABLE_FTS3_PARENTHESIS`
 
 
 ### Frameworkless Targets

@@ -22,13 +22,11 @@
 // THE SOFTWARE.
 //
 
-#import "SQLite-Bridging.h"
-
-#ifdef COCOAPODS
-#import "sqlite3.h"
-#endif
-
 #import "fts3_tokenizer.h"
+
+#import "sqlite3.h"
+
+#import <SQLite.h>
 
 #pragma mark - FTS
 

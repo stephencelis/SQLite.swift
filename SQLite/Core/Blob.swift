@@ -22,6 +22,8 @@
 // THE SOFTWARE.
 //
 
+import SQLite3
+
 public struct Blob {
 
     public let bytes: [UInt8]
