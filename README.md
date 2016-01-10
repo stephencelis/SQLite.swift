@@ -21,9 +21,9 @@ syntax _and_ intent.
  - A lightweight, uncomplicated query and parameter binding interface
  - Developer-friendly error handling and debugging
  - [Full-text search][] support
- - [SQLCipher](#sqlcipher) support
  - [Well-documented][See Documentation]
  - Extensively tested
+ - SQLCipher support will be available again soon (see #311)
 
 [Full-text search]: Documentation/Index.md#full-text-search
 [See Documentation]: Documentation/Index.md#sqliteswift-documentation
@@ -150,10 +150,6 @@ SQLite.swift with CocoaPods:
 
     pod 'SQLite.swift',
       git: 'https://github.com/stephencelis/SQLite.swift.git'
-
-    # instead, for SQLCipher support
-    pod 'SQLiteCipher.swift',
-      git: 'https://github.com/stephencelis/SQLite.swift.git'
     ```
 
  3. Run `pod install`.
@@ -182,33 +178,6 @@ To install SQLite.swift as an Xcode sub-project:
 [Xcode]: https://developer.apple.com/xcode/downloads/
 [Submodule]: http://git-scm.com/book/en/Git-Tools-Submodules
 [download]: https://github.com/stephencelis/SQLite.swift/archive/master.zip
-
-
-#### SQLCipher
-
-> _Note_: To install with CocoaPods, [see above](#cocoapods).
-
-To install SQLite.swift with [SQLCipher][] support:
-
- 1. Make sure the **sqlcipher** working copy is checked out in Xcode. If
-    **sqlcipher.xcodeproj** is unavailable (_i.e._, it appears red), go to the
-    **Source Control** menu and select **Check Out sqlcipher…** from the
-    **sqlcipher** menu item.
-
- 2. Follow [the instructions above](#manual) with the **SQLiteCipher** target,
-    instead.
-
-> _Note:_ By default, SQLCipher compiles [without support for full-text
-> search][]. If you intend to use [FTS4][], make sure you add the
-> following to **Other C Flags** in the **Build Settings** of the
-> **sqlcipher** target (in the **sqlcipher.xcodeproj** project):
->
->  - `-DSQLITE_ENABLE_FTS4`
->  - `-DSQLITE_ENABLE_FTS3_PARENTHESIS`
-
-[SQLCipher]: http://sqlcipher.net
-[without support for full-text search]: https://github.com/sqlcipher/sqlcipher/issues/102
-[FTS4]: http://www.sqlite.org/fts3.html
 
 
 ## Communication
