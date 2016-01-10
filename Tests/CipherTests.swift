@@ -16,7 +16,7 @@ class CipherTests: XCTestCase {
         // db2
         let keyData = NSMutableData(length: 64)!
         let _ = SecRandomCopyBytes(kSecRandomDefault, 64, UnsafeMutablePointer<UInt8>(keyData.mutableBytes))
-        try! db2.key("hello")
+        try! db2.key(Blob(bytes: keyData.bytes, length: keyData.length))
         
         try! db2.run("CREATE TABLE foo (bar TEXT)")
         try! db2.run("INSERT INTO foo (bar) VALUES ('world')")
