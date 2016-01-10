@@ -1450,13 +1450,15 @@ Though we recommend you stick with SQLite.swift’s [type-safe system](#building
     db.changes // -> {Some 1}
     ```
 
-    Statements with results may be iterated over.
+    Statements with results may be iterated over, using the columnNames if useful.
 
     ``` swift
     let stmt = try db.prepare("SELECT id, email FROM users")
     for row in stmt {
-        print("id: \(row[0]), email: \(row[1])")
-        // id: Optional(1), email: Optional("alice@mac.com")
+        for (index, name) in stmt.columnNames.enumerate() {
+            print ("\(name)=\(row[index]!)")
+            // id: Optional(1), email: Optional("alice@mac.com")
+        }
     }
     ```
 
