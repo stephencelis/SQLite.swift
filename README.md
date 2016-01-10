@@ -213,6 +213,8 @@ To install SQLite.swift with [SQLCipher][] support:
 
 ## Communication
 
+[See the planning document] for a roadmap and existing feature requests.
+
 [Read the contributing guidelines][]. The _TL;DR_ (but please; _R_):
 
  - Need **help** or have a **general question**? [Ask on Stack
@@ -220,6 +222,7 @@ To install SQLite.swift with [SQLCipher][] support:
  - Found a **bug** or have a **feature request**? [Open an issue][].
  - Want to **contribute**? [Submit a pull request][].
 
+[See the planning document]: /Documentation/Planning.md 
 [Read the contributing guidelines]: ./CONTRIBUTING.md#contributing
 [Ask on Stack Overflow]: http://stackoverflow.com/questions/tagged/sqlite.swift
 [Open an issue]: https://github.com/stephencelis/SQLite.swift/issues/new
