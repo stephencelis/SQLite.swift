@@ -78,7 +78,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```
-    github "stephencelis/SQLite.swift" "master"
+    github "stephencelis/SQLite.swift" ~> 0.9.0
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -100,8 +100,7 @@ install SQLite.swift with Carthage:
     ``` ruby
     use_frameworks!
 
-    pod 'SQLite.swift',
-      git: 'https://github.com/stephencelis/SQLite.swift.git'
+    pod 'SQLite.swift', '~> 0.9.0'
     ```
 
  3. Run `pod install`.
