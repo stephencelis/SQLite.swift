@@ -22,40 +22,16 @@
 // THE SOFTWARE.
 //
 
-public struct Blob {
+@import Foundation;
 
-    public let bytes: [UInt8]
+#ifndef COCOAPODS
+#import "sqlite3.h"
+#endif
 
-    public init(bytes: [UInt8]) {
-        self.bytes = bytes
-    }
+typedef struct SQLiteHandle SQLiteHandle; // CocoaPods workaround
 
-    public init(bytes: UnsafePointer<Void>, length: Int) {
-        self.init(bytes: [UInt8](UnsafeBufferPointer(
-            start: UnsafePointer(bytes), count: length
-        )))
-    }
+NS_ASSUME_NONNULL_BEGIN
+typedef NSString * _Nullable (^_SQLiteTokenizerNextCallback)(const char * input, int * inputOffset, int * inputLength);
+int _SQLiteRegisterTokenizer(SQLiteHandle * db, const char * module, const char * tokenizer, _Nullable _SQLiteTokenizerNextCallback callback);
+NS_ASSUME_NONNULL_END
 
-    public func toHex() -> String {
-        return bytes.map {
-            ($0 < 16 ? "0" : "") + String($0, radix: 16, uppercase: false)
-        }.joinWithSeparator("")
-    }
-
-}
-
-extension Blob : CustomStringConvertible {
-
-    public var description: String {
-        return "x'\(toHex())'"
-    }
-
-}
-
-extension Blob : Equatable {
-
-}
-
-public func ==(lhs: Blob, rhs: Blob) -> Bool {
-    return lhs.bytes == rhs.bytes
-}
