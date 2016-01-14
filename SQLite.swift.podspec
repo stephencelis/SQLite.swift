@@ -25,7 +25,7 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = "10.9"
 
   s.module_map = "podstuff/module.modulemap"
-  s.xcconfig = { 'OTHER_LDFLAGS': '-lsqlite3' }
+  s.libraries = 'sqlite3'
   s.source_files = 'SQLite/**/*'
   s.private_header_files = 'SQLite/Core/fts3_tokenizer.h'
 end
