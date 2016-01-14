@@ -26,6 +26,6 @@ Pod::Spec.new do |s|
 
   s.module_map = "podstuff/module.modulemap"
   s.libraries = 'sqlite3'
-  s.source_files = 'SQLite/**/*'
+  s.source_files = 'SQLite/**/*.{c,h,m,swift}'
   s.private_header_files = 'SQLite/Core/fts3_tokenizer.h'
 end
