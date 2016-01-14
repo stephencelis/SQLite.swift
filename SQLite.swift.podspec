@@ -5,7 +5,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "SQLite.swift"
-  s.version          = "0.9.1"
+  s.version          = "0.9.2"
   s.summary          = "A type-safe, Swift-language layer over SQLite3 for iOS and OS X."
 
   s.description      = <<-DESC
@@ -21,12 +21,11 @@ Pod::Spec.new do |s|
 
   s.module_name      = 'SQLite'
   s.ios.deployment_target = "8.0"
+  s.tvos.deployment_target = "9.0"
+  s.osx.deployment_target = "10.9"
 
+  s.module_map = "podstuff/module.modulemap"
+  s.xcconfig = { 'OTHER_LDFLAGS': '-lsqlite3' }
   s.source_files = 'SQLite/**/*'
   s.private_header_files = 'SQLite/Core/fts3_tokenizer.h'
-
-  # make the sqlite3 C library behave like a module
-  s.libraries        = 'sqlite3'
-  s.xcconfig         = { 'SWIFT_INCLUDE_PATHS' => '${PODS_ROOT}/SQLite.swift/SQLite3' }
-  s.preserve_path    = 'SQLite3/*'
 end

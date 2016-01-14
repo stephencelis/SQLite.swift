@@ -1,4 +1,6 @@
-# SQLite.swift [![Build Status][Badge]][Travis]
+# SQLite.swift 
+
+[![Build Status][Badge]][Travis] [![CocoaPods Version](https://cocoapod-badges.herokuapp.com/v/SQLite.swift/badge.png)](http://cocoadocs.org/docsets/SQLite.swift) [![Platform](https://cocoapod-badges.herokuapp.com/p/SQLite.swift/badge.png)](http://cocoadocs.org/docsets/SQLite.swift) [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 
 A type-safe, [Swift][]-language layer over [SQLite3][].
 
@@ -124,7 +126,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```
-    github "stephencelis/SQLite.swift" ~> 0.9.1
+    github "stephencelis/SQLite.swift" ~> 0.9.2
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -148,7 +150,7 @@ SQLite.swift with CocoaPods:
     ``` ruby
     use_frameworks!
 
-    pod 'SQLite.swift', '~> 0.9.1'
+    pod 'SQLite.swift', '~> 0.9.2'
     ```
 
  3. Run `pod install`.

@@ -22,8 +22,6 @@
 // THE SOFTWARE.
 //
 
-import SQLite3
-
 public typealias Star = (Expression<Binding>?, Expression<Binding>?) -> Expression<Void>
 
 public func *(_: Expression<Binding>?, _: Expression<Binding>?) -> Expression<Void> {
