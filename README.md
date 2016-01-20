@@ -211,6 +211,13 @@ To install SQLite.swift as an Xcode sub-project:
 SQLite.swift is available under the MIT license. See [the LICENSE
 file](./LICENSE.txt) for more information.
 
+## Related
+
+These projects enhance or use SQLite.swift:
+
+ - [SQLiteCipher.swift](https://github.com/stephencelis/SQLiteCipher.swift)
+ - [SQLiteMigrationManager.swift](https://github.com/garriguv/SQLiteMigrationManager.swift) (inspired by [FMDBMigrationManager](https://github.com/layerhq/FMDBMigrationManager))
+
 
 ## Alternatives
 
