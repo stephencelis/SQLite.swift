@@ -201,7 +201,8 @@ let db = try Connection(path, readonly: true)
 ```
 
 > _Note:_ Signed applications cannot modify their bundle resources. If you bundle a database file with your app for the purpose of bootstrapping, copy it to a writable location _before_ establishing a connection (see [Read-Write Databases](#read-write-databases), above, for typical, writable locations).
-
+> 
+> See these two Stack Overflow questions for more information about iOS apps with SQLite databases: [1](https://stackoverflow.com/questions/34609746/what-different-between-store-database-in-different-locations-in-ios), [2](https://stackoverflow.com/questions/34614968/ios-how-to-copy-pre-seeded-database-at-the-first-running-app-with-sqlite-swift). We welcome sample code to show how to successfully copy and use a bundled "seed" database for writing in an app.
 
 #### In-Memory Databases
 
