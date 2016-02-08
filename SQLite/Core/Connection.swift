@@ -65,10 +65,15 @@ public final class Connection {
     ///
     ///     Default: `false`.
     ///
+    ///   - sharedCache: Whether or not the database connection is eligible to use shared cache mode.
+    ///
+    ///     Default: `false`.
+    ///
     /// - Returns: A new database connection.
-    public init(_ location: Location = .InMemory, readonly: Bool = false) throws {
+    public init(_ location: Location = .InMemory, readonly: Bool = false, sharedCache: Bool = false) throws {
         let flags = readonly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE
-        try check(sqlite3_open_v2(location.description, &_handle, flags | SQLITE_OPEN_FULLMUTEX, nil))
+        let flagsWithSharedCache = sharedCache ? flags | SQLITE_OPEN_SHAREDCACHE : flags
+        try check(sqlite3_open_v2(location.description, &_handle, flagsWithSharedCache | SQLITE_OPEN_FULLMUTEX, nil))
         dispatch_queue_set_specific(queue, Connection.queueKey, queueContext, nil)
     }
 
@@ -83,11 +88,15 @@ public final class Connection {
     ///
     ///     Default: `false`.
     ///
+    ///   - sharedCache: Whether or not the database connection is eligible to use shared cache mode.
+    ///
+    ///     Default: `false`.
+    ///
     /// - Throws: `Result.Error` iff a connection cannot be established.
     ///
     /// - Returns: A new database connection.
-    public convenience init(_ filename: String, readonly: Bool = false) throws {
-        try self.init(.URI(filename), readonly: readonly)
+    public convenience init(_ filename: String, readonly: Bool = false, sharedCache: Bool = false) throws {
+        try self.init(.URI(filename), readonly: readonly, sharedCache: sharedCache)
     }
 
     deinit {
