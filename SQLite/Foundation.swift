@@ -22,6 +22,8 @@
 // THE SOFTWARE.
 //
 
+import Foundation
+
 extension NSData : Value {
 
     public class var declaredDatatype: String {
