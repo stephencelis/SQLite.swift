@@ -89,7 +89,7 @@ public final class Statement {
         return self
     }
 
-    private func bind(value: Binding?, atIndex idx: Int) {
+    public func bind(value: Binding?, atIndex idx: Int) {
         if value == nil {
             sqlite3_bind_null(handle, Int32(idx))
         } else if let value = value as? Blob {
