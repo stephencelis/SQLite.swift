@@ -176,7 +176,7 @@ public final class Statement {
         return try connection.sync { try self.connection.check(sqlite3_step(self.handle)) == SQLITE_ROW }
     }
 
-    private func reset(clearBindings shouldClear: Bool = true) {
+    public func reset(clearBindings shouldClear: Bool = true) {
         sqlite3_reset(handle)
         if (shouldClear) { sqlite3_clear_bindings(handle) }
     }
