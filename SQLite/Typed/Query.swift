@@ -50,8 +50,8 @@ extension SchemaType {
     /// - Parameter all: A list of expressions to select.
     ///
     /// - Returns: A query with the given `SELECT` clause applied.
-    public func select(column1: Expressible, _ column2: Expressible, _ more: Expressible...) -> Self {
-        return select(false, [column1, column2] + more)
+    public func select(column1: Expressible, _ more: Expressible...) -> Self {
+        return select(false, [column1] + more)
     }
 
     /// Builds a copy of the query with the `SELECT DISTINCT` clause applied.
@@ -65,8 +65,8 @@ extension SchemaType {
     /// - Parameter columns: A list of expressions to select.
     ///
     /// - Returns: A query with the given `SELECT DISTINCT` clause applied.
-    public func select(distinct column1: Expressible, _ column2: Expressible, _ more: Expressible...) -> Self {
-        return select(true, [column1, column2] + more)
+    public func select(distinct column1: Expressible, _ more: Expressible...) -> Self {
+        return select(true, [column1] + more)
     }
 
     /// Builds a copy of the query with the `SELECT` clause applied.
