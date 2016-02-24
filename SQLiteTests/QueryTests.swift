@@ -20,6 +20,14 @@ class QueryTests : XCTestCase {
     func test_select_withExpression_compilesSelectClause() {
         AssertSQL("SELECT \"email\" FROM \"users\"", users.select(email))
     }
+    
+    func test_select_withStarExpression_compilesSelectClause() {
+        AssertSQL("SELECT * FROM \"users\"", users.select(*))
+    }
+    
+    func test_select_withNamespacedStarExpression_compilesSelectClause() {
+        AssertSQL("SELECT \"users\".* FROM \"users\"", users.select(users[*]))
+    }
 
     func test_select_withVariadicExpressions_compilesSelectClause() {
         AssertSQL("SELECT \"email\", count(*) FROM \"users\"", users.select(email, count(*)))
