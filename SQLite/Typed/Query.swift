@@ -1022,6 +1022,10 @@ public struct Row {
     }
     public func get<V: Value>(column: Expression<V?>) -> V? {
         func valueAtIndex(idx: Int) -> V? {
+
+            // HACK:
+            // This is a dirty hack to avoid problem with NUMERIC type in the Schema.
+            // You can find details in issue #331
             if V.Datatype.self == Double.self {
                 switch values[idx] {
                 case let v as Int64:
