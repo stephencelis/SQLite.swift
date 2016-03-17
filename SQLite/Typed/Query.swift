@@ -920,7 +920,7 @@ extension Connection {
         }()
 
         return AnySequence {
-            anyGenerator { statement.next().map { Row(columnNames, $0) } }
+            AnyGenerator { statement.next().map { Row(columnNames, $0) } }
         }
     }
 
