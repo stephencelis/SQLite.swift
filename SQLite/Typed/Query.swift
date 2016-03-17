@@ -1022,6 +1022,13 @@ public struct Row {
     }
     public func get<V: Value>(column: Expression<V?>) -> V? {
         func valueAtIndex(idx: Int) -> V? {
+            if V.Datatype.self == Double.self {
+                switch values[idx] {
+                case let v as Int64:
+                    return Double(v) as? V
+                default: break
+                }
+            }
             guard let value = values[idx] as? V.Datatype else { return nil }
             return (V.fromDatatypeValue(value) as? V)!
         }
