@@ -3,7 +3,7 @@ framework module SQLite {
 
     module armv7k {
         header "/Applications/Xcode.app/Contents/Developer/Platforms/WatchOS.platform/Developer/SDKs/WatchOS.sdk/usr/include/sqlite3.h"
-        requires arm64
+        requires armv7k
     }
 
     module x86 {
