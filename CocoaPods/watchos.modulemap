@@ -1,7 +1,7 @@
 framework module SQLite {
     umbrella header "SQLite.h"
 
-    module arm64 {
+    module armv7k {
         header "/Applications/Xcode.app/Contents/Developer/Platforms/WatchOS.platform/Developer/SDKs/WatchOS.sdk/usr/include/sqlite3.h"
         requires arm64
     }
