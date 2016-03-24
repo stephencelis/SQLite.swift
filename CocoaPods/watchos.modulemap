@@ -1,0 +1,18 @@
+framework module SQLite {
+    umbrella header "SQLite.h"
+
+    module armv7k {
+        header "/Applications/Xcode.app/Contents/Developer/Platforms/WatchOS.platform/Developer/SDKs/WatchOS.sdk/usr/include/sqlite3.h"
+        requires armv7k
+    }
+
+    module x86 {
+        header "/Applications/Xcode.app/Contents/Developer/Platforms/WatchSimulator.platform/Developer/SDKs/WatchSimulator.sdk/usr/include/sqlite3.h"
+        requires x86
+    }
+
+    link "sqlite3"
+
+    export *
+    module * { export * }
+}

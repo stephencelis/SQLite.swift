@@ -23,10 +23,12 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = "8.0"
   s.tvos.deployment_target = "9.0"
   s.osx.deployment_target = "10.9"
+  s.watchos.deployment_target = "2.0"
 
   s.ios.module_map = "CocoaPods/ios.modulemap"
   s.tvos.module_map = "CocoaPods/tvos.modulemap"
   s.osx.module_map = "CocoaPods/osx.modulemap"
+  s.watchos.module_map = "CocoaPods/watchos.modulemap"
 
   s.libraries = 'sqlite3'
   s.source_files = 'SQLite/**/*.{c,h,m,swift}'
