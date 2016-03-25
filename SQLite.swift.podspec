@@ -24,7 +24,10 @@ Pod::Spec.new do |s|
   s.tvos.deployment_target = "9.0"
   s.osx.deployment_target = "10.9"
 
-  s.module_map = "podstuff/module.modulemap"
+  s.ios.module_map = "CocoaPods/ios.modulemap"
+  s.tvos.module_map = "CocoaPods/tvos.modulemap"
+  s.osx.module_map = "CocoaPods/osx.modulemap"
+
   s.libraries = 'sqlite3'
   s.source_files = 'SQLite/**/*.{c,h,m,swift}'
   s.private_header_files = 'SQLite/Core/fts3_tokenizer.h'
