@@ -5,7 +5,7 @@
 
 Pod::Spec.new do |s|
   s.name             = "SQLite.swift"
-  s.version          = "0.9.2"
+  s.version          = "0.10.0"
   s.summary          = "A type-safe, Swift-language layer over SQLite3 for iOS and OS X."
 
   s.description      = <<-DESC
@@ -23,8 +23,13 @@ Pod::Spec.new do |s|
   s.ios.deployment_target = "8.0"
   s.tvos.deployment_target = "9.0"
   s.osx.deployment_target = "10.9"
+  s.watchos.deployment_target = "2.0"
 
-  s.module_map = "podstuff/module.modulemap"
+  s.ios.module_map = "CocoaPods/ios.modulemap"
+  s.tvos.module_map = "CocoaPods/tvos.modulemap"
+  s.osx.module_map = "CocoaPods/osx.modulemap"
+  s.watchos.module_map = "CocoaPods/watchos.modulemap"
+
   s.libraries = 'sqlite3'
   s.source_files = 'SQLite/**/*.{c,h,m,swift}'
   s.private_header_files = 'SQLite/Core/fts3_tokenizer.h'

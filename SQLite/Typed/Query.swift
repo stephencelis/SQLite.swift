@@ -50,8 +50,8 @@ extension SchemaType {
     /// - Parameter all: A list of expressions to select.
     ///
     /// - Returns: A query with the given `SELECT` clause applied.
-    public func select(column1: Expressible, _ column2: Expressible, _ more: Expressible...) -> Self {
-        return select(false, [column1, column2] + more)
+    public func select(column1: Expressible, _ more: Expressible...) -> Self {
+        return select(false, [column1] + more)
     }
 
     /// Builds a copy of the query with the `SELECT DISTINCT` clause applied.
@@ -65,8 +65,8 @@ extension SchemaType {
     /// - Parameter columns: A list of expressions to select.
     ///
     /// - Returns: A query with the given `SELECT DISTINCT` clause applied.
-    public func select(distinct column1: Expressible, _ column2: Expressible, _ more: Expressible...) -> Self {
-        return select(true, [column1, column2] + more)
+    public func select(distinct column1: Expressible, _ more: Expressible...) -> Self {
+        return select(true, [column1] + more)
     }
 
     /// Builds a copy of the query with the `SELECT` clause applied.
@@ -891,7 +891,7 @@ extension Connection {
                         let e = q.expression
                         var names = try self.prepare(e.template, e.bindings).columnNames.map { $0.quote() }
                         if namespace { names = names.map { "\(query.tableName().expression.template).\($0)" } }
-                        for name in names { columnNames[name] = idx++ }
+                        for name in names { columnNames[name] = idx; idx += 1 }
                     }
                 }
 
@@ -914,13 +914,14 @@ extension Connection {
                     continue
                 }
 
-                columnNames[each.expression.template] = idx++
+                columnNames[each.expression.template] = idx
+                idx += 1
             }
             return columnNames
         }()
 
         return AnySequence {
-            anyGenerator { statement.next().map { Row(columnNames, $0) } }
+            AnyGenerator { statement.next().map { Row(columnNames, $0) } }
         }
     }
 
