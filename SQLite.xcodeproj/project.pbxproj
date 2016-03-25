@@ -1211,6 +1211,7 @@
 				A121AC4B1CA35C79005A31D1 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		EE247ACD1C3F04ED00AE3E12 /* Build configuration list for PBXProject "SQLite" */ = {
 			isa = XCConfigurationList;
