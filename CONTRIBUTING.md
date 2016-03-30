@@ -54,29 +54,7 @@ first.
     While Swift error messaging is improving with each release, complex
     expressions still lend themselves to misleading errors. If you encounter an
     error on a complex line, breaking it down into smaller pieces generally
-    yields a more understandable error. _E.g._:
-
-    ``` swift
-    users.insert(email <- "alice@mac.com" <- managerId <- db.lastInsertRowid)
-    // Cannot invoke 'insert' with an argument list of type '(Setter, Setter)'
-    ```
-
-    Not very helpful! If we break the expression down into smaller parts,
-    however, the real error materializes on the appropriate line.
-
-    ``` swift
-    let emailSetter = email <- "alice@mac.com"
-    let managerIdSetter = managerId <- db.lastInsertRowId
-    // Binary operator '<-' cannot be applied to operands of type 'Expression<Int>' and 'Int64'
-    users.insert(emailSetter, managerIdSetter)
-    ```
-
-    The problem turns out to be a simple type mismatch. The fix is elsewhere:
-
-    ``` diff
-    -let managerId = Expression<Int>("manager_id")
-    +let managerId = Expression<Int64>("manager_id")
-    ```
+    yields a more understandable error.
 
   - **Is it an _even more_ unhelpful build error?** <a name='bugs-5'/>
 

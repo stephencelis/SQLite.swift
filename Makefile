@@ -1,6 +1,6 @@
 BUILD_TOOL = xcodebuild
-BUILD_SDK = macosx
-BUILD_ARGUMENTS = -scheme SQLite -sdk $(BUILD_SDK)
+BUILD_SCHEME = SQLite Mac
+BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)"
 
 XCPRETTY := $(shell command -v xcpretty)
 SWIFTCOV := $(shell command -v swiftcov)
@@ -48,6 +48,6 @@ repl:
 		swift -F '$(TMPDIR)/SQLite.swift/Build/Products/Debug'
 
 sloc:
-	@zsh -c "grep -vE '^ *//|^$$' SQLite/*.{swift,h,c} | wc -l"
+	@zsh -c "grep -vE '^ *//|^$$' SQLite/*/*.{swift,h,m} | wc -l"
 
 .PHONY: test coverage clean repl sloc
