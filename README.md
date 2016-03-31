@@ -158,9 +158,12 @@ SQLite.swift with CocoaPods:
     use_frameworks!
 
     pod 'SQLite.swift', '~> 0.10.1'
+    # pod 'SQLite.swift/SQLiteCipher' # SQLite.swift with SQLCipher
     ```
 
  3. Run `pod install`.
+
+ **If using SQLite.swift with [SQLCipher](https://www.zetetic.net/sqlcipher/) you must use the SQLite.swift/SQLCipher subspec. The SQLite.swift/SQLCipher subspec declares SQLCipher as a dependency, allowing SQLite.swift to be compiled with the `-DSQLITE_HAS_CODEC` flag.**
 
 [CocoaPods]: https://cocoapods.org
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
