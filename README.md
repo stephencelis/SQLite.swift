@@ -25,7 +25,7 @@ syntax _and_ intent.
  - [Full-text search][] support
  - [Well-documented][See Documentation]
  - Extensively tested
- - Companion project has [SQLCipher support](https://github.com/stephencelis/SQLiteCipher.swift)
+ - Companion project has [SQLCipher support](https://www.zetetic.net/sqlcipher/) via the CocoaPod installation method (see below).
  - Active support at [StackOverflow](http://stackoverflow.com/questions/tagged/sqlite.swift), and [Gitter Chat Room](https://gitter.im/stephencelis/SQLite.swift) (_experimental_)
 
 [Full-text search]: Documentation/Index.md#full-text-search
