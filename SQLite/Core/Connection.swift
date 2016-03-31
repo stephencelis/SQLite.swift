@@ -660,6 +660,7 @@ public enum Result : ErrorType {
 
     private static let successCodes: Set = [SQLITE_OK, SQLITE_ROW, SQLITE_DONE]
 
+    case IgnoredError
     case Error(message: String, code: Int32, statement: Statement?)
 
     init?(errorCode: Int32, connection: Connection, statement: Statement? = nil) {
@@ -679,6 +680,8 @@ extension Result : CustomStringConvertible {
             guard let statement = statement else { return message }
 
             return "\(message) (\(statement))"
+        case .IgnoredError:
+            return "INSERT OR IGNORE has failed, error code has been ignored"
         }
     }
 
