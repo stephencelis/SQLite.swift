@@ -134,7 +134,7 @@ extension Table {
         let clauses: [Expressible?] = [
             create("INDEX", indexName(columns), unique ? .Unique : nil, ifNotExists),
             Expression<Void>(literal: "ON"),
-            tableName(),
+            tableName(qualified: false),
             "".wrap(columns) as Expression<Void>
         ]
 

@@ -724,6 +724,10 @@ class SchemaTests : XCTestCase {
             "CREATE UNIQUE INDEX IF NOT EXISTS \"index_table_on_int64\" ON \"table\" (\"int64\")",
             table.createIndex([int64], unique: true, ifNotExists: true)
         )
+        XCTAssertEqual(
+            "CREATE UNIQUE INDEX IF NOT EXISTS \"main\".\"index_table_on_int64\" ON \"table\" (\"int64\")",
+            Table("table", database: "main").createIndex([int64], unique: true, ifNotExists: true)
+        )
     }
 
     func test_dropIndex_compilesCreateIndexExpression() {
