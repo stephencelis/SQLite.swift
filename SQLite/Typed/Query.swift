@@ -744,6 +744,13 @@ extension QueryType {
         ])
     }
 
+    func tableName(qualified qualified: Bool) -> Expressible {
+        if qualified {
+            return tableName()
+        }
+        return Expression<Void>(clauses.from.alias ?? clauses.from.name)
+    }
+
     func database(namespace name: String) -> Expressible {
         let name = Expression<Void>(name)
 
