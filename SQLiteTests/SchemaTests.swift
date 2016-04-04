@@ -301,6 +301,10 @@ class SchemaTests : XCTestCase {
             table.create { t in t.column(int64, references: table, int64) }
         )
         XCTAssertEqual(
+            "CREATE TABLE \"table\" (\"int64\" INTEGER NOT NULL REFERENCES \"table\" (\"int64\"))",
+            table.create { t in t.column(int64, references: qualifiedTable, int64) }
+        )
+        XCTAssertEqual(
             "CREATE TABLE \"table\" (\"int64\" INTEGER NOT NULL UNIQUE REFERENCES \"table\" (\"int64\"))",
             table.create { t in t.column(int64, unique: true, references: table, int64) }
         )
@@ -726,7 +730,7 @@ class SchemaTests : XCTestCase {
         )
         XCTAssertEqual(
             "CREATE UNIQUE INDEX IF NOT EXISTS \"main\".\"index_table_on_int64\" ON \"table\" (\"int64\")",
-            Table("table", database: "main").createIndex([int64], unique: true, ifNotExists: true)
+            qualifiedTable.createIndex([int64], unique: true, ifNotExists: true)
         )
     }
 

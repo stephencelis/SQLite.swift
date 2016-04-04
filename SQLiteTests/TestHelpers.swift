@@ -110,5 +110,6 @@ func AssertThrows<T>(@autoclosure expression: () throws -> T, file: StaticString
 }
 
 let table = Table("table")
+let qualifiedTable = Table("table", database: "main")
 let virtualTable = VirtualTable("virtual_table")
 let _view = View("view") // avoid Mac XCTestCase collision
