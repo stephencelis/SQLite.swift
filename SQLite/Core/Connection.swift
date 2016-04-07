@@ -23,7 +23,6 @@
 //
 
 import Dispatch
-import CSQLite
 
 /// A connection to SQLite.
 public final class Connection {
