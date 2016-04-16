@@ -42,7 +42,7 @@ public enum TransactionMode : String {
 
 
 /// Protocol to an SQLite connection
-public protocol ConnectionType {
+public protocol Connection {
     
     /// Whether or not the database was opened in a read-only state.
     var readonly : Bool { get }
@@ -201,8 +201,8 @@ public protocol ConnectionType {
     ///     must throw to roll the transaction back.
     ///
     /// - Throws: `Result.Error`, and rethrows.
-    func transaction(mode: TransactionMode, block: () throws -> Void) throws
-
+    func transaction(mode: TransactionMode, block: (Connection) throws -> Void) throws
+    
     // TODO: Consider not requiring a throw to roll back?
     // TODO: Consider removing ability to set a name?
     /// Runs a transaction with the given savepoint name (if omitted, it will
@@ -219,13 +219,15 @@ public protocol ConnectionType {
     ///     The block must throw to roll the savepoint back.
     ///
     /// - Throws: `SQLite.Result.Error`, and rethrows.
-    func savepoint(name: String, block: () throws -> Void) throws
+    func savepoint(name: String, block: (Connection) throws -> Void) throws
     
+    func sync<T>(block: () throws -> T) rethrows -> T
+
 }
 
 
 /// A connection to SQLite.
-public final class Connection : ConnectionType, Equatable {
+public final class DBConnection : Connection, Equatable {
 
     /// The location of a SQLite database.
     public enum Location {
@@ -498,10 +500,10 @@ public final class Connection : ConnectionType, Equatable {
     ///     must throw to roll the transaction back.
     ///
     /// - Throws: `Result.Error`, and rethrows.
-    public func transaction(mode: TransactionMode = .Deferred, block: () throws -> Void) throws {
+    public func transaction(mode: TransactionMode = .Deferred, block: (Connection) throws -> Void) throws {
         try transaction("BEGIN \(mode.rawValue) TRANSACTION", block, "COMMIT TRANSACTION", or: "ROLLBACK TRANSACTION")
     }
-
+    
     // TODO: Consider not requiring a throw to roll back?
     // TODO: Consider removing ability to set a name?
     /// Runs a transaction with the given savepoint name (if omitted, it will
@@ -518,18 +520,18 @@ public final class Connection : ConnectionType, Equatable {
     ///     The block must throw to roll the savepoint back.
     ///
     /// - Throws: `SQLite.Result.Error`, and rethrows.
-    public func savepoint(name: String = NSUUID().UUIDString, block: () throws -> Void) throws {
+    public func savepoint(name: String = NSUUID().UUIDString, block: (Connection) throws -> Void) throws {
         let name = name.quote("'")
         let savepoint = "SAVEPOINT \(name)"
-
+        
         try transaction(savepoint, block, "RELEASE \(savepoint)", or: "ROLLBACK TO \(savepoint)")
     }
-
-    private func transaction(begin: String, _ block: () throws -> Void, _ commit: String, or rollback: String) throws {
+    
+    private func transaction(begin: String, _ block: (Connection) throws -> Void, _ commit: String, or rollback: String) throws {
         return try sync {
             try self.run(begin)
             do {
-                try block()
+                try block(self)
             } catch {
                 try self.run(rollback)
                 throw error
@@ -537,7 +539,7 @@ public final class Connection : ConnectionType, Equatable {
             try self.run(commit)
         }
     }
-
+    
     /// Interrupts any long-running queries.
     public func interrupt() {
         sqlite3_interrupt(handle)
@@ -767,7 +769,7 @@ public final class Connection : ConnectionType, Equatable {
 
     // MARK: - Error Handling
 
-    func sync<T>(block: () throws -> T) rethrows -> T {
+    public func sync<T>(block: () throws -> T) rethrows -> T {
         var success: T?
         var failure: ErrorType?
 
@@ -800,7 +802,7 @@ public final class Connection : ConnectionType, Equatable {
 
 }
 
-extension Connection : CustomStringConvertible {
+extension DBConnection : CustomStringConvertible {
 
     public var description: String {
         return String.fromCString(sqlite3_db_filename(handle, nil))!
@@ -808,7 +810,7 @@ extension Connection : CustomStringConvertible {
 
 }
 
-extension Connection.Location : CustomStringConvertible {
+extension DBConnection.Location : CustomStringConvertible {
 
     public var description: String {
         switch self {
@@ -823,7 +825,7 @@ extension Connection.Location : CustomStringConvertible {
 
 }
 
-public func ==(lhs: Connection, rhs: Connection) -> Bool {
+public func ==(lhs: DBConnection, rhs: DBConnection) -> Bool {
     return lhs === rhs
 }
 
@@ -860,7 +862,7 @@ public enum Result : ErrorType {
 
     case Error(message: String, code: Int32, statement: Statement?)
 
-    init?(errorCode: Int32, connection: Connection, statement: Statement? = nil) {
+    init?(errorCode: Int32, connection: DBConnection, statement: Statement? = nil) {
         guard !Result.successCodes.contains(errorCode) else { return nil }
 
         let message = String.fromCString(sqlite3_errmsg(connection.handle))!

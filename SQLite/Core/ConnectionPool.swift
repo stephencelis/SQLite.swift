@@ -39,18 +39,19 @@ public protocol ConnectionPoolDelegate {
 // WAL mode.
 public final class ConnectionPool {
 
-    private let location : Connection.Location
-    private var availableReadConnections = [Connection]()
-    private var unavailableReadConnections = [Connection]()
+    private let location : DBConnection.Location
+    private var availableReadConnections = [DBConnection]()
+    private var unavailableReadConnections = [DBConnection]()
     private let lockQueue : dispatch_queue_t
-    private var writeConnection : Connection!
+    private var writeConnection : DBConnection!
+    private let writeQueue : dispatch_queue_t
     
     public var delegate : ConnectionPoolDelegate?
     
-    public init(_ location: Connection.Location) throws {
+    public init(_ location: DBConnection.Location) throws {
         self.location = location
-        self.lockQueue = dispatch_queue_create("SQLite.ConnectionPool", DISPATCH_QUEUE_SERIAL)
-        
+        self.lockQueue = dispatch_queue_create("SQLite.ConnectionPool.Lock", DISPATCH_QUEUE_SERIAL)
+        self.writeQueue = dispatch_queue_create("SQLite.ConnectionPool.Write", DISPATCH_QUEUE_SERIAL)
         try writable.execute("PRAGMA locking_mode = EXCLUSIVE; PRAGMA journal_mode = WAL;")
     }
     
@@ -64,12 +65,12 @@ public final class ConnectionPool {
     
     // Connection that automatically returns itself
     // to the pool when it goes out of scope
-    private class BorrowedConnection : ConnectionType, Equatable {
+    private class BorrowedConnection : Connection, Equatable {
         
         let pool : ConnectionPool
-        let connection : Connection
+        let connection : DBConnection
         
-        init(pool: ConnectionPool, connection: Connection) {
+        init(pool: ConnectionPool, connection: DBConnection) {
             self.pool = pool
             self.connection = connection
         }
@@ -101,19 +102,23 @@ public final class ConnectionPool {
         @warn_unused_result func scalar(statement: String, _ bindings: [Binding?]) -> Binding? { return connection.scalar(statement, bindings) }
         @warn_unused_result func scalar(statement: String, _ bindings: [String: Binding?]) -> Binding? { return connection.scalar(statement, bindings) }
         
-        func transaction(mode: TransactionMode, block: () throws -> Void) throws { return try connection.transaction(mode, block: block) }
-        func savepoint(name: String, block: () throws -> Void) throws { return try connection.savepoint(name, block: block) }
+        func transaction(mode: TransactionMode, block: (Connection) throws -> Void) throws { return try connection.transaction(mode, block: block) }
+        func savepoint(name: String, block: (Connection) throws -> Void) throws { return try connection.savepoint(name, block: block) }
+
+        func sync<T>(block: () throws -> T) rethrows -> T { return try connection.sync(block) }
+        func check(resultCode: Int32, statement: Statement? = nil) throws -> Int32 { return try connection.check(resultCode, statement: statement) }
         
     }
     
     
     // Acquires a read/write connection to the database
-    public var writable : ConnectionType {
+    public var writable : DBConnection {
+        
         
         var writeConnectionInit = dispatch_once_t()
         dispatch_once(&writeConnectionInit) {
             let flags = SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_WAL
-            self.writeConnection = try! Connection(self.location, flags: flags, dispatcher: ReentrantDispatcher("SQLite.WriteConnection"))
+            self.writeConnection = try! DBConnection(self.location, flags: flags, dispatcher: ReentrantDispatcher("SQLite.WriteConnection"))
             self.writeConnection.busyTimeout = 2
         }
         
@@ -121,7 +126,7 @@ public final class ConnectionPool {
     }
     
     // Acquires a read only connection to the database
-    public var readable : ConnectionType {
+    public var readable : Connection {
         
         var borrowed : BorrowedConnection!
         
@@ -129,7 +134,7 @@ public final class ConnectionPool {
             
             dispatch_sync(lockQueue) {
                 
-                let connection : Connection
+                let connection : DBConnection
                 
                 if let availableConnection = self.availableReadConnections.popLast() {
                     connection = availableConnection
@@ -137,7 +142,7 @@ public final class ConnectionPool {
                 else if self.delegate?.poolShouldAddConnection(self) ?? true {
         
                     let flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_WAL
-                    connection = try! Connection(self.location, flags: flags, dispatcher: ImmediateDispatcher())
+                    connection = try! DBConnection(self.location, flags: flags, dispatcher: ImmediateDispatcher())
                     connection.busyTimeout = 2
                 
                     self.delegate?.pool(self, didAddConnection: connection)

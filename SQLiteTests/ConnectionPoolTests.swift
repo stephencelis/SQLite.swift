@@ -10,7 +10,7 @@ class ConnectionPoolTests : SQLiteTestCase {
     func testConcurrentAccess() {
         
         let _ = try? NSFileManager.defaultManager().removeItemAtPath("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite")
-        let pool = try! ConnectionPool(.URI("\(NSTemporaryDirectory())/SQLiteswiftTests.sqlite"))
+        let pool = try! ConnectionPool(.URI("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite"))
         
         let conn = pool.writable
         try! conn.execute("CREATE TABLE IF NOT EXISTS test(id INTEGER PRIMARY KEY, name TEXT)")
@@ -53,7 +53,7 @@ class ConnectionPoolTests : SQLiteTestCase {
             
         }
         
-        for x in 10..<500 {
+        for x in 10..<50000 {
             
             let name = "test" + String(x)
             let idx = Int(rand()) % 5
@@ -75,7 +75,7 @@ class ConnectionPoolTests : SQLiteTestCase {
     func testAutoRelease() {
         
         let _ = try? NSFileManager.defaultManager().removeItemAtPath("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite")
-        let pool = try! ConnectionPool(.URI("\(NSTemporaryDirectory())/SQLiteswiftTests.sqlite"))
+        let pool = try! ConnectionPool(.URI("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite"))
         
         do {
             try! pool.readable.execute("SELECT 1")
@@ -83,5 +83,5 @@ class ConnectionPoolTests : SQLiteTestCase {
         
         XCTAssertEqual(pool.totalReadableConnectionCount, pool.availableReadableConnectionCount)
     }
-  
+    
 }
