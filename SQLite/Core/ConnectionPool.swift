@@ -22,7 +22,8 @@
 // THE SOFTWARE.
 //
 
-import Foundation
+import Dispatch
+import CSQLite
 
 
 private let vfsName = "unix-excl"
