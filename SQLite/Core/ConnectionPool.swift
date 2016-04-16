@@ -25,6 +25,9 @@
 import Foundation
 
 
+private let vfsName = "unix-excl"
+
+
 /// Connection pool delegate
 public protocol ConnectionPoolDelegate {
     
@@ -44,15 +47,13 @@ public final class ConnectionPool {
     private var unavailableReadConnections = [DBConnection]()
     private let lockQueue : dispatch_queue_t
     private var writeConnection : DBConnection!
-    private let writeQueue : dispatch_queue_t
     
     public var delegate : ConnectionPoolDelegate?
     
     public init(_ location: DBConnection.Location) throws {
         self.location = location
         self.lockQueue = dispatch_queue_create("SQLite.ConnectionPool.Lock", DISPATCH_QUEUE_SERIAL)
-        self.writeQueue = dispatch_queue_create("SQLite.ConnectionPool.Write", DISPATCH_QUEUE_SERIAL)
-        try writable.execute("PRAGMA locking_mode = EXCLUSIVE; PRAGMA journal_mode = WAL;")
+        try writable.execute("PRAGMA journal_mode = WAL;")
     }
     
     public var totalReadableConnectionCount : Int {
@@ -114,12 +115,16 @@ public final class ConnectionPool {
     // Acquires a read/write connection to the database
     public var writable : DBConnection {
         
-        
         var writeConnectionInit = dispatch_once_t()
         dispatch_once(&writeConnectionInit) {
-            let flags = SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_WAL
-            self.writeConnection = try! DBConnection(self.location, flags: flags, dispatcher: ReentrantDispatcher("SQLite.WriteConnection"))
+        
+            let flags = SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_WAL | SQLITE_OPEN_NOMUTEX
+            self.writeConnection = try! DBConnection(self.location, flags: flags, dispatcher: ReentrantDispatcher("SQLite.ConnectionPool.Write"), vfsName: vfsName)
             self.writeConnection.busyTimeout = 2
+            
+            if let delegate = self.delegate {
+                delegate.pool(self, didAddConnection: self.writeConnection)
+            }
         }
         
         return writeConnection
@@ -141,8 +146,9 @@ public final class ConnectionPool {
                 }
                 else if self.delegate?.poolShouldAddConnection(self) ?? true {
         
-                    let flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_WAL
-                    connection = try! DBConnection(self.location, flags: flags, dispatcher: ImmediateDispatcher())
+                    let flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_WAL | SQLITE_OPEN_NOMUTEX
+                    
+                    connection = try! DBConnection(self.location, flags: flags, dispatcher: ImmediateDispatcher(), vfsName: vfsName)
                     connection.busyTimeout = 2
                 
                     self.delegate?.pool(self, didAddConnection: connection)

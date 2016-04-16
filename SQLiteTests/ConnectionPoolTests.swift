@@ -34,7 +34,7 @@ class ConnectionPoolTests : SQLiteTestCase {
 
                 let conn = pool.readable
                 
-                let stmt = conn.prepare("SELECT name FROM test WHERE id = ?")
+                let stmt = try! conn.prepare("SELECT name FROM test WHERE id = ?")
                 var curr = stmt.scalar(x) as! String
                 while !quit {
                     
@@ -65,7 +65,7 @@ class ConnectionPoolTests : SQLiteTestCase {
                 XCTFail((error as? CustomStringConvertible)?.description ?? "Unknown")
             }
             
-            usleep(15000)
+            usleep(1500)
         }
         
         quit = true

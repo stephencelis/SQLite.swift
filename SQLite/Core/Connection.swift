@@ -268,9 +268,9 @@ public final class DBConnection : Connection, Equatable {
     ///     Default: `false`.
     ///
     /// - Returns: A new database connection.
-    public convenience init(_ location: Location = .InMemory, readonly: Bool = false) throws {
+    public convenience init(_ location: Location = .InMemory, readonly: Bool = false, vfsName: String? = nil) throws {
         let flags = readonly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE
-        try self.init(location, flags: flags, dispatcher: ReentrantDispatcher("SQLite.Connection"))
+        try self.init(location, flags: flags, dispatcher: ReentrantDispatcher("SQLite.Connection"), vfsName: vfsName)
     }
   
     /// Initializes a new SQLite connection.
@@ -285,9 +285,14 @@ public final class DBConnection : Connection, Equatable {
     ///   - dispatcher: Dispatcher synchronization blocks
     ///
     /// - Returns: A new database connection.
-    public init(_ location: Location, flags: Int32, dispatcher: Dispatcher) throws {
+    public init(_ location: Location, flags: Int32, dispatcher: Dispatcher, vfsName: String? = nil) throws {
         self.dispatcher = dispatcher
-        try check(sqlite3_open_v2(location.description, &_handle, flags, nil))
+        if let vfsName = vfsName {
+            try check(sqlite3_open_v2(location.description, &_handle, flags, vfsName))
+        }
+        else {
+            try check(sqlite3_open_v2(location.description, &_handle, flags, nil))
+        }
         try check(sqlite3_extended_result_codes(handle, 1))
     }
 
