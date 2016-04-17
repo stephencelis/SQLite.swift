@@ -10,27 +10,27 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_init_withInMemory_returnsInMemoryConnection() {
-        let db = try! DBConnection(.InMemory)
+        let db = try! DirectConnection(.InMemory)
         XCTAssertEqual("", db.description)
     }
 
     func test_init_returnsInMemoryByDefault() {
-        let db = try! DBConnection()
+        let db = try! DirectConnection()
         XCTAssertEqual("", db.description)
     }
 
     func test_init_withTemporary_returnsTemporaryConnection() {
-        let db = try! DBConnection(.Temporary)
+        let db = try! DirectConnection(.Temporary)
         XCTAssertEqual("", db.description)
     }
 
     func test_init_withURI_returnsURIConnection() {
-        let db = try! DBConnection(.URI("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3"))
+        let db = try! DirectConnection(.URI("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3"))
         XCTAssertEqual("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3", db.description)
     }
 
     func test_init_withString_returnsURIConnection() {
-        let db = try! DBConnection("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3")
+        let db = try! DirectConnection("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3")
         XCTAssertEqual("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3", db.description)
     }
 
@@ -39,7 +39,7 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_readonly_returnsTrueOnReadOnlyConnections() {
-        let db = try! DBConnection(readonly: true)
+        let db = try! DirectConnection(readonly: true)
         XCTAssertTrue(db.readonly)
     }
 

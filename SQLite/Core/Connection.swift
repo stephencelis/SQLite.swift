@@ -227,7 +227,7 @@ public protocol Connection {
 
 
 /// A connection to SQLite.
-public final class DBConnection : Connection, Equatable {
+public final class DirectConnection : Connection, Equatable {
 
     /// The location of a SQLite database.
     public enum Location {
@@ -807,7 +807,7 @@ public final class DBConnection : Connection, Equatable {
 
 }
 
-extension DBConnection : CustomStringConvertible {
+extension DirectConnection : CustomStringConvertible {
 
     public var description: String {
         return String.fromCString(sqlite3_db_filename(handle, nil))!
@@ -815,7 +815,7 @@ extension DBConnection : CustomStringConvertible {
 
 }
 
-extension DBConnection.Location : CustomStringConvertible {
+extension DirectConnection.Location : CustomStringConvertible {
 
     public var description: String {
         switch self {
@@ -830,7 +830,7 @@ extension DBConnection.Location : CustomStringConvertible {
 
 }
 
-public func ==(lhs: DBConnection, rhs: DBConnection) -> Bool {
+public func ==(lhs: DirectConnection, rhs: DirectConnection) -> Bool {
     return lhs === rhs
 }
 
@@ -867,7 +867,7 @@ public enum Result : ErrorType {
 
     case Error(message: String, code: Int32, statement: Statement?)
 
-    init?(errorCode: Int32, connection: DBConnection, statement: Statement? = nil) {
+    init?(errorCode: Int32, connection: DirectConnection, statement: Statement? = nil) {
         guard !Result.successCodes.contains(errorCode) else { return nil }
 
         let message = String.fromCString(sqlite3_errmsg(connection.handle))!

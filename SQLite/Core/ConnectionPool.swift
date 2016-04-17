@@ -43,15 +43,15 @@ public protocol ConnectionPoolDelegate {
 // WAL mode.
 public final class ConnectionPool {
 
-    private let location : DBConnection.Location
-    private var availableReadConnections = [DBConnection]()
-    private var unavailableReadConnections = [DBConnection]()
+    private let location : DirectConnection.Location
+    private var availableReadConnections = [DirectConnection]()
+    private var unavailableReadConnections = [DirectConnection]()
     private let lockQueue : dispatch_queue_t
-    private var writeConnection : DBConnection!
+    private var writeConnection : DirectConnection!
     
     public var delegate : ConnectionPoolDelegate?
     
-    public init(_ location: DBConnection.Location) throws {
+    public init(_ location: DirectConnection.Location) throws {
         self.location = location
         self.lockQueue = dispatch_queue_create("SQLite.ConnectionPool.Lock", DISPATCH_QUEUE_SERIAL)
         try writable.execute("PRAGMA journal_mode = WAL;")
@@ -70,9 +70,9 @@ public final class ConnectionPool {
     private class BorrowedConnection : Connection, Equatable {
         
         let pool : ConnectionPool
-        let connection : DBConnection
+        let connection : DirectConnection
         
-        init(pool: ConnectionPool, connection: DBConnection) {
+        init(pool: ConnectionPool, connection: DirectConnection) {
             self.pool = pool
             self.connection = connection
         }
@@ -114,13 +114,13 @@ public final class ConnectionPool {
     
     
     // Acquires a read/write connection to the database
-    public var writable : DBConnection {
+    public var writable : DirectConnection {
         
         var writeConnectionInit = dispatch_once_t()
         dispatch_once(&writeConnectionInit) {
         
             let flags = SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_WAL | SQLITE_OPEN_NOMUTEX
-            self.writeConnection = try! DBConnection(self.location, flags: flags, dispatcher: ReentrantDispatcher("SQLite.ConnectionPool.Write"), vfsName: vfsName)
+            self.writeConnection = try! DirectConnection(self.location, flags: flags, dispatcher: ReentrantDispatcher("SQLite.ConnectionPool.Write"), vfsName: vfsName)
             self.writeConnection.busyTimeout = 2
             
             if let delegate = self.delegate {
@@ -140,7 +140,7 @@ public final class ConnectionPool {
             
             dispatch_sync(lockQueue) {
                 
-                let connection : DBConnection
+                let connection : DirectConnection
                 
                 if let availableConnection = self.availableReadConnections.popLast() {
                     connection = availableConnection
@@ -149,7 +149,7 @@ public final class ConnectionPool {
         
                     let flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_WAL | SQLITE_OPEN_NOMUTEX
                     
-                    connection = try! DBConnection(self.location, flags: flags, dispatcher: ImmediateDispatcher(), vfsName: vfsName)
+                    connection = try! DirectConnection(self.location, flags: flags, dispatcher: ImmediateDispatcher(), vfsName: vfsName)
                     connection.busyTimeout = 2
                 
                     self.delegate?.pool(self, didAddConnection: connection)
