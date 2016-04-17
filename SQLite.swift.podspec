@@ -26,17 +26,9 @@ Pod::Spec.new do |s|
   s.watchos.deployment_target = "2.0"
 
   s.preserve_paths = 'CocoaPods/**/*'
-  s.pod_target_xcconfig = {
-    'SWIFT_INCLUDE_PATHS[sdk=macosx*]'           => '$(SRCROOT)/SQLite.swift/CocoaPods/macosx',
-    'SWIFT_INCLUDE_PATHS[sdk=iphoneos*]'         => '$(SRCROOT)/SQLite.swift/CocoaPods/iphoneos',
-    'SWIFT_INCLUDE_PATHS[sdk=iphonesimulator*]'  => '$(SRCROOT)/SQLite.swift/CocoaPods/iphonesimulator',
-    'SWIFT_INCLUDE_PATHS[sdk=appletvos*]'        => '$(SRCROOT)/SQLite.swift/CocoaPods/appletvos',
-    'SWIFT_INCLUDE_PATHS[sdk=appletvsimulator*]' => '$(SRCROOT)/SQLite.swift/CocoaPods/appletvsimulator',
-    'SWIFT_INCLUDE_PATHS[sdk=watchos*]'          => '$(SRCROOT)/SQLite.swift/CocoaPods/watchos',
-    'SWIFT_INCLUDE_PATHS[sdk=watchsimulator*]'   => '$(SRCROOT)/SQLite.swift/CocoaPods/watchsimulator'
-  }
-
-  s.libraries = 'sqlite3'
+  
   s.source_files = 'SQLite/**/*.{c,h,m,swift}'
   s.private_header_files = 'SQLite/Core/fts3_tokenizer.h'
+  
+  s.pod_target_xcconfig = { 'OTHER_CFLAGS' => '$(inherited) -DSQLITE_ENABLE_FTS4_PARENTHESIS=1 -DSQLITE_ENABLE_FTS4=1 -DSQLITE_ENABLE_FTS3_TOKENIZER' }
 end
