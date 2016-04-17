@@ -47,6 +47,8 @@
 		03A65E951C6BB3030062603F /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247B161C3F127200AE3E12 /* TestHelpers.swift */; };
 		03A65E971C6BB3210062603F /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 03A65E961C6BB3210062603F /* libsqlite3.tbd */; };
 		AA58505F1CC40BA70034C46D /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA58505E1CC40BA70034C46D /* Errors.swift */; };
+		AA5850601CC4154B0034C46D /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA58505E1CC40BA70034C46D /* Errors.swift */; };
+		AA5850611CC4154B0034C46D /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA58505E1CC40BA70034C46D /* Errors.swift */; };
 		AA780B3D1CC201A700E0E95E /* ConnectionPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA780B3B1CC201A700E0E95E /* ConnectionPool.swift */; };
 		AA780B3E1CC201A700E0E95E /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA780B3C1CC201A700E0E95E /* Dispatcher.swift */; };
 		AA780B411CC202C800E0E95E /* ConnectionPoolTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA780B3F1CC202B000E0E95E /* ConnectionPoolTests.swift */; };
@@ -56,8 +58,6 @@
 		AA780B451CC202F300E0E95E /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA780B3C1CC201A700E0E95E /* Dispatcher.swift */; };
 		AA780B461CC202F400E0E95E /* ConnectionPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA780B3B1CC201A700E0E95E /* ConnectionPool.swift */; };
 		AA780B471CC202F400E0E95E /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA780B3C1CC201A700E0E95E /* Dispatcher.swift */; };
-		AA780B481CC202F500E0E95E /* ConnectionPool.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA780B3B1CC201A700E0E95E /* ConnectionPool.swift */; };
-		AA780B491CC202F500E0E95E /* Dispatcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = AA780B3C1CC201A700E0E95E /* Dispatcher.swift */; };
 		EE247AD71C3F04ED00AE3E12 /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE247ADE1C3F04ED00AE3E12 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE247AD31C3F04ED00AE3E12 /* SQLite.framework */; };
 		EE247B031C3F06E900AE3E12 /* Blob.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEE1C3F06E900AE3E12 /* Blob.swift */; };
@@ -428,16 +428,16 @@
 		EE247AED1C3F06E900AE3E12 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				EE247AEF1C3F06E900AE3E12 /* Connection.swift */,
 				AA780B3B1CC201A700E0E95E /* ConnectionPool.swift */,
 				AA780B3C1CC201A700E0E95E /* Dispatcher.swift */,
-				EE91808D1C46E5230038162A /* SQLite-Bridging.h */,
 				EE247AEE1C3F06E900AE3E12 /* Blob.swift */,
-				EE247AEF1C3F06E900AE3E12 /* Connection.swift */,
-				EE247AF01C3F06E900AE3E12 /* fts3_tokenizer.h */,
-				EE247AF11C3F06E900AE3E12 /* SQLite-Bridging.m */,
 				EE247AF21C3F06E900AE3E12 /* Statement.swift */,
 				EE247AF31C3F06E900AE3E12 /* Value.swift */,
 				AA58505E1CC40BA70034C46D /* Errors.swift */,
+				EE247AF01C3F06E900AE3E12 /* fts3_tokenizer.h */,
+				EE91808D1C46E5230038162A /* SQLite-Bridging.h */,
+				EE247AF11C3F06E900AE3E12 /* SQLite-Bridging.m */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -799,6 +799,7 @@
 				03A65E7A1C6BB2F70062603F /* Statement.swift in Sources */,
 				03A65E741C6BB2DA0062603F /* Helpers.swift in Sources */,
 				03A65E831C6BB2FB0062603F /* Operators.swift in Sources */,
+				AA5850611CC4154B0034C46D /* Errors.swift in Sources */,
 				03A65E851C6BB2FB0062603F /* Schema.swift in Sources */,
 				AA780B471CC202F400E0E95E /* Dispatcher.swift in Sources */,
 				03A65E841C6BB2FB0062603F /* Query.swift in Sources */,
@@ -836,8 +837,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				AA780B491CC202F500E0E95E /* Dispatcher.swift in Sources */,
-				AA780B481CC202F500E0E95E /* ConnectionPool.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -909,6 +908,7 @@
 				EE247B691C3F3FEC00AE3E12 /* Statement.swift in Sources */,
 				EE247B641C3F3FDB00AE3E12 /* Helpers.swift in Sources */,
 				EE247B721C3F3FEC00AE3E12 /* Operators.swift in Sources */,
+				AA5850601CC4154B0034C46D /* Errors.swift in Sources */,
 				EE247B741C3F3FEC00AE3E12 /* Schema.swift in Sources */,
 				AA780B451CC202F300E0E95E /* Dispatcher.swift in Sources */,
 				EE247B731C3F3FEC00AE3E12 /* Query.swift in Sources */,
