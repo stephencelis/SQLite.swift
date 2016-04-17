@@ -53,9 +53,9 @@ public struct Setter {
         self.value = value
     }
 
-    private init<V : Value>(column: Expression<V?>, value: V?) throws {
+    private init<V : Value>(column: Expression<V?>, value: V?) {
         self.column = column
-        self.value = try Expression<V?>(value: value)
+        self.value = Expression<V?>(value: value)
     }
 
 }
@@ -80,8 +80,8 @@ public func <-<V : Value>(column: Expression<V?>, value: Expression<V>) -> Sette
 public func <-<V : Value>(column: Expression<V?>, value: Expression<V?>) -> Setter {
     return Setter(column: column, value: value)
 }
-public func <-<V : Value>(column: Expression<V?>, value: V?) throws -> Setter {
-    return try Setter(column: column, value: value)
+public func <-<V : Value>(column: Expression<V?>, value: V?) -> Setter {
+    return Setter(column: column, value: value)
 }
 
 public func +=(column: Expression<String>, value: Expression<String>) -> Setter {

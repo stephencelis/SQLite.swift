@@ -939,7 +939,7 @@ extension Connection {
 
     public func scalar<V : Value>(query: ScalarQuery<V?>) throws -> V.ValueType? {
         let expression = query.expression
-        guard let value = scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
+        guard let value = try scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
         return try V.fromDatatypeValue(value)
     }
 
@@ -950,12 +950,12 @@ extension Connection {
 
     public func scalar<V : Value>(query: Select<V?>) throws ->  V.ValueType? {
         let expression = query.expression
-        guard let value = scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
+        guard let value = try scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
         return try V.fromDatatypeValue(value)
     }
 
-    public func pluck(query: QueryType) -> Row? {
-        return try! prepare(query.limit(1, query.clauses.limit?.offset)).generate().next()
+    public func pluck(query: QueryType) throws -> Row? {
+        return try prepare(query.limit(1, query.clauses.limit?.offset)).generate().next()
     }
 
     /// Runs an `Insert` query.

@@ -108,9 +108,9 @@ public final class ConnectionPool {
         func run(statement: String, _ bindings: [Binding?]) throws -> Statement { return try connection.run(statement, bindings) }
         func run(statement: String, _ bindings: [String: Binding?]) throws -> Statement { return try connection.run(statement, bindings) }
         
-        @warn_unused_result func scalar(statement: String, _ bindings: Binding?...) -> Binding? { return connection.scalar(statement, bindings) }
-        @warn_unused_result func scalar(statement: String, _ bindings: [Binding?]) -> Binding? { return connection.scalar(statement, bindings) }
-        @warn_unused_result func scalar(statement: String, _ bindings: [String: Binding?]) -> Binding? { return connection.scalar(statement, bindings) }
+        @warn_unused_result func scalar(statement: String, _ bindings: Binding?...) throws -> Binding? { return try connection.scalar(statement, bindings) }
+        @warn_unused_result func scalar(statement: String, _ bindings: [Binding?]) throws -> Binding? { return try connection.scalar(statement, bindings) }
+        @warn_unused_result func scalar(statement: String, _ bindings: [String: Binding?]) throws -> Binding? { return try connection.scalar(statement, bindings) }
         
         func transaction(mode: TransactionMode, block: (Connection) throws -> Void) throws { return try connection.transaction(mode, block: block) }
         func savepoint(name: String, block: (Connection) throws -> Void) throws { return try connection.savepoint(name, block: block) }

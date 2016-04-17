@@ -154,7 +154,7 @@ public final class Statement {
         }
 
         reset(clearBindings: false)
-        try! step()
+        try step()
         return row[0]
     }
 

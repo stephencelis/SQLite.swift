@@ -43,7 +43,7 @@ class SQLiteTestCase : XCTestCase {
     func InsertUser(name: String, age: Int? = nil, admin: Bool = false) throws -> Statement {
         return try db.run(
             "INSERT INTO \"users\" (email, age, admin) values (?, ?, ?)",
-            "\(name)@example.com", age?.datatypeValue, admin.datatypeValue
+            "\(name)@example.com", try age?.datatypeValue(), try admin.datatypeValue()
         )
     }
 
@@ -96,8 +96,8 @@ let int64Optional = Expression<Int64?>("int64Optional")
 let string = Expression<String>("string")
 let stringOptional = Expression<String?>("stringOptional")
 
-func AssertSQL(@autoclosure expression1: () -> String, @autoclosure _ expression2: () -> Expressible, file: StaticString = #file, line: UInt = #line) {
-    XCTAssertEqual(expression1(), expression2().asSQL(), file: file, line: line)
+func AssertSQL(@autoclosure expression1: () -> String, @autoclosure _ expression2: () throws -> Expressible, file: StaticString = #file, line: UInt = #line) {
+    XCTAssertEqual(expression1(), try! expression2().asSQL(), file: file, line: line)
 }
 
 func AssertThrows<T>(@autoclosure expression: () throws -> T, file: StaticString = #file, line: UInt = #line) {

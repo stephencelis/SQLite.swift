@@ -129,8 +129,8 @@ class CoreFunctionsTests : XCTestCase {
     }
 
     func test_contains_buildsExpressionWithInOperator() {
-        AssertSQL("(\"string\" IN ('hello', 'world'))", ["hello", "world"].contains(string))
-        AssertSQL("(\"stringOptional\" IN ('hello', 'world'))", ["hello", "world"].contains(stringOptional))
+        AssertSQL("(\"string\" IN ('hello', 'world'))", try ["hello", "world"].contains(string))
+        AssertSQL("(\"stringOptional\" IN ('hello', 'world'))", try ["hello", "world"].contains(stringOptional))
     }
 
 }
