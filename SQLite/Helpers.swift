@@ -115,10 +115,10 @@ extension String {
     }
 }
 
-@warn_unused_result func value<A: Value>(v: Binding) -> A {
-    return A.fromDatatypeValue(v as! A.Datatype) as! A
+@warn_unused_result func value<A: Value>(v: Binding) throws -> A {
+    return try A.fromDatatypeValue(v as! A.Datatype) as! A
 }
 
-@warn_unused_result func value<A: Value>(v: Binding?) -> A {
-    return value(v!)
+@warn_unused_result func value<A: Value>(v: Binding?) throws -> A {
+    return try value(v!)
 }

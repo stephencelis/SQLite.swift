@@ -335,15 +335,15 @@ public func ==<V : Value where V.Datatype : Equatable>(lhs: Expression<V?>, rhs:
 public func ==<V : Value where V.Datatype : Equatable>(lhs: Expression<V>, rhs: V) -> Expression<Bool> {
     return "=".infix(lhs, rhs)
 }
-public func ==<V : Value where V.Datatype : Equatable>(lhs: Expression<V?>, rhs: V?) -> Expression<Bool?> {
-    guard let rhs = rhs else { return "IS".infix(lhs, Expression<V?>(value: nil)) }
+public func ==<V : Value where V.Datatype : Equatable>(lhs: Expression<V?>, rhs: V?) throws -> Expression<Bool?> {
+    guard let rhs = rhs else { return "IS".infix(lhs, try Expression<V?>(value: nil)) }
     return "=".infix(lhs, rhs)
 }
 public func ==<V : Value where V.Datatype : Equatable>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
     return "=".infix(lhs, rhs)
 }
-public func ==<V : Value where V.Datatype : Equatable>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> {
-    guard let lhs = lhs else { return "IS".infix(Expression<V?>(value: nil), rhs) }
+public func ==<V : Value where V.Datatype : Equatable>(lhs: V?, rhs: Expression<V?>) throws -> Expression<Bool?> {
+    guard let lhs = lhs else { return "IS".infix(try Expression<V?>(value: nil), rhs) }
     return "=".infix(lhs, rhs)
 }
 
@@ -362,15 +362,15 @@ public func !=<V : Value where V.Datatype : Equatable>(lhs: Expression<V?>, rhs:
 public func !=<V : Value where V.Datatype : Equatable>(lhs: Expression<V>, rhs: V) -> Expression<Bool> {
     return infix(lhs, rhs)
 }
-public func !=<V : Value where V.Datatype : Equatable>(lhs: Expression<V?>, rhs: V?) -> Expression<Bool?> {
-    guard let rhs = rhs else { return "IS NOT".infix(lhs, Expression<V?>(value: nil)) }
+public func !=<V : Value where V.Datatype : Equatable>(lhs: Expression<V?>, rhs: V?) throws -> Expression<Bool?> {
+    guard let rhs = rhs else { return "IS NOT".infix(lhs, try Expression<V?>(value: nil)) }
     return infix(lhs, rhs)
 }
 public func !=<V : Value where V.Datatype : Equatable>(lhs: V, rhs: Expression<V>) -> Expression<Bool> {
     return infix(lhs, rhs)
 }
-public func !=<V : Value where V.Datatype : Equatable>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> {
-    guard let lhs = lhs else { return "IS NOT".infix(Expression<V?>(value: nil), rhs) }
+public func !=<V : Value where V.Datatype : Equatable>(lhs: V?, rhs: Expression<V?>) throws -> Expression<Bool?> {
+    guard let lhs = lhs else { return "IS NOT".infix(try Expression<V?>(value: nil), rhs) }
     return infix(lhs, rhs)
 }
 

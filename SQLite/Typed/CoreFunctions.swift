@@ -597,9 +597,9 @@ extension CollectionType where Generator.Element : Value, Index.Distance == Int 
     ///
     /// - Returns: A copy of the expression prepended with an `IN` check against
     ///   the collection.
-    @warn_unused_result public func contains(expression: Expression<Generator.Element>) -> Expression<Bool> {
+    @warn_unused_result public func contains(expression: Expression<Generator.Element>) throws -> Expression<Bool> {
         let templates = [String](count: count, repeatedValue: "?").joinWithSeparator(", ")
-        return "IN".infix(expression, Expression<Void>("(\(templates))", map { $0.datatypeValue }))
+        return "IN".infix(expression, Expression<Void>("(\(templates))", try map { try $0.datatypeValue() }))
     }
 
     /// Builds a copy of the expression prepended with an `IN` check against the
@@ -613,9 +613,9 @@ extension CollectionType where Generator.Element : Value, Index.Distance == Int 
     ///
     /// - Returns: A copy of the expression prepended with an `IN` check against
     ///   the collection.
-    @warn_unused_result public func contains(expression: Expression<Generator.Element?>) -> Expression<Bool?> {
+    @warn_unused_result public func contains(expression: Expression<Generator.Element?>) throws -> Expression<Bool?> {
         let templates = [String](count: count, repeatedValue: "?").joinWithSeparator(", ")
-        return "IN".infix(expression, Expression<Void>("(\(templates))", map { $0.datatypeValue }))
+        return "IN".infix(expression, Expression<Void>("(\(templates))", try map { try $0.datatypeValue() }))
     }
 
 }

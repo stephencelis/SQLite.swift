@@ -39,9 +39,9 @@ public protocol Value : Expressible { // extensions cannot have inheritance clau
 
     static var declaredDatatype: String { get }
 
-    static func fromDatatypeValue(datatypeValue: Datatype) -> ValueType
+    static func fromDatatypeValue(datatypeValue: Datatype) throws -> ValueType
 
-    var datatypeValue: Datatype { get }
+    func datatypeValue() throws -> Datatype
 
 }
 
@@ -53,7 +53,7 @@ extension Double : Number, Value {
         return datatypeValue
     }
 
-    public var datatypeValue: Double {
+    public func datatypeValue() throws -> Double {
         return self
     }
 
@@ -67,7 +67,7 @@ extension Int64 : Number, Value {
         return datatypeValue
     }
 
-    public var datatypeValue: Int64 {
+    public func datatypeValue() throws -> Int64 {
         return self
     }
 
@@ -81,7 +81,7 @@ extension String : Binding, Value {
         return datatypeValue
     }
 
-    public var datatypeValue: String {
+    public func datatypeValue() throws -> String {
         return self
     }
 
@@ -95,7 +95,7 @@ extension Blob : Binding, Value {
         return datatypeValue
     }
 
-    public var datatypeValue: Blob {
+    public func datatypeValue() throws -> Blob {
         return self
     }
 
@@ -111,7 +111,7 @@ extension Bool : Binding, Value {
         return datatypeValue != 0
     }
 
-    public var datatypeValue: Int64 {
+    public func datatypeValue() throws -> Int64 {
         return self ? 1 : 0
     }
 
@@ -125,7 +125,7 @@ extension Int : Number, Value {
         return Int(datatypeValue)
     }
 
-    public var datatypeValue: Int64 {
+    public func datatypeValue() throws -> Int64 {
         return Int64(self)
     }
 

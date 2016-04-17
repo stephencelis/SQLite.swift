@@ -701,48 +701,59 @@ public final class DirectConnection : Connection, Equatable {
     ///   - block: A block of code to run when the function is called. The block
     ///     is called with an array of raw SQL values mapped to the function’s
     ///     parameters and should return a raw SQL value (or nil).
-    public func createFunction(function: String, argumentCount: UInt? = nil, deterministic: Bool = false, _ block: (args: [Binding?]) -> Binding?) {
+    public func createFunction(function: String, argumentCount: UInt? = nil, deterministic: Bool = false, _ block: (args: [Binding?]) throws -> Binding?) throws {
         let argc = argumentCount.map { Int($0) } ?? -1
         let box: Function = { context, argc, argv in
-            let arguments: [Binding?] = (0..<Int(argc)).map { idx in
-                let value = argv[idx]
-                switch sqlite3_value_type(value) {
-                case SQLITE_BLOB:
-                    return Blob(bytes: sqlite3_value_blob(value), length: Int(sqlite3_value_bytes(value)))
-                case SQLITE_FLOAT:
-                    return sqlite3_value_double(value)
-                case SQLITE_INTEGER:
-                    return sqlite3_value_int64(value)
-                case SQLITE_NULL:
-                    return nil
-                case SQLITE_TEXT:
-                    return String.fromCString(UnsafePointer(sqlite3_value_text(value)))!
-                case let type:
-                    fatalError("unsupported value type: \(type)")
+            do {
+                let arguments: [Binding?] = try (0..<Int(argc)).map { idx in
+                    let value = argv[idx]
+                    switch sqlite3_value_type(value) {
+                    case SQLITE_BLOB:
+                        return Blob(bytes: sqlite3_value_blob(value), length: Int(sqlite3_value_bytes(value)))
+                    case SQLITE_FLOAT:
+                        return sqlite3_value_double(value)
+                    case SQLITE_INTEGER:
+                        return sqlite3_value_int64(value)
+                    case SQLITE_NULL:
+                        return nil
+                    case SQLITE_TEXT:
+                        return String.fromCString(UnsafePointer(sqlite3_value_text(value)))!
+                    case let type:
+                        throw FunctionError.UnsupportedArgumentType(type: type)
+                    }
+                }
+                let result = try block(args: arguments)
+                if let result = result as? Blob {
+                    sqlite3_result_blob(context, result.bytes, Int32(result.bytes.count), nil)
+                } else if let result = result as? Double {
+                    sqlite3_result_double(context, result)
+                } else if let result = result as? Int64 {
+                    sqlite3_result_int64(context, result)
+                } else if let result = result as? String {
+                    sqlite3_result_text(context, result, Int32(result.characters.count), SQLITE_TRANSIENT)
+                } else if let result = result {
+                    throw FunctionError.UnsupportedResultType(value: result)
+                } else {
+                    sqlite3_result_null(context)
                 }
             }
-            let result = block(args: arguments)
-            if let result = result as? Blob {
-                sqlite3_result_blob(context, result.bytes, Int32(result.bytes.count), nil)
-            } else if let result = result as? Double {
-                sqlite3_result_double(context, result)
-            } else if let result = result as? Int64 {
-                sqlite3_result_int64(context, result)
-            } else if let result = result as? String {
-                sqlite3_result_text(context, result, Int32(result.characters.count), SQLITE_TRANSIENT)
-            } else if result == nil {
-                sqlite3_result_null(context)
-            } else {
-                fatalError("unsupported result type: \(result)")
+            catch let error as CustomStringConvertible {
+                sqlite3_result_error(context, error.description, 0)
+            }
+            catch let error as NSError {
+                sqlite3_result_error(context, error.localizedDescription, 0)
+            }
+            catch {
+                sqlite3_result_error(context, "Unknown invocation error", 0)
             }
         }
         var flags = SQLITE_UTF8
         if deterministic {
             flags |= SQLITE_DETERMINISTIC
         }
-        sqlite3_create_function_v2(handle, function, Int32(argc), flags, unsafeBitCast(box, UnsafeMutablePointer<Void>.self), { context, argc, value in
+        try check(sqlite3_create_function_v2(handle, function, Int32(argc), flags, unsafeBitCast(box, UnsafeMutablePointer<Void>.self), { context, argc, value in
             unsafeBitCast(sqlite3_user_data(context), Function.self)(context, argc, value)
-        }, nil, nil, nil)
+        }, nil, nil, nil))
         if functions[function] == nil { self.functions[function] = [:] }
         functions[function]?[argc] = box
     }

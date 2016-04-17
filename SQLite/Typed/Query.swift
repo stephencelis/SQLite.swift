@@ -913,7 +913,7 @@ extension Connection {
                                 continue column
                             }
                         }
-                        fatalError("no such table: \(namespace)")
+                        throw QueryError.NoSuchTable(name: namespace)
                     }
                     for q in queries {
                         try expandGlob(query.clauses.join.count > 0)(q)
@@ -932,26 +932,26 @@ extension Connection {
         }
     }
 
-    public func scalar<V : Value>(query: ScalarQuery<V>) -> V {
+    public func scalar<V : Value>(query: ScalarQuery<V>) throws -> V {
         let expression = query.expression
-        return value(scalar(expression.template, expression.bindings))
+        return try value(scalar(expression.template, expression.bindings))
     }
 
-    public func scalar<V : Value>(query: ScalarQuery<V?>) -> V.ValueType? {
+    public func scalar<V : Value>(query: ScalarQuery<V?>) throws -> V.ValueType? {
         let expression = query.expression
         guard let value = scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
-        return V.fromDatatypeValue(value)
+        return try V.fromDatatypeValue(value)
     }
 
-    public func scalar<V : Value>(query: Select<V>) -> V {
+    public func scalar<V : Value>(query: Select<V>) throws -> V {
         let expression = query.expression
-        return value(scalar(expression.template, expression.bindings))
+        return try value(scalar(expression.template, expression.bindings))
     }
 
-    public func scalar<V : Value>(query: Select<V?>) ->  V.ValueType? {
+    public func scalar<V : Value>(query: Select<V?>) throws ->  V.ValueType? {
         let expression = query.expression
         guard let value = scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
-        return V.fromDatatypeValue(value)
+        return try V.fromDatatypeValue(value)
     }
 
     public func pluck(query: QueryType) -> Row? {
@@ -1025,13 +1025,13 @@ public struct Row {
     /// - Parameter column: An expression representing a column selected in a Query.
     ///
     /// - Returns: The value for the given column.
-    public func get<V: Value>(column: Expression<V>) -> V {
-        return get(Expression<V?>(column))!
+    public func get<V: Value>(column: Expression<V>) throws -> V {
+        return try get(Expression<V?>(column))!
     }
-    public func get<V: Value>(column: Expression<V?>) -> V? {
-        func valueAtIndex(idx: Int) -> V? {
+    public func get<V: Value>(column: Expression<V?>) throws -> V? {
+        func valueAtIndex(idx: Int) throws -> V? {
             guard let value = values[idx] as? V.Datatype else { return nil }
-            return (V.fromDatatypeValue(value) as? V)!
+            return (try V.fromDatatypeValue(value) as? V)!
         }
 
         guard let idx = columnNames[column.template] else {
@@ -1039,59 +1039,59 @@ public struct Row {
 
             switch similar.count {
             case 0:
-                fatalError("no such column '\(column.template)' in columns: \(columnNames.keys.sort())")
+                throw QueryError.NoSuchColumn(name: column.template)
             case 1:
-                return valueAtIndex(columnNames[similar[0]]!)
+                return try valueAtIndex(columnNames[similar[0]]!)
             default:
-                fatalError("ambiguous column '\(column.template)' (please disambiguate: \(similar))")
+                throw QueryError.AmbiguousColumn(name: column.template)
             }
         }
 
-        return valueAtIndex(idx)
+        return try valueAtIndex(idx)
     }
 
     // FIXME: rdar://problem/18673897 // subscript<T>…
     
     public subscript(column: Expression<Blob>) -> Blob {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<Blob?>) -> Blob? {
-        return get(column)
+        return try! get(column)
     }
 
     public subscript(column: Expression<Bool>) -> Bool {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<Bool?>) -> Bool? {
-        return get(column)
+        return try! get(column)
     }
 
     public subscript(column: Expression<Double>) -> Double {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<Double?>) -> Double? {
-        return get(column)
+        return try! get(column)
     }
 
     public subscript(column: Expression<Int>) -> Int {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<Int?>) -> Int? {
-        return get(column)
+        return try! get(column)
     }
 
     public subscript(column: Expression<Int64>) -> Int64 {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<Int64?>) -> Int64? {
-        return get(column)
+        return try! get(column)
     }
 
     public subscript(column: Expression<String>) -> String {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<String?>) -> String? {
-        return get(column)
+        return try! get(column)
     }
 
 }

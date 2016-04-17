@@ -110,8 +110,8 @@ extension ExpressionType {
 
 extension ExpressionType where UnderlyingType : Value {
 
-    public init(value: UnderlyingType) {
-        self.init("?", [value.datatypeValue])
+    public init(value: UnderlyingType) throws {
+        self.init("?", [try value.datatypeValue()])
     }
 
 }
@@ -119,11 +119,11 @@ extension ExpressionType where UnderlyingType : Value {
 extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.WrappedType : Value {
 
     public static var null: Self {
-        return self.init(value: nil)
+        return try! self.init(value: nil)
     }
 
-    public init(value: UnderlyingType.WrappedType?) {
-        self.init("?", [value?.datatypeValue])
+    public init(value: UnderlyingType.WrappedType?) throws {
+        self.init("?", [try value?.datatypeValue()])
     }
 
 }
@@ -131,7 +131,7 @@ extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wr
 extension Value {
 
     public var expression: Expression<Void> {
-        return Expression(value: self).expression
+        return try! Expression(value: self).expression
     }
 
 }
