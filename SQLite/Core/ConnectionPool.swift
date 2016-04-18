@@ -29,15 +29,6 @@ import CSQLite
 private let vfsName = "unix-excl"
 
 
-/// Connection pool delegate
-public protocol ConnectionPoolDelegate {
-    
-    func poolShouldAddConnection(pool: ConnectionPool) -> Bool
-    func pool(pool: ConnectionPool, didAddConnection: Connection)
-    
-}
-
-
 // Connection pool for accessing an SQLite database
 // with multiple readers & a single writer. Utilizes
 // WAL mode.
@@ -49,12 +40,29 @@ public final class ConnectionPool {
     private let lockQueue : dispatch_queue_t
     private var writeConnection : DirectConnection!
     
-    public var delegate : ConnectionPoolDelegate?
+    public var foreignKeys : Bool {
+        get {
+            return internalSetup[.ForeignKeys] != nil
+        }
+        set {
+            internalSetup[.ForeignKeys] = newValue ? { try $0.execute("PRAGMA foreign_keys = ON;") } : nil
+        }
+    }
+    
+    public typealias ConnectionProcessor = Connection throws -> Void
+    public var setup = [ConnectionProcessor]()
+    
+    private enum InternalOption {
+        case WriteAheadLogging
+        case ForeignKeys
+    }
+    
+    private var internalSetup = [InternalOption: ConnectionProcessor]()
     
     public init(_ location: DirectConnection.Location) throws {
         self.location = location
         self.lockQueue = dispatch_queue_create("SQLite.ConnectionPool.Lock", DISPATCH_QUEUE_SERIAL)
-        try writable.execute("PRAGMA journal_mode = WAL;")
+        self.internalSetup[.WriteAheadLogging] = { try $0.execute("PRAGMA journal_mode = WAL;") }
     }
     
     public var totalReadableConnectionCount : Int {
@@ -123,9 +131,14 @@ public final class ConnectionPool {
             self.writeConnection = try! DirectConnection(self.location, flags: flags, dispatcher: ReentrantDispatcher("SQLite.ConnectionPool.Write"), vfsName: vfsName)
             self.writeConnection.busyTimeout = 2
             
-            if let delegate = self.delegate {
-                delegate.pool(self, didAddConnection: self.writeConnection)
+            for setupProcessor in self.internalSetup.values {
+                try! setupProcessor(self.writeConnection)
             }
+            
+            for setupProcessor in self.setup {
+                try! setupProcessor(self.writeConnection)
+            }
+            
         }
         
         return writeConnection
@@ -140,23 +153,32 @@ public final class ConnectionPool {
             
             dispatch_sync(lockQueue) {
                 
+                // Ensure database is open
+                self.writable
+                
                 let connection : DirectConnection
                 
                 if let availableConnection = self.availableReadConnections.popLast() {
                     connection = availableConnection
                 }
-                else if self.delegate?.poolShouldAddConnection(self) ?? true {
+                else {
         
                     let flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_WAL | SQLITE_OPEN_NOMUTEX
                     
                     connection = try! DirectConnection(self.location, flags: flags, dispatcher: ImmediateDispatcher(), vfsName: vfsName)
                     connection.busyTimeout = 2
                 
-                    self.delegate?.pool(self, didAddConnection: connection)
+                    for (type, setupProcessor) in self.internalSetup {
+                        if type == .WriteAheadLogging {
+                            continue
+                        }
+                        try! setupProcessor(connection)
+                    }
                     
-                }
-                else {
-                    return
+                    for setupProcessor in self.setup {
+                        try! setupProcessor(connection)
+                    }
+                    
                 }
                 
                 self.unavailableReadConnections.append(connection)

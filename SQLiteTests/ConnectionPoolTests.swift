@@ -6,6 +6,19 @@ class ConnectionPoolTests : SQLiteTestCase {
     override func setUp() {
         super.setUp()
     }
+    
+    func testConnectionSetupClosures() {
+        
+        let _ = try? NSFileManager.defaultManager().removeItemAtPath("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite")
+        let pool = try! ConnectionPool(.URI("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite"))
+        
+        pool.foreignKeys = true
+        pool.setup.append { try $0.execute("CREATE TABLE IF NOT EXISTS test(value INT)") }
+        
+        XCTAssertTrue(try pool.readable.scalar("PRAGMA foreign_keys") as! Int64 == 1)
+        try! pool.writable.execute("INSERT INTO test(value) VALUES (1)")
+        try! pool.readable.execute("SELECT value FROM test")
+    }
 
     func testConcurrentAccess2() {
         
