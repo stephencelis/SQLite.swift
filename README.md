@@ -25,7 +25,7 @@ syntax _and_ intent.
  - [Full-text search][] support
  - [Well-documented][See Documentation]
  - Extensively tested
- - Companion project has [SQLCipher support](https://github.com/stephencelis/SQLiteCipher.swift)
+ - Companion project has [SQLCipher support](https://www.zetetic.net/sqlcipher/) via the CocoaPod installation method (see below).
  - Active support at [StackOverflow](http://stackoverflow.com/questions/tagged/sqlite.swift), and [Gitter Chat Room](https://gitter.im/stephencelis/SQLite.swift) (_experimental_)
 
 [Full-text search]: Documentation/Index.md#full-text-search
@@ -158,9 +158,12 @@ SQLite.swift with CocoaPods:
     use_frameworks!
 
     pod 'SQLite.swift', '~> 0.10.1'
+    # pod 'SQLite.swift/SQLiteCipher' # SQLite.swift with SQLCipher
     ```
 
  3. Run `pod install`.
+
+ **If using SQLite.swift with [SQLCipher](https://www.zetetic.net/sqlcipher/) you must use the SQLite.swift/SQLCipher subspec. The SQLite.swift/SQLCipher subspec declares SQLCipher as a dependency, allowing SQLite.swift to be compiled with the `-DSQLITE_HAS_CODEC` flag.**
 
 [CocoaPods]: https://cocoapods.org
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
