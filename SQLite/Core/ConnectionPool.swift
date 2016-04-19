@@ -122,9 +122,11 @@ public final class ConnectionPool {
     
     
     // Acquires a read/write connection to the database
+    
+    var writeConnectionInit = dispatch_once_t()
+    
     public var writable : DirectConnection {
-        
-        var writeConnectionInit = dispatch_once_t()
+
         dispatch_once(&writeConnectionInit) {
         
             let flags = SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_WAL | SQLITE_OPEN_NOMUTEX
