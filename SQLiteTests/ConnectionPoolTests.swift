@@ -3,27 +3,24 @@ import SQLite
 
 class ConnectionPoolTests : SQLiteTestCase {
 
+    var pool : ConnectionPool!
+    
     override func setUp() {
-        super.setUp()
+        let _ = try? NSFileManager.defaultManager().removeItemAtPath("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite")
+        pool = try! ConnectionPool(.URI("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite"))
     }
     
     func testConnectionSetupClosures() {
         
-        let _ = try? NSFileManager.defaultManager().removeItemAtPath("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite")
-        let pool = try! ConnectionPool(.URI("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite"))
-        
         pool.foreignKeys = true
         pool.setup.append { try $0.execute("CREATE TABLE IF NOT EXISTS test(value INT)") }
         
-        XCTAssertTrue(try pool.readable.scalar("PRAGMA foreign_keys") as! Int64 == 1)
+        XCTAssertTrue(pool.readable.scalar("PRAGMA foreign_keys") as! Int64 == 1)
         try! pool.writable.execute("INSERT INTO test(value) VALUES (1)")
         try! pool.readable.execute("SELECT value FROM test")
     }
 
     func testConcurrentAccess2() {
-        
-        let _ = try? NSFileManager.defaultManager().removeItemAtPath("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite")
-        let pool = try! ConnectionPool(.URI("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite"))
         
         let conn = pool.writable
         try! conn.execute("DROP TABLE IF EXISTS test; CREATE TABLE test(id INTEGER PRIMARY KEY, name TEXT);")
@@ -45,7 +42,7 @@ class ConnectionPoolTests : SQLiteTestCase {
                 
                 print("started", x)
 
-                let conn = pool.readable
+                let conn = self.pool.readable
                 
                 let stmt = try! conn.prepare("SELECT name FROM test WHERE id = ?")
                 var curr = stmt.scalar(x) as! String
@@ -87,9 +84,6 @@ class ConnectionPoolTests : SQLiteTestCase {
     
     func testConcurrentAccess() throws {
         
-        let _ = try? NSFileManager.defaultManager().removeItemAtPath("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite")
-        let pool = try! ConnectionPool(.URI("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite"))
-        
         try! pool.writable.execute("DROP TABLE IF EXISTS test; CREATE TABLE test(value);")
         try! pool.writable.run("INSERT INTO test(value) VALUES(?)", 0)
         
@@ -102,7 +96,7 @@ class ConnectionPoolTests : SQLiteTestCase {
                 
                 while !finished {
                     
-                    let val = pool.readable.scalar("SELECT value FROM test")
+                    let val = self.pool.readable.scalar("SELECT value FROM test")
                     assert(val != nil, "DB query returned nil result set")
                     
                 }
@@ -128,9 +122,6 @@ class ConnectionPoolTests : SQLiteTestCase {
     }
     
     func testAutoRelease() {
-        
-        let _ = try? NSFileManager.defaultManager().removeItemAtPath("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite")
-        let pool = try! ConnectionPool(.URI("\(NSTemporaryDirectory())/SQLite.swift Pool Tests.sqlite"))
         
         do {
             try! pool.readable.execute("SELECT 1")
