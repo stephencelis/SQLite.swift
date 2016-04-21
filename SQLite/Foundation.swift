@@ -24,21 +24,23 @@
 
 import Foundation
 
+
 extension NSData : Value {
 
     public class var declaredDatatype: String {
         return Blob.declaredDatatype
     }
-
+    
     public class func fromDatatypeValue(dataValue: Blob) -> NSData {
-        return NSData(bytes: dataValue.bytes, length: dataValue.bytes.count)
+        return dataValue.data
     }
-
+    
     public var datatypeValue: Blob {
-        return Blob(bytes: bytes, length: length)
+        return Blob(data: self)
     }
 
 }
+
 
 extension NSDate : Value {
 
