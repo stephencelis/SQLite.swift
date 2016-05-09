@@ -333,11 +333,11 @@ public final class Connection {
             try self.run(begin)
             do {
                 try block()
+                try self.run(commit)
             } catch {
                 try self.run(rollback)
                 throw error
             }
-            try self.run(commit)
         }
     }
 
