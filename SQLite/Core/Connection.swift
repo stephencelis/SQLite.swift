@@ -23,7 +23,11 @@
 //
 
 import Dispatch
+#if SQLITE_SWIFT_STANDALONE
+import sqlite3
+#else
 import CSQLite
+#endif
 
 /// A connection to SQLite.
 public final class Connection {
