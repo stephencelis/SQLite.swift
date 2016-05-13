@@ -6,4 +6,5 @@ before_install:
   - gem install xcpretty --no-document
 script:
   - make test
+  - cd CocoaPodsTests && make test
 osx_image: xcode7.3
