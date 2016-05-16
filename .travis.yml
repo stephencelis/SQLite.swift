@@ -1,9 +1,10 @@
 language: objective-c
 env:
-  - BUILD_SDK=iphonesimulator ONLY_ACTIVE_ARCH=NO
-  - BUILD_SDK=macosx
+  - BUILD_SCHEME="SQLite iOS"
+  - BUILD_SCHEME="SQLite Mac"
 before_install:
   - gem install xcpretty --no-document
 script:
   - make test
-osx_image: beta-xcode6.3
+  - cd CocoaPodsTests && make test
+osx_image: xcode7.3
