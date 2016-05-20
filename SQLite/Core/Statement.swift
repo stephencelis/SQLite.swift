@@ -22,7 +22,11 @@
 // THE SOFTWARE.
 //
 
+#if SQLITE_SWIFT_STANDALONE
+import sqlite3
+#else
 import CSQLite
+#endif
 
 /// A single SQL statement.
 public final class Statement {

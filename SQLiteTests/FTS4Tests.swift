@@ -45,7 +45,7 @@ class FTS4Tests : XCTestCase {
 }
 
 class FTS4IntegrationTests : SQLiteTestCase {
-
+#if !SQLITE_SWIFT_STANDALONE
     func test_registerTokenizer_registersTokenizer() {
         let emails = VirtualTable("emails")
         let subject = Expression<String?>("subject")
@@ -73,5 +73,5 @@ class FTS4IntegrationTests : SQLiteTestCase {
         try! db.run(emails.insert(subject <- "Aún más cáfe!"))
         XCTAssertEqual(1, db.scalar(emails.filter(emails.match("aun")).count))
     }
-
+#endif
 }

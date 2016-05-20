@@ -354,7 +354,9 @@
 				EE247B8A1C3F81D000AE3E12 /* Metadata */,
 				EE247AD41C3F04ED00AE3E12 /* Products */,
 			);
+			indentWidth = 4;
 			sourceTree = "<group>";
+			tabWidth = 4;
 		};
 		EE247AD41C3F04ED00AE3E12 /* Products */ = {
 			isa = PBXGroup;

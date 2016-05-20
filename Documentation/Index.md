@@ -111,8 +111,26 @@ install SQLite.swift with Carthage:
 
  3. Run `pod install`.
 
+ #### Requiring a specific version of SQLite
+
+ If you want to use a more recent version of SQLite than what is provided with the OS you can require the `standalone` subspec:
+
+``` ruby
+    pod 'SQLite.swift/standalone', '~> 0.10.1'
+```
+
+By default this will use the most recent version of SQLite without any extras. If you want you can further customize this by adding another dependency to sqlite3 or one of its subspecs:
+
+``` ruby
+    pod 'SQLite.swift/standalone', '~> 0.10.1'
+    pod 'sqlite3/fts5', '= 3.11.1'  # SQLite 3.11.1 with FTS5 enabled
+```
+
+See the [sqlite3 podspec][sqlite3pod] for more details.
+
 [CocoaPods]: https://cocoapods.org
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
+[sqlite3pod]: https://github.com/clemensg/sqlite3pod
 
 
 ### Manual
