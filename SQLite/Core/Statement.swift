@@ -33,9 +33,9 @@ public final class Statement {
 
     private var handle: COpaquePointer = nil
 
-    private let connection: Connection
+    private let connection: DirectConnection
 
-    init(_ connection: Connection, _ SQL: String) throws {
+    init(_ connection: DirectConnection, _ SQL: String) throws {
         self.connection = connection
         try connection.check(sqlite3_prepare_v2(connection.handle, SQL, -1, &handle, nil))
     }
@@ -58,8 +58,8 @@ public final class Statement {
     /// - Parameter values: A list of parameters to bind to the statement.
     ///
     /// - Returns: The statement object (useful for chaining).
-    public func bind(values: Binding?...) -> Statement {
-        return bind(values)
+    public func bind(values: Binding?...) throws -> Statement {
+        return try bind(values)
     }
 
     /// Binds a list of parameters to a statement.
@@ -67,13 +67,13 @@ public final class Statement {
     /// - Parameter values: A list of parameters to bind to the statement.
     ///
     /// - Returns: The statement object (useful for chaining).
-    public func bind(values: [Binding?]) -> Statement {
+    public func bind(values: [Binding?]) throws -> Statement {
         if values.isEmpty { return self }
         reset()
         guard values.count == Int(sqlite3_bind_parameter_count(handle)) else {
-            fatalError("\(sqlite3_bind_parameter_count(handle)) values expected, \(values.count) passed")
+            throw BindingError.IncorrectParameterCount(expected: Int(sqlite3_bind_parameter_count(handle)), provided: values.count)
         }
-        for idx in 1...values.count { bind(values[idx - 1], atIndex: idx) }
+        for idx in 1...values.count { try bind(values[idx - 1], atIndex: idx) }
         return self
     }
 
@@ -83,19 +83,19 @@ public final class Statement {
     ///   statement.
     ///
     /// - Returns: The statement object (useful for chaining).
-    public func bind(values: [String: Binding?]) -> Statement {
+    public func bind(values: [String: Binding?]) throws -> Statement {
         reset()
         for (name, value) in values {
             let idx = sqlite3_bind_parameter_index(handle, name)
             guard idx > 0 else {
-                fatalError("parameter not found: \(name)")
+                throw BindingError.ParameterNotFound(name: name)
             }
-            bind(value, atIndex: Int(idx))
+            try bind(value, atIndex: Int(idx))
         }
         return self
     }
 
-    private func bind(value: Binding?, atIndex idx: Int) {
+    private func bind(value: Binding?, atIndex idx: Int) throws {
         if value == nil {
             sqlite3_bind_null(handle, Int32(idx))
         } else if let value = value as? Blob {
@@ -107,11 +107,11 @@ public final class Statement {
         } else if let value = value as? String {
             sqlite3_bind_text(handle, Int32(idx), value, -1, SQLITE_TRANSIENT)
         } else if let value = value as? Int {
-            self.bind(value.datatypeValue, atIndex: idx)
+            try self.bind(try value.datatypeValue(), atIndex: idx)
         } else if let value = value as? Bool {
-            self.bind(value.datatypeValue, atIndex: idx)
+            try self.bind(try value.datatypeValue(), atIndex: idx)
         } else if let value = value {
-            fatalError("tried to bind unexpected value \(value)")
+            throw BindingError.UnsupportedType(value: value)
         }
     }
 
@@ -152,21 +152,21 @@ public final class Statement {
     /// - Parameter bindings: A list of parameters to bind to the statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(bindings: Binding?...) -> Binding? {
+    @warn_unused_result public func scalar(bindings: Binding?...) throws -> Binding? {
         guard bindings.isEmpty else {
-            return scalar(bindings)
+            return try scalar(bindings)
         }
 
         reset(clearBindings: false)
-        try! step()
+        try step()
         return row[0]
     }
 
     /// - Parameter bindings: A list of parameters to bind to the statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(bindings: [Binding?]) -> Binding? {
-        return bind(bindings).scalar()
+    @warn_unused_result public func scalar(bindings: [Binding?]) throws -> Binding? {
+        return try bind(bindings).scalar()
     }
 
 
@@ -174,8 +174,8 @@ public final class Statement {
     ///   statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(bindings: [String: Binding?]) -> Binding? {
-        return bind(bindings).scalar()
+    @warn_unused_result public func scalar(bindings: [String: Binding?]) throws -> Binding? {
+        return try bind(bindings).scalar()
     }
 
     public func step() throws -> Bool {

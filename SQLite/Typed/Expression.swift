@@ -111,7 +111,7 @@ extension ExpressionType {
 extension ExpressionType where UnderlyingType : Value {
 
     public init(value: UnderlyingType) {
-        self.init("?", [value.datatypeValue])
+        self.init("?", [try! value.datatypeValue()])
     }
 
 }
@@ -123,7 +123,7 @@ extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wr
     }
 
     public init(value: UnderlyingType.WrappedType?) {
-        self.init("?", [value?.datatypeValue])
+        self.init("?", [try! value?.datatypeValue()])
     }
 
 }

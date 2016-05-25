@@ -306,16 +306,16 @@ class QueryIntegrationTests : SQLiteTestCase {
     }
 
     func test_scalar() {
-        XCTAssertEqual(0, db.scalar(users.count))
-        XCTAssertEqual(false, db.scalar(users.exists))
+        XCTAssertEqual(0, try db.scalar(users.count))
+        XCTAssertEqual(false, try db.scalar(users.exists))
 
         try! InsertUsers("alice")
-        XCTAssertEqual(1, db.scalar(users.select(id.average)))
+        XCTAssertEqual(1, try db.scalar(users.select(id.average)))
     }
 
     func test_pluck() {
         let rowid = try! db.run(users.insert(email <- "alice@example.com"))
-        XCTAssertEqual(rowid, db.pluck(users)![id])
+        XCTAssertEqual(rowid, try! db.pluck(users)![id])
     }
 
     func test_insert() {

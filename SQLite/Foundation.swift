@@ -34,7 +34,7 @@ extension NSData : Value {
         return NSData(bytes: dataValue.bytes, length: dataValue.bytes.count)
     }
 
-    public var datatypeValue: Blob {
+    public func datatypeValue() throws -> Blob {
         return Blob(bytes: bytes, length: length)
     }
 
@@ -50,7 +50,7 @@ extension NSDate : Value {
         return dateFormatter.dateFromString(stringValue)!
     }
 
-    public var datatypeValue: String {
+    public func datatypeValue() throws -> String {
         return dateFormatter.stringFromDate(self)
     }
 
@@ -90,17 +90,17 @@ extension QueryType {
 extension Row {
 
     public subscript(column: Expression<NSData>) -> NSData {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<NSData?>) -> NSData? {
-        return get(column)
+        return try! get(column)
     }
 
     public subscript(column: Expression<NSDate>) -> NSDate {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<NSDate?>) -> NSDate? {
-        return get(column)
+        return try! get(column)
     }
 
 }
