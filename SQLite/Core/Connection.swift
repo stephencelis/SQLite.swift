@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 //
 
+import Foundation
 import Dispatch
 #if SQLITE_SWIFT_STANDALONE
 import sqlite3
