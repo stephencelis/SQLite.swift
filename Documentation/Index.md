@@ -1441,7 +1441,7 @@ let subject = Expression<String>("subject")
 let body = Expression<String>("body")
 let config = FTS5Config()
     .column(subject)
-    .column(body, indexed: false)
+    .column(body, [.unindexed])
 
 try db.run(emails.create(.FTS5(config))
 // CREATE VIRTUAL TABLE "emails" USING fts5("subject", "body" UNINDEXED)
