@@ -158,21 +158,21 @@ extension Connection {
 /// Configuration options shared between the [FTS4](https://www.sqlite.org/fts3.html) and
 /// [FTS5](https://www.sqlite.org/fts5.html) extensions.
 public class FTSConfig {
-    typealias ColumnDefinition = (Expressible, Bool)
+    public enum ColumnOption {
+        /// [The notindexed= option](https://www.sqlite.org/fts3.html#section_6_5)
+        case unindexed
+    }
+
+    typealias ColumnDefinition = (Expressible, options: [ColumnOption])
     var columnDefinitions = [ColumnDefinition]()
     var tokenizer: Tokenizer?
     var prefixes = [Int]()
     var externalContentSchema: SchemaType?
     var isContentless: Bool = false
 
-    /// Adds an indexed column definition
-    public func column(column: Expressible) -> Self {
-        return self.column(column, indexed: true)
-    }
-
     /// Adds a column definition
-    public func column(column: Expressible, indexed: Bool) -> Self {
-        self.columnDefinitions.append((column, indexed))
+    public func column(column: Expressible, _ options: [ColumnOption] = []) -> Self {
+        self.columnDefinitions.append((column, options))
         return self
     }
 
@@ -329,8 +329,8 @@ public class FTS4Config : FTSConfig {
 
     override func options() -> Options {
         var options = super.options()
-        for notIndexedColumn in (columnDefinitions.filter { !$0.1 }.map { $0.0 }) {
-            options.append("notindexed", value: notIndexedColumn)
+        for (column, _) in (columnDefinitions.filter { $0.options.contains(.unindexed) }) {
+            options.append("notindexed", value: column)
         }
         options.append("languageid", value: languageId)
         options.append("compress", value: compressFunction)

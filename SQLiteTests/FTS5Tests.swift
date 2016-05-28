@@ -30,7 +30,7 @@ class FTS5Tests: XCTestCase {
     func test_config_unindexed_column() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts5(\"string\" UNINDEXED)",
-            sql(config.column(string, indexed: false)))
+            sql(config.column(string, [.unindexed])))
     }
 
     func test_external_content_table() {
@@ -111,8 +111,8 @@ class FTS5Tests: XCTestCase {
             sql(config
                 .tokenizer(.Porter)
                 .column(int)
-                .column(string, indexed: false)
-                .column(date, indexed: false)
+                .column(string, [.unindexed])
+                .column(date, [.unindexed])
                 .externalContent(table)
                 .prefix([2, 4]))
         )

@@ -87,10 +87,10 @@ public class FTS5Config : FTSConfig {
 
     override func formatColumnDefinitions() -> [Expressible] {
         return columnDefinitions.map { definition in
-            if definition.1 {
-                return definition.0
-            } else {
+            if definition.options.contains(.unindexed) {
                 return " ".join([definition.0, Expression<Void>(literal: "UNINDEXED")])
+            } else {
+                return definition.0
             }
         }
     }

@@ -73,7 +73,7 @@ class FTS4ConfigTests : XCTestCase {
     func test_config_unindexed_column() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(\"string\", notindexed=\"string\")",
-            sql(config.column(string, indexed: false)))
+            sql(config.column(string, [.unindexed])))
     }
 
     func test_external_content_view() {
@@ -160,8 +160,8 @@ class FTS4ConfigTests : XCTestCase {
             sql(config
                 .tokenizer(.Porter)
                 .column(int)
-                .column(string, indexed: false)
-                .column(date, indexed: false)
+                .column(string, [.unindexed])
+                .column(date, [.unindexed])
                 .externalContent(table)
                 .matchInfo(.FTS3)
                 .languageId("lid")

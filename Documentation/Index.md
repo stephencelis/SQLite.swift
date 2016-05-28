@@ -1407,7 +1407,7 @@ let subject = Expression<String>("subject")
 let body = Expression<String>("body")
 let config = FTS4Config()
     .column(subject)
-    .column(body, indexed: false)
+    .column(body, [.unindexed])
     .languageId("lid")
     .order(.Desc)
 
