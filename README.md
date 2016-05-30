@@ -231,6 +231,7 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
 
  - [Camembert](https://github.com/remirobert/Camembert)
  - [EonilSQLite3](https://github.com/Eonil/SQLite3)
+ - [GRDB](https://github.com/groue/GRDB.swift)
  - [SQLiteDB](https://github.com/FahimF/SQLiteDB)
  - [Squeal](https://github.com/nerdyc/Squeal)
  - [SwiftData](https://github.com/ryanfowler/SwiftData)
