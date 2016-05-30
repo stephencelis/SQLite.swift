@@ -107,7 +107,7 @@ public final class Connection {
     /// The last rowid inserted into the database via this connection.
     public var lastInsertRowid: Int64? {
         let rowid = sqlite3_last_insert_rowid(handle)
-        return rowid > 0 ? rowid : nil
+        return rowid != 0 ? rowid : nil
     }
 
     /// The last number of changes (inserts, updates, or deletes) made to the
