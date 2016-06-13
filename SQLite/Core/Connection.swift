@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import Foundation
+import Foundation.NSUUID
 import Dispatch
 #if SQLITE_SWIFT_STANDALONE
 import sqlite3
