@@ -1019,7 +1019,34 @@ public struct Row {
         self.columnNames = columnNames
         self.values = values
     }
-
+    
+    /// Returns a Row Key:Value Dictionary for the give column 
+    ///
+    /// Returns: all Key:value auto bind to Dictionary
+    public func toDictionary() -> [String:NSObject] {
+        var _result:[String:NSObject] = [:]
+        columnNames.map { (s,i) in
+            let v = values[i]
+            switch v{
+            case is String:
+                _result[s] = String(v)
+                break
+            case is Int64:
+                _result[s] = Int(v as! Int64)
+                break
+            case is Bool:
+                _result[s] = v as! Bool
+                break
+            case is Double:
+                _result[s] = v as! Double
+            case nil:
+                _result[s] = false
+            default:
+                _result[s] = false
+            }
+        }
+        return _result
+    }
     /// Returns a row’s value for the given column.
     ///
     /// - Parameter column: An expression representing a column selected in a Query.
