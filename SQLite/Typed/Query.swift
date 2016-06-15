@@ -581,16 +581,21 @@ extension QueryType {
     public func insert(dicinfo:NSDictionary)->Insert{
         var insert_setter_dic = [Setter]()
         
-        for (key,value) in dicinfo as! [String:NSObject]{
+        for (key,value) in dicinfo as! [String:NSObject] {
             switch value{
             case is NSString:
                 insert_setter_dic.append(Expression<String>(key) <- (value as! String))
-            case is Bool:
-                insert_setter_dic.append(Expression<Bool>(key) <- (value as! Bool))
+            case is Int:
+                let _t =  (value as! NSNumber)
+                if(_t.stringValue.containsString(".")){
+                    insert_setter_dic.append(Expression<Double>(key) <- _t.doubleValue )
+                }else{
+                    insert_setter_dic.append(Expression<Int64>(key) <- _t.longLongValue)
+                }
             case is NSNull:
                 insert_setter_dic.append(Expression<Bool?>(key) <- nil)
             default:
-                insert_setter_dic.append(Expression<Int64>(key) <- Int64(value as! Double))
+                insert_setter_dic.append(Expression<Bool?>(key) <- nil)
             }
         }
         return insert(insert_setter_dic)
