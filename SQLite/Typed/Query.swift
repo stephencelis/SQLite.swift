@@ -1031,8 +1031,8 @@ public struct Row {
             let key = s.substringWithRange(Range(start: s.startIndex.advancedBy(1), end: s.endIndex.advancedBy(-1)))
             let v = values[i]
             switch v{
-            case is String:
-                _result[key] = String(v)
+            case is NSString:
+                _result[key] = v as! NSString
                 break
             case is Int64:
                 _result[key] = Int(v as! Int64)
