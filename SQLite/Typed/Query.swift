@@ -578,6 +578,24 @@ extension QueryType {
         return insert(or: onConflict, values)
     }
 
+    public func insert(dicinfo:NSDictionary)->Insert{
+        var insert_setter_dic = [Setter]()
+        
+        for (key,value) in dicinfo as! [String:NSObject]{
+            switch value{
+            case is NSString:
+                insert_setter_dic.append(Expression<String>(key) <- (value as! String))
+            case is Bool:
+                insert_setter_dic.append(Expression<Bool>(key) <- (value as! Bool))
+            case is NSNull:
+                insert_setter_dic.append(Expression<Bool?>(key) <- nil)
+            default:
+                insert_setter_dic.append(Expression<Int64>(key) <- Int64(value as! Double))
+            }
+        }
+        return insert(insert_setter_dic)
+    }
+    
     public func insert(or onConflict: OnConflict, _ values: [Setter]) -> Insert {
         return insert(onConflict, values)
     }
@@ -1043,7 +1061,7 @@ public struct Row {
             case is Double:
                 _result[key] = v as! Double
             case nil:
-                _result[key] = false
+                _result[key] = NSNULL()
             default:
                 _result[key] = false
             }
