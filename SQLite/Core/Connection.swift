@@ -22,8 +22,13 @@
 // THE SOFTWARE.
 //
 
+import Foundation.NSUUID
 import Dispatch
+#if SQLITE_SWIFT_STANDALONE
+import sqlite3
+#else
 import CSQLite
+#endif
 
 /// A connection to SQLite.
 public final class Connection {
@@ -103,7 +108,7 @@ public final class Connection {
     /// The last rowid inserted into the database via this connection.
     public var lastInsertRowid: Int64? {
         let rowid = sqlite3_last_insert_rowid(handle)
-        return rowid > 0 ? rowid : nil
+        return rowid != 0 ? rowid : nil
     }
 
     /// The last number of changes (inserts, updates, or deletes) made to the
