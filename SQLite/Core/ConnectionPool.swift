@@ -39,6 +39,7 @@ public final class ConnectionPool {
     private var unavailableReadConnections = [DirectConnection]()
     private let lockQueue : dispatch_queue_t
     private var writeConnection : DirectConnection!
+    private let connectionSemaphore = dispatch_semaphore_create(5)
     
     public var foreignKeys : Bool {
         get {
@@ -91,6 +92,7 @@ public final class ConnectionPool {
                     self.pool.unavailableReadConnections.removeAtIndex(index)
                 }
                 self.pool.availableReadConnections.append(self.connection)
+                dispatch_semaphore_signal(self.pool.connectionSemaphore)
             }
         }
 
@@ -151,44 +153,41 @@ public final class ConnectionPool {
         
         var borrowed : BorrowedConnection!
         
-        repeat {
+        dispatch_semaphore_wait(connectionSemaphore, DISPATCH_TIME_FOREVER)
+        dispatch_sync(lockQueue) {
             
-            dispatch_sync(lockQueue) {
+            // Ensure database is open
+            self.writable
+            
+            let connection : DirectConnection
+            
+            if let availableConnection = self.availableReadConnections.popLast() {
+                connection = availableConnection
+            }
+            else {
                 
-                // Ensure database is open
-                self.writable
+                let flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_WAL | SQLITE_OPEN_NOMUTEX
                 
-                let connection : DirectConnection
+                connection = try! DirectConnection(self.location, flags: flags, dispatcher: ImmediateDispatcher(), vfsName: vfsName)
+                connection.busyTimeout = 2
                 
-                if let availableConnection = self.availableReadConnections.popLast() {
-                    connection = availableConnection
-                }
-                else {
-        
-                    let flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_WAL | SQLITE_OPEN_NOMUTEX
-                    
-                    connection = try! DirectConnection(self.location, flags: flags, dispatcher: ImmediateDispatcher(), vfsName: vfsName)
-                    connection.busyTimeout = 2
-                
-                    for (type, setupProcessor) in self.internalSetup {
-                        if type == .WriteAheadLogging {
-                            continue
-                        }
-                        try! setupProcessor(connection)
+                for (type, setupProcessor) in self.internalSetup {
+                    if type == .WriteAheadLogging {
+                        continue
                     }
-                    
-                    for setupProcessor in self.setup {
-                        try! setupProcessor(connection)
-                    }
-                    
+                    try! setupProcessor(connection)
                 }
                 
-                self.unavailableReadConnections.append(connection)
+                for setupProcessor in self.setup {
+                    try! setupProcessor(connection)
+                }
                 
-                borrowed = BorrowedConnection(pool: self, connection: connection)
             }
             
-        } while borrowed == nil
+            self.unavailableReadConnections.append(connection)
+            
+            borrowed = BorrowedConnection(pool: self, connection: connection)
+        }
         
         return borrowed
     }

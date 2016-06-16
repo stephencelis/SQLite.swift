@@ -22,33 +22,32 @@ class ConnectionPoolTests : SQLiteTestCase {
 
     func testConcurrentAccess2() {
         
+        let threadCount = 20
         let conn = pool.writable
         try! conn.execute("DROP TABLE IF EXISTS test; CREATE TABLE test(id INTEGER PRIMARY KEY, name TEXT);")
         try! conn.execute("DELETE FROM test")
-        try! conn.execute("INSERT INTO test(id,name) VALUES(0, 'test0')")
-        try! conn.execute("INSERT INTO test(id,name) VALUES(1, 'test1')")
-        try! conn.execute("INSERT INTO test(id,name) VALUES(2, 'test2')")
-        try! conn.execute("INSERT INTO test(id,name) VALUES(3, 'test3')")
-        try! conn.execute("INSERT INTO test(id,name) VALUES(4, 'test4')")
+        for threadNumber in 0..<threadCount {
+            try! conn.execute("INSERT INTO test(id,name) VALUES(\(threadNumber), 'test\(threadNumber)')")
+        }
         
         var quit = false
         let queue = dispatch_queue_create("Readers", DISPATCH_QUEUE_CONCURRENT)
-        for x in 0..<5 {
+        for threadNumber in 0..<threadCount {
             var reads = 0
 
-            let ex = expectationWithDescription("thread" + String(x))
+            let ex = expectationWithDescription("thread" + String(threadNumber))
             
             dispatch_async(queue) {
                 
-                print("started", x)
+                print("started", threadNumber)
 
                 let conn = self.pool.readable
                 
                 let stmt = try! conn.prepare("SELECT name FROM test WHERE id = ?")
-                var curr = stmt.scalar(x) as! String
+                var curr = stmt.scalar(threadNumber) as! String
                 while !quit {
                     
-                    let now = stmt.scalar(x) as! String
+                    let now = stmt.scalar(threadNumber) as! String
                     if now != curr {
                         //print(now)
                         curr = now
@@ -90,7 +89,7 @@ class ConnectionPoolTests : SQLiteTestCase {
         let q = dispatch_queue_create("Readers/Writers", DISPATCH_QUEUE_CONCURRENT);
         var finished = false
         
-        for _ in 0..<5 {
+        for _ in 0..<20 {
             
             dispatch_async(q) {
                 
