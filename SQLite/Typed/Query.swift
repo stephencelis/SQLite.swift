@@ -1051,7 +1051,7 @@ public struct Row {
     }
 
     // FIXME: rdar://problem/18673897 // subscript<T>…
-
+    
     public subscript(column: Expression<Blob>) -> Blob {
         return get(column)
     }

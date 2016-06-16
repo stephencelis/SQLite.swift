@@ -30,8 +30,209 @@ import sqlite3
 import CSQLite
 #endif
 
+
+/// The mode in which a transaction acquires a lock.
+public enum TransactionMode : String {
+    
+    /// Defers locking the database till the first read/write executes.
+    case Deferred = "DEFERRED"
+    
+    /// Immediately acquires a reserved lock on the database.
+    case Immediate = "IMMEDIATE"
+    
+    /// Immediately acquires an exclusive lock on all databases.
+    case Exclusive = "EXCLUSIVE"
+    
+}
+
+
+/// Protocol to an SQLite connection
+public protocol Connection {
+    
+    /// Whether or not the database was opened in a read-only state.
+    var readonly : Bool { get }
+    
+    /// The last rowid inserted into the database via this connection.
+    var lastInsertRowid : Int64? { get }
+    
+    /// The last number of changes (inserts, updates, or deletes) made to the
+    /// database via this connection.
+    var changes : Int { get }
+    
+    /// The total number of changes (inserts, updates, or deletes) made to the
+    /// database via this connection.
+    var totalChanges : Int { get }
+    
+    // MARK: - Execute
+    
+    /// Executes a batch of SQL statements.
+    ///
+    /// - Parameter SQL: A batch of zero or more semicolon-separated SQL
+    ///   statements.
+    ///
+    /// - Throws: `Result.Error` if query execution fails.
+    func execute(SQL: String) throws
+    
+    // MARK: - Prepare
+    
+    /// Prepares a single SQL statement (with optional parameter bindings).
+    ///
+    /// - Parameters:
+    ///
+    ///   - statement: A single SQL statement.
+    ///
+    ///   - bindings: A list of parameters to bind to the statement.
+    ///
+    /// - Returns: A prepared statement.
+    @warn_unused_result func prepare(statement: String, _ bindings: Binding?...) throws -> Statement
+
+    /// Prepares a single SQL statement and binds parameters to it.
+    ///
+    /// - Parameters:
+    ///
+    ///   - statement: A single SQL statement.
+    ///
+    ///   - bindings: A list of parameters to bind to the statement.
+    ///
+    /// - Returns: A prepared statement.
+    @warn_unused_result func prepare(statement: String, _ bindings: [Binding?]) throws -> Statement
+
+    /// Prepares a single SQL statement and binds parameters to it.
+    ///
+    /// - Parameters:
+    ///
+    ///   - statement: A single SQL statement.
+    ///
+    ///   - bindings: A dictionary of named parameters to bind to the statement.
+    ///
+    /// - Returns: A prepared statement.
+    @warn_unused_result func prepare(statement: String, _ bindings: [String: Binding?]) throws -> Statement
+    
+    // MARK: - Run
+    
+    /// Runs a single SQL statement (with optional parameter bindings).
+    ///
+    /// - Parameters:
+    ///
+    ///   - statement: A single SQL statement.
+    ///
+    ///   - bindings: A list of parameters to bind to the statement.
+    ///
+    /// - Throws: `Result.Error` if query execution fails.
+    ///
+    /// - Returns: The statement.
+    func run(statement: String, _ bindings: Binding?...) throws -> Statement
+
+    /// Prepares, binds, and runs a single SQL statement.
+    ///
+    /// - Parameters:
+    ///
+    ///   - statement: A single SQL statement.
+    ///
+    ///   - bindings: A list of parameters to bind to the statement.
+    ///
+    /// - Throws: `Result.Error` if query execution fails.
+    ///
+    /// - Returns: The statement.
+    func run(statement: String, _ bindings: [Binding?]) throws -> Statement
+
+    /// Prepares, binds, and runs a single SQL statement.
+    ///
+    /// - Parameters:
+    ///
+    ///   - statement: A single SQL statement.
+    ///
+    ///   - bindings: A dictionary of named parameters to bind to the statement.
+    ///
+    /// - Throws: `Result.Error` if query execution fails.
+    ///
+    /// - Returns: The statement.
+    func run(statement: String, _ bindings: [String: Binding?]) throws -> Statement
+
+    // MARK: - Scalar
+    
+    /// Runs a single SQL statement (with optional parameter bindings),
+    /// returning the first value of the first row.
+    ///
+    /// - Parameters:
+    ///
+    ///   - statement: A single SQL statement.
+    ///
+    ///   - bindings: A list of parameters to bind to the statement.
+    ///
+    /// - Returns: The first value of the first row returned.
+    @warn_unused_result func scalar(statement: String, _ bindings: Binding?...) -> Binding?
+
+    /// Runs a single SQL statement (with optional parameter bindings),
+    /// returning the first value of the first row.
+    ///
+    /// - Parameters:
+    ///
+    ///   - statement: A single SQL statement.
+    ///
+    ///   - bindings: A list of parameters to bind to the statement.
+    ///
+    /// - Returns: The first value of the first row returned.
+    @warn_unused_result func scalar(statement: String, _ bindings: [Binding?]) -> Binding?
+
+    /// Runs a single SQL statement (with optional parameter bindings),
+    /// returning the first value of the first row.
+    ///
+    /// - Parameters:
+    ///
+    ///   - statement: A single SQL statement.
+    ///
+    ///   - bindings: A dictionary of named parameters to bind to the statement.
+    ///
+    /// - Returns: The first value of the first row returned.
+    @warn_unused_result func scalar(statement: String, _ bindings: [String: Binding?]) -> Binding?
+
+    // MARK: - Transactions
+    
+    // TODO: Consider not requiring a throw to roll back?
+    /// Runs a transaction with the given mode.
+    ///
+    /// - Note: Transactions cannot be nested. To nest transactions, see
+    ///   `savepoint()`, instead.
+    ///
+    /// - Parameters:
+    ///
+    ///   - mode: The mode in which a transaction acquires a lock.
+    ///
+    ///     Default: `.Deferred`
+    ///
+    ///   - block: A closure to run SQL statements within the transaction.
+    ///     The transaction will be committed when the block returns. The block
+    ///     must throw to roll the transaction back.
+    ///
+    /// - Throws: `Result.Error`, and rethrows.
+    func transaction(mode: TransactionMode, block: (Connection) throws -> Void) throws
+    
+    // TODO: Consider not requiring a throw to roll back?
+    // TODO: Consider removing ability to set a name?
+    /// Runs a transaction with the given savepoint name (if omitted, it will
+    /// generate a UUID).
+    ///
+    /// - SeeAlso: `transaction()`.
+    ///
+    /// - Parameters:
+    ///
+    ///   - savepointName: A unique identifier for the savepoint (optional).
+    ///
+    ///   - block: A closure to run SQL statements within the transaction.
+    ///     The savepoint will be released (committed) when the block returns.
+    ///     The block must throw to roll the savepoint back.
+    ///
+    /// - Throws: `SQLite.Result.Error`, and rethrows.
+    func savepoint(name: String, block: (Connection) throws -> Void) throws
+    
+    func sync<T>(block: () throws -> T) rethrows -> T
+
+}
+
+
 /// A connection to SQLite.
-public final class Connection {
+public final class DirectConnection : Connection, Equatable {
 
     /// The location of a SQLite database.
     public enum Location {
@@ -72,10 +273,32 @@ public final class Connection {
     ///     Default: `false`.
     ///
     /// - Returns: A new database connection.
-    public init(_ location: Location = .InMemory, readonly: Bool = false) throws {
+    public convenience init(_ location: Location = .InMemory, readonly: Bool = false, vfsName: String? = nil) throws {
         let flags = readonly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE
-        try check(sqlite3_open_v2(location.description, &_handle, flags | SQLITE_OPEN_FULLMUTEX, nil))
-        dispatch_queue_set_specific(queue, Connection.queueKey, queueContext, nil)
+        try self.init(location, flags: flags, dispatcher: ReentrantDispatcher("SQLite.Connection"), vfsName: vfsName)
+    }
+  
+    /// Initializes a new SQLite connection.
+    ///
+    /// - Parameters:
+    ///
+    ///   - location: The location of the database. Creates a new database if it
+    ///     doesn’t already exist (unless in read-only mode).
+    ///
+    ///   - flags: SQLite open flags
+    ///
+    ///   - dispatcher: Dispatcher synchronization blocks
+    ///
+    /// - Returns: A new database connection.
+    public init(_ location: Location, flags: Int32, dispatcher: Dispatcher, vfsName: String? = nil) throws {
+        self.dispatcher = dispatcher
+        if let vfsName = vfsName {
+            try check(sqlite3_open_v2(location.description, &_handle, flags, vfsName))
+        }
+        else {
+            try check(sqlite3_open_v2(location.description, &_handle, flags, nil))
+        }
+        try check(sqlite3_extended_result_codes(handle, 1))
     }
 
     /// Initializes a new connection to a database.
@@ -270,20 +493,6 @@ public final class Connection {
 
     // MARK: - Transactions
 
-    /// The mode in which a transaction acquires a lock.
-    public enum TransactionMode : String {
-
-        /// Defers locking the database till the first read/write executes.
-        case Deferred = "DEFERRED"
-
-        /// Immediately acquires a reserved lock on the database.
-        case Immediate = "IMMEDIATE"
-
-        /// Immediately acquires an exclusive lock on all databases.
-        case Exclusive = "EXCLUSIVE"
-
-    }
-
     // TODO: Consider not requiring a throw to roll back?
     /// Runs a transaction with the given mode.
     ///
@@ -301,10 +510,10 @@ public final class Connection {
     ///     must throw to roll the transaction back.
     ///
     /// - Throws: `Result.Error`, and rethrows.
-    public func transaction(mode: TransactionMode = .Deferred, block: () throws -> Void) throws {
+    public func transaction(mode: TransactionMode = .Deferred, block: (Connection) throws -> Void) throws {
         try transaction("BEGIN \(mode.rawValue) TRANSACTION", block, "COMMIT TRANSACTION", or: "ROLLBACK TRANSACTION")
     }
-
+    
     // TODO: Consider not requiring a throw to roll back?
     // TODO: Consider removing ability to set a name?
     /// Runs a transaction with the given savepoint name (if omitted, it will
@@ -321,18 +530,18 @@ public final class Connection {
     ///     The block must throw to roll the savepoint back.
     ///
     /// - Throws: `SQLite.Result.Error`, and rethrows.
-    public func savepoint(name: String = NSUUID().UUIDString, block: () throws -> Void) throws {
+    public func savepoint(name: String = NSUUID().UUIDString, block: (Connection) throws -> Void) throws {
         let name = name.quote("'")
         let savepoint = "SAVEPOINT \(name)"
-
+        
         try transaction(savepoint, block, "RELEASE \(savepoint)", or: "ROLLBACK TO \(savepoint)")
     }
-
-    private func transaction(begin: String, _ block: () throws -> Void, _ commit: String, or rollback: String) throws {
+    
+    private func transaction(begin: String, _ block: (Connection) throws -> Void, _ commit: String, or rollback: String) throws {
         return try sync {
             try self.run(begin)
             do {
-                try block()
+                try block(self)
             } catch {
                 try self.run(rollback)
                 throw error
@@ -340,7 +549,7 @@ public final class Connection {
             try self.run(commit)
         }
     }
-
+    
     /// Interrupts any long-running queries.
     public func interrupt() {
         sqlite3_interrupt(handle)
@@ -570,7 +779,7 @@ public final class Connection {
 
     // MARK: - Error Handling
 
-    func sync<T>(block: () throws -> T) rethrows -> T {
+    public func sync<T>(block: () throws -> T) rethrows -> T {
         var success: T?
         var failure: ErrorType?
 
@@ -582,11 +791,7 @@ public final class Connection {
             }
         }
 
-        if dispatch_get_specific(Connection.queueKey) == queueContext {
-            box()
-        } else {
-            dispatch_sync(queue, box) // FIXME: rdar://problem/21389236
-        }
+        dispatcher.dispatch(box)
 
         if let failure = failure {
             try { () -> Void in throw failure }()
@@ -602,16 +807,12 @@ public final class Connection {
 
         throw error
     }
-
-    private var queue = dispatch_queue_create("SQLite.Database", DISPATCH_QUEUE_SERIAL)
-
-    private static let queueKey = unsafeBitCast(Connection.self, UnsafePointer<Void>.self)
-
-    private lazy var queueContext: UnsafeMutablePointer<Void> = unsafeBitCast(self, UnsafeMutablePointer<Void>.self)
+  
+    private var dispatcher : Dispatcher
 
 }
 
-extension Connection : CustomStringConvertible {
+extension DirectConnection : CustomStringConvertible {
 
     public var description: String {
         return String.fromCString(sqlite3_db_filename(handle, nil))!
@@ -619,7 +820,7 @@ extension Connection : CustomStringConvertible {
 
 }
 
-extension Connection.Location : CustomStringConvertible {
+extension DirectConnection.Location : CustomStringConvertible {
 
     public var description: String {
         switch self {
@@ -632,6 +833,10 @@ extension Connection.Location : CustomStringConvertible {
         }
     }
 
+}
+
+public func ==(lhs: DirectConnection, rhs: DirectConnection) -> Bool {
+    return lhs === rhs
 }
 
 /// An SQL operation passed to update callbacks.
@@ -667,7 +872,7 @@ public enum Result : ErrorType {
 
     case Error(message: String, code: Int32, statement: Statement?)
 
-    init?(errorCode: Int32, connection: Connection, statement: Statement? = nil) {
+    init?(errorCode: Int32, connection: DirectConnection, statement: Statement? = nil) {
         guard !Result.successCodes.contains(errorCode) else { return nil }
 
         let message = String.fromCString(sqlite3_errmsg(connection.handle))!

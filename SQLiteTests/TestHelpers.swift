@@ -5,7 +5,7 @@ class SQLiteTestCase : XCTestCase {
 
     var trace = [String: Int]()
 
-    let db = try! Connection()
+    let db = try! DirectConnection()
 
     let users = Table("users")
 

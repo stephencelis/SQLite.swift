@@ -33,9 +33,9 @@ public final class Statement {
 
     private var handle: COpaquePointer = nil
 
-    private let connection: Connection
+    private let connection: DirectConnection
 
-    init(_ connection: Connection, _ SQL: String) throws {
+    init(_ connection: DirectConnection, _ SQL: String) throws {
         self.connection = connection
         try connection.check(sqlite3_prepare_v2(connection.handle, SQL, -1, &handle, nil))
     }
