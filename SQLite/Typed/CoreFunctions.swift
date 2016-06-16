@@ -22,6 +22,9 @@
 // THE SOFTWARE.
 //
 
+import Foundation.NSData
+
+
 extension ExpressionType where UnderlyingType : Number {
 
     /// Builds a copy of the expression wrapped with the `abs` function.
