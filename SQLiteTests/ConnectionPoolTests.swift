@@ -62,10 +62,10 @@ class ConnectionPoolTests : SQLiteTestCase {
             
         }
         
-        for x in 10..<5000 {
+        for x in 10..<1000 {
             
             let name = "test" + String(x)
-            let idx = Int(rand()) % 5
+            let idx = Int(rand()) % threadCount
             
             do {
                 try conn.run("UPDATE test SET name=? WHERE id=?", name, idx)
