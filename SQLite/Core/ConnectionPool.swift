@@ -23,7 +23,11 @@
 //
 
 import Dispatch
-import CSQLite
+#if SQLITE_SWIFT_STANDALONE
+    import sqlite3
+#else
+    import CSQLite
+#endif
 
 
 private let vfsName = "unix-excl"
