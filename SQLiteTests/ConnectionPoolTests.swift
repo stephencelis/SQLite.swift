@@ -62,7 +62,7 @@ class ConnectionPoolTests : SQLiteTestCase {
             
         }
         
-        for x in 10..<1000 {
+        for x in 10..<100 {
             
             let name = "test" + String(x)
             let idx = Int(rand()) % threadCount

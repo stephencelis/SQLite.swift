@@ -24,9 +24,9 @@
 
 import Dispatch
 #if SQLITE_SWIFT_STANDALONE
-    import sqlite3
+import sqlite3
 #else
-    import CSQLite
+import CSQLite
 #endif
 
 
