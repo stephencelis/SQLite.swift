@@ -13,6 +13,7 @@ class IntegrationTest < Minitest::Test
 
   def validator
     @validator ||= TestRunningValidator.new(podspec, []).tap do |validator|
+    	subspec = ENV["VALIDATOR_SUBSPEC"]
         validator.test_files = Dir["#{project_test_dir}/*.swift"]
         validator.config.verbose = true
         validator.no_clean = true
@@ -20,6 +21,11 @@ class IntegrationTest < Minitest::Test
         validator.fail_fast = true
         validator.local = true
         validator.allow_warnings = true
+        if subspec == "none"
+          validator.no_subspecs = true
+        else
+          validator.only_subspec = subspec
+        end
     end
   end
 
