@@ -1,6 +1,9 @@
 BUILD_TOOL = xcodebuild
-BUILD_SCHEME = SQLite Mac
-BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)"
+ifeq ($(BUILD_SCHEME),SQLite iOS)
+	BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)" -sdk iphonesimulator
+else
+	BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)"
+endif
 
 XCPRETTY := $(shell command -v xcpretty)
 SWIFTCOV := $(shell command -v swiftcov)
