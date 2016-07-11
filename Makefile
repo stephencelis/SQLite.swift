@@ -1,4 +1,5 @@
 BUILD_TOOL = xcodebuild
+BUILD_SCHEME = SQLite Mac
 ifeq ($(BUILD_SCHEME),SQLite iOS)
 	BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)" -sdk iphonesimulator
 else
