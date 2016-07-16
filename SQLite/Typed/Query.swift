@@ -955,7 +955,10 @@ extension Connection {
     }
 
     public func pluck(query: QueryType) -> Row? {
-        return try! prepare(query.limit(1, query.clauses.limit?.offset)).generate().next()
+        guard let rows = try? prepare(query.limit(1, query.clauses.limit?.offset)) else {
+            return nil
+        }
+        return rows.generate().next()
     }
 
     /// Runs an `Insert` query.
