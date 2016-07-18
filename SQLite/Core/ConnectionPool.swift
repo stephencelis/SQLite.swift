@@ -38,11 +38,11 @@ private let vfsName = "unix-excl"
 // WAL mode.
 public final class ConnectionPool {
 
-    private let location : DirectConnection.Location
+    private let location: DirectConnection.Location
     private var availableReadConnections = [DirectConnection]()
     private var unavailableReadConnections = [DirectConnection]()
-    private let lockQueue : dispatch_queue_t
-    private var writeConnection : DirectConnection!
+    private let lockQueue: dispatch_queue_t
+    private var writeConnection: DirectConnection!
     private let connectionSemaphore = dispatch_semaphore_create(5)
     
     public var foreignKeys : Bool {
@@ -82,8 +82,8 @@ public final class ConnectionPool {
     // to the pool when it goes out of scope
     private class BorrowedConnection : Connection, Equatable {
         
-        let pool : ConnectionPool
-        let connection : DirectConnection
+        let pool: ConnectionPool
+        let connection: DirectConnection
         
         init(pool: ConnectionPool, connection: DirectConnection) {
             self.pool = pool
@@ -100,10 +100,10 @@ public final class ConnectionPool {
             }
         }
 
-        var readonly : Bool { return connection.readonly }
-        var lastInsertRowid : Int64? { return connection.lastInsertRowid }
-        var changes : Int { return connection.changes }
-        var totalChanges : Int { return connection.totalChanges }
+        var readonly: Bool { return connection.readonly }
+        var lastInsertRowid: Int64? { return connection.lastInsertRowid }
+        var changes: Int { return connection.changes }
+        var totalChanges: Int { return connection.totalChanges }
         
         func execute(SQL: String) throws { return try connection.execute(SQL) }
         @warn_unused_result func prepare(statement: String, _ bindings: Binding?...) throws -> Statement { return try connection.prepare(statement, bindings) }
@@ -131,7 +131,7 @@ public final class ConnectionPool {
     
     var writeConnectionInit = dispatch_once_t()
     
-    public var writable : DirectConnection {
+    public var writable: DirectConnection {
 
         dispatch_once(&writeConnectionInit) {
         
@@ -153,9 +153,9 @@ public final class ConnectionPool {
     }
     
     // Acquires a read only connection to the database
-    public var readable : Connection {
+    public var readable: Connection {
         
-        var borrowed : BorrowedConnection!
+        var borrowed: BorrowedConnection!
         
         dispatch_semaphore_wait(connectionSemaphore, DISPATCH_TIME_FOREVER)
         dispatch_sync(lockQueue) {
@@ -163,7 +163,7 @@ public final class ConnectionPool {
             // Ensure database is open
             self.writable
             
-            let connection : DirectConnection
+            let connection: DirectConnection
             
             if let availableConnection = self.availableReadConnections.popLast() {
                 connection = availableConnection

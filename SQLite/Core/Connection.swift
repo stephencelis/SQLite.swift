@@ -50,14 +50,14 @@ public enum TransactionMode : String {
 public protocol Connection {
     
     /// Whether or not the database was opened in a read-only state.
-    var readonly : Bool { get }
+    var readonly: Bool { get }
     
     /// The last rowid inserted into the database via this connection.
-    var lastInsertRowid : Int64? { get }
+    var lastInsertRowid: Int64? { get }
     
     /// The last number of changes (inserts, updates, or deletes) made to the
     /// database via this connection.
-    var changes : Int { get }
+    var changes: Int { get }
     
     /// The total number of changes (inserts, updates, or deletes) made to the
     /// database via this connection.
@@ -808,7 +808,7 @@ public final class DirectConnection : Connection, Equatable {
         throw error
     }
   
-    private var dispatcher : Dispatcher
+    private var dispatcher: Dispatcher
 
 }
 
