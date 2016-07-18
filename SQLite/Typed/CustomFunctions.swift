@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-public extension DirectConnection {
+public extension Connection {
 
     /// Creates or redefines a custom SQL function.
     ///

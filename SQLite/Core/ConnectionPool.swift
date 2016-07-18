@@ -38,11 +38,11 @@ private let vfsName = "unix-excl"
 // WAL mode.
 public final class ConnectionPool {
 
-    private let location: DirectConnection.Location
-    private var availableReadConnections = [DirectConnection]()
-    private var unavailableReadConnections = [DirectConnection]()
+    private let location: Connection.Location
+    private var availableReadConnections = [Connection]()
+    private var unavailableReadConnections = [Connection]()
     private let lockQueue: dispatch_queue_t
-    private var writeConnection: DirectConnection!
+    private var writeConnection: Connection!
     private let connectionSemaphore = dispatch_semaphore_create(5)
     
     public var foreignKeys : Bool {
@@ -64,10 +64,36 @@ public final class ConnectionPool {
     
     private var internalSetup = [InternalOption: ConnectionProcessor]()
     
-    public init(_ location: DirectConnection.Location) throws {
+    /// Initializes a new SQLite connection pool.
+    ///
+    /// - Parameters:
+    ///
+    ///   - location: The location of the database. Creates a new database if it
+    ///     doesn’t already exist.
+    ///
+    ///     Default: `.InMemory`.
+    ///
+    /// - Throws: `Result.Error` iff a connection cannot be established.
+    ///
+    /// - Returns: A new connection pool.
+    public init(_ location: Connection.Location = .InMemory) throws {
         self.location = location
         self.lockQueue = dispatch_queue_create("SQLite.ConnectionPool.Lock", DISPATCH_QUEUE_SERIAL)
         self.internalSetup[.WriteAheadLogging] = { try $0.execute("PRAGMA journal_mode = WAL;") }
+    }
+    
+    /// Initializes a new connection to a database.
+    ///
+    /// - Parameters:
+    ///
+    ///   - filename: The location of the database. Creates a new database if
+    ///     it doesn’t already exist (unless in read-only mode).
+    ///
+    /// - Throws: `Result.Error` iff a connection cannot be established.
+    ///
+    /// - Returns: A new database connection pool.
+    public convenience init(_ filename: String) throws {
+        try self.init(.URI(filename))
     }
     
     public var totalReadableConnectionCount : Int {
@@ -78,65 +104,36 @@ public final class ConnectionPool {
         return availableReadConnections.count
     }
     
-    // Connection that automatically returns itself
-    // to the pool when it goes out of scope
-    private class BorrowedConnection : Connection, Equatable {
+    /// Calls `readBlock` with an available read connection from the connection pool,
+    /// after which the connection is made available again.
+    public func read(readBlock: (connection: Connection) -> Void) {
+        let connection = readable
+        readBlock(connection: connection)
         
-        let pool: ConnectionPool
-        let connection: DirectConnection
-        
-        init(pool: ConnectionPool, connection: DirectConnection) {
-            self.pool = pool
-            self.connection = connection
-        }
-        
-        deinit {
-            dispatch_sync(pool.lockQueue) {
-                if let index = self.pool.unavailableReadConnections.indexOf(self.connection) {
-                    self.pool.unavailableReadConnections.removeAtIndex(index)
-                }
-                self.pool.availableReadConnections.append(self.connection)
-                dispatch_semaphore_signal(self.pool.connectionSemaphore)
+        dispatch_sync(lockQueue) {
+            if let index = self.unavailableReadConnections.indexOf(connection) {
+                self.unavailableReadConnections.removeAtIndex(index)
             }
+            self.availableReadConnections.append(connection)
+            dispatch_semaphore_signal(self.connectionSemaphore)
         }
-
-        var readonly: Bool { return connection.readonly }
-        var lastInsertRowid: Int64? { return connection.lastInsertRowid }
-        var changes: Int { return connection.changes }
-        var totalChanges: Int { return connection.totalChanges }
-        
-        func execute(SQL: String) throws { return try connection.execute(SQL) }
-        @warn_unused_result func prepare(statement: String, _ bindings: Binding?...) throws -> Statement { return try connection.prepare(statement, bindings) }
-        @warn_unused_result func prepare(statement: String, _ bindings: [Binding?]) throws -> Statement { return try connection.prepare(statement, bindings) }
-        @warn_unused_result func prepare(statement: String, _ bindings: [String: Binding?]) throws -> Statement { return try connection.prepare(statement, bindings) }
-        
-        func run(statement: String, _ bindings: Binding?...) throws -> Statement { return try connection.run(statement, bindings) }
-        func run(statement: String, _ bindings: [Binding?]) throws -> Statement { return try connection.run(statement, bindings) }
-        func run(statement: String, _ bindings: [String: Binding?]) throws -> Statement { return try connection.run(statement, bindings) }
-        
-        @warn_unused_result func scalar(statement: String, _ bindings: Binding?...) -> Binding? { return connection.scalar(statement, bindings) }
-        @warn_unused_result func scalar(statement: String, _ bindings: [Binding?]) -> Binding? { return connection.scalar(statement, bindings) }
-        @warn_unused_result func scalar(statement: String, _ bindings: [String: Binding?]) -> Binding? { return connection.scalar(statement, bindings) }
-        
-        func transaction(mode: TransactionMode, block: (Connection) throws -> Void) throws { return try connection.transaction(mode, block: block) }
-        func savepoint(name: String, block: (Connection) throws -> Void) throws { return try connection.savepoint(name, block: block) }
-
-        func sync<T>(block: () throws -> T) rethrows -> T { return try connection.sync(block) }
-        func check(resultCode: Int32, statement: Statement? = nil) throws -> Int32 { return try connection.check(resultCode, statement: statement) }
-        
     }
     
+    /// Calls `readWriteBlock` with a writeable connection
+    public func readWrite(readWriteBlock: (connection: Connection) -> Void) {
+        let connection = writable
+        readWriteBlock(connection: connection)
+    }
     
     // Acquires a read/write connection to the database
-    
     var writeConnectionInit = dispatch_once_t()
     
-    public var writable: DirectConnection {
+    private var writable: Connection {
 
         dispatch_once(&writeConnectionInit) {
         
             let flags = SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_WAL | SQLITE_OPEN_NOMUTEX
-            self.writeConnection = try! DirectConnection(self.location, flags: flags, dispatcher: ReentrantDispatcher("SQLite.ConnectionPool.Write"), vfsName: vfsName)
+            self.writeConnection = try! Connection(self.location, flags: flags, dispatcher: ReentrantDispatcher("SQLite.ConnectionPool.Write"), vfsName: vfsName)
             self.writeConnection.busyTimeout = 2
             
             for setupProcessor in self.internalSetup.values {
@@ -153,9 +150,9 @@ public final class ConnectionPool {
     }
     
     // Acquires a read only connection to the database
-    public var readable: Connection {
+    private var readable: Connection {
         
-        var borrowed: BorrowedConnection!
+        var borrowed: Connection!
         
         dispatch_semaphore_wait(connectionSemaphore, DISPATCH_TIME_FOREVER)
         dispatch_sync(lockQueue) {
@@ -163,7 +160,7 @@ public final class ConnectionPool {
             // Ensure database is open
             self.writable
             
-            let connection: DirectConnection
+            let connection: Connection
             
             if let availableConnection = self.availableReadConnections.popLast() {
                 connection = availableConnection
@@ -172,7 +169,7 @@ public final class ConnectionPool {
                 
                 let flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_WAL | SQLITE_OPEN_NOMUTEX
                 
-                connection = try! DirectConnection(self.location, flags: flags, dispatcher: ImmediateDispatcher(), vfsName: vfsName)
+                connection = try! Connection(self.location, flags: flags, dispatcher: ImmediateDispatcher(), vfsName: vfsName)
                 connection.busyTimeout = 2
                 
                 for (type, setupProcessor) in self.internalSetup {
@@ -190,15 +187,10 @@ public final class ConnectionPool {
             
             self.unavailableReadConnections.append(connection)
             
-            borrowed = BorrowedConnection(pool: self, connection: connection)
+            borrowed = connection
         }
         
         return borrowed
     }
     
-}
-
-    
-private func ==(lhs: ConnectionPool.BorrowedConnection, rhs: ConnectionPool.BorrowedConnection) -> Bool {
-    return lhs.connection == rhs.connection
 }
