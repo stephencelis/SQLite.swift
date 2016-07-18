@@ -48,14 +48,13 @@ class ConnectionPoolTests : SQLiteTestCase {
                 
                 print("started", threadNumber)
                 
-                while !quit {
+                while !quit || reads <= 0 {
                     self.pool.read { conn in
                         let _ = try! conn.prepare("SELECT name FROM test WHERE id = ?").scalar(threadNumber) as! String
                         reads += 1
                     }
                 }
                 
-                XCTAssertTrue(reads > 0, "Thread \(threadNumber) did not read.")
                 print("ended at", reads, "reads")
                 
                 ex.fulfill()
