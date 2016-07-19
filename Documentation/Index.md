@@ -278,7 +278,7 @@ Writes are done inside of a readWrite block:
 
 ``` swift
 pool.readWrite { connection in
-    try db.run(users.insert(email <- "alice@mac.com", name <- "Alice"))
+    try connection.run(users.insert(email <- "alice@mac.com", name <- "Alice"))
 }
 ```
 
@@ -286,7 +286,7 @@ Reads are done inside of a read block:
 
 ``` swift
 pool.read { connection in
-    for user in try db.prepare(users) {
+    for user in try connection.prepare(users) {
         print("id: \(user[id]), email: \(user[email]), name: \(user[name])")
     }
 }
