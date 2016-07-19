@@ -30,24 +30,8 @@ import sqlite3
 import CSQLite
 #endif
 
-
-/// The mode in which a transaction acquires a lock.
-public enum TransactionMode : String {
-    
-    /// Defers locking the database till the first read/write executes.
-    case Deferred = "DEFERRED"
-    
-    /// Immediately acquires a reserved lock on the database.
-    case Immediate = "IMMEDIATE"
-    
-    /// Immediately acquires an exclusive lock on all databases.
-    case Exclusive = "EXCLUSIVE"
-    
-}
-
-
 /// A connection to SQLite.
-public final class Connection : Equatable {
+public final class Connection {
 
     /// The location of a SQLite database.
     public enum Location {
@@ -88,20 +72,10 @@ public final class Connection : Equatable {
     ///     Default: `false`.
     ///
     /// - Returns: A new database connection.
-    public convenience init(_ location: Location = .InMemory, readonly: Bool = false) throws {
+    public init(_ location: Location = .InMemory, readonly: Bool = false) throws {
         let flags = readonly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE
-        try self.init(location, flags: flags, dispatcher: ReentrantDispatcher("SQLite.Connection"), vfsName: nil)
-    }
-    
-    init(_ location: Location, flags: Int32, dispatcher: Dispatcher, vfsName: String? = nil) throws {
-        self.dispatcher = dispatcher
-        if let vfsName = vfsName {
-            try check(sqlite3_open_v2(location.description, &_handle, flags, vfsName))
-        }
-        else {
-            try check(sqlite3_open_v2(location.description, &_handle, flags, nil))
-        }
-        try check(sqlite3_extended_result_codes(handle, 1))
+        try check(sqlite3_open_v2(location.description, &_handle, flags | SQLITE_OPEN_FULLMUTEX, nil))
+        dispatch_queue_set_specific(queue, Connection.queueKey, queueContext, nil)
     }
 
     /// Initializes a new connection to a database.
@@ -296,6 +270,20 @@ public final class Connection : Equatable {
 
     // MARK: - Transactions
 
+    /// The mode in which a transaction acquires a lock.
+    public enum TransactionMode : String {
+
+        /// Defers locking the database till the first read/write executes.
+        case Deferred = "DEFERRED"
+
+        /// Immediately acquires a reserved lock on the database.
+        case Immediate = "IMMEDIATE"
+
+        /// Immediately acquires an exclusive lock on all databases.
+        case Exclusive = "EXCLUSIVE"
+
+    }
+
     // TODO: Consider not requiring a throw to roll back?
     /// Runs a transaction with the given mode.
     ///
@@ -313,10 +301,10 @@ public final class Connection : Equatable {
     ///     must throw to roll the transaction back.
     ///
     /// - Throws: `Result.Error`, and rethrows.
-    public func transaction(mode: TransactionMode = .Deferred, block: (Connection) throws -> Void) throws {
+    public func transaction(mode: TransactionMode = .Deferred, block: () throws -> Void) throws {
         try transaction("BEGIN \(mode.rawValue) TRANSACTION", block, "COMMIT TRANSACTION", or: "ROLLBACK TRANSACTION")
     }
-    
+
     // TODO: Consider not requiring a throw to roll back?
     // TODO: Consider removing ability to set a name?
     /// Runs a transaction with the given savepoint name (if omitted, it will
@@ -333,18 +321,18 @@ public final class Connection : Equatable {
     ///     The block must throw to roll the savepoint back.
     ///
     /// - Throws: `SQLite.Result.Error`, and rethrows.
-    public func savepoint(name: String = NSUUID().UUIDString, block: (Connection) throws -> Void) throws {
+    public func savepoint(name: String = NSUUID().UUIDString, block: () throws -> Void) throws {
         let name = name.quote("'")
         let savepoint = "SAVEPOINT \(name)"
-        
+
         try transaction(savepoint, block, "RELEASE \(savepoint)", or: "ROLLBACK TO \(savepoint)")
     }
-    
-    private func transaction(begin: String, _ block: (Connection) throws -> Void, _ commit: String, or rollback: String) throws {
+
+    private func transaction(begin: String, _ block: () throws -> Void, _ commit: String, or rollback: String) throws {
         return try sync {
             try self.run(begin)
             do {
-                try block(self)
+                try block()
             } catch {
                 try self.run(rollback)
                 throw error
@@ -352,7 +340,7 @@ public final class Connection : Equatable {
             try self.run(commit)
         }
     }
-    
+
     /// Interrupts any long-running queries.
     public func interrupt() {
         sqlite3_interrupt(handle)
@@ -582,7 +570,7 @@ public final class Connection : Equatable {
 
     // MARK: - Error Handling
 
-    public func sync<T>(block: () throws -> T) rethrows -> T {
+    func sync<T>(block: () throws -> T) rethrows -> T {
         var success: T?
         var failure: ErrorType?
 
@@ -594,7 +582,11 @@ public final class Connection : Equatable {
             }
         }
 
-        dispatcher.dispatch(box)
+        if dispatch_get_specific(Connection.queueKey) == queueContext {
+            box()
+        } else {
+            dispatch_sync(queue, box) // FIXME: rdar://problem/21389236
+        }
 
         if let failure = failure {
             try { () -> Void in throw failure }()
@@ -610,8 +602,12 @@ public final class Connection : Equatable {
 
         throw error
     }
-  
-    private var dispatcher: Dispatcher
+
+    private var queue = dispatch_queue_create("SQLite.Database", DISPATCH_QUEUE_SERIAL)
+
+    private static let queueKey = unsafeBitCast(Connection.self, UnsafePointer<Void>.self)
+
+    private lazy var queueContext: UnsafeMutablePointer<Void> = unsafeBitCast(self, UnsafeMutablePointer<Void>.self)
 
 }
 
@@ -636,10 +632,6 @@ extension Connection.Location : CustomStringConvertible {
         }
     }
 
-}
-
-public func == (lhs: Connection, rhs: Connection) -> Bool {
-    return lhs === rhs
 }
 
 /// An SQL operation passed to update callbacks.
