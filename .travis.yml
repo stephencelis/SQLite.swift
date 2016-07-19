@@ -1,9 +1,13 @@
 language: objective-c
-env:
-  - BUILD_SCHEME="SQLite iOS"
-  - BUILD_SCHEME="SQLite Mac"
+matrix:
+  include:
+    - env: BUILD_SCHEME="SQLite iOS"
+    - env: BUILD_SCHEME="SQLite Mac"
+    - env: VALIDATOR_SUBSPEC="none"
+    - env: VALIDATOR_SUBSPEC="standard"
+    - env: VALIDATOR_SUBSPEC="standalone"
 before_install:
   - gem install xcpretty --no-document
 script:
-  - make test
+  - ./run-tests.sh
 osx_image: xcode7.3

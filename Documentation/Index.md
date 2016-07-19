@@ -11,6 +11,7 @@
       - [Read-Only Databases](#read-only-databases)
       - [In-Memory Databases](#in-memory-databases)
       - [Thread-Safety](#thread-safety)
+    - [Connection Pools](#connection-pools)
   - [Building Type-Safe SQL](#building-type-safe-sql)
     - [Expressions](#expressions)
       - [Compound Expressions](#compound-expressions)
@@ -111,8 +112,26 @@ install SQLite.swift with Carthage:
 
  3. Run `pod install`.
 
+ #### Requiring a specific version of SQLite
+
+ If you want to use a more recent version of SQLite than what is provided with the OS you can require the `standalone` subspec:
+
+``` ruby
+    pod 'SQLite.swift/standalone', '~> 0.10.1'
+```
+
+By default this will use the most recent version of SQLite without any extras. If you want you can further customize this by adding another dependency to sqlite3 or one of its subspecs:
+
+``` ruby
+    pod 'SQLite.swift/standalone', '~> 0.10.1'
+    pod 'sqlite3/fts5', '= 3.11.1'  # SQLite 3.11.1 with FTS5 enabled
+```
+
+See the [sqlite3 podspec][sqlite3pod] for more details.
+
 [CocoaPods]: https://cocoapods.org
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
+[sqlite3pod]: https://github.com/clemensg/sqlite3pod
 
 
 ### Manual
@@ -233,7 +252,7 @@ Every Connection comes equipped with its own serial queue for statement executio
 
 If you maintain multiple connections for a single database, consider setting a timeout (in seconds) and/or a busy handler:
 
-```swift
+``` swift
 db.busyTimeout = 5
 
 db.busyHandler({ tries in
@@ -245,6 +264,33 @@ db.busyHandler({ tries in
 ```
 
 > _Note:_ The default timeout is 0, so if you see `database is locked` errors, you may be trying to access the same database simultaneously from multiple connections.
+
+
+### Connection Pools
+
+Connection pools use SQLite WAL mode to allow concurrent reads and writes, which can increase performance. Connection pools are created similar to connections:
+
+``` swift
+let pool = try ConnectionPool("path/to/db.sqlite3")
+```
+
+Writes are done inside of a readWrite block:
+
+``` swift
+pool.readWrite { connection in
+    try connection.run(users.insert(email <- "alice@mac.com", name <- "Alice"))
+}
+```
+
+Reads are done inside of a read block:
+
+``` swift
+pool.read { connection in
+    for user in try connection.prepare(users) {
+        print("id: \(user[id]), email: \(user[email]), name: \(user[name])")
+    }
+}
+```
 
 
 ## Building Type-Safe SQL
@@ -1381,6 +1427,22 @@ try db.run(emails.create(.FTS4([subject, body], tokenize: .Porter)))
 // CREATE VIRTUAL TABLE "emails" USING fts4("subject", "body", tokenize=porter)
 ```
 
+We can set the full range of parameters by creating a `FTS4Config` object.
+
+``` swift
+let emails = VirtualTable("emails")
+let subject = Expression<String>("subject")
+let body = Expression<String>("body")
+let config = FTS4Config()
+    .column(subject)
+    .column(body, [.unindexed])
+    .languageId("lid")
+    .order(.Desc)
+
+try db.run(emails.create(.FTS4(config))
+// CREATE VIRTUAL TABLE "emails" USING fts4("subject", "body", notindexed="body", languageid="lid", order="desc")
+```
+
 Once we insert a few rows, we can search using the `match` function, which takes a table or column as its first argument and a query string as its second.
 
 ``` swift
@@ -1396,6 +1458,22 @@ let replies = emails.filter(subject.match("Re:*"))
 // SELECT * FROM "emails" WHERE "subject" MATCH 'Re:*'
 ```
 
+### FTS5
+
+When linking against a version of SQLite with [FTS5](http://www.sqlite.org/fts5.html) enabled we can create the virtual table
+in a similar fashion.
+
+```swift
+let emails = VirtualTable("emails")
+let subject = Expression<String>("subject")
+let body = Expression<String>("body")
+let config = FTS5Config()
+    .column(subject)
+    .column(body, [.unindexed])
+
+try db.run(emails.create(.FTS5(config))
+// CREATE VIRTUAL TABLE "emails" USING fts5("subject", "body" UNINDEXED)
+```
 
 ## Executing Arbitrary SQL
 
