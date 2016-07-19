@@ -170,7 +170,7 @@ class FTS4ConfigTests : XCTestCase {
         )
     }
 
-    func sql(config: FTS4Config) -> String {
+    func sql(_ config: FTS4Config) -> String {
         return virtualTable.create(.FTS4(config))
     }
 }
@@ -187,15 +187,25 @@ class FTS4IntegrationTests : SQLiteTestCase {
         let tokenizer = CFStringTokenizerCreate(nil, "", CFRangeMake(0, 0), UInt(kCFStringTokenizerUnitWord), locale)
         try! db.registerTokenizer(tokenizerName) { string in
             CFStringTokenizerSetString(tokenizer, string, CFRangeMake(0, CFStringGetLength(string)))
-            if CFStringTokenizerAdvanceToNextToken(tokenizer) == .None {
+            if CFStringTokenizerAdvanceToNextToken(tokenizer) == .none {
                 return nil
             }
             let range = CFStringTokenizerGetCurrentTokenRange(tokenizer)
+            
+            if range.location == -1 || range.length == 0 {
+                return nil
+            }
             let input = CFStringCreateWithSubstring(kCFAllocatorDefault, string, range)
             let token = CFStringCreateMutableCopy(nil, range.length, input)
             CFStringLowercase(token, locale)
             CFStringTransform(token, nil, kCFStringTransformStripDiacritics, false)
-            return (token as String, string.rangeOfString(input as String)!)
+            guard let tokenValue = token, inputValue = input else {
+                return nil
+            }
+            
+            let tokenString = String(tokenValue)
+            let inputString = String(inputValue)
+            return (tokenString, string.range(of: inputString)!)
         }
 
         try! db.run(emails.create(.FTS4([subject, body], tokenize: .Custom(tokenizerName))))

@@ -26,32 +26,33 @@ import Foundation
 
 extension NSData : Value {
 
-    public class var declaredDatatype: String {
+    public static var declaredDatatype: String {
         return Blob.declaredDatatype
     }
 
-    public class func fromDatatypeValue(dataValue: Blob) -> NSData {
-        return NSData(bytes: dataValue.bytes, length: dataValue.bytes.count)
+    public static func fromDatatypeValue(_ dataValue: Blob) -> NSData {
+        let newBytes = UnsafePointer<Void>(dataValue.bytes)
+        return NSData(bytes: newBytes, length: dataValue.bytes.count)
     }
 
     public var datatypeValue: Blob {
-        return Blob(bytes: bytes, length: length)
+        return Blob(bytes: bytes, length: self.length)
     }
 
 }
 
-extension NSDate : Value {
+extension Date : Value {
 
-    public class var declaredDatatype: String {
+    public static var declaredDatatype: String {
         return String.declaredDatatype
     }
 
-    public class func fromDatatypeValue(stringValue: String) -> NSDate {
-        return dateFormatter.dateFromString(stringValue)!
+    public static func fromDatatypeValue(_ stringValue: String) -> Date {
+        return dateFormatter.date(from: stringValue)!
     }
 
     public var datatypeValue: String {
-        return dateFormatter.stringFromDate(self)
+        return dateFormatter.string(from: self)
     }
 
 }
@@ -59,11 +60,11 @@ extension NSDate : Value {
 /// A global date formatter used to serialize and deserialize `NSDate` objects.
 /// If multiple date formats are used in an application’s database(s), use a
 /// custom `Value` type per additional format.
-public var dateFormatter: NSDateFormatter = {
-    let formatter = NSDateFormatter()
+public var dateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
     formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-    formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
-    formatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+    formatter.locale = Locale(localeIdentifier: "en_US_POSIX")
+    formatter.timeZone = TimeZone(forSecondsFromGMT: 0)
     return formatter
 }()
 
@@ -78,10 +79,10 @@ extension QueryType {
         return namespace(column)
     }
 
-    public subscript(column: Expression<NSDate>) -> Expression<NSDate> {
+    public subscript(column: Expression<Date>) -> Expression<Date> {
         return namespace(column)
     }
-    public subscript(column: Expression<NSDate?>) -> Expression<NSDate?> {
+    public subscript(column: Expression<Date?>) -> Expression<Date?> {
         return namespace(column)
     }
 
@@ -96,10 +97,10 @@ extension Row {
         return get(column)
     }
 
-    public subscript(column: Expression<NSDate>) -> NSDate {
+    public subscript(column: Expression<Date>) -> Date {
         return get(column)
     }
-    public subscript(column: Expression<NSDate?>) -> NSDate? {
+    public subscript(column: Expression<Date?>) -> Date? {
         return get(column)
     }
 
