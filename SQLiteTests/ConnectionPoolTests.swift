@@ -15,7 +15,7 @@ class ConnectionPoolTests : SQLiteTestCase {
         pool.foreignKeys = true
         pool.setup.append { try $0.execute("CREATE TABLE IF NOT EXISTS test(value INT)") }
         pool.read { conn in
-            XCTAssertTrue(conn.scalar("PRAGMA foreign_keys") as! Int64 == 1)
+            XCTAssertTrue(try! conn.scalar("PRAGMA foreign_keys") as! Int64 == 1)
         }
         
         pool.readWrite { conn in
@@ -99,7 +99,7 @@ class ConnectionPoolTests : SQLiteTestCase {
                 while !finished {
                     var val: Binding?
                     self.pool.read { conn in
-                        val = conn.scalar("SELECT value FROM test")
+                        val = try! conn.scalar("SELECT value FROM test")
                     }
                     assert(val != nil, "DB query returned nil result set")
                 }
@@ -140,7 +140,7 @@ class ConnectionPoolTests : SQLiteTestCase {
                 while !finished {
                     var val: Binding?
                     self.pool.read { conn in
-                        val = conn.scalar("SELECT value FROM test")
+                        val = try! conn.scalar("SELECT value FROM test")
                     }
                     assert(val != nil, "DB query returned nil result set")
                 }
@@ -152,7 +152,7 @@ class ConnectionPoolTests : SQLiteTestCase {
                 while !finished {
                     var val: Binding?
                     pool2.read { conn in
-                        val = conn.scalar("SELECT value FROM test")
+                        val = try! conn.scalar("SELECT value FROM test")
                     }
                     assert(val != nil, "DB query returned nil result set")
                 }
