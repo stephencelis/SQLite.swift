@@ -1178,12 +1178,12 @@ Any object that can be encoded and decoded can be stored as a blob of data in SQ
 We can create an `NSData` bridge rather trivially.
 
 ``` swift
-extension NSData: Value {
+extension NSData{
     class var declaredDatatype: String {
         return Blob.declaredDatatype
     }
     class func fromDatatypeValue(blobValue: Blob) -> Self {
-        return self(bytes: blobValue.bytes, length: blobValue.length)
+        return self(bytes: blobValue.bytes, length: blobValue.bytes.count)
     }
     var datatypeValue: Blob {
         return Blob(bytes: bytes, length: length)
