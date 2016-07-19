@@ -95,19 +95,19 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_transaction_executesBeginDeferred() {
-        try! db.transaction(.Deferred) {_ in }
+        try! db.transaction(.Deferred) {}
 
         AssertSQL("BEGIN DEFERRED TRANSACTION")
     }
 
     func test_transaction_executesBeginImmediate() {
-        try! db.transaction(.Immediate) {_ in }
+        try! db.transaction(.Immediate) {}
 
         AssertSQL("BEGIN IMMEDIATE TRANSACTION")
     }
 
     func test_transaction_executesBeginExclusive() {
-        try! db.transaction(.Exclusive) {_ in }
+        try! db.transaction(.Exclusive) {}
 
         AssertSQL("BEGIN EXCLUSIVE TRANSACTION")
     }
@@ -115,7 +115,7 @@ class ConnectionTests : SQLiteTestCase {
     func test_transaction_beginsAndCommitsTransactions() {
         let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
-        try! db.transaction {_ in 
+        try! db.transaction {
             try stmt.run()
         }
 
@@ -129,7 +129,7 @@ class ConnectionTests : SQLiteTestCase {
         let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
         do {
-            try db.transaction {_ in 
+            try db.transaction {
                 try stmt.run()
                 try stmt.run()
             }
@@ -145,8 +145,8 @@ class ConnectionTests : SQLiteTestCase {
     func test_savepoint_beginsAndCommitsSavepoints() {
         let db = self.db
 
-        try! db.savepoint("1") {_ in 
-            try db.savepoint("2") {_ in 
+        try! db.savepoint("1") {
+            try db.savepoint("2") {
                 try db.run("INSERT INTO users (email) VALUES (?)", "alice@example.com")
             }
         }
@@ -165,13 +165,13 @@ class ConnectionTests : SQLiteTestCase {
         let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
         do {
-            try db.savepoint("1") {_ in 
-                try db.savepoint("2") {_ in 
+            try db.savepoint("1") {
+                try db.savepoint("2") {
                     try stmt.run()
                     try stmt.run()
                     try stmt.run()
                 }
-                try db.savepoint("2") {_ in 
+                try db.savepoint("2") {
                     try stmt.run()
                     try stmt.run()
                     try stmt.run()
@@ -235,7 +235,7 @@ class ConnectionTests : SQLiteTestCase {
             db.commitHook {
                 done()
             }
-            try! db.transaction {_ in 
+            try! db.transaction {
                 try self.InsertUser("alice")
             }
             XCTAssertEqual(1, try! db.scalar("SELECT count(*) FROM users") as? Int64)
@@ -246,7 +246,7 @@ class ConnectionTests : SQLiteTestCase {
         async { done in
             db.rollbackHook(done)
             do {
-                try db.transaction {_ in 
+                try db.transaction {
                     try self.InsertUser("alice")
                     try self.InsertUser("alice") // throw
                 }
@@ -263,7 +263,7 @@ class ConnectionTests : SQLiteTestCase {
             }
             db.rollbackHook(done)
             do {
-                try db.transaction {_ in 
+                try db.transaction {
                     try self.InsertUser("alice")
                 }
             } catch {
