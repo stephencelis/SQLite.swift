@@ -11,6 +11,7 @@
       - [Read-Only Databases](#read-only-databases)
       - [In-Memory Databases](#in-memory-databases)
       - [Thread-Safety](#thread-safety)
+    - [Connection Pools](#connection-pools)
   - [Building Type-Safe SQL](#building-type-safe-sql)
     - [Expressions](#expressions)
       - [Compound Expressions](#compound-expressions)
@@ -251,7 +252,7 @@ Every Connection comes equipped with its own serial queue for statement executio
 
 If you maintain multiple connections for a single database, consider setting a timeout (in seconds) and/or a busy handler:
 
-```swift
+``` swift
 db.busyTimeout = 5
 
 db.busyHandler({ tries in
@@ -263,6 +264,33 @@ db.busyHandler({ tries in
 ```
 
 > _Note:_ The default timeout is 0, so if you see `database is locked` errors, you may be trying to access the same database simultaneously from multiple connections.
+
+
+### Connection Pools
+
+Connection pools use SQLite WAL mode to allow concurrent reads and writes, which can increase performance. Connection pools are created similar to connections:
+
+``` swift
+let pool = try ConnectionPool("path/to/db.sqlite3")
+```
+
+Writes are done inside of a readWrite block:
+
+``` swift
+pool.readWrite { connection in
+    try db.run(users.insert(email <- "alice@mac.com", name <- "Alice"))
+}
+```
+
+Reads are done inside of a read block:
+
+``` swift
+pool.read { connection in
+    for user in try db.prepare(users) {
+        print("id: \(user[id]), email: \(user[email]), name: \(user[name])")
+    }
+}
+```
 
 
 ## Building Type-Safe SQL
