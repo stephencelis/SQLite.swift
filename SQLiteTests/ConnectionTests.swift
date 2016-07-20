@@ -320,19 +320,22 @@ class ConnectionTests : SQLiteTestCase {
         try! conn.run("INSERT INTO test(value) VALUES(?)", 0)
         
         let q = dispatch_queue_create("Readers", DISPATCH_QUEUE_CONCURRENT);
-        var finished = false
         
-        for _ in 0..<100 {
+        var reads = [0, 0, 0, 0, 0]
+        var finished = false
+        for index in 0..<5 {
             dispatch_async(q) {
                 while !finished {
                     _ = try! conn.prepare("SELECT value FROM test")
+                    reads[index] += 1
                 }
             }
         }
         
-        // Give the threads some time to conflict
-        sleep(5)
-        finished = true
+        while !finished {
+            sleep(1)
+            finished = reads.reduce(true) { $0 && ($1 > 500) }
+        }
     }
 
 }
