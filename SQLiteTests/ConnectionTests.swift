@@ -336,6 +336,6 @@ class ConnectionTests : SQLiteTestCase {
             sleep(1)
             finished = reads.reduce(true) { $0 && ($1 > 500) }
         }
-    }
+    } 
 
 }
