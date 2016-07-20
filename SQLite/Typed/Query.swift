@@ -954,11 +954,8 @@ extension Connection {
         return V.fromDatatypeValue(value)
     }
 
-    public func pluck(query: QueryType) -> Row? {
-        guard let rows = try? prepare(query.limit(1, query.clauses.limit?.offset)) else {
-            return nil
-        }
-        return rows.generate().next()
+    public func pluck(query: QueryType) throws -> Row? {
+        return try prepare(query.limit(1, query.clauses.limit?.offset)).generate().next()
     }
 
     /// Runs an `Insert` query.

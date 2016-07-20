@@ -315,7 +315,7 @@ class QueryIntegrationTests : SQLiteTestCase {
 
     func test_pluck() {
         let rowid = try! db.run(users.insert(email <- "alice@example.com"))
-        XCTAssertEqual(rowid, db.pluck(users)![id])
+        XCTAssertEqual(rowid, try! db.pluck(users)![id])
     }
 
     func test_insert() {
