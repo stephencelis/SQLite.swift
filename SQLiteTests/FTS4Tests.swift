@@ -202,7 +202,7 @@ class FTS4IntegrationTests : SQLiteTestCase {
         AssertSQL("CREATE VIRTUAL TABLE \"emails\" USING fts4(\"subject\", \"body\", tokenize=\"SQLite.swift\" \"tokenizer\")")
 
         try! db.run(emails.insert(subject <- "Aún más cáfe!"))
-        XCTAssertEqual(1, db.scalar(emails.filter(emails.match("aun")).count))
+        XCTAssertEqual(1, try! db.scalar(emails.filter(emails.match("aun")).count))
     }
 #endif
 }
