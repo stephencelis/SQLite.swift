@@ -1,6 +1,13 @@
 language: objective-c
 matrix:
+
   include:
+    - os: osx
+      osx_image: xcode8
+      env: BUILD_SCHEME="SQLite iOS"
+    - os: osx
+      osx_image: xcode8
+      env: BUILD_SCHEME="SQLite Mac"
     - env: BUILD_SCHEME="SQLite iOS"
     - env: BUILD_SCHEME="SQLite Mac"
     - env: VALIDATOR_SUBSPEC="none"
