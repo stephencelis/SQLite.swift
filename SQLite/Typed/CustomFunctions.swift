@@ -74,42 +74,42 @@ public extension Connection {
     // MARK: -
 
     public func createFunction<Z : Value, A : Value, B : Value>(function: String, deterministic: Bool = false, _ block: (A, B) -> Z) throws -> (Expression<A>, Expression<B>) -> Expression<Z> {
-        let fn = try createFunction(function, 1, deterministic) { args in block(value(args[0]), value(args[1])) }
+        let fn = try createFunction(function, 2, deterministic) { args in block(value(args[0]), value(args[1])) }
         return { a, b in fn([a, b]) }
     }
 
     public func createFunction<Z : Value, A : Value, B : Value>(function: String, deterministic: Bool = false, _ block: (A?, B) -> Z) throws -> (Expression<A?>, Expression<B>) -> Expression<Z> {
-        let fn = try createFunction(function, 1, deterministic) { args in block(args[0].map(value), value(args[1])) }
+        let fn = try createFunction(function, 2, deterministic) { args in block(args[0].map(value), value(args[1])) }
         return { a, b in fn([a, b]) }
     }
 
     public func createFunction<Z : Value, A : Value, B : Value>(function: String, deterministic: Bool = false, _ block: (A, B?) -> Z) throws -> (Expression<A>, Expression<B?>) -> Expression<Z> {
-        let fn = try createFunction(function, 1, deterministic) { args in block(value(args[0]), args[1].map(value)) }
+        let fn = try createFunction(function, 2, deterministic) { args in block(value(args[0]), args[1].map(value)) }
         return { a, b in fn([a, b]) }
     }
 
     public func createFunction<Z : Value, A : Value, B : Value>(function: String, deterministic: Bool = false, _ block: (A, B) -> Z?) throws -> (Expression<A>, Expression<B>) -> Expression<Z?> {
-        let fn = try createFunction(function, 1, deterministic) { args in block(value(args[0]), value(args[1])) }
+        let fn = try createFunction(function, 2, deterministic) { args in block(value(args[0]), value(args[1])) }
         return { a, b in fn([a, b]) }
     }
 
     public func createFunction<Z : Value, A : Value, B : Value>(function: String, deterministic: Bool = false, _ block: (A?, B?) -> Z) throws -> (Expression<A?>, Expression<B?>) -> Expression<Z> {
-        let fn = try createFunction(function, 1, deterministic) { args in block(args[0].map(value), args[1].map(value)) }
+        let fn = try createFunction(function, 2, deterministic) { args in block(args[0].map(value), args[1].map(value)) }
         return { a, b in fn([a, b]) }
     }
 
     public func createFunction<Z : Value, A : Value, B : Value>(function: String, deterministic: Bool = false, _ block: (A?, B) -> Z?) throws -> (Expression<A?>, Expression<B>) -> Expression<Z?> {
-        let fn = try createFunction(function, 1, deterministic) { args in block(args[0].map(value), value(args[1])) }
+        let fn = try createFunction(function, 2, deterministic) { args in block(args[0].map(value), value(args[1])) }
         return { a, b in fn([a, b]) }
     }
 
     public func createFunction<Z : Value, A : Value, B : Value>(function: String, deterministic: Bool = false, _ block: (A, B?) -> Z?) throws -> (Expression<A>, Expression<B?>) -> Expression<Z?> {
-        let fn = try createFunction(function, 1, deterministic) { args in block(value(args[0]), args[1].map(value)) }
+        let fn = try createFunction(function, 2, deterministic) { args in block(value(args[0]), args[1].map(value)) }
         return { a, b in fn([a, b]) }
     }
 
     public func createFunction<Z : Value, A : Value, B : Value>(function: String, deterministic: Bool = false, _ block: (A?, B?) -> Z?) throws -> (Expression<A?>, Expression<B?>) -> Expression<Z?> {
-        let fn = try createFunction(function, 1, deterministic) { args in block(args[0].map(value), args[1].map(value)) }
+        let fn = try createFunction(function, 2, deterministic) { args in block(args[0].map(value), args[1].map(value)) }
         return { a, b in fn([a, b]) }
     }
 
