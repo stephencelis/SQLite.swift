@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 //
 
+import Foundation.NSUUID
 import Dispatch
 #if SQLITE_SWIFT_STANDALONE
 import sqlite3
@@ -107,7 +108,7 @@ public final class Connection {
     /// The last rowid inserted into the database via this connection.
     public var lastInsertRowid: Int64? {
         let rowid = sqlite3_last_insert_rowid(handle)
-        return rowid > 0 ? rowid : nil
+        return rowid != 0 ? rowid : nil
     }
 
     /// The last number of changes (inserts, updates, or deletes) made to the
@@ -235,8 +236,8 @@ public final class Connection {
     ///   - bindings: A list of parameters to bind to the statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(statement: String, _ bindings: Binding?...) -> Binding? {
-        return scalar(statement, bindings)
+    @warn_unused_result public func scalar(statement: String, _ bindings: Binding?...) throws -> Binding? {
+        return try scalar(statement, bindings)
     }
 
     /// Runs a single SQL statement (with optional parameter bindings),
@@ -249,8 +250,8 @@ public final class Connection {
     ///   - bindings: A list of parameters to bind to the statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(statement: String, _ bindings: [Binding?]) -> Binding? {
-        return try! prepare(statement).scalar(bindings)
+    @warn_unused_result public func scalar(statement: String, _ bindings: [Binding?]) throws -> Binding? {
+        return try prepare(statement).scalar(bindings)
     }
 
     /// Runs a single SQL statement (with optional parameter bindings),
@@ -263,8 +264,8 @@ public final class Connection {
     ///   - bindings: A dictionary of named parameters to bind to the statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(statement: String, _ bindings: [String: Binding?]) -> Binding? {
-        return try! prepare(statement).scalar(bindings)
+    @warn_unused_result public func scalar(statement: String, _ bindings: [String: Binding?]) throws -> Binding? {
+        return try prepare(statement).scalar(bindings)
     }
 
     // MARK: - Transactions
@@ -555,11 +556,11 @@ public final class Connection {
     ///
     ///   - block: A collation function that takes two strings and returns the
     ///     comparison result.
-    public func createCollation(collation: String, _ block: (lhs: String, rhs: String) -> ComparisonResult) {
+    public func createCollation(collation: String, _ block: (lhs: String, rhs: String) -> ComparisonResult) throws {
         let box: Collation = { lhs, rhs in
             Int32(block(lhs: String.fromCString(UnsafePointer<Int8>(lhs))!, rhs: String.fromCString(UnsafePointer<Int8>(rhs))!).rawValue)
         }
-        try! check(sqlite3_create_collation_v2(handle, collation, SQLITE_UTF8, unsafeBitCast(box, UnsafeMutablePointer<Void>.self), { callback, _, lhs, _, rhs in
+        try check(sqlite3_create_collation_v2(handle, collation, SQLITE_UTF8, unsafeBitCast(box, UnsafeMutablePointer<Void>.self), { callback, _, lhs, _, rhs in
             unsafeBitCast(callback, Collation.self)(lhs, rhs)
         }, nil))
         collations[collation] = box

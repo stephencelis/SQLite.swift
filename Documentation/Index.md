@@ -1399,6 +1399,22 @@ try db.run(emails.create(.FTS4([subject, body], tokenize: .Porter)))
 // CREATE VIRTUAL TABLE "emails" USING fts4("subject", "body", tokenize=porter)
 ```
 
+We can set the full range of parameters by creating a `FTS4Config` object.
+
+``` swift
+let emails = VirtualTable("emails")
+let subject = Expression<String>("subject")
+let body = Expression<String>("body")
+let config = FTS4Config()
+    .column(subject)
+    .column(body, [.unindexed])
+    .languageId("lid")
+    .order(.Desc)
+
+try db.run(emails.create(.FTS4(config))
+// CREATE VIRTUAL TABLE "emails" USING fts4("subject", "body", notindexed="body", languageid="lid", order="desc")
+```
+
 Once we insert a few rows, we can search using the `match` function, which takes a table or column as its first argument and a query string as its second.
 
 ``` swift
@@ -1414,6 +1430,22 @@ let replies = emails.filter(subject.match("Re:*"))
 // SELECT * FROM "emails" WHERE "subject" MATCH 'Re:*'
 ```
 
+### FTS5
+
+When linking against a version of SQLite with [FTS5](http://www.sqlite.org/fts5.html) enabled we can create the virtual table
+in a similar fashion.
+
+```swift
+let emails = VirtualTable("emails")
+let subject = Expression<String>("subject")
+let body = Expression<String>("body")
+let config = FTS5Config()
+    .column(subject)
+    .column(body, [.unindexed])
+
+try db.run(emails.create(.FTS5(config))
+// CREATE VIRTUAL TABLE "emails" USING fts5("subject", "body" UNINDEXED)
+```
 
 ## Executing Arbitrary SQL
 

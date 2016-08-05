@@ -46,6 +46,12 @@
 		03A65E941C6BB3030062603F /* ValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247B331C3F142E00AE3E12 /* ValueTests.swift */; };
 		03A65E951C6BB3030062603F /* TestHelpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247B161C3F127200AE3E12 /* TestHelpers.swift */; };
 		03A65E971C6BB3210062603F /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 03A65E961C6BB3210062603F /* libsqlite3.tbd */; };
+		19A1717B10CC941ACB5533D6 /* FTS5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1730E4390C775C25677D1 /* FTS5.swift */; };
+		19A171E6FA242F72A308C594 /* FTS5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1721B8984686B9963B45D /* FTS5Tests.swift */; };
+		19A17254FBA7894891F7297B /* FTS5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1721B8984686B9963B45D /* FTS5Tests.swift */; };
+		19A174D78559CD30679BCCCB /* FTS5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1721B8984686B9963B45D /* FTS5Tests.swift */; };
+		19A1750CEE9B05267995CF3D /* FTS5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1730E4390C775C25677D1 /* FTS5.swift */; };
+		19A17EC0D68BA8C03288ADF7 /* FTS5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1730E4390C775C25677D1 /* FTS5.swift */; };
 		EE247AD71C3F04ED00AE3E12 /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE247ADE1C3F04ED00AE3E12 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE247AD31C3F04ED00AE3E12 /* SQLite.framework */; };
 		EE247B031C3F06E900AE3E12 /* Blob.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEE1C3F06E900AE3E12 /* Blob.swift */; };
@@ -154,6 +160,8 @@
 		03A65E5A1C6BB0F50062603F /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		03A65E631C6BB0F60062603F /* SQLiteTests tvOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQLiteTests tvOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		03A65E961C6BB3210062603F /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
+		19A1721B8984686B9963B45D /* FTS5Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FTS5Tests.swift; sourceTree = "<group>"; };
+		19A1730E4390C775C25677D1 /* FTS5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FTS5.swift; sourceTree = "<group>"; };
 		39548A631CA63C740003E3B5 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		39548A651CA63C740003E3B5 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		39548A671CA63C740003E3B5 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
@@ -406,6 +414,7 @@
 				EE247B331C3F142E00AE3E12 /* ValueTests.swift */,
 				EE247B161C3F127200AE3E12 /* TestHelpers.swift */,
 				EE247AE41C3F04ED00AE3E12 /* Info.plist */,
+				19A1721B8984686B9963B45D /* FTS5Tests.swift */,
 			);
 			path = SQLiteTests;
 			sourceTree = "<group>";
@@ -429,6 +438,7 @@
 			children = (
 				EE247AF51C3F06E900AE3E12 /* FTS4.swift */,
 				EE247AF61C3F06E900AE3E12 /* R*Tree.swift */,
+				19A1730E4390C775C25677D1 /* FTS5.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -786,6 +796,7 @@
 				03A65E7C1C6BB2F70062603F /* FTS4.swift in Sources */,
 				03A65E771C6BB2E60062603F /* Connection.swift in Sources */,
 				03A65E7E1C6BB2FB0062603F /* AggregateFunctions.swift in Sources */,
+				19A17EC0D68BA8C03288ADF7 /* FTS5.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -808,6 +819,7 @@
 				03A65E8C1C6BB3030062603F /* ExpressionTests.swift in Sources */,
 				03A65E8E1C6BB3030062603F /* OperatorsTests.swift in Sources */,
 				03A65E951C6BB3030062603F /* TestHelpers.swift in Sources */,
+				19A17254FBA7894891F7297B /* FTS5Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -840,6 +852,7 @@
 				EE247B061C3F06E900AE3E12 /* SQLite-Bridging.m in Sources */,
 				EE247B071C3F06E900AE3E12 /* Statement.swift in Sources */,
 				EE247B0D1C3F06E900AE3E12 /* AggregateFunctions.swift in Sources */,
+				19A1717B10CC941ACB5533D6 /* FTS5.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -862,6 +875,7 @@
 				EE247B221C3F137700AE3E12 /* AggregateFunctionsTests.swift in Sources */,
 				EE247B2E1C3F141E00AE3E12 /* OperatorsTests.swift in Sources */,
 				EE247B251C3F137700AE3E12 /* ConnectionTests.swift in Sources */,
+				19A171E6FA242F72A308C594 /* FTS5Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -887,6 +901,7 @@
 				EE247B6B1C3F3FEC00AE3E12 /* FTS4.swift in Sources */,
 				EE247B661C3F3FEC00AE3E12 /* Connection.swift in Sources */,
 				EE247B6D1C3F3FEC00AE3E12 /* AggregateFunctions.swift in Sources */,
+				19A1750CEE9B05267995CF3D /* FTS5.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -909,6 +924,7 @@
 				EE247B581C3F3FC700AE3E12 /* ExpressionTests.swift in Sources */,
 				EE247B5E1C3F3FC700AE3E12 /* SetterTests.swift in Sources */,
 				EE247B5B1C3F3FC700AE3E12 /* QueryTests.swift in Sources */,
+				19A174D78559CD30679BCCCB /* FTS5Tests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
