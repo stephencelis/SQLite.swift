@@ -228,6 +228,39 @@ let db = try Connection(path, readonly: true)
 > 
 > See these two Stack Overflow questions for more information about iOS apps with SQLite databases: [1](https://stackoverflow.com/questions/34609746/what-different-between-store-database-in-different-locations-in-ios), [2](https://stackoverflow.com/questions/34614968/ios-how-to-copy-pre-seeded-database-at-the-first-running-app-with-sqlite-swift). We welcome sample code to show how to successfully copy and use a bundled "seed" database for writing in an app.
 
+#### Copy a bundle database and write in it
+First you need the bundle path of the database, then we need to check if the database with the same name exist in the read and write app path. If the database doesn't exist we copied it to the path.
+
+```swift
+var db:Connection?
+func getConnection(){
+  let pathBundle = NSBundle.mainBundle().pathForResource("db", ofType:"sqlite")!
+  let pathRW = NSSearchPathForDirectoriesInDomains(.DocumentDirectory, .UserDomainMask, true).first!
+  let url = NSURL(fileURLWithPath: pathRW)
+  let urlDB = url.URLByAppendingPathComponent("db.sqlite")
+  if !urlDB.checkResourceIsReachableAndReturnError(nil)
+  {
+    let fileManager = NSFileManager.defaultManager()
+    do
+    {
+      try fileManager.copyItemAtPath(pathBundle, toPath: urlDB.path!)
+    }
+    catch let error as NSError
+    {
+      print(error)
+    }
+  }
+  do
+  {
+    db = try Connection(urlDB.path!)
+  }
+  catch let error as NSError
+  {
+    print(error)
+  }
+}
+```
+
 #### In-Memory Databases
 
 If you omit the path, SQLite.swift will provision an [in-memory database](https://www.sqlite.org/inmemorydb.html).
