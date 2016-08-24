@@ -12,8 +12,8 @@ class TestRunningValidator < Pod::Validator
 
   def initialize(spec_or_path, source_urls)
     super(spec_or_path, source_urls)
-    self.iphone_simulator = 'iPhone 6'
-    self.tvos_simulator = 'Apple TV 1080p'
+    self.iphone_simulator = :oldest
+    self.tvos_simulator = :oldest
   end
 
   def create_app_project
@@ -75,12 +75,12 @@ class TestRunningValidator < Pod::Validator
     case consumer.platform_name
     when :ios
       command += %w(CODE_SIGN_IDENTITY=- -sdk iphonesimulator)
-      command += Fourflusher::SimControl.new.destination(iphone_simulator, deployment_target)
+      command += Fourflusher::SimControl.new.destination(iphone_simulator, 'iOS', deployment_target)
     when :osx
       command += %w(LD_RUNPATH_SEARCH_PATHS=@loader_path/../Frameworks)
     when :tvos
       command += %w(CODE_SIGN_IDENTITY=- -sdk appletvsimulator)
-      command += Fourflusher::SimControl.new.destination(tvos_simulator, deployment_target)
+      command += Fourflusher::SimControl.new.destination(tvos_simulator, 'tvOS', deployment_target)
     else
       return # skip watchos
     end
