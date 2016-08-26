@@ -967,30 +967,30 @@ extension Connection {
         }
     }
 
-    public func scalar<V : Value>(query: ScalarQuery<V>) -> V {
+    public func scalar<V : Value>(query: ScalarQuery<V>) throws -> V {
         let expression = query.expression
-        return value(scalar(expression.template, expression.bindings))
+        return value(try scalar(expression.template, expression.bindings))
     }
 
-    public func scalar<V : Value>(query: ScalarQuery<V?>) -> V.ValueType? {
+    public func scalar<V : Value>(query: ScalarQuery<V?>) throws -> V.ValueType? {
         let expression = query.expression
-        guard let value = scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
+        guard let value = try scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
         return V.fromDatatypeValue(value)
     }
 
-    public func scalar<V : Value>(query: Select<V>) -> V {
+    public func scalar<V : Value>(query: Select<V>) throws -> V {
         let expression = query.expression
-        return value(scalar(expression.template, expression.bindings))
+        return value(try scalar(expression.template, expression.bindings))
     }
 
-    public func scalar<V : Value>(query: Select<V?>) ->  V.ValueType? {
+    public func scalar<V : Value>(query: Select<V?>) throws ->  V.ValueType? {
         let expression = query.expression
-        guard let value = scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
+        guard let value = try scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
         return V.fromDatatypeValue(value)
     }
 
-    public func pluck(query: QueryType) -> Row? {
-        return try! prepare(query.limit(1, query.clauses.limit?.offset)).generate().next()
+    public func pluck(query: QueryType) throws -> Row? {
+        return try prepare(query.limit(1, query.clauses.limit?.offset)).generate().next()
     }
 
     /// Runs an `Insert` query.
