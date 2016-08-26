@@ -1030,7 +1030,7 @@ public struct Row {
     }
     public func get<V: Value>(column: Expression<V?>) -> V? {
         func valueAtIndex(idx: Int) -> V? {
-            guard let value = values[idx] as? V.Datatype else { return nil }
+            guard let binding = values[idx], value = V.toDatatype(binding) else { return nil }
             return (V.fromDatatypeValue(value) as? V)!
         }
 

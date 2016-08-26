@@ -52,6 +52,7 @@
 		19A174D78559CD30679BCCCB /* FTS5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1721B8984686B9963B45D /* FTS5Tests.swift */; };
 		19A1750CEE9B05267995CF3D /* FTS5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1730E4390C775C25677D1 /* FTS5.swift */; };
 		19A17EC0D68BA8C03288ADF7 /* FTS5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1730E4390C775C25677D1 /* FTS5.swift */; };
+		D5FF238B1D706DC8006CFAC4 /* DoubleTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D5FF238A1D706DC8006CFAC4 /* DoubleTests.swift */; };
 		EE247AD71C3F04ED00AE3E12 /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE247ADE1C3F04ED00AE3E12 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE247AD31C3F04ED00AE3E12 /* SQLite.framework */; };
 		EE247B031C3F06E900AE3E12 /* Blob.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEE1C3F06E900AE3E12 /* Blob.swift */; };
@@ -170,6 +171,7 @@
 		39548A6D1CA63C740003E3B5 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		39548A6F1CA63C740003E3B5 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		A121AC451CA35C79005A31D1 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D5FF238A1D706DC8006CFAC4 /* DoubleTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DoubleTests.swift; sourceTree = SOURCE_ROOT; };
 		EE247AD31C3F04ED00AE3E12 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE247AD61C3F04ED00AE3E12 /* SQLite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQLite.h; sourceTree = "<group>"; };
 		EE247AD81C3F04ED00AE3E12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -182,7 +184,7 @@
 		EE247AF21C3F06E900AE3E12 /* Statement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Statement.swift; sourceTree = "<group>"; };
 		EE247AF31C3F06E900AE3E12 /* Value.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
 		EE247AF51C3F06E900AE3E12 /* FTS4.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FTS4.swift; sourceTree = "<group>"; };
-		EE247AF61C3F06E900AE3E12 /* RTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RTree.swift"; sourceTree = "<group>"; };
+		EE247AF61C3F06E900AE3E12 /* RTree.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTree.swift; sourceTree = "<group>"; };
 		EE247AF71C3F06E900AE3E12 /* Foundation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Foundation.swift; sourceTree = "<group>"; };
 		EE247AF81C3F06E900AE3E12 /* Helpers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helpers.swift; sourceTree = "<group>"; };
 		EE247AFA1C3F06E900AE3E12 /* AggregateFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AggregateFunctions.swift; sourceTree = "<group>"; };
@@ -205,7 +207,7 @@
 		EE247B211C3F137700AE3E12 /* FTS4Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FTS4Tests.swift; sourceTree = "<group>"; };
 		EE247B2A1C3F141E00AE3E12 /* OperatorsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OperatorsTests.swift; sourceTree = "<group>"; };
 		EE247B2B1C3F141E00AE3E12 /* QueryTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryTests.swift; sourceTree = "<group>"; };
-		EE247B2C1C3F141E00AE3E12 /* RTreeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "RTreeTests.swift"; sourceTree = "<group>"; };
+		EE247B2C1C3F141E00AE3E12 /* RTreeTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RTreeTests.swift; sourceTree = "<group>"; };
 		EE247B2D1C3F141E00AE3E12 /* SchemaTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaTests.swift; sourceTree = "<group>"; };
 		EE247B321C3F142E00AE3E12 /* StatementTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StatementTests.swift; sourceTree = "<group>"; };
 		EE247B331C3F142E00AE3E12 /* ValueTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ValueTests.swift; sourceTree = "<group>"; };
@@ -415,6 +417,7 @@
 				EE247B161C3F127200AE3E12 /* TestHelpers.swift */,
 				EE247AE41C3F04ED00AE3E12 /* Info.plist */,
 				19A1721B8984686B9963B45D /* FTS5Tests.swift */,
+				D5FF238A1D706DC8006CFAC4 /* DoubleTests.swift */,
 			);
 			path = SQLiteTests;
 			sourceTree = "<group>";
@@ -873,6 +876,7 @@
 				EE247B351C3F142E00AE3E12 /* ValueTests.swift in Sources */,
 				EE247B2F1C3F141E00AE3E12 /* QueryTests.swift in Sources */,
 				EE247B221C3F137700AE3E12 /* AggregateFunctionsTests.swift in Sources */,
+				D5FF238B1D706DC8006CFAC4 /* DoubleTests.swift in Sources */,
 				EE247B2E1C3F141E00AE3E12 /* OperatorsTests.swift in Sources */,
 				EE247B251C3F137700AE3E12 /* ConnectionTests.swift in Sources */,
 				19A171E6FA242F72A308C594 /* FTS5Tests.swift in Sources */,

@@ -38,11 +38,24 @@ public protocol Value : Expressible { // extensions cannot have inheritance clau
     associatedtype Datatype : Binding
 
     static var declaredDatatype: String { get }
+    
+    static func toDatatype(value: Binding) -> Datatype?
 
     static func fromDatatypeValue(datatypeValue: Datatype) -> ValueType
 
     var datatypeValue: Datatype { get }
 
+}
+
+
+extension Value {
+    public static func toDatatype(value: Binding) -> Datatype? {
+        if let v = value as? Datatype {
+            return v
+        } else {
+            return nil
+        }
+    }
 }
 
 extension Double : Number, Value {
@@ -57,6 +70,18 @@ extension Double : Number, Value {
         return self
     }
 
+    public static func toDatatype(value: Binding) -> Double? {
+        switch value {
+        case let double as Double:
+            return double
+        case let int64 as Int64:
+            return Double(int64)
+        case let int as Int:
+            return Double(int)
+        default:
+            return nil
+        }
+    }
 }
 
 extension Int64 : Number, Value {
