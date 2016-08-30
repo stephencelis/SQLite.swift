@@ -170,7 +170,7 @@ class FTS4ConfigTests : XCTestCase {
         )
     }
 
-    func sql(config: FTS4Config) -> String {
+    func sql(_ config: FTS4Config) -> String {
         return virtualTable.create(.FTS4(config))
     }
 }
