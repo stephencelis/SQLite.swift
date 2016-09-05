@@ -184,9 +184,9 @@ class FTS4IntegrationTests : SQLiteTestCase {
 
         let locale = CFLocaleCopyCurrent()
         let tokenizerName = "tokenizer"
-        let tokenizer = CFStringTokenizerCreate(nil, "", CFRangeMake(0, 0), UInt(kCFStringTokenizerUnitWord), locale)
+        let tokenizer = CFStringTokenizerCreate(nil, "" as CFString!, CFRangeMake(0, 0), UInt(kCFStringTokenizerUnitWord), locale)
         try! db.registerTokenizer(tokenizerName) { string in
-            CFStringTokenizerSetString(tokenizer, string, CFRangeMake(0, CFStringGetLength(string)))
+            CFStringTokenizerSetString(tokenizer, string as CFString!, CFRangeMake(0, CFStringGetLength(string as CFString!)))
             if CFStringTokenizerAdvanceToNextToken(tokenizer) == .none {
                 return nil
             }
@@ -195,11 +195,11 @@ class FTS4IntegrationTests : SQLiteTestCase {
             if range.location == -1 || range.length == 0 {
                 return nil
             }
-            let input = CFStringCreateWithSubstring(kCFAllocatorDefault, string, range)
+            let input = CFStringCreateWithSubstring(kCFAllocatorDefault, string as CFString!, range)
             let token = CFStringCreateMutableCopy(nil, range.length, input)
             CFStringLowercase(token, locale)
             CFStringTransform(token, nil, kCFStringTransformStripDiacritics, false)
-            guard let tokenValue = token, inputValue = input else {
+            guard let tokenValue = token, let inputValue = input else {
                 return nil
             }
             

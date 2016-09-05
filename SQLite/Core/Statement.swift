@@ -31,9 +31,9 @@ import CSQLite
 /// A single SQL statement.
 public final class Statement {
 
-    private var handle: OpaquePointer? = nil
+    fileprivate var handle: OpaquePointer? = nil
 
-    private let connection: Connection
+    fileprivate let connection: Connection
 
     init(_ connection: Connection, _ SQL: String) throws {
         self.connection = connection
@@ -120,6 +120,7 @@ public final class Statement {
     /// - Throws: `Result.Error` if query execution fails.
     ///
     /// - Returns: The statement object (useful for chaining).
+    @discardableResult
     public func run(_ bindings: Binding?...) throws -> Statement {
         guard bindings.isEmpty else {
             return try run(bindings)
@@ -183,7 +184,7 @@ public final class Statement {
         return try connection.sync { try self.connection.check(sqlite3_step(self.handle)) == SQLITE_ROW }
     }
 
-    private func reset(clearBindings shouldClear: Bool = true) {
+    fileprivate func reset(clearBindings shouldClear: Bool = true) {
         sqlite3_reset(handle)
         if (shouldClear) { sqlite3_clear_bindings(handle) }
     }
@@ -217,11 +218,11 @@ extension Statement : CustomStringConvertible {
 
 public struct Cursor {
 
-    private let handle: OpaquePointer
+    fileprivate let handle: OpaquePointer
 
-    private let columnCount: Int
+    fileprivate let columnCount: Int
 
-    private init(_ statement: Statement) {
+    fileprivate init(_ statement: Statement) {
         handle = statement.handle!
         columnCount = statement.columnCount
     }
@@ -235,7 +236,7 @@ public struct Cursor {
     }
 
     public subscript(idx: Int) -> String {
-        return String(cString: UnsafePointer(sqlite3_column_text(handle, Int32(idx)))) ?? ""
+        return String(cString: UnsafePointer(sqlite3_column_text(handle, Int32(idx)))) 
     }
 
     public subscript(idx: Int) -> Blob {

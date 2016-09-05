@@ -31,7 +31,7 @@ extension NSData : Value {
     }
 
     public static func fromDatatypeValue(_ dataValue: Blob) -> NSData {
-        let newBytes = UnsafePointer<Void>(dataValue.bytes)
+        let newBytes = UnsafeRawPointer(dataValue.bytes)
         return NSData(bytes: newBytes, length: dataValue.bytes.count)
     }
 
@@ -63,8 +63,8 @@ extension Date : Value {
 public var dateFormatter: DateFormatter = {
     let formatter = DateFormatter()
     formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-    formatter.locale = Locale(localeIdentifier: "en_US_POSIX")
-    formatter.timeZone = TimeZone(forSecondsFromGMT: 0)
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.timeZone = TimeZone(secondsFromGMT: 0)
     return formatter
 }()
 

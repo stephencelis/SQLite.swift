@@ -173,7 +173,7 @@ extension SchemaType {
 
 extension QueryType {
 
-    private func select<Q : QueryType>(_ distinct: Bool, _ columns: [Expressible]) -> Q {
+    fileprivate func select<Q : QueryType>(_ distinct: Bool, _ columns: [Expressible]) -> Q {
         var query = Q.init(clauses.from.name, database: clauses.from.database)
         query.clauses = clauses
         query.clauses.select = (distinct, columns)
@@ -733,7 +733,7 @@ extension QueryType {
 
     // TODO: alias support
     func tableName(alias aliased: Bool = false) -> Expressible {
-        guard let alias = clauses.from.alias where aliased else {
+        guard let alias = clauses.from.alias, aliased else {
             return database(namespace: clauses.from.alias ?? clauses.from.name)
         }
 
@@ -886,14 +886,14 @@ extension Connection {
 
         let columnNames: [String: Int] = try {
             var (columnNames, idx) = ([String: Int](), 0)
-            column: for each in query.clauses.select.columns ?? [Expression<Void>(literal: "*")] {
+            column: for each in query.clauses.select.columns {
                 var names = each.expression.template.characters.split { $0 == "." }.map(String.init)
                 let column = names.removeLast()
                 let namespace = names.joined(separator: ".")
 
                 func expandGlob(_ namespace: Bool) -> ((QueryType) throws -> Void) {
                     return { (query: QueryType) throws -> (Void) in
-                        var q = query.dynamicType.init(query.clauses.from.name, database: query.clauses.from.database)
+                        var q = type(of: query).init(query.clauses.from.name, database: query.clauses.from.database)
                         q.clauses.select = query.clauses.select
                         let e = q.expression
                         var names = try self.prepare(e.template, e.bindings).columnNames.map { $0.quote() }
@@ -955,7 +955,12 @@ extension Connection {
     }
 
     public func pluck(_ query: QueryType) -> Row? {
-        return try! prepare(query.limit(1, query.clauses.limit?.offset)).makeIterator().next()
+        guard let offset = query.clauses.limit?.offset else {
+            return nil
+        }
+        
+        let query = try? prepare(query.limit(1, offset: offset))
+        return query?.makeIterator().next()
     }
 
     /// Runs an `Insert` query.
@@ -1018,7 +1023,7 @@ public struct Row {
 
     private let values: [Binding?]
 
-    private init(_ columnNames: [String: Int], _ values: [Binding?]) {
+    init(_ columnNames: [String: Int], _ values: [Binding?]) {
         self.columnNames = columnNames
         self.values = values
     }
@@ -1146,7 +1151,7 @@ public struct QueryClauses {
 
     var limit: (length: Int, offset: Int?)?
 
-    private init(_ name: String, alias: String?, database: String?) {
+    fileprivate init(_ name: String, alias: String?, database: String?) {
         self.from = (name, alias, database)
     }
 

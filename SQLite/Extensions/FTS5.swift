@@ -43,9 +43,9 @@ public class FTS5Config : FTSConfig {
 
         public var description: String {
             switch self {
-            case full: return "full"
-            case column: return "column"
-            case none: return "none"
+            case .full: return "full"
+            case .column: return "column"
+            case .none: return "none"
             }
         }
     }

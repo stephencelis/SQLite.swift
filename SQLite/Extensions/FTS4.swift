@@ -121,12 +121,12 @@ public struct Tokenizer {
 
     public let arguments: [String]
 
-    private init(_ name: String, _ arguments: [String] = []) {
+    fileprivate init(_ name: String, _ arguments: [String] = []) {
         self.name = name
         self.arguments = arguments
     }
 
-    private static let moduleName = "SQLite.swift"
+    fileprivate static let moduleName = "SQLite.swift"
 
 }
 
@@ -140,7 +140,7 @@ extension Tokenizer : CustomStringConvertible {
 
 extension Connection {
 
-    public func registerTokenizer(_ submoduleName: String, next: (String) -> (String, Range<String.Index>)?) throws {
+    public func registerTokenizer(_ submoduleName: String, next: @escaping (String) -> (String, Range<String.Index>)?) throws {
         try check(_SQLiteRegisterTokenizer(handle, Tokenizer.moduleName, submoduleName) { input, offset, length in
             let string = String(cString: input)
 
@@ -289,8 +289,8 @@ public class FTS4Config : FTSConfig {
 
         public var description: String {
             switch self {
-            case Asc: return "asc"
-            case Desc: return "desc"
+            case .Asc: return "asc"
+            case .Desc: return "desc"
             }
         }
     }
