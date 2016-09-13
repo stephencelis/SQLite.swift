@@ -100,7 +100,7 @@ class TestRunningValidator < Pod::Validator
       return # skip watchos
     end
 
-    output, status = Dir.chdir(validation_dir) { _xcodebuild(command) }
+    output, status = _xcodebuild(command)
     unless status.success?
       message = 'Returned an unsuccessful exit code.'
       if config.verbose?
