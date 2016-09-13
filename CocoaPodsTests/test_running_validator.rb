@@ -7,12 +7,12 @@ class TestRunningValidator < Pod::Validator
   TEST_TARGET = 'Tests'
 
   attr_accessor :test_files
-  attr_accessor :iphone_simulator
+  attr_accessor :ios_simulator
   attr_accessor :tvos_simulator
 
   def initialize(spec_or_path, source_urls)
     super(spec_or_path, source_urls)
-    self.iphone_simulator = :oldest
+    self.ios_simulator = :oldest
     self.tvos_simulator = :oldest
   end
 
@@ -61,7 +61,7 @@ class TestRunningValidator < Pod::Validator
     test_target.add_file_references(test_files.map { |file| group.new_file(file) })
     project.save
     create_test_scheme(project, test_target)
-    project
+    test_target
   end
 
   def create_test_scheme(project, test_target)
@@ -90,7 +90,7 @@ class TestRunningValidator < Pod::Validator
     case consumer.platform_name
     when :ios
       command += %w(CODE_SIGN_IDENTITY=- -sdk iphonesimulator)
-      command += Fourflusher::SimControl.new.destination(iphone_simulator, 'iOS', deployment_target)
+      command += Fourflusher::SimControl.new.destination(ios_simulator, 'iOS', deployment_target)
     when :osx
       command += %w(LD_RUNPATH_SEARCH_PATHS=@loader_path/../Frameworks)
     when :tvos
@@ -100,7 +100,8 @@ class TestRunningValidator < Pod::Validator
       return # skip watchos
     end
 
-    output, status = Dir.chdir(validation_dir) { _xcodebuild(command) }
+    output, status = _xcodebuild(command)
+
     unless status.success?
       message = 'Returned an unsuccessful exit code.'
       if config.verbose?
@@ -110,5 +111,6 @@ class TestRunningValidator < Pod::Validator
       end
       error('xcodebuild', message)
     end
+    output
   end
 end
