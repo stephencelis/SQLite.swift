@@ -12,7 +12,7 @@ class TestRunningValidator < Pod::Validator
 
   def initialize(spec_or_path, source_urls)
     super(spec_or_path, source_urls)
-    self.iphone_simulator = 'iPhone SE' # :oldest
+    self.iphone_simulator = ENV['IPHONE_SIMULATOR'] || :oldest
     self.tvos_simulator = :oldest
   end
 
