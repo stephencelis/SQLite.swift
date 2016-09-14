@@ -19,10 +19,7 @@ class TestRunningValidator < Pod::Validator
   def create_app_project
     super.tap do
       project = Xcodeproj::Project.open(validation_dir + "#{APP_TARGET}.xcodeproj")
-      test_target = create_test_target(project)
-      project.root_object.attributes['TargetAttributes'] = {
-        test_target.uuid => { 'ProvisioningStyle' => 'Manual' }
-      }
+      create_test_target(project)
       set_swift_version(project, '2.3')
       project.save
     end
