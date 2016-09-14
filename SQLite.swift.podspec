@@ -33,6 +33,7 @@ Pod::Spec.new do |s|
     ss.library = 'sqlite3'
     ss.preserve_paths = 'CocoaPods/**/*'
     ss.pod_target_xcconfig = {
+      'SWIFT_INCLUDE_PATHS[sdk=macosx*]'             => '$(SRCROOT)/SQLite.swift/CocoaPods/macosx',
       'SWIFT_INCLUDE_PATHS[sdk=macosx10.11]'         => '$(SRCROOT)/SQLite.swift/CocoaPods/macosx-10.11',
       'SWIFT_INCLUDE_PATHS[sdk=macosx10.12]'         => '$(SRCROOT)/SQLite.swift/CocoaPods/macosx-10.12',
       'SWIFT_INCLUDE_PATHS[sdk=iphoneos*]'           => '$(SRCROOT)/SQLite.swift/CocoaPods/iphoneos',
