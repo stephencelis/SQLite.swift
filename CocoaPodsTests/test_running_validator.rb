@@ -12,7 +12,7 @@ class TestRunningValidator < Pod::Validator
 
   def initialize(spec_or_path, source_urls)
     super(spec_or_path, source_urls)
-    self.ios_simulator = ENV['IOS_SIMULATOR'] || :oldest
+    self.ios_simulator = :oldest
     self.tvos_simulator = :oldest
   end
 
