@@ -100,15 +100,7 @@ class TestRunningValidator < Pod::Validator
       return # skip watchos
     end
 
-    output, status = _xcodebuild(command)
-    unless status.success?
-      message = 'Returned an unsuccessful exit code.'
-      if config.verbose?
-        message += "\nXcode output: \n#{output}\n"
-      else
-        message += ' You can use `--verbose` for more information.'
-      end
-      error('xcodebuild', message)
-    end
+    Pod::UI.puts 'xcodebuild ' << command.join(' ') if config.verbose
+    Pod::Executable.execute_command('xcodebuild', command)
   end
 end
