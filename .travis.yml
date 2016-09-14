@@ -1,6 +1,23 @@
 language: objective-c
+rvm: 2.2
 matrix:
+
   include:
+    - os: osx
+      osx_image: xcode8
+      env: BUILD_SCHEME="SQLite iOS"
+    - os: osx
+      osx_image: xcode8
+      env: BUILD_SCHEME="SQLite Mac"
+    - os: osx
+      osx_image: xcode8
+      env: VALIDATOR_SUBSPEC="none"
+    - os: osx
+      osx_image: xcode8
+      env: VALIDATOR_SUBSPEC="standard"
+    - os: osx
+      osx_image: xcode8
+      env: VALIDATOR_SUBSPEC="standalone"
     - env: BUILD_SCHEME="SQLite iOS"
     - env: BUILD_SCHEME="SQLite Mac"
     - env: VALIDATOR_SUBSPEC="none"
@@ -10,4 +27,7 @@ before_install:
   - gem install xcpretty --no-document
 script:
   - ./run-tests.sh
+after_failure:
+  - find $HOME/Library/Developer/Xcode/DerivedData/ -name '*.log' -print0 | xargs -0 cat
+  - cat /var/log/system.log
 osx_image: xcode7.3

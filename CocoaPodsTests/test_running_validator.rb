@@ -7,11 +7,24 @@ class TestRunningValidator < Pod::Validator
   TEST_TARGET = 'Tests'
 
   attr_accessor :test_files
+  attr_accessor :iphone_simulator
+  attr_accessor :tvos_simulator
+
+  def initialize(spec_or_path, source_urls)
+    super(spec_or_path, source_urls)
+    self.iphone_simulator = :oldest
+    self.tvos_simulator = :oldest
+  end
 
   def create_app_project
     super.tap do
       project = Xcodeproj::Project.open(validation_dir + "#{APP_TARGET}.xcodeproj")
-      create_test_target(project)
+      test_target = create_test_target(project)
+      project.root_object.attributes['TargetAttributes'] = {
+        test_target.uuid => { 'ProvisioningStyle' => 'Manual' }
+      }
+      set_swift_version(project, '2.3')
+      project.save
     end
   end
 
@@ -37,13 +50,25 @@ class TestRunningValidator < Pod::Validator
   end
 
   private
+  def set_swift_version(project, version)
+    project.targets.each do |target|
+      target.build_configuration_list.build_configurations.each do |configuration|
+        configuration.build_settings['SWIFT_VERSION'] = version
+      end
+    end
+  end
+
   def create_test_target(project)
     test_target = project.new_target(:unit_test_bundle, TEST_TARGET, consumer.platform_name, deployment_target)
     group = project.new_group(TEST_TARGET)
     test_target.add_file_references(test_files.map { |file| group.new_file(file) })
+    test_target.build_configuration_list.build_configurations.each do |configuration|
+      configuration.build_settings['DEVELOPMENT_TEAM'] = ''
+      configuration.build_settings['CODE_SIGN_IDENTITY'] = 'iPhone Developer'
+    end
     project.save
     create_test_scheme(project, test_target)
-    project
+    test_target
   end
 
   def create_test_scheme(project, test_target)
@@ -63,29 +88,26 @@ class TestRunningValidator < Pod::Validator
   end
 
   def run_tests
-    command = %W(clean test -workspace #{APP_TARGET}.xcworkspace -scheme #{TEST_TARGET} -configuration Debug)
+    command = [
+      'clean', 'test',
+      '-workspace', File.join(validation_dir, "#{APP_TARGET}.xcworkspace"),
+      '-scheme', TEST_TARGET,
+      '-configuration', 'Debug'
+    ]
     case consumer.platform_name
     when :ios
       command += %w(CODE_SIGN_IDENTITY=- -sdk iphonesimulator)
-      command += Fourflusher::SimControl.new.destination('iPhone 4s', deployment_target)
+      command += Fourflusher::SimControl.new.destination(iphone_simulator, 'iOS', deployment_target)
     when :osx
       command += %w(LD_RUNPATH_SEARCH_PATHS=@loader_path/../Frameworks)
     when :tvos
       command += %w(CODE_SIGN_IDENTITY=- -sdk appletvsimulator)
-      command += Fourflusher::SimControl.new.destination('Apple TV 1080p', deployment_target)
+      command += Fourflusher::SimControl.new.destination(tvos_simulator, 'tvOS', deployment_target)
     else
       return # skip watchos
     end
 
-    output, status = Dir.chdir(validation_dir) { _xcodebuild(command) }
-    unless status.success?
-      message = 'Returned an unsuccessful exit code.'
-      if config.verbose?
-        message += "\nXcode output: \n#{output}\n"
-      else
-        message += ' You can use `--verbose` for more information.'
-      end
-      error('xcodebuild', message)
-    end
+    Pod::UI.puts 'xcodebuild ' << command.join(' ') if config.verbose
+    Pod::Executable.execute_command('xcodebuild', command)
   end
 end
