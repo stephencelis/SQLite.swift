@@ -5,7 +5,7 @@ test: install repo_update
 	done
 
 repo_update:
-	@bundle exec pod repo update
+	@bundle exec pod repo update --silent
 
 install:
 	@bundle install --path gems
