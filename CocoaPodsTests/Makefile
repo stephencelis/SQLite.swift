@@ -1,10 +1,10 @@
-test: install update
+test: install repo_update
 	@set -e; \
 	for test in *_test.rb; do \
 		bundle exec ./$$test; \
 	done
 
-update:
+repo_update:
 	@bundle exec pod repo update
 
 install:
