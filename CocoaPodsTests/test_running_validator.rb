@@ -7,12 +7,12 @@ class TestRunningValidator < Pod::Validator
   TEST_TARGET = 'Tests'
 
   attr_accessor :test_files
-  attr_accessor :iphone_simulator
+  attr_accessor :ios_simulator
   attr_accessor :tvos_simulator
 
   def initialize(spec_or_path, source_urls)
     super(spec_or_path, source_urls)
-    self.iphone_simulator = ENV['IPHONE_SIMULATOR'] || :oldest
+    self.ios_simulator = ENV['IOS_SIMULATOR'] || :oldest
     self.tvos_simulator = :oldest
   end
 
@@ -93,7 +93,7 @@ class TestRunningValidator < Pod::Validator
     case consumer.platform_name
     when :ios
       command += %w(CODE_SIGN_IDENTITY=- -sdk iphonesimulator)
-      command += Fourflusher::SimControl.new.destination(iphone_simulator, 'iOS', deployment_target)
+      command += Fourflusher::SimControl.new.destination(ios_simulator, 'iOS', deployment_target)
     when :osx
       command += %w(LD_RUNPATH_SEARCH_PATHS=@loader_path/../Frameworks)
     when :tvos
