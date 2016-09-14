@@ -62,10 +62,6 @@ class TestRunningValidator < Pod::Validator
     test_target = project.new_target(:unit_test_bundle, TEST_TARGET, consumer.platform_name, deployment_target)
     group = project.new_group(TEST_TARGET)
     test_target.add_file_references(test_files.map { |file| group.new_file(file) })
-    test_target.build_configuration_list.build_configurations.each do |configuration|
-      configuration.build_settings['DEVELOPMENT_TEAM'] = ''
-      configuration.build_settings['CODE_SIGN_IDENTITY'] = 'iPhone Developer'
-    end
     project.save
     create_test_scheme(project, test_target)
     test_target
