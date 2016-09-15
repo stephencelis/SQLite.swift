@@ -595,7 +595,7 @@ public final class Connection {
         return success!
     }
 
-    func check(resultCode: Int32, statement: Statement? = nil) throws -> Int32 {
+    public func check(resultCode: Int32, statement: Statement? = nil) throws -> Int32 {
         guard let error = Result(errorCode: resultCode, connection: self, statement: statement) else {
             return resultCode
         }
