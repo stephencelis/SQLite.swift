@@ -47,7 +47,7 @@ extension NSDate : Value {
     }
 
     public class func fromDatatypeValue(stringValue: String) -> NSDate {
-        return dateFormatter.dateFromString(stringValue)!
+        return dateFormatter.dateFromString(stringValue) ?? NSDate()
     }
 
     public var datatypeValue: String {
