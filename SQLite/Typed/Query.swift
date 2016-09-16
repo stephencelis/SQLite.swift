@@ -173,7 +173,7 @@ extension SchemaType {
 
 extension QueryType {
 
-    private func select<Q : QueryType>(_ distinct: Bool, _ columns: [Expressible]) -> Q {
+    fileprivate func select<Q : QueryType>(_ distinct: Bool, _ columns: [Expressible]) -> Q {
         var query = Q.init(clauses.from.name, database: clauses.from.database)
         query.clauses = clauses
         query.clauses.select = (distinct, columns)
@@ -378,7 +378,7 @@ extension QueryType {
         return group(by, having)
     }
 
-    private func group(_ by: [Expressible], _ having: Expression<Bool?>?) -> Self {
+    fileprivate func group(_ by: [Expressible], _ having: Expression<Bool?>?) -> Self {
         var query = self
         query.clauses.group = (by, having)
         return query
@@ -456,7 +456,7 @@ extension QueryType {
     }
 
     // prevents limit(nil, offset: 5)
-    private func limit(_ length: Int?, _ offset: Int?) -> Self {
+    fileprivate func limit(_ length: Int?, _ offset: Int?) -> Self {
         var query = self
         query.clauses.limit = length.map { ($0, offset) }
         return query
@@ -468,7 +468,7 @@ extension QueryType {
 
     // MARK: -
 
-    private var selectClause: Expressible {
+    fileprivate var selectClause: Expressible {
         return " ".join([
             Expression<Void>(literal: clauses.select.distinct ? "SELECT DISTINCT" : "SELECT"),
             ", ".join(clauses.select.columns),
@@ -477,7 +477,7 @@ extension QueryType {
         ])
     }
 
-    private var joinClause: Expressible? {
+    fileprivate var joinClause: Expressible? {
         guard !clauses.join.isEmpty else {
             return nil
         }
@@ -492,7 +492,7 @@ extension QueryType {
         })
     }
 
-    private var whereClause: Expressible? {
+    fileprivate var whereClause: Expressible? {
         guard let filters = clauses.filters else {
             return nil
         }
@@ -503,7 +503,7 @@ extension QueryType {
         ])
     }
 
-    private var groupByClause: Expressible? {
+    fileprivate var groupByClause: Expressible? {
         guard let group = clauses.group else {
             return nil
         }
@@ -526,7 +526,7 @@ extension QueryType {
         ])
     }
 
-    private var orderClause: Expressible? {
+    fileprivate var orderClause: Expressible? {
         guard !clauses.order.isEmpty else {
             return nil
         }
@@ -537,7 +537,7 @@ extension QueryType {
         ])
     }
 
-    private var limitOffsetClause: Expressible? {
+    fileprivate var limitOffsetClause: Expressible? {
         guard let limit = clauses.limit else {
             return nil
         }
@@ -582,7 +582,7 @@ extension QueryType {
         return insert(onConflict, values)
     }
 
-    private func insert(_ or: OnConflict?, _ values: [Setter]) -> Insert {
+    fileprivate func insert(_ or: OnConflict?, _ values: [Setter]) -> Insert {
         let insert = values.reduce((columns: [Expressible](), values: [Expressible]())) { insert, setter in
             (insert.columns + [setter.column], insert.values + [setter.value])
         }
@@ -733,7 +733,7 @@ extension QueryType {
 
     // TODO: alias support
     func tableName(alias aliased: Bool = false) -> Expressible {
-        guard let alias = clauses.from.alias where aliased else {
+        guard let alias = clauses.from.alias , aliased else {
             return database(namespace: clauses.from.alias ?? clauses.from.name)
         }
 
@@ -744,7 +744,7 @@ extension QueryType {
         ])
     }
 
-    func tableName(qualified: Bool) -> Expressible {
+    func tableName(_ qualified: Bool) -> Expressible {
         if qualified {
             return tableName()
         }
@@ -893,7 +893,7 @@ extension Connection {
 
                 func expandGlob(_ namespace: Bool) -> ((QueryType) throws -> Void) {
                     return { (query: QueryType) throws -> (Void) in
-                        var q = query.dynamicType.init(query.clauses.from.name, database: query.clauses.from.database)
+                        var q = type(of: query).init(query.clauses.from.name, database: query.clauses.from.database)
                         q.clauses.select = query.clauses.select
                         let e = q.expression
                         var names = try self.prepare(e.template, e.bindings).columnNames.map { $0.quote() }
@@ -932,30 +932,30 @@ extension Connection {
         }
     }
 
-    public func scalar<V : Value>(query: ScalarQuery<V>) -> V {
+    public func scalar<V : Value>(_ query: ScalarQuery<V>) -> V {
         let expression = query.expression
         return value(scalar(expression.template, expression.bindings))
     }
 
-    public func scalar<V : Value>(query: ScalarQuery<V?>) -> V.ValueType? {
+    public func scalar<V : Value>(_ query: ScalarQuery<V?>) -> V.ValueType? {
         let expression = query.expression
         guard let value = scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
         return V.fromDatatypeValue(value)
     }
 
-    public func scalar<V : Value>(query: Select<V>) -> V {
+    public func scalar<V : Value>(_ query: Select<V>) -> V {
         let expression = query.expression
         return value(scalar(expression.template, expression.bindings))
     }
 
-    public func scalar<V : Value>(query: Select<V?>) ->  V.ValueType? {
+    public func scalar<V : Value>(_ query: Select<V?>) ->  V.ValueType? {
         let expression = query.expression
         guard let value = scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
         return V.fromDatatypeValue(value)
     }
 
-    public func pluck(query: QueryType) -> Row? {
-        return try! prepare(query.limit(1, query.clauses.limit?.offset)).generate().next()
+    public func pluck(_ query: QueryType) -> Row? {
+        return try! prepare(query.limit(1, query.clauses.limit?.offset)).makeIterator().next()
     }
 
     /// Runs an `Insert` query.
@@ -968,7 +968,7 @@ extension Connection {
     /// - Parameter query: An insert query.
     ///
     /// - Returns: The insert’s rowid.
-    public func run(query: Insert) throws -> Int64 {
+    public func run(_ query: Insert) throws -> Int64 {
         let expression = query.expression
         return try sync {
             try self.run(expression.template, expression.bindings)
@@ -984,7 +984,7 @@ extension Connection {
     /// - Parameter query: An update query.
     ///
     /// - Returns: The number of updated rows.
-    public func run(query: Update) throws -> Int {
+    public func run(_ query: Update) throws -> Int {
         let expression = query.expression
         return try sync {
             try self.run(expression.template, expression.bindings)
@@ -999,7 +999,7 @@ extension Connection {
     /// - Parameter query: A delete query.
     ///
     /// - Returns: The number of deleted rows.
-    public func run(query: Delete) throws -> Int {
+    public func run(_ query: Delete) throws -> Int {
         let expression = query.expression
         return try sync {
             try self.run(expression.template, expression.bindings)
@@ -1011,11 +1011,11 @@ extension Connection {
 
 public struct Row {
 
-    private let columnNames: [String: Int]
+    fileprivate let columnNames: [String: Int]
 
-    private let values: [Binding?]
+    fileprivate let values: [Binding?]
 
-    private init(_ columnNames: [String: Int], _ values: [Binding?]) {
+    fileprivate init(_ columnNames: [String: Int], _ values: [Binding?]) {
         self.columnNames = columnNames
         self.values = values
     }
@@ -1029,7 +1029,7 @@ public struct Row {
         return get(Expression<V?>(column))!
     }
     public func get<V: Value>(_ column: Expression<V?>) -> V? {
-        func valueAtIndex(idx: Int) -> V? {
+        func valueAtIndex(_ idx: Int) -> V? {
             guard let value = values[idx] as? V.Datatype else { return nil }
             return (V.fromDatatypeValue(value) as? V)!
         }
@@ -1039,7 +1039,7 @@ public struct Row {
 
             switch similar.count {
             case 0:
-                fatalError("no such column '\(column.template)' in columns: \(columnNames.keys.sort())")
+                fatalError("no such column '\(column.template)' in columns: \(columnNames.keys.sorted())")
             case 1:
                 return valueAtIndex(columnNames[similar[0]]!)
             default:
@@ -1143,7 +1143,7 @@ public struct QueryClauses {
 
     var limit: (length: Int, offset: Int?)?
 
-    private init(_ name: String, alias: String?, database: String?) {
+    fileprivate init(_ name: String, alias: String?, database: String?) {
         self.from = (name, alias, database)
     }
 

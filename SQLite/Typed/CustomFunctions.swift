@@ -115,7 +115,7 @@ public extension Connection {
 
     // MARK: -
 
-    private func createFunction<Z : Value>(_ function: String, _ argumentCount: UInt, _ deterministic: Bool, _ block: ([Binding?]) -> Z) throws -> (([Expressible]) -> Expression<Z>) {
+    fileprivate func createFunction<Z : Value>(_ function: String, _ argumentCount: UInt, _ deterministic: Bool, _ block: ([Binding?]) -> Z) throws -> (([Expressible]) -> Expression<Z>) {
         createFunction(function: function, argumentCount: argumentCount, deterministic: deterministic) { arguments in
             block(arguments).datatypeValue
         }
@@ -124,7 +124,7 @@ public extension Connection {
         }
     }
 
-    private func createFunction<Z : Value>(_ function: String, _ argumentCount: UInt, _ deterministic: Bool, _ block: ([Binding?]) -> Z?) throws -> (([Expressible]) -> Expression<Z?>) {
+    fileprivate func createFunction<Z : Value>(_ function: String, _ argumentCount: UInt, _ deterministic: Bool, _ block: ([Binding?]) -> Z?) throws -> (([Expressible]) -> Expression<Z?>) {
         createFunction(function: function, argumentCount: argumentCount, deterministic: deterministic) { arguments in
             block(arguments)?.datatypeValue
         }
