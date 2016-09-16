@@ -298,10 +298,10 @@ class QueryIntegrationTests : SQLiteTestCase {
         let managers = users.alias("managers")
 
         let alice = try! db.run(users.insert(email <- "alice@example.com"))
-        try! db.run(users.insert(email <- "betsy@example.com", managerId <- alice))
+        _ = try! db.run(users.insert(email <- "betsy@example.com", managerId <- alice))
 
         for user in try! db.prepare(users.join(managers, on: managers[id] == users[managerId])) {
-            user[users[managerId]]
+            _ = user[users[managerId]]
         }
     }
 
