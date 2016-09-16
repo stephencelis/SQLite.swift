@@ -26,7 +26,7 @@ extension SchemaType {
 
     // MARK: - DROP TABLE / VIEW / VIRTUAL TABLE
 
-    public func drop(_ ifExists: Bool = false) -> String {
+    public func drop(ifExists: Bool = false) -> String {
         return drop("TABLE", tableName(), ifExists)
     }
 

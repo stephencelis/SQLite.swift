@@ -5,12 +5,12 @@ class SchemaTests : XCTestCase {
 
     func test_drop_compilesDropTableExpression() {
         XCTAssertEqual("DROP TABLE \"table\"", table.drop())
-        XCTAssertEqual("DROP TABLE IF EXISTS \"table\"", table.drop(true))
+        XCTAssertEqual("DROP TABLE IF EXISTS \"table\"", table.drop(ifExists: true))
     }
 
     func test_drop_compilesDropVirtualTableExpression() {
         XCTAssertEqual("DROP TABLE \"virtual_table\"", virtualTable.drop())
-        XCTAssertEqual("DROP TABLE IF EXISTS \"virtual_table\"", virtualTable.drop(true))
+        XCTAssertEqual("DROP TABLE IF EXISTS \"virtual_table\"", virtualTable.drop(ifExists: true))
     }
 
     func test_drop_compilesDropViewExpression() {
