@@ -1,7 +1,8 @@
 BUILD_TOOL = xcodebuild
 BUILD_SCHEME = SQLite Mac
+IOS_SIMULATOR = iPhone 6
 ifeq ($(BUILD_SCHEME),SQLite iOS)
-	BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)" -sdk iphonesimulator
+	BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)" -destination "platform=iOS Simulator,name=$(IOS_SIMULATOR)"
 else
 	BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)"
 endif

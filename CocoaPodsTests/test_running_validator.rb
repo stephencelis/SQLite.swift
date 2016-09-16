@@ -7,19 +7,36 @@ class TestRunningValidator < Pod::Validator
   TEST_TARGET = 'Tests'
 
   attr_accessor :test_files
+  attr_accessor :ios_simulator
+  attr_accessor :tvos_simulator
+
+  def initialize(spec_or_path, source_urls)
+    super(spec_or_path, source_urls)
+    self.ios_simulator = :oldest
+    self.tvos_simulator = :oldest
+  end
 
   def create_app_project
-    super.tap do
-      project = Xcodeproj::Project.open(validation_dir + "#{APP_TARGET}.xcodeproj")
-      create_test_target(project)
-    end
+    super
+    project = Xcodeproj::Project.open(validation_dir + "#{APP_TARGET}.xcodeproj")
+    create_test_target(project)
+    project.save
+  end
+
+  def add_app_project_import
+    super
+    project = Xcodeproj::Project.open(validation_dir + 'App.xcodeproj')
+    group = project.new_group(TEST_TARGET)
+    test_target = project.targets.last
+    test_target.add_file_references(test_files.map { |file| group.new_file(file) })
+    add_swift_version(test_target)
+    project.save
   end
 
   def install_pod
-    super.tap do
-      if local?
-        FileUtils.ln_s file.dirname, validation_dir + "Pods/#{spec.name}"
-      end
+    super
+    if local?
+      FileUtils.ln_s file.dirname, validation_dir + "Pods/#{spec.name}"
     end
   end
 
@@ -39,11 +56,7 @@ class TestRunningValidator < Pod::Validator
   private
   def create_test_target(project)
     test_target = project.new_target(:unit_test_bundle, TEST_TARGET, consumer.platform_name, deployment_target)
-    group = project.new_group(TEST_TARGET)
-    test_target.add_file_references(test_files.map { |file| group.new_file(file) })
-    project.save
     create_test_scheme(project, test_target)
-    project
   end
 
   def create_test_scheme(project, test_target)
@@ -63,21 +76,27 @@ class TestRunningValidator < Pod::Validator
   end
 
   def run_tests
-    command = %W(clean test -workspace #{APP_TARGET}.xcworkspace -scheme #{TEST_TARGET} -configuration Debug)
+    command = [
+      'clean', 'test',
+      '-workspace', File.join(validation_dir, "#{APP_TARGET}.xcworkspace"),
+      '-scheme', TEST_TARGET,
+      '-configuration', 'Debug'
+    ]
     case consumer.platform_name
     when :ios
       command += %w(CODE_SIGN_IDENTITY=- -sdk iphonesimulator)
-      command += Fourflusher::SimControl.new.destination('iPhone 4s', deployment_target)
+      command += Fourflusher::SimControl.new.destination(ios_simulator, 'iOS', deployment_target)
     when :osx
       command += %w(LD_RUNPATH_SEARCH_PATHS=@loader_path/../Frameworks)
     when :tvos
       command += %w(CODE_SIGN_IDENTITY=- -sdk appletvsimulator)
-      command += Fourflusher::SimControl.new.destination('Apple TV 1080p', deployment_target)
+      command += Fourflusher::SimControl.new.destination(tvos_simulator, 'tvOS', deployment_target)
     else
       return # skip watchos
     end
 
-    output, status = Dir.chdir(validation_dir) { _xcodebuild(command) }
+    output, status = _xcodebuild(command)
+
     unless status.success?
       message = 'Returned an unsuccessful exit code.'
       if config.verbose?
@@ -87,5 +106,6 @@ class TestRunningValidator < Pod::Validator
       end
       error('xcodebuild', message)
     end
+    output
   end
 end
