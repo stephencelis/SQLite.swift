@@ -38,24 +38,24 @@ public final class Connection {
         /// An in-memory database (equivalent to `.URI(":memory:")`).
         ///
         /// See: <https://www.sqlite.org/inmemorydb.html#sharedmemdb>
-        case InMemory
+        case inMemory
 
         /// A temporary, file-backed database (equivalent to `.URI("")`).
         ///
         /// See: <https://www.sqlite.org/inmemorydb.html#temp_db>
-        case Temporary
+        case temporary
 
         /// A database located at the given URI filename (or path).
         ///
         /// See: <https://www.sqlite.org/uri.html>
         ///
         /// - Parameter filename: A URI filename
-        case URI(String)
+        case uri(String)
     }
 
     public var handle: OpaquePointer { return _handle! }
 
-    private var _handle: OpaquePointer? = nil
+    fileprivate var _handle: OpaquePointer? = nil
 
     /// Initializes a new SQLite connection.
     ///
@@ -71,10 +71,11 @@ public final class Connection {
     ///     Default: `false`.
     ///
     /// - Returns: A new database connection.
-    public init(_ location: Location = .InMemory, readonly: Bool = false) throws {
+    public init(_ location: Location = .inMemory, readonly: Bool = false) throws {
         let flags = readonly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE
         try check(sqlite3_open_v2(location.description, &_handle, flags | SQLITE_OPEN_FULLMUTEX, nil))
-        queue.setSpecific(key: Connection.queueKey, value: ())
+        
+        queue.setSpecific(key: Connection.queueKey, value: self.queueContext)
     }
 
     /// Initializes a new connection to a database.
@@ -92,7 +93,7 @@ public final class Connection {
     ///
     /// - Returns: A new database connection.
     public convenience init(_ filename: String, readonly: Bool = false) throws {
-        try self.init(.URI(filename), readonly: readonly)
+        try self.init(.uri(filename), readonly: readonly)
     }
 
     deinit {
@@ -145,7 +146,7 @@ public final class Connection {
     ///   - bindings: A list of parameters to bind to the statement.
     ///
     /// - Returns: A prepared statement.
-    @warn_unused_result public func prepare(_ statement: String, _ bindings: Binding?...) throws -> Statement {
+    @discardableResult public func prepare(_ statement: String, _ bindings: Binding?...) throws -> Statement {
         if !bindings.isEmpty { return try prepare(statement, bindings) }
         return try Statement(self, statement)
     }
@@ -159,7 +160,7 @@ public final class Connection {
     ///   - bindings: A list of parameters to bind to the statement.
     ///
     /// - Returns: A prepared statement.
-    @warn_unused_result public func prepare(_ statement: String, _ bindings: [Binding?]) throws -> Statement {
+    @discardableResult public func prepare(_ statement: String, _ bindings: [Binding?]) throws -> Statement {
         return try prepare(statement).bind(bindings)
     }
 
@@ -172,7 +173,7 @@ public final class Connection {
     ///   - bindings: A dictionary of named parameters to bind to the statement.
     ///
     /// - Returns: A prepared statement.
-    @warn_unused_result public func prepare(_ statement: String, _ bindings: [String: Binding?]) throws -> Statement {
+    @discardableResult public func prepare(_ statement: String, _ bindings: [String: Binding?]) throws -> Statement {
         return try prepare(statement).bind(bindings)
     }
 
@@ -238,7 +239,7 @@ public final class Connection {
     ///   - bindings: A list of parameters to bind to the statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(_ statement: String, _ bindings: Binding?...) -> Binding? {
+    @discardableResult public func scalar(_ statement: String, _ bindings: Binding?...) -> Binding? {
         return scalar(statement, bindings)
     }
 
@@ -252,7 +253,7 @@ public final class Connection {
     ///   - bindings: A list of parameters to bind to the statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(_ statement: String, _ bindings: [Binding?]) -> Binding? {
+    @discardableResult public func scalar(_ statement: String, _ bindings: [Binding?]) -> Binding? {
         return try! prepare(statement).scalar(bindings)
     }
 
@@ -266,7 +267,7 @@ public final class Connection {
     ///   - bindings: A dictionary of named parameters to bind to the statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(_ statement: String, _ bindings: [String: Binding?]) -> Binding? {
+    @discardableResult public func scalar(_ statement: String, _ bindings: [String: Binding?]) -> Binding? {
         return try! prepare(statement).scalar(bindings)
     }
 
@@ -303,7 +304,7 @@ public final class Connection {
     ///     must throw to roll the transaction back.
     ///
     /// - Throws: `Result.Error`, and rethrows.
-    public func transaction(mode: TransactionMode = .Deferred, block: () throws -> Void) throws {
+    public func transaction(_ mode: TransactionMode = .Deferred, block: @escaping () throws -> Void) throws {
         try transaction("BEGIN \(mode.rawValue) TRANSACTION", block, "COMMIT TRANSACTION", or: "ROLLBACK TRANSACTION")
     }
 
@@ -323,14 +324,14 @@ public final class Connection {
     ///     The block must throw to roll the savepoint back.
     ///
     /// - Throws: `SQLite.Result.Error`, and rethrows.
-    public func savepoint(_ name: String = NSUUID().uuidString, block: () throws -> Void) throws {
+    public func savepoint(_ name: String = UUID().uuidString, block: @escaping () throws -> Void) throws {
         let name = name.quote("'")
         let savepoint = "SAVEPOINT \(name)"
 
         try transaction(savepoint, block, "RELEASE \(savepoint)", or: "ROLLBACK TO \(savepoint)")
     }
 
-    private func transaction(_ begin: String, _ block: () throws -> Void, _ commit: String, or rollback: String) throws {
+    fileprivate func transaction(_ begin: String, _ block: @escaping () throws -> Void, _ commit: String, or rollback: String) throws {
         return try sync {
             try self.run(begin)
             do {
@@ -364,21 +365,21 @@ public final class Connection {
     ///   busy error would otherwise be returned. It’s passed the number of
     ///   times it’s been called for this lock. If it returns `true`, it will
     ///   try again. If it returns `false`, no further attempts will be made.
-    public func busyHandler(callback: ((tries: Int) -> Bool)?) {
+    public func busyHandler(_ callback: ((_ tries: Int) -> Bool)?) {
         guard let callback = callback else {
             sqlite3_busy_handler(handle, nil, nil)
             busyHandler = nil
             return
         }
 
-        let box: BusyHandler = { callback(tries: Int($0)) ? 1 : 0 }
+        let box: BusyHandler = { callback(Int($0)) ? 1 : 0 }
         sqlite3_busy_handler(handle, { callback, tries in
             unsafeBitCast(callback, to: BusyHandler.self)(tries)
-        }, unsafeBitCast(box, to: UnsafeMutablePointer<Void>.self))
+        }, unsafeBitCast(box, to: UnsafeMutableRawPointer.self))
         busyHandler = box
     }
-    private typealias BusyHandler = @convention(block) (Int32) -> Int32
-    private var busyHandler: BusyHandler?
+    fileprivate typealias BusyHandler = @convention(block) (Int32) -> Int32
+    fileprivate var busyHandler: BusyHandler?
 
     /// Sets a handler to call when a statement is executed with the compiled
     /// SQL.
@@ -387,7 +388,7 @@ public final class Connection {
     ///   with the compiled SQL as its argument.
     ///
     ///       db.trace { SQL in print(SQL) }
-    public func trace(callback: ((String) -> Void)?) {
+    public func trace(_ callback: ((String) -> Void)?) {
         guard let callback = callback else {
             sqlite3_trace(handle, nil, nil)
             trace = nil
@@ -397,11 +398,11 @@ public final class Connection {
         let box: Trace = { callback(String(validatingUTF8: $0)!) }
         sqlite3_trace(handle, { callback, SQL in
             unsafeBitCast(callback, to: Trace.self)(SQL!)
-        }, unsafeBitCast(box, to: UnsafeMutablePointer<Void>.self))
+        }, unsafeBitCast(box, to: UnsafeMutableRawPointer.self))
         trace = box
     }
-    private typealias Trace = @convention(block) (UnsafePointer<Int8>) -> Void
-    private var trace: Trace?
+    fileprivate typealias Trace = @convention(block) (UnsafePointer<Int8>) -> Void
+    fileprivate var trace: Trace?
 
     /// Registers a callback to be invoked whenever a row is inserted, updated,
     /// or deleted in a rowid table.
@@ -409,7 +410,7 @@ public final class Connection {
     /// - Parameter callback: A callback invoked with the `Operation` (one of
     ///   `.Insert`, `.Update`, or `.Delete`), database name, table name, and
     ///   rowid.
-    public func updateHook(callback: ((operation: Operation, db: String, table: String, rowid: Int64) -> Void)?) {
+    public func updateHook(_ callback: ((_ operation: Operation, _ db: String, _ table: String, _ rowid: Int64) -> Void)?) {
         guard let callback = callback else {
             sqlite3_update_hook(handle, nil, nil)
             updateHook = nil
@@ -418,26 +419,26 @@ public final class Connection {
 
         let box: UpdateHook = {
             callback(
-                operation: Operation(rawValue: $0),
-                db: String(validatingUTF8: $1)!,
-                table: String(validatingUTF8: $2)!,
-                rowid: $3
+                Operation(rawValue: $0),
+                String(validatingUTF8: $1)!,
+                String(validatingUTF8: $2)!,
+                $3
             )
         }
         sqlite3_update_hook(handle, { callback, operation, db, table, rowid in
             unsafeBitCast(callback, to: UpdateHook.self)(operation, db!, table!, rowid)
-        }, unsafeBitCast(box, to: UnsafeMutablePointer<Void>.self))
+        }, unsafeBitCast(box, to: UnsafeMutableRawPointer.self))
         updateHook = box
     }
-    private typealias UpdateHook = @convention(block) (Int32, UnsafePointer<Int8>, UnsafePointer<Int8>, Int64) -> Void
-    private var updateHook: UpdateHook?
+    fileprivate typealias UpdateHook = @convention(block) (Int32, UnsafePointer<Int8>, UnsafePointer<Int8>, Int64) -> Void
+    fileprivate var updateHook: UpdateHook?
 
     /// Registers a callback to be invoked whenever a transaction is committed.
     ///
     /// - Parameter callback: A callback invoked whenever a transaction is
     ///   committed. If this callback throws, the transaction will be rolled
     ///   back.
-    public func commitHook(callback: (() throws -> Void)?) {
+    public func commitHook(_ callback: (() throws -> Void)?) {
         guard let callback = callback else {
             sqlite3_commit_hook(handle, nil, nil)
             commitHook = nil
@@ -454,17 +455,17 @@ public final class Connection {
         }
         sqlite3_commit_hook(handle, { callback in
             unsafeBitCast(callback, to: CommitHook.self)()
-        }, unsafeBitCast(box, to: UnsafeMutablePointer<Void>.self))
+        }, unsafeBitCast(box, to: UnsafeMutableRawPointer.self))
         commitHook = box
     }
-    private typealias CommitHook = @convention(block) () -> Int32
-    private var commitHook: CommitHook?
+    fileprivate typealias CommitHook = @convention(block) () -> Int32
+    fileprivate var commitHook: CommitHook?
 
     /// Registers a callback to be invoked whenever a transaction rolls back.
     ///
     /// - Parameter callback: A callback invoked when a transaction is rolled
     ///   back.
-    public func rollbackHook(callback: (() -> Void)?) {
+    public func rollbackHook(_ callback: (() -> Void)?) {
         guard let callback = callback else {
             sqlite3_rollback_hook(handle, nil, nil)
             rollbackHook = nil
@@ -474,11 +475,11 @@ public final class Connection {
         let box: RollbackHook = { callback() }
         sqlite3_rollback_hook(handle, { callback in
             unsafeBitCast(callback, to: RollbackHook.self)()
-        }, unsafeBitCast(box, to: UnsafeMutablePointer<Void>.self))
+        }, unsafeBitCast(box, to: UnsafeMutableRawPointer.self))
         rollbackHook = box
     }
-    private typealias RollbackHook = @convention(block) () -> Void
-    private var rollbackHook: RollbackHook?
+    fileprivate typealias RollbackHook = @convention(block) () -> Void
+    fileprivate var rollbackHook: RollbackHook?
 
     /// Creates or redefines a custom SQL function.
     ///
@@ -499,11 +500,14 @@ public final class Connection {
     ///   - block: A block of code to run when the function is called. The block
     ///     is called with an array of raw SQL values mapped to the function’s
     ///     parameters and should return a raw SQL value (or nil).
-    public func createFunction(function: String, argumentCount: UInt? = nil, deterministic: Bool = false, _ block: (args: [Binding?]) -> Binding?) {
+    public func createFunction(_ function: String, argumentCount: UInt? = nil, deterministic: Bool = false, _ block: @escaping (_ args: [Binding?]) -> Binding?) {
         let argc = argumentCount.map { Int($0) } ?? -1
         let box: Function = { context, argc, argv in
             let arguments: [Binding?] = (0..<Int(argc)).map { idx in
-                let value = argv[idx]
+                guard let value = argv?[idx] else {
+                    return nil
+                }
+
                 switch sqlite3_value_type(value) {
                 case SQLITE_BLOB:
                     return Blob(bytes: sqlite3_value_blob(value), length: Int(sqlite3_value_bytes(value)))
@@ -514,12 +518,12 @@ public final class Connection {
                 case SQLITE_NULL:
                     return nil
                 case SQLITE_TEXT:
-                    return String(validatingUTF8: UnsafePointer(sqlite3_value_text(value)))!
+                    return String(cString: UnsafePointer(sqlite3_value_text(value)))
                 case let type:
                     fatalError("unsupported value type: \(type)")
                 }
             }
-            let result = block(args: arguments)
+            let result = block(arguments)
             if let result = result as? Blob {
                 sqlite3_result_blob(context, result.bytes, Int32(result.bytes.count), nil)
             } else if let result = result as? Double {
@@ -538,13 +542,14 @@ public final class Connection {
         if deterministic {
             flags |= SQLITE_DETERMINISTIC
         }
-        sqlite3_create_function_v2(handle, function, Int32(argc), flags, unsafeBitCast(box, to: UnsafeMutablePointer<Void>.self), { context, argc, value in
+        
+        sqlite3_create_function_v2(handle, function, Int32(argc), flags, unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { context, argc, value in
             unsafeBitCast(sqlite3_user_data(context), to: Function.self)(context, argc, value)
-        }, nil, nil, nil)
+            }, nil, nil, nil)
         if functions[function] == nil { self.functions[function] = [:] }
         functions[function]?[argc] = box
     }
-    private typealias Function = @convention(block) (OpaquePointer, Int32, UnsafeMutablePointer<OpaquePointer>) -> Void
+    private typealias Function = @convention(block) (OpaquePointer?, Int32, UnsafeMutablePointer<OpaquePointer?>?) -> Void
     private var functions = [String: [Int: Function]]()
 
     /// Defines a new collating sequence.
@@ -555,24 +560,28 @@ public final class Connection {
     ///
     ///   - block: A collation function that takes two strings and returns the
     ///     comparison result.
-    public func createCollation(collation: String, _ block: (lhs: String, rhs: String) -> ComparisonResult) {
+    public func createCollation(_ collation: String, _ block: @escaping (_ lhs: String, _ rhs: String) -> ComparisonResult) {
         let box: Collation = { lhs, rhs in
-            Int32(block(lhs: String(validatingUTF8: UnsafePointer<Int8>(lhs))!, rhs: String(validatingUTF8: UnsafePointer<Int8>(rhs))!).rawValue)
+            
+            let unsafeLhs = lhs.assumingMemoryBound(to: Int8.self)
+            let unsafeRhs = rhs.assumingMemoryBound(to: Int8.self)
+            
+            return Int32(block(String(cString: unsafeLhs), String(cString: unsafeRhs)).rawValue)
         }
-        try! check(sqlite3_create_collation_v2(handle, collation, SQLITE_UTF8, unsafeBitCast(box, to: UnsafeMutablePointer<Void>.self), { callback, _, lhs, _, rhs in
+        try! check(sqlite3_create_collation_v2(handle, collation, SQLITE_UTF8, unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { callback, _, lhs, _, rhs in
             unsafeBitCast(callback, to: Collation.self)(lhs!, rhs!)
         }, nil))
         collations[collation] = box
     }
-    private typealias Collation = @convention(block) (UnsafePointer<Void>, UnsafePointer<Void>) -> Int32
-    private var collations = [String: Collation]()
+    fileprivate typealias Collation = @convention(block) (UnsafeRawPointer, UnsafeRawPointer) -> Int32
+    fileprivate var collations = [String: Collation]()
 
     // MARK: - Error Handling
 
     @discardableResult
-    func sync<T>(block: () throws -> T) rethrows -> T {
+    func sync<T>(_ block: @escaping () throws -> T) rethrows -> T {
         var success: T?
-        var failure: ErrorProtocol?
+        var failure: Error?
 
         let box: () -> Void = {
             do {
@@ -582,11 +591,13 @@ public final class Connection {
             }
         }
 
-        if DispatchQueue.getSpecific(key: Connection.queueKey) == queueContext {
+        // todo: Needs to be double checked.
+        if DispatchQueue.getSpecific(key: Connection.queueKey) == self.queueContext {
             box()
         } else {
-            dispatch_sync(queue, box) // FIXME: rdar://problem/21389236
+            queue.sync(execute: box) // FIXME: rdar://problem/21389236
         }
+
 
         if let failure = failure {
             try { () -> Void in throw failure }()
@@ -604,13 +615,9 @@ public final class Connection {
         throw error
     }
 
-    private var queue = DispatchQueue(label: "SQLite.Database", attributes: .serial)
-
-    private static let queueKey = DispatchSpecificKey<()>()
-//    private static let queueKey = unsafeBitCast(Connection.self, to: UnsafePointer<Void>.self)
-
-    private lazy var queueContext: UnsafeMutablePointer<Void> = unsafeBitCast(self, to: UnsafeMutablePointer<Void>.self)
-
+    fileprivate var queue = DispatchQueue(label: "SQLite.Database", attributes: .concurrent)
+    fileprivate lazy var queueContext = NSUUID().uuidString
+    fileprivate static let queueKey = DispatchSpecificKey<String>()
 }
 
 extension Connection : CustomStringConvertible {
@@ -625,11 +632,11 @@ extension Connection.Location : CustomStringConvertible {
 
     public var description: String {
         switch self {
-        case .InMemory:
+        case .inMemory:
             return ":memory:"
-        case .Temporary:
+        case .temporary:
             return ""
-        case .URI(let URI):
+        case .uri(let URI):
             return URI
         }
     }
@@ -640,22 +647,22 @@ extension Connection.Location : CustomStringConvertible {
 public enum Operation {
 
     /// An INSERT operation.
-    case Insert
+    case insert
 
     /// An UPDATE operation.
-    case Update
+    case update
 
     /// A DELETE operation.
-    case Delete
+    case delete
 
-    private init(rawValue: Int32) {
+    fileprivate init(rawValue: Int32) {
         switch rawValue {
         case SQLITE_INSERT:
-            self = .Insert
+            self = .insert
         case SQLITE_UPDATE:
-            self = .Update
+            self = .update
         case SQLITE_DELETE:
-            self = .Delete
+            self = .delete
         default:
             fatalError("unhandled operation code: \(rawValue)")
         }
@@ -663,17 +670,17 @@ public enum Operation {
 
 }
 
-public enum Result : ErrorProtocol {
+public enum Result : Error {
 
-    private static let successCodes: Set = [SQLITE_OK, SQLITE_ROW, SQLITE_DONE]
+    fileprivate static let successCodes: Set = [SQLITE_OK, SQLITE_ROW, SQLITE_DONE]
 
-    case Error(message: String, code: Int32, statement: Statement?)
+    case error(message: String, code: Int32, statement: Statement?)
 
     init?(errorCode: Int32, connection: Connection, statement: Statement? = nil) {
         guard !Result.successCodes.contains(errorCode) else { return nil }
 
         let message = String(validatingUTF8: sqlite3_errmsg(connection.handle))!
-        self = Error(message: message, code: errorCode, statement: statement)
+        self = .error(message: message, code: errorCode, statement: statement)
     }
 
 }
@@ -682,7 +689,7 @@ extension Result : CustomStringConvertible {
 
     public var description: String {
         switch self {
-        case let .Error(message, _, statement):
+        case let .error(message, _, statement):
             guard let statement = statement else { return message }
 
             return "\(message) (\(statement))"

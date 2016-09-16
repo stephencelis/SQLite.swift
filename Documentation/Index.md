@@ -406,7 +406,7 @@ The `column` function is used for a single column definition. It takes an [expre
     t.column(email, collate: .Nocase)
     // "email" TEXT NOT NULL COLLATE "NOCASE"
 
-    t.column(name, collate: .Rtrim)
+    t.column(name, collate: .rtrim)
     // "name" TEXT COLLATE "RTRIM"
     ```
 
@@ -999,7 +999,7 @@ The `addColumn` function shares several of the same [`column` function parameter
     try db.run(users.addColumn(email, collate: .Nocase))
     // ALTER TABLE "users" ADD COLUMN "email" TEXT NOT NULL COLLATE "NOCASE"
 
-    try db.run(users.addColumn(name, collate: .Rtrim))
+    try db.run(users.addColumn(name, collate: .rtrim))
     // ALTER TABLE "users" ADD COLUMN "name" TEXT COLLATE "RTRIM"
     ```
 
@@ -1388,14 +1388,14 @@ let emails = VirtualTable("emails")
 let subject = Expression<String>("subject")
 let body = Expression<String>("body")
 
-try db.run(emails.create(.FTS4(subject, body)))
+try db.run(emails.create(.fts4(subject, body)))
 // CREATE VIRTUAL TABLE "emails" USING fts4("subject", "body")
 ```
 
 We can specify a [tokenizer](http://www.sqlite.org/fts3.html#tokenizer) using the `tokenize` parameter.
 
 ``` swift
-try db.run(emails.create(.FTS4([subject, body], tokenize: .Porter)))
+try db.run(emails.create(.fts4([subject, body], tokenize: .Porter)))
 // CREATE VIRTUAL TABLE "emails" USING fts4("subject", "body", tokenize=porter)
 ```
 
@@ -1409,9 +1409,9 @@ let config = FTS4Config()
     .column(subject)
     .column(body, [.unindexed])
     .languageId("lid")
-    .order(.Desc)
+    .order(.desc)
 
-try db.run(emails.create(.FTS4(config))
+try db.run(emails.create(.fts4(config))
 // CREATE VIRTUAL TABLE "emails" USING fts4("subject", "body", notindexed="body", languageid="lid", order="desc")
 ```
 
@@ -1443,7 +1443,7 @@ let config = FTS5Config()
     .column(subject)
     .column(body, [.unindexed])
 
-try db.run(emails.create(.FTS5(config))
+try db.run(emails.create(.fts5(config))
 // CREATE VIRTUAL TABLE "emails" USING fts5("subject", "body" UNINDEXED)
 ```
 

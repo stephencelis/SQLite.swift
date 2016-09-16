@@ -15,7 +15,7 @@ try! db.run(users.create { t in
     t.column(email, unique: true, check: email.like("%@%"))
     t.column(name)
 })
-
+e9a8f36
 let rowid = try! db.run(users.insert(email <- "alice@mac.com"))
 let alice = users.filter(id == rowid)
 

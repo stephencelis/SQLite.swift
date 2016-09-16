@@ -31,9 +31,9 @@ import CSQLite
 /// A single SQL statement.
 public final class Statement {
 
-    private var handle: OpaquePointer? = nil
+    fileprivate var handle: OpaquePointer? = nil
 
-    private let connection: Connection
+    fileprivate let connection: Connection
 
     init(_ connection: Connection, _ SQL: String) throws {
         self.connection = connection
@@ -95,7 +95,7 @@ public final class Statement {
         return self
     }
 
-    private func bind(_ value: Binding?, atIndex idx: Int) {
+    fileprivate func bind(_ value: Binding?, atIndex idx: Int) {
         if value == nil {
             sqlite3_bind_null(handle, Int32(idx))
         } else if let value = value as? Blob {
@@ -152,7 +152,7 @@ public final class Statement {
     /// - Parameter bindings: A list of parameters to bind to the statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(_ bindings: Binding?...) -> Binding? {
+    @discardableResult public func scalar(_ bindings: Binding?...) -> Binding? {
         guard bindings.isEmpty else {
             return scalar(bindings)
         }
@@ -165,7 +165,7 @@ public final class Statement {
     /// - Parameter bindings: A list of parameters to bind to the statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(_ bindings: [Binding?]) -> Binding? {
+    @discardableResult public func scalar(_ bindings: [Binding?]) -> Binding? {
         return bind(bindings).scalar()
     }
 
@@ -174,7 +174,7 @@ public final class Statement {
     ///   statement.
     ///
     /// - Returns: The first value of the first row returned.
-    @warn_unused_result public func scalar(_ bindings: [String: Binding?]) -> Binding? {
+    @discardableResult public func scalar(_ bindings: [String: Binding?]) -> Binding? {
         return bind(bindings).scalar()
     }
 
@@ -182,7 +182,7 @@ public final class Statement {
         return try connection.sync { try self.connection.check(sqlite3_step(self.handle)) == SQLITE_ROW }
     }
 
-    private func reset(clearBindings shouldClear: Bool = true) {
+    fileprivate func reset(clearBindings shouldClear: Bool = true) {
         sqlite3_reset(handle)
         if (shouldClear) { sqlite3_clear_bindings(handle) }
     }
@@ -216,12 +216,12 @@ extension Statement : CustomStringConvertible {
 
 public struct Cursor {
 
-    private let handle: OpaquePointer
+    fileprivate let handle: OpaquePointer
 
-    private let columnCount: Int
+    fileprivate let columnCount: Int
 
-    private init(_ statement: Statement) {
-        handle = statement.handle
+    fileprivate init(_ statement: Statement) {
+        handle = statement.handle!
         columnCount = statement.columnCount
     }
 
@@ -234,13 +234,13 @@ public struct Cursor {
     }
 
     public subscript(idx: Int) -> String {
-        return String.fromCString(UnsafePointer(sqlite3_column_text(handle, Int32(idx)))) ?? ""
+        return String(cString: UnsafePointer(sqlite3_column_text(handle, Int32(idx))))
     }
 
     public subscript(idx: Int) -> Blob {
         let bytes = sqlite3_column_blob(handle, Int32(idx))
         let length = Int(sqlite3_column_bytes(handle, Int32(idx)))
-        return Blob(bytes: bytes, length: length)
+        return Blob(bytes: bytes!, length: length)
     }
 
     // MARK: -
@@ -275,7 +275,7 @@ extension Cursor : Sequence {
         }
     }
 
-    public func iterate() -> AnyIterator<Binding?> {
+    public func makeIterator() -> AnyIterator<Binding?> {
         var idx = 0
         return AnyIterator {
             if idx >= self.columnCount {
