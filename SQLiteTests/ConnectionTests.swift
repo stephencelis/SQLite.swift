@@ -10,7 +10,7 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_init_withInMemory_returnsInMemoryConnection() {
-        let db = try! Connection(.InMemory)
+        let db = try! Connection(.inMemory)
         XCTAssertEqual("", db.description)
     }
 
@@ -20,12 +20,12 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_init_withTemporary_returnsTemporaryConnection() {
-        let db = try! Connection(.Temporary)
+        let db = try! Connection(.temporary)
         XCTAssertEqual("", db.description)
     }
 
     func test_init_withURI_returnsURIConnection() {
-        let db = try! Connection(.URI("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3"))
+        let db = try! Connection(.uri("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3"))
         XCTAssertEqual("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3", db.description)
     }
 
@@ -48,7 +48,7 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_lastInsertRowid_returnsLastIdAfterInserts() {
-        try! InsertUser("alice")
+        _ = try! InsertUser("alice")
         XCTAssertEqual(1, db.lastInsertRowid!)
     }
 
@@ -57,17 +57,17 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_changes_returnsNumberOfChanges() {
-        try! InsertUser("alice")
+        _ = try! InsertUser("alice")
         XCTAssertEqual(1, db.changes)
-        try! InsertUser("betsy")
+        _ = try! InsertUser("betsy")
         XCTAssertEqual(1, db.changes)
     }
 
     func test_totalChanges_returnsTotalNumberOfChanges() {
         XCTAssertEqual(0, db.totalChanges)
-        try! InsertUser("alice")
+        _ = try! InsertUser("alice")
         XCTAssertEqual(1, db.totalChanges)
-        try! InsertUser("betsy")
+        _ = try! InsertUser("betsy")
         XCTAssertEqual(2, db.totalChanges)
     }
 
@@ -79,10 +79,10 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_run_preparesRunsAndReturnsStatements() {
-        try! db.run("SELECT * FROM users WHERE admin = 0")
-        try! db.run("SELECT * FROM users WHERE admin = ?", 0)
-        try! db.run("SELECT * FROM users WHERE admin = ?", [0])
-        try! db.run("SELECT * FROM users WHERE admin = $admin", ["$admin": 0])
+        _ = try! db.run("SELECT * FROM users WHERE admin = 0")
+        _ = try! db.run("SELECT * FROM users WHERE admin = ?", 0)
+        _ = try! db.run("SELECT * FROM users WHERE admin = ?", [0])
+        _ = try! db.run("SELECT * FROM users WHERE admin = $admin", ["$admin": 0])
         AssertSQL("SELECT * FROM users WHERE admin = 0", 4)
     }
 
@@ -116,7 +116,7 @@ class ConnectionTests : SQLiteTestCase {
         let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
         try! db.transaction {
-            try stmt.run()
+            _ = try stmt.run()
         }
 
         AssertSQL("BEGIN DEFERRED TRANSACTION")
@@ -130,8 +130,8 @@ class ConnectionTests : SQLiteTestCase {
 
         do {
             try db.transaction {
-                try stmt.run()
-                try stmt.run()
+                _ = try stmt.run()
+                _ = try stmt.run()
             }
         } catch {
         }
@@ -147,7 +147,7 @@ class ConnectionTests : SQLiteTestCase {
 
         try! db.savepoint("1") {
             try db.savepoint("2") {
-                try db.run("INSERT INTO users (email) VALUES (?)", "alice@example.com")
+                _ = try db.run("INSERT INTO users (email) VALUES (?)", "alice@example.com")
             }
         }
 
@@ -167,14 +167,14 @@ class ConnectionTests : SQLiteTestCase {
         do {
             try db.savepoint("1") {
                 try db.savepoint("2") {
-                    try stmt.run()
-                    try stmt.run()
-                    try stmt.run()
+                    _ = try stmt.run()
+                    _ = try stmt.run()
+                    _ = try stmt.run()
                 }
                 try db.savepoint("2") {
-                    try stmt.run()
-                    try stmt.run()
-                    try stmt.run()
+                    _ = try stmt.run()
+                    _ = try stmt.run()
+                    _ = try stmt.run()
                 }
             }
         } catch {
@@ -192,41 +192,41 @@ class ConnectionTests : SQLiteTestCase {
     func test_updateHook_setsUpdateHook_withInsert() {
         async { done in
             db.updateHook { operation, db, table, rowid in
-                XCTAssertEqual(Operation.Insert, operation)
+                XCTAssertEqual(Operation.insert, operation)
                 XCTAssertEqual("main", db)
                 XCTAssertEqual("users", table)
                 XCTAssertEqual(1, rowid)
                 done()
             }
-            try! InsertUser("alice")
+            _ = try! InsertUser("alice")
         }
     }
 
     func test_updateHook_setsUpdateHook_withUpdate() {
-        try! InsertUser("alice")
+        _ = try! InsertUser("alice")
         async { done in
             db.updateHook { operation, db, table, rowid in
-                XCTAssertEqual(Operation.Update, operation)
+                XCTAssertEqual(Operation.update, operation)
                 XCTAssertEqual("main", db)
                 XCTAssertEqual("users", table)
                 XCTAssertEqual(1, rowid)
                 done()
             }
-            try! db.run("UPDATE users SET email = 'alice@example.com'")
+            _ = try! db.run("UPDATE users SET email = 'alice@example.com'")
         }
     }
 
     func test_updateHook_setsUpdateHook_withDelete() {
-        try! InsertUser("alice")
+        _ = try! InsertUser("alice")
         async { done in
             db.updateHook { operation, db, table, rowid in
-                XCTAssertEqual(Operation.Delete, operation)
+                XCTAssertEqual(Operation.delete, operation)
                 XCTAssertEqual("main", db)
                 XCTAssertEqual("users", table)
                 XCTAssertEqual(1, rowid)
                 done()
             }
-            try! db.run("DELETE FROM users WHERE id = 1")
+            _ = try! db.run("DELETE FROM users WHERE id = 1")
         }
     }
 
@@ -236,7 +236,7 @@ class ConnectionTests : SQLiteTestCase {
                 done()
             }
             try! db.transaction {
-                try self.InsertUser("alice")
+                _ = try self.InsertUser("alice")
             }
             XCTAssertEqual(1, try! db.scalar("SELECT count(*) FROM users") as? Int64)
         }
@@ -247,8 +247,8 @@ class ConnectionTests : SQLiteTestCase {
             db.rollbackHook(done)
             do {
                 try db.transaction {
-                    try self.InsertUser("alice")
-                    try self.InsertUser("alice") // throw
+                    _ = try self.InsertUser("alice")
+                    _ = try self.InsertUser("alice") // throw
                 }
             } catch {
             }
@@ -264,7 +264,7 @@ class ConnectionTests : SQLiteTestCase {
             db.rollbackHook(done)
             do {
                 try db.transaction {
-                    try self.InsertUser("alice")
+                    _ = try self.InsertUser("alice")
                 }
             } catch {
             }
@@ -288,14 +288,14 @@ class ConnectionTests : SQLiteTestCase {
 
     func test_createCollation_createsCollation() {
         try! db.createCollation("NODIACRITIC") { lhs, rhs in
-            return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)
+            return lhs.compare(rhs, options: .diacriticInsensitive)
         }
         XCTAssertEqual(1, try! db.scalar("SELECT ? = ? COLLATE NODIACRITIC", "cafe", "café") as? Int64)
     }
 
     func test_createCollation_createsQuotableCollation() {
         try! db.createCollation("NO DIACRITIC") { lhs, rhs in
-            return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)
+            return lhs.compare(rhs, options: .diacriticInsensitive)
         }
         XCTAssertEqual(1, try! db.scalar("SELECT ? = ? COLLATE \"NO DIACRITIC\"", "cafe", "café") as? Int64)
     }
@@ -308,9 +308,9 @@ class ConnectionTests : SQLiteTestCase {
         }
 
         let stmt = try! db.prepare("SELECT *, sleep(?) FROM users", 0.1)
-        try! stmt.run()
+        _ = try! stmt.run()
 
-        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, Int64(10 * NSEC_PER_MSEC)), dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_BACKGROUND, 0), db.interrupt)
+        _ = DispatchQueue.global(priority: DispatchQueue.GlobalQueuePriority.background).asyncAfter(deadline: DispatchTime.now() + Double(Int64(10 * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC), execute: db.interrupt)
         AssertThrows(try stmt.run())
     }
 
