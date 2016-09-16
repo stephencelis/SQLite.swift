@@ -40,6 +40,7 @@ class SQLiteTestCase : XCTestCase {
         for name in names { try InsertUser(name) }
     }
 
+    @discardableResult
     func InsertUser(_ name: String, age: Int? = nil, admin: Bool = false) throws -> Statement {
         return try db.run(
             "INSERT INTO \"users\" (email, age, admin) values (?, ?, ?)",
@@ -56,7 +57,7 @@ class SQLiteTestCase : XCTestCase {
     }
 
     func AssertSQL(_ SQL: String, _ statement: Statement, _ message: String? = nil, file: StaticString = #file, line: UInt = #line) {
-        try! statement.run()
+        _ = try! statement.run()
         AssertSQL(SQL, 1, message, file: file, line: line)
         if let count = trace[SQL] { trace[SQL] = count - 1 }
     }

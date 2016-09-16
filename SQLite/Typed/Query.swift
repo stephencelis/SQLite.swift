@@ -744,7 +744,7 @@ extension QueryType {
         ])
     }
 
-    func tableName(_ qualified: Bool) -> Expressible {
+    func tableName(isQualified qualified: Bool) -> Expressible {
         if qualified {
             return tableName()
         }
@@ -886,7 +886,13 @@ extension Connection {
 
         let columnNames: [String: Int] = try {
             var (columnNames, idx) = ([String: Int](), 0)
-            column: for each in query.clauses.select.columns ?? [Expression<Void>(literal: "*")] {
+            let selectColumns: [Expressible]
+            if query.clauses.select.columns.isEmpty {
+                selectColumns = query.clauses.select.columns
+            } else {
+                selectColumns = [Expression<Void>(literal: "*")]
+            }
+            column: for each in selectColumns {
                 var names = each.expression.template.characters.split { $0 == "." }.map(String.init)
                 let column = names.removeLast()
                 let namespace = names.joined(separator: ".")

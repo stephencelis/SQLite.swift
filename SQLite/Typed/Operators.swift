@@ -474,11 +474,11 @@ public func <=<V : Value>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> wher
     return infix(lhs, rhs)
 }
 
-public func ~=<I : IntervalType, V : Value>(lhs: I, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Binding & Comparable, V.Datatype == I.Bound {
-    return Expression("\(rhs.template) BETWEEN ? AND ?", rhs.bindings + [lhs.start, lhs.end])
+public func ~=<V : Value>(lhs: Range<Int>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Binding & Comparable {
+    return Expression("\(rhs.template) BETWEEN ? AND ?", rhs.bindings + [lhs.lowerBound, lhs.upperBound])
 }
-public func ~=<I : IntervalType, V : Value>(lhs: I, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Binding & Comparable, V.Datatype == I.Bound {
-    return Expression("\(rhs.template) BETWEEN ? AND ?", rhs.bindings + [lhs.start, lhs.end])
+public func ~=<V : Value>(lhs: Range<Int>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Binding & Comparable {
+    return Expression("\(rhs.template) BETWEEN ? AND ?", rhs.bindings + [lhs.lowerBound, lhs.upperBound])
 }
 
 // MARK: -

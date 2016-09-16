@@ -32,7 +32,7 @@ public struct Blob {
 
     public init(bytes: UnsafeRawPointer, length: Int) {
         self.init(bytes: [UInt8](UnsafeBufferPointer(
-            start: UnsafePointer(bytes), count: length
+            start: bytes.assumingMemoryBound(to: UInt8.self), count: length
         )))
     }
 

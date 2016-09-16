@@ -74,7 +74,8 @@ public final class Connection {
     public init(_ location: Location = .inMemory, readonly: Bool = false) throws {
         let flags = readonly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE
         try check(sqlite3_open_v2(location.description, &_handle, flags | SQLITE_OPEN_FULLMUTEX, nil))
-        queue.setSpecific(key: Connection.queueKey, value: ())
+        
+        queue.setSpecific(key: Connection.queueKey, value: self.queueContext)
     }
 
     /// Initializes a new connection to a database.
@@ -503,7 +504,10 @@ public final class Connection {
         let argc = argumentCount.map { Int($0) } ?? -1
         let box: Function = { context, argc, argv in
             let arguments: [Binding?] = (0..<Int(argc)).map { idx in
-                let value = argv[idx]
+                guard let value = argv?[idx] else {
+                    return nil
+                }
+
                 switch sqlite3_value_type(value) {
                 case SQLITE_BLOB:
                     return Blob(bytes: sqlite3_value_blob(value), length: Int(sqlite3_value_bytes(value)))
@@ -514,7 +518,7 @@ public final class Connection {
                 case SQLITE_NULL:
                     return nil
                 case SQLITE_TEXT:
-                    return String(validatingUTF8: UnsafePointer(sqlite3_value_text(value)))!
+                    return String(cString: UnsafePointer(sqlite3_value_text(value)))
                 case let type:
                     fatalError("unsupported value type: \(type)")
                 }
@@ -538,14 +542,15 @@ public final class Connection {
         if deterministic {
             flags |= SQLITE_DETERMINISTIC
         }
+        
         sqlite3_create_function_v2(handle, function, Int32(argc), flags, unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { context, argc, value in
             unsafeBitCast(sqlite3_user_data(context), to: Function.self)(context, argc, value)
-        }, nil, nil, nil)
+            }, nil, nil, nil)
         if functions[function] == nil { self.functions[function] = [:] }
         functions[function]?[argc] = box
     }
-    fileprivate typealias Function = @convention(block) (OpaquePointer, Int32, UnsafeMutablePointer<OpaquePointer>) -> Void
-    fileprivate var functions = [String: [Int: Function]]()
+    private typealias Function = @convention(block) (OpaquePointer?, Int32, UnsafeMutablePointer<OpaquePointer?>?) -> Void
+    private var functions = [String: [Int: Function]]()
 
     /// Defines a new collating sequence.
     ///
@@ -557,7 +562,11 @@ public final class Connection {
     ///     comparison result.
     public func createCollation(_ collation: String, _ block: @escaping (_ lhs: String, _ rhs: String) -> ComparisonResult) {
         let box: Collation = { lhs, rhs in
-            Int32(block(String(validatingUTF8: UnsafePointer<Int8>(lhs))!, String(validatingUTF8: UnsafePointer<Int8>(rhs))!).rawValue)
+            
+            let unsafeLhs = lhs.assumingMemoryBound(to: Int8.self)
+            let unsafeRhs = rhs.assumingMemoryBound(to: Int8.self)
+            
+            return Int32(block(String(cString: unsafeLhs), String(cString: unsafeRhs)).rawValue)
         }
         try! check(sqlite3_create_collation_v2(handle, collation, SQLITE_UTF8, unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { callback, _, lhs, _, rhs in
             unsafeBitCast(callback, to: Collation.self)(lhs!, rhs!)
@@ -582,11 +591,13 @@ public final class Connection {
             }
         }
 
-        if DispatchQueue.getSpecific(key: Connection.queueKey) == queueContext {
+        // todo: Needs to be double checked.
+        if DispatchQueue.getSpecific(key: Connection.queueKey) == self.queueContext {
             box()
         } else {
-            (queue).sync(execute: box) // FIXME: rdar://problem/21389236
+            queue.sync(execute: box) // FIXME: rdar://problem/21389236
         }
+
 
         if let failure = failure {
             try { () -> Void in throw failure }()
@@ -604,13 +615,9 @@ public final class Connection {
         throw error
     }
 
-    fileprivate var queue = DispatchQueue(label: "SQLite.Database", attributes: .serial)
-
-    fileprivate static let queueKey = DispatchSpecificKey<()>()
-//    private static let queueKey = unsafeBitCast(Connection.self, to: UnsafePointer<Void>.self)
-
-    fileprivate lazy var queueContext: UnsafeMutableRawPointer = unsafeBitCast(self, to: UnsafeMutableRawPointer.self)
-
+    fileprivate var queue = DispatchQueue(label: "SQLite.Database", attributes: .concurrent)
+    fileprivate lazy var queueContext = NSUUID().uuidString
+    fileprivate static let queueKey = DispatchSpecificKey<String>()
 }
 
 extension Connection : CustomStringConvertible {
@@ -673,7 +680,7 @@ public enum Result : Error {
         guard !Result.successCodes.contains(errorCode) else { return nil }
 
         let message = String(validatingUTF8: sqlite3_errmsg(connection.handle))!
-        self = error(message: message, code: errorCode, statement: statement)
+        self = .error(message: message, code: errorCode, statement: statement)
     }
 
 }

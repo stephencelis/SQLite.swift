@@ -134,7 +134,7 @@ extension Table {
         let clauses: [Expressible?] = [
             create("INDEX", indexName(columns), unique ? .Unique : nil, ifNotExists),
             Expression<Void>(literal: "ON"),
-            tableName(qualified: false),
+            tableName(isQualified: false),
             "".wrap(columns) as Expression<Void>
         ]
 
@@ -505,7 +505,7 @@ private func definition(_ column: Expressible, _ datatype: String, _ primaryKey:
 private func reference(_ primary: (QueryType, Expressible)) -> Expressible {
     return " ".join([
         Expression<Void>(literal: "REFERENCES"),
-        primary.0.tableName(qualified: false),
+        primary.0.tableName(isQualified: false),
         "".wrap(primary.1) as Expression<Void>
     ])
 }

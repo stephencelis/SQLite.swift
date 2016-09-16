@@ -52,7 +52,7 @@ let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
 extension String {
 
     @discardableResult func quote(_ mark: Character = "\"") -> String {
-        let escaped = characters.reduce("") { string, character in
+    let escaped = characters.reduce("") { string, character in
             string + (character == mark ? "\(mark)\(mark)" : "\(character)")
         }
         return "\(mark)\(escaped)\(mark)"

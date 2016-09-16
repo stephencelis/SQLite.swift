@@ -234,13 +234,13 @@ public struct Cursor {
     }
 
     public subscript(idx: Int) -> String {
-        return String.fromCString(UnsafePointer(sqlite3_column_text(handle, Int32(idx)))) ?? ""
+        return String(cString: UnsafePointer(sqlite3_column_text(handle, Int32(idx))))
     }
 
     public subscript(idx: Int) -> Blob {
         let bytes = sqlite3_column_blob(handle, Int32(idx))
         let length = Int(sqlite3_column_bytes(handle, Int32(idx)))
-        return Blob(bytes: bytes, length: length)
+        return Blob(bytes: bytes!, length: length)
     }
 
     // MARK: -
@@ -275,7 +275,7 @@ extension Cursor : Sequence {
         }
     }
 
-    public func iterate() -> AnyIterator<Binding?> {
+    public func makeIterator() -> AnyIterator<Binding?> {
         var idx = 0
         return AnyIterator {
             if idx >= self.columnCount {
