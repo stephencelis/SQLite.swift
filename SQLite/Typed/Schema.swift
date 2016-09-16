@@ -120,7 +120,7 @@ extension Table {
 
     // MARK: - ALTER TABLE … RENAME TO
 
-    public func rename(_ to: Table) -> String {
+    public func rename(table to: Table) -> String {
         return rename(to)
     }
 
@@ -207,7 +207,7 @@ extension VirtualTable {
 
     // MARK: - ALTER TABLE … RENAME TO
 
-    public func rename(_ to: VirtualTable) -> String {
+    public func rename(virtualTable to: VirtualTable) -> String {
         return rename(to)
     }
 

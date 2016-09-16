@@ -5,17 +5,17 @@ class SchemaTests : XCTestCase {
 
     func test_drop_compilesDropTableExpression() {
         XCTAssertEqual("DROP TABLE \"table\"", table.drop())
-        XCTAssertEqual("DROP TABLE IF EXISTS \"table\"", table.drop(ifExists: true))
+        XCTAssertEqual("DROP TABLE IF EXISTS \"table\"", table.drop(true))
     }
 
     func test_drop_compilesDropVirtualTableExpression() {
         XCTAssertEqual("DROP TABLE \"virtual_table\"", virtualTable.drop())
-        XCTAssertEqual("DROP TABLE IF EXISTS \"virtual_table\"", virtualTable.drop(ifExists: true))
+        XCTAssertEqual("DROP TABLE IF EXISTS \"virtual_table\"", virtualTable.drop(true))
     }
 
     func test_drop_compilesDropViewExpression() {
         XCTAssertEqual("DROP VIEW \"view\"", _view.drop())
-        XCTAssertEqual("DROP VIEW IF EXISTS \"view\"", _view.drop(ifExists: true))
+        XCTAssertEqual("DROP VIEW IF EXISTS \"view\"", _view.drop(true))
     }
 
     func test_create_withBuilder_compilesCreateTableExpression() {
@@ -43,7 +43,7 @@ class SchemaTests : XCTestCase {
         )
         XCTAssertEqual(
             "CREATE TEMPORARY TABLE \"table\" (\"int64\" INTEGER NOT NULL)",
-            table.create(temporary: true) { $0.column(int64) }
+            table.create(true) { $0.column(int64) }
         )
         XCTAssertEqual(
             "CREATE TABLE IF NOT EXISTS \"table\" (\"int64\" INTEGER NOT NULL)",
@@ -51,7 +51,7 @@ class SchemaTests : XCTestCase {
         )
         XCTAssertEqual(
             "CREATE TEMPORARY TABLE IF NOT EXISTS \"table\" (\"int64\" INTEGER NOT NULL)",
-            table.create(temporary: true, ifNotExists: true) { $0.column(int64) }
+            table.create(true, ifNotExists: true) { $0.column(int64) }
         )
     }
 
@@ -283,15 +283,15 @@ class SchemaTests : XCTestCase {
     func test_column_withIntegerExpression_compilesPrimaryKeyAutoincrementColumnDefinitionExpression() {
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"int64\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
-            table.create { t in t.column(int64, primaryKey: .Autoincrement) }
+            table.create { t in t.column(int64, primaryKey: .autoincrement) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"int64\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL CHECK (\"int64\" > 0))",
-            table.create { t in t.column(int64, primaryKey: .Autoincrement, check: int64 > 0) }
+            table.create { t in t.column(int64, primaryKey: .autoincrement, check: int64 > 0) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"int64\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL CHECK (\"int64Optional\" > 0))",
-            table.create { t in t.column(int64, primaryKey: .Autoincrement, check: int64Optional > 0) }
+            table.create { t in t.column(int64, primaryKey: .autoincrement, check: int64Optional > 0) }
         )
     }
 
@@ -354,172 +354,172 @@ class SchemaTests : XCTestCase {
     func test_column_withStringExpression_compilesCollatedColumnDefinitionExpression() {
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL COLLATE RTRIM)",
-            table.create { t in t.column(string, collate: .Rtrim) }
+            table.create { t in t.column(string, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL UNIQUE COLLATE RTRIM)",
-            table.create { t in t.column(string, unique: true, collate: .Rtrim) }
+            table.create { t in t.column(string, unique: true, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL CHECK (\"string\" != '') COLLATE RTRIM)",
-            table.create { t in t.column(string, check: string != "", collate: .Rtrim) }
+            table.create { t in t.column(string, check: string != "", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL CHECK (\"stringOptional\" != '') COLLATE RTRIM)",
-            table.create { t in t.column(string, check: stringOptional != "", collate: .Rtrim) }
+            table.create { t in t.column(string, check: stringOptional != "", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL DEFAULT (\"string\") COLLATE RTRIM)",
-            table.create { t in t.column(string, defaultValue: string, collate: .Rtrim) }
+            table.create { t in t.column(string, defaultValue: string, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL DEFAULT ('string') COLLATE RTRIM)",
-            table.create { t in t.column(string, defaultValue: "string", collate: .Rtrim) }
+            table.create { t in t.column(string, defaultValue: "string", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL UNIQUE CHECK (\"string\" != '') COLLATE RTRIM)",
-            table.create { t in t.column(string, unique: true, check: string != "", collate: .Rtrim) }
+            table.create { t in t.column(string, unique: true, check: string != "", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL UNIQUE CHECK (\"stringOptional\" != '') COLLATE RTRIM)",
-            table.create { t in t.column(string, unique: true, check: stringOptional != "", collate: .Rtrim) }
+            table.create { t in t.column(string, unique: true, check: stringOptional != "", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL UNIQUE DEFAULT (\"string\") COLLATE RTRIM)",
-            table.create { t in t.column(string, unique: true, defaultValue: string, collate: .Rtrim) }
+            table.create { t in t.column(string, unique: true, defaultValue: string, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL UNIQUE DEFAULT ('string') COLLATE RTRIM)",
-            table.create { t in t.column(string, unique: true, defaultValue: "string", collate: .Rtrim) }
+            table.create { t in t.column(string, unique: true, defaultValue: "string", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL UNIQUE CHECK (\"string\" != '') DEFAULT (\"string\") COLLATE RTRIM)",
-            table.create { t in t.column(string, unique: true, check: string != "", defaultValue: string, collate: .Rtrim) }
+            table.create { t in t.column(string, unique: true, check: string != "", defaultValue: string, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL UNIQUE CHECK (\"stringOptional\" != '') DEFAULT (\"string\") COLLATE RTRIM)",
-            table.create { t in t.column(string, unique: true, check: stringOptional != "", defaultValue: string, collate: .Rtrim) }
+            table.create { t in t.column(string, unique: true, check: stringOptional != "", defaultValue: string, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL UNIQUE CHECK (\"string\" != '') DEFAULT ('string') COLLATE RTRIM)",
-            table.create { t in t.column(string, unique: true, check: string != "", defaultValue: "string", collate: .Rtrim) }
+            table.create { t in t.column(string, unique: true, check: string != "", defaultValue: "string", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL UNIQUE CHECK (\"stringOptional\" != '') DEFAULT ('string') COLLATE RTRIM)",
-            table.create { t in t.column(string, unique: true, check: stringOptional != "", defaultValue: "string", collate: .Rtrim) }
+            table.create { t in t.column(string, unique: true, check: stringOptional != "", defaultValue: "string", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL CHECK (\"string\" != '') DEFAULT (\"string\") COLLATE RTRIM)",
-            table.create { t in t.column(string, check: string != "", defaultValue: string, collate: .Rtrim) }
+            table.create { t in t.column(string, check: string != "", defaultValue: string, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL CHECK (\"stringOptional\" != '') DEFAULT (\"string\") COLLATE RTRIM)",
-            table.create { t in t.column(string, check: stringOptional != "", defaultValue: string, collate: .Rtrim) }
+            table.create { t in t.column(string, check: stringOptional != "", defaultValue: string, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL CHECK (\"string\" != '') DEFAULT ('string') COLLATE RTRIM)",
-            table.create { t in t.column(string, check: string != "", defaultValue: "string", collate: .Rtrim) }
+            table.create { t in t.column(string, check: string != "", defaultValue: "string", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL CHECK (\"stringOptional\" != '') DEFAULT ('string') COLLATE RTRIM)",
-            table.create { t in t.column(string, check: stringOptional != "", defaultValue: "string", collate: .Rtrim) }
+            table.create { t in t.column(string, check: stringOptional != "", defaultValue: "string", collate: .rtrim) }
         )
 
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL UNIQUE COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, unique: true, collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, unique: true, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL CHECK (\"string\" != '') COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, check: string != "", collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, check: string != "", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL CHECK (\"stringOptional\" != '') COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, check: stringOptional != "", collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, check: stringOptional != "", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL DEFAULT (\"string\") COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, defaultValue: string, collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, defaultValue: string, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL DEFAULT (\"stringOptional\") COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, defaultValue: stringOptional, collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, defaultValue: stringOptional, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL DEFAULT ('string') COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, defaultValue: "string", collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, defaultValue: "string", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL UNIQUE CHECK (\"string\" != '') COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, unique: true, check: string != "", collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, unique: true, check: string != "", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL UNIQUE CHECK (\"stringOptional\" != '') COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, unique: true, check: stringOptional != "", collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, unique: true, check: stringOptional != "", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL UNIQUE DEFAULT (\"string\") COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, unique: true, defaultValue: string, collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, unique: true, defaultValue: string, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL UNIQUE DEFAULT (\"stringOptional\") COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, unique: true, defaultValue: stringOptional, collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, unique: true, defaultValue: stringOptional, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL UNIQUE DEFAULT ('string') COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, unique: true, defaultValue: "string", collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, unique: true, defaultValue: "string", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL UNIQUE CHECK (\"string\" != '') DEFAULT (\"string\") COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, unique: true, check: string != "", defaultValue: string, collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, unique: true, check: string != "", defaultValue: string, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL UNIQUE CHECK (\"string\" != '') DEFAULT (\"stringOptional\") COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, unique: true, check: string != "", defaultValue: stringOptional, collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, unique: true, check: string != "", defaultValue: stringOptional, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL UNIQUE CHECK (\"stringOptional\" != '') DEFAULT (\"string\") COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, unique: true, check: stringOptional != "", defaultValue: string, collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, unique: true, check: stringOptional != "", defaultValue: string, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL UNIQUE CHECK (\"stringOptional\" != '') DEFAULT (\"stringOptional\") COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, unique: true, check: stringOptional != "", defaultValue: stringOptional, collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, unique: true, check: stringOptional != "", defaultValue: stringOptional, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL UNIQUE CHECK (\"string\" != '') DEFAULT ('string') COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, unique: true, check: string != "", defaultValue: "string", collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, unique: true, check: string != "", defaultValue: "string", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL UNIQUE CHECK (\"stringOptional\" != '') DEFAULT ('string') COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, unique: true, check: stringOptional != "", defaultValue: "string", collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, unique: true, check: stringOptional != "", defaultValue: "string", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL CHECK (\"string\" != '') DEFAULT (\"string\") COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, check: string != "", defaultValue: string, collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, check: string != "", defaultValue: string, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL CHECK (\"stringOptional\" != '') DEFAULT (\"string\") COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, check: stringOptional != "", defaultValue: string, collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, check: stringOptional != "", defaultValue: string, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL CHECK (\"string\" != '') DEFAULT (\"stringOptional\") COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, check: string != "", defaultValue: stringOptional, collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, check: string != "", defaultValue: stringOptional, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL CHECK (\"stringOptional\" != '') DEFAULT (\"stringOptional\") COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, check: stringOptional != "", defaultValue: stringOptional, collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, check: stringOptional != "", defaultValue: stringOptional, collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL CHECK (\"string\" != '') DEFAULT ('string') COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, check: string != "", defaultValue: "string", collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, check: string != "", defaultValue: "string", collate: .rtrim) }
         )
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"stringOptional\" TEXT NOT NULL CHECK (\"stringOptional\" != '') DEFAULT ('string') COLLATE RTRIM)",
-            table.create { t in t.column(stringOptional, check: stringOptional != "", defaultValue: "string", collate: .Rtrim) }
+            table.create { t in t.column(stringOptional, check: stringOptional != "", defaultValue: "string", collate: .rtrim) }
         )
     }
 
@@ -676,41 +676,41 @@ class SchemaTests : XCTestCase {
     func test_addColumn_withStringExpression_compilesCollatedAlterTableExpression() {
         XCTAssertEqual(
             "ALTER TABLE \"table\" ADD COLUMN \"string\" TEXT NOT NULL DEFAULT ('string') COLLATE RTRIM",
-            table.addColumn(string, defaultValue: "string", collate: .Rtrim)
+            table.addColumn(string, defaultValue: "string", collate: .rtrim)
         )
         XCTAssertEqual(
             "ALTER TABLE \"table\" ADD COLUMN \"string\" TEXT NOT NULL CHECK (\"string\" != '') DEFAULT ('string') COLLATE RTRIM",
-            table.addColumn(string, check: string != "", defaultValue: "string", collate: .Rtrim)
+            table.addColumn(string, check: string != "", defaultValue: "string", collate: .rtrim)
         )
         XCTAssertEqual(
             "ALTER TABLE \"table\" ADD COLUMN \"string\" TEXT NOT NULL CHECK (\"stringOptional\" != '') DEFAULT ('string') COLLATE RTRIM",
-            table.addColumn(string, check: stringOptional != "", defaultValue: "string", collate: .Rtrim)
+            table.addColumn(string, check: stringOptional != "", defaultValue: "string", collate: .rtrim)
         )
 
         XCTAssertEqual(
             "ALTER TABLE \"table\" ADD COLUMN \"stringOptional\" TEXT COLLATE RTRIM",
-            table.addColumn(stringOptional, collate: .Rtrim)
+            table.addColumn(stringOptional, collate: .rtrim)
         )
         XCTAssertEqual(
             "ALTER TABLE \"table\" ADD COLUMN \"stringOptional\" TEXT CHECK (\"string\" != '') COLLATE RTRIM",
-            table.addColumn(stringOptional, check: string != "", collate: .Rtrim)
+            table.addColumn(stringOptional, check: string != "", collate: .rtrim)
         )
         XCTAssertEqual(
             "ALTER TABLE \"table\" ADD COLUMN \"stringOptional\" TEXT CHECK (\"stringOptional\" != '') COLLATE RTRIM",
-            table.addColumn(stringOptional, check: stringOptional != "", collate: .Rtrim)
+            table.addColumn(stringOptional, check: stringOptional != "", collate: .rtrim)
         )
         XCTAssertEqual(
             "ALTER TABLE \"table\" ADD COLUMN \"stringOptional\" TEXT CHECK (\"string\" != '') DEFAULT ('string') COLLATE RTRIM",
-            table.addColumn(stringOptional, check: string != "", defaultValue: "string", collate: .Rtrim)
+            table.addColumn(stringOptional, check: string != "", defaultValue: "string", collate: .rtrim)
         )
         XCTAssertEqual(
             "ALTER TABLE \"table\" ADD COLUMN \"stringOptional\" TEXT CHECK (\"stringOptional\" != '') DEFAULT ('string') COLLATE RTRIM",
-            table.addColumn(stringOptional, check: stringOptional != "", defaultValue: "string", collate: .Rtrim)
+            table.addColumn(stringOptional, check: stringOptional != "", defaultValue: "string", collate: .rtrim)
         )
     }
 
     func test_rename_compilesAlterTableRenameToExpression() {
-        XCTAssertEqual("ALTER TABLE \"old\" RENAME TO \"table\"", Table("old").rename(table))
+        XCTAssertEqual("ALTER TABLE \"old\" RENAME TO \"table\"", Table("old").rename(table: table))
     }
 
     func test_createIndex_compilesCreateIndexExpression() {
@@ -768,7 +768,7 @@ class SchemaTests : XCTestCase {
     func test_rename_onVirtualTable_compilesAlterTableRenameToExpression() {
         XCTAssertEqual(
             "ALTER TABLE \"old\" RENAME TO \"virtual_table\"",
-            VirtualTable("old").rename(virtualTable)
+            VirtualTable("old").rename(virtualTable: virtualTable)
         )
     }
 

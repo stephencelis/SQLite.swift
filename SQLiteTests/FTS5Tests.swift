@@ -78,7 +78,7 @@ class FTS5Tests: XCTestCase {
     func test_tokenizer_unicode61_with_options() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts5(tokenize=unicode61 \"removeDiacritics=1\" \"tokenchars=.\" \"separators=X\")",
-            sql(config.tokenizer(.Unicode61(removeDiacritics: true, tokenchars: ["."], separators: ["X"]))))
+            sql(config.tokenizer(.Unicode61(true, tokenchars: ["."], separators: ["X"]))))
     }
 
     func test_column_size() {
@@ -90,19 +90,19 @@ class FTS5Tests: XCTestCase {
     func test_detail_full() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts5(detail=\"full\")",
-            sql(config.detail(.Full)))
+            sql(config.detail(.full)))
     }
 
     func test_detail_column() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts5(detail=\"column\")",
-            sql(config.detail(.Column)))
+            sql(config.detail(.column)))
     }
 
     func test_detail_none() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts5(detail=\"none\")",
-            sql(config.detail(.None)))
+            sql(config.detail(.none)))
     }
 
     func test_fts5_config_all() {
