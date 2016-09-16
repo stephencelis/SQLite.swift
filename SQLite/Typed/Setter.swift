@@ -30,43 +30,43 @@ precedencegroup SetPrecedence {
 }
 
 public struct Setter {
-    
+
     let column: Expressible
     let value: Expressible
-    
+
     fileprivate init<V : Value>(column: Expression<V>, value: Expression<V>) {
         self.column = column
         self.value = value
     }
-    
+
     fileprivate init<V : Value>(column: Expression<V>, value: V) {
         self.column = column
         self.value = value
     }
-    
+
     fileprivate init<V : Value>(column: Expression<V?>, value: Expression<V>) {
         self.column = column
         self.value = value
     }
-    
+
     fileprivate init<V : Value>(column: Expression<V?>, value: Expression<V?>) {
         self.column = column
         self.value = value
     }
-    
+
     fileprivate init<V : Value>(column: Expression<V?>, value: V?) {
         self.column = column
         self.value = Expression<V?>(value: value)
     }
-    
+
 }
 
 extension Setter : Expressible {
-    
+
     public var expression: Expression<Void> {
         return "=".infix(column, value, wrap: false)
     }
-    
+
 }
 
 public func <-<V : Value>(column: Expression<V>, value: Expression<V>) -> Setter {

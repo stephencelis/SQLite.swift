@@ -26,7 +26,7 @@ extension SchemaType {
 
     // MARK: - DROP TABLE / VIEW / VIRTUAL TABLE
 
-    public func drop(ifExists: Bool = false) -> String {
+    public func drop(_ ifExists: Bool = false) -> String {
         return drop("TABLE", tableName(), ifExists)
     }
 
@@ -36,7 +36,7 @@ extension Table {
 
     // MARK: - CREATE TABLE
 
-    public func create(temporary: Bool = false, ifNotExists: Bool = false, block: (TableBuilder) -> Void) -> String {
+    public func create(_ temporary: Bool = false, ifNotExists: Bool = false, block: (TableBuilder) -> Void) -> String {
         let builder = TableBuilder()
 
         block(builder)
@@ -120,8 +120,8 @@ extension Table {
 
     // MARK: - ALTER TABLE … RENAME TO
 
-    public func rename(_ to: Table) -> String {
-        return rename(to: to)
+    public func rename(table to: Table) -> String {
+        return rename(to)
     }
 
     // MARK: - CREATE INDEX
@@ -134,7 +134,7 @@ extension Table {
         let clauses: [Expressible?] = [
             create("INDEX", indexName(columns), unique ? .Unique : nil, ifNotExists),
             Expression<Void>(literal: "ON"),
-            tableName(qualified: false),
+            tableName(isQualified: false),
             "".wrap(columns) as Expression<Void>
         ]
 
@@ -185,7 +185,7 @@ extension View {
 
     // MARK: - DROP VIEW
 
-    public func drop(ifExists: Bool = false) -> String {
+    public func drop(_ ifExists: Bool = false) -> String {
         return drop("VIEW", tableName(), ifExists)
     }
 
@@ -207,8 +207,8 @@ extension VirtualTable {
 
     // MARK: - ALTER TABLE … RENAME TO
 
-    public func rename(_ to: VirtualTable) -> String {
-        return rename(to: to)
+    public func rename(virtualTable to: VirtualTable) -> String {
+        return rename(to)
     }
 
 }
@@ -451,7 +451,7 @@ extension Module : Expressible {
 
 // MARK: - Private
 
-fileprivate extension QueryType {
+private extension QueryType {
 
     func create(_ identifier: String, _ name: Expressible, _ modifier: Modifier?, _ ifNotExists: Bool) -> Expressible {
         let clauses: [Expressible?] = [
@@ -465,7 +465,7 @@ fileprivate extension QueryType {
         return " ".join(clauses.flatMap { $0 })
     }
 
-    func rename(to: Self) -> String {
+    func rename(_ to: Self) -> String {
         return " ".join([
             Expression<Void>(literal: "ALTER TABLE"),
             tableName(),
@@ -486,7 +486,7 @@ fileprivate extension QueryType {
 
 }
 
-fileprivate func definition(_ column: Expressible, _ datatype: String, _ primaryKey: PrimaryKey?, _ null: Bool, _ unique: Bool, _ check: Expressible?, _ defaultValue: Expressible?, _ references: (QueryType, Expressible)?, _ collate: Collation?) -> Expressible {
+private func definition(_ column: Expressible, _ datatype: String, _ primaryKey: PrimaryKey?, _ null: Bool, _ unique: Bool, _ check: Expressible?, _ defaultValue: Expressible?, _ references: (QueryType, Expressible)?, _ collate: Collation?) -> Expressible {
     let clauses: [Expressible?] = [
         column,
         Expression<Void>(literal: datatype),
@@ -502,15 +502,15 @@ fileprivate func definition(_ column: Expressible, _ datatype: String, _ primary
     return " ".join(clauses.flatMap { $0 })
 }
 
-fileprivate func reference(_ primary: (QueryType, Expressible)) -> Expressible {
+private func reference(_ primary: (QueryType, Expressible)) -> Expressible {
     return " ".join([
         Expression<Void>(literal: "REFERENCES"),
-        primary.0.tableName(qualified: false),
+        primary.0.tableName(isQualified: false),
         "".wrap(primary.1) as Expression<Void>
     ])
 }
 
-fileprivate enum Modifier : String {
+private enum Modifier : String {
 
     case Unique = "UNIQUE"
 

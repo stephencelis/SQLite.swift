@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-// TODO: use `@warn_unused_result` by the time operator functions support it
+// TODO: use `@discardableResult` by the time operator functions support it
 
 public func +(lhs: Expression<String>, rhs: Expression<String>) -> Expression<String> {
     return "||".infix(lhs, rhs)
@@ -350,7 +350,7 @@ public func ==<V : Value>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> whe
 public func !=<V : Value>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Equatable {
     return infix(lhs, rhs)
 }
-public func !=<V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Equatable, V.Datatype : Equatable {
+public func !=<V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Equatable {
     return infix(lhs, rhs)
 }
 public func !=<V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> where V.Datatype : Equatable {
@@ -366,7 +366,7 @@ public func !=<V : Value>(lhs: Expression<V?>, rhs: V?) -> Expression<Bool?> whe
     guard let rhs = rhs else { return "IS NOT".infix(lhs, Expression<V?>(value: nil)) }
     return infix(lhs, rhs)
 }
-public func !=<V : Value>(lhs: V, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Equatable, V.Datatype : Equatable {
+public func !=<V : Value>(lhs: V, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Equatable {
     return infix(lhs, rhs)
 }
 public func !=<V : Value>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Equatable {
@@ -430,7 +430,7 @@ public func <<V : Value>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<B
 public func <<V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
     return infix(lhs, rhs)
 }
-public func <<V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> where V.Datatype : Comparable, V.Datatype : Comparable {
+public func <<V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> where V.Datatype : Comparable {
     return infix(lhs, rhs)
 }
 public func <<V : Value>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
@@ -472,6 +472,13 @@ public func <=<V : Value>(lhs: V, rhs: Expression<V>) -> Expression<Bool> where 
 }
 public func <=<V : Value>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
     return infix(lhs, rhs)
+}
+
+public func ~=<V : Value>(lhs: CountableClosedRange<V.Datatype>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Binding & Comparable {
+    return Expression("\(rhs.template) BETWEEN ? AND ?", rhs.bindings + [lhs.lowerBound, lhs.upperBound])
+}
+public func ~=<V : Value>(lhs: CountableClosedRange<V.Datatype>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Binding & Comparable {
+    return Expression("\(rhs.template) BETWEEN ? AND ?", rhs.bindings + [lhs.lowerBound, lhs.upperBound])
 }
 
 // MARK: -

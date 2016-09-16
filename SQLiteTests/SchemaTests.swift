@@ -5,17 +5,17 @@ class SchemaTests : XCTestCase {
 
     func test_drop_compilesDropTableExpression() {
         XCTAssertEqual("DROP TABLE \"table\"", table.drop())
-        XCTAssertEqual("DROP TABLE IF EXISTS \"table\"", table.drop(ifExists: true))
+        XCTAssertEqual("DROP TABLE IF EXISTS \"table\"", table.drop(true))
     }
 
     func test_drop_compilesDropVirtualTableExpression() {
         XCTAssertEqual("DROP TABLE \"virtual_table\"", virtualTable.drop())
-        XCTAssertEqual("DROP TABLE IF EXISTS \"virtual_table\"", virtualTable.drop(ifExists: true))
+        XCTAssertEqual("DROP TABLE IF EXISTS \"virtual_table\"", virtualTable.drop(true))
     }
 
     func test_drop_compilesDropViewExpression() {
         XCTAssertEqual("DROP VIEW \"view\"", _view.drop())
-        XCTAssertEqual("DROP VIEW IF EXISTS \"view\"", _view.drop(ifExists: true))
+        XCTAssertEqual("DROP VIEW IF EXISTS \"view\"", _view.drop(true))
     }
 
     func test_create_withBuilder_compilesCreateTableExpression() {
@@ -43,7 +43,7 @@ class SchemaTests : XCTestCase {
         )
         XCTAssertEqual(
             "CREATE TEMPORARY TABLE \"table\" (\"int64\" INTEGER NOT NULL)",
-            table.create(temporary: true) { $0.column(int64) }
+            table.create(true) { $0.column(int64) }
         )
         XCTAssertEqual(
             "CREATE TABLE IF NOT EXISTS \"table\" (\"int64\" INTEGER NOT NULL)",
@@ -51,7 +51,7 @@ class SchemaTests : XCTestCase {
         )
         XCTAssertEqual(
             "CREATE TEMPORARY TABLE IF NOT EXISTS \"table\" (\"int64\" INTEGER NOT NULL)",
-            table.create(temporary: true, ifNotExists: true) { $0.column(int64) }
+            table.create(true, ifNotExists: true) { $0.column(int64) }
         )
     }
 
@@ -710,7 +710,7 @@ class SchemaTests : XCTestCase {
     }
 
     func test_rename_compilesAlterTableRenameToExpression() {
-        XCTAssertEqual("ALTER TABLE \"old\" RENAME TO \"table\"", Table("old").rename(table))
+        XCTAssertEqual("ALTER TABLE \"old\" RENAME TO \"table\"", Table("old").rename(table: table))
     }
 
     func test_createIndex_compilesCreateIndexExpression() {
@@ -768,7 +768,7 @@ class SchemaTests : XCTestCase {
     func test_rename_onVirtualTable_compilesAlterTableRenameToExpression() {
         XCTAssertEqual(
             "ALTER TABLE \"old\" RENAME TO \"virtual_table\"",
-            VirtualTable("old").rename(virtualTable)
+            VirtualTable("old").rename(virtualTable: virtualTable)
         )
     }
 

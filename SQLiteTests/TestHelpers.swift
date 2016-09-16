@@ -57,7 +57,7 @@ class SQLiteTestCase : XCTestCase {
     }
 
     func AssertSQL(_ SQL: String, _ statement: Statement, _ message: String? = nil, file: StaticString = #file, line: UInt = #line) {
-        try! statement.run()
+        _ = try! statement.run()
         AssertSQL(SQL, 1, message, file: file, line: line)
         if let count = trace[SQL] { trace[SQL] = count - 1 }
     }
@@ -68,7 +68,7 @@ class SQLiteTestCase : XCTestCase {
 //        if let count = trace[SQL] { trace[SQL] = count - 1 }
 //    }
 
-    func async(expect description: String = "async", timeout: Double = 5, block: @escaping (() -> Void) -> Void) {
+    func async(expect description: String = "async", timeout: Double = 5, block: @escaping ( @escaping () -> Void) -> Void) {
         let expectation = self.expectation(description: description)
         block(expectation.fulfill)
         waitForExpectations(timeout: timeout, handler: nil)
@@ -97,13 +97,13 @@ let int64Optional = Expression<Int64?>("int64Optional")
 let string = Expression<String>("string")
 let stringOptional = Expression<String?>("stringOptional")
 
-func AssertSQL( _ expression1: @autoclosure () -> String, _ expression2: @autoclosure () -> Expressible, file: StaticString = #file, line: UInt = #line) {
+func AssertSQL(_ expression1: @autoclosure () -> String, _ expression2: @autoclosure () -> Expressible, file: StaticString = #file, line: UInt = #line) {
     XCTAssertEqual(expression1(), expression2().asSQL(), file: file, line: line)
 }
 
-func AssertThrows<T>( _ expression: @autoclosure () throws -> T, file: StaticString = #file, line: UInt = #line) {
+func AssertThrows<T>(_ expression: @autoclosure () throws -> T, file: StaticString = #file, line: UInt = #line) {
     do {
-        try expression()
+        _ = try expression()
         XCTFail("expression expected to throw", file: file, line: line)
     } catch {
         XCTAssert(true, file: file, line: line)

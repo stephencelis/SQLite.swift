@@ -378,7 +378,7 @@ extension QueryType {
         return group(by, having)
     }
 
-    private func group(_ by: [Expressible], _ having: Expression<Bool?>?) -> Self {
+    fileprivate func group(_ by: [Expressible], _ having: Expression<Bool?>?) -> Self {
         var query = self
         query.clauses.group = (by, having)
         return query
@@ -456,7 +456,7 @@ extension QueryType {
     }
 
     // prevents limit(nil, offset: 5)
-    private func limit(_ length: Int?, _ offset: Int?) -> Self {
+    fileprivate func limit(_ length: Int?, _ offset: Int?) -> Self {
         var query = self
         query.clauses.limit = length.map { ($0, offset) }
         return query
@@ -468,7 +468,7 @@ extension QueryType {
 
     // MARK: -
 
-    private var selectClause: Expressible {
+    fileprivate var selectClause: Expressible {
         return " ".join([
             Expression<Void>(literal: clauses.select.distinct ? "SELECT DISTINCT" : "SELECT"),
             ", ".join(clauses.select.columns),
@@ -477,7 +477,7 @@ extension QueryType {
         ])
     }
 
-    private var joinClause: Expressible? {
+    fileprivate var joinClause: Expressible? {
         guard !clauses.join.isEmpty else {
             return nil
         }
@@ -492,7 +492,7 @@ extension QueryType {
         })
     }
 
-    private var whereClause: Expressible? {
+    fileprivate var whereClause: Expressible? {
         guard let filters = clauses.filters else {
             return nil
         }
@@ -503,7 +503,7 @@ extension QueryType {
         ])
     }
 
-    private var groupByClause: Expressible? {
+    fileprivate var groupByClause: Expressible? {
         guard let group = clauses.group else {
             return nil
         }
@@ -526,7 +526,7 @@ extension QueryType {
         ])
     }
 
-    private var orderClause: Expressible? {
+    fileprivate var orderClause: Expressible? {
         guard !clauses.order.isEmpty else {
             return nil
         }
@@ -537,7 +537,7 @@ extension QueryType {
         ])
     }
 
-    private var limitOffsetClause: Expressible? {
+    fileprivate var limitOffsetClause: Expressible? {
         guard let limit = clauses.limit else {
             return nil
         }
@@ -582,7 +582,7 @@ extension QueryType {
         return insert(onConflict, values)
     }
 
-    private func insert(_ or: OnConflict?, _ values: [Setter]) -> Insert {
+    fileprivate func insert(_ or: OnConflict?, _ values: [Setter]) -> Insert {
         let insert = values.reduce((columns: [Expressible](), values: [Expressible]())) { insert, setter in
             (insert.columns + [setter.column], insert.values + [setter.value])
         }
@@ -677,45 +677,45 @@ extension QueryType {
 
     // FIXME: rdar://problem/18673897 // subscript<T>…
 
-    public subscript(column: Expression<Blob>) -> Expression<Blob> {
+    public subscript(_ column: Expression<Blob>) -> Expression<Blob> {
         return namespace(column)
     }
-    public subscript(column: Expression<Blob?>) -> Expression<Blob?> {
-        return namespace(column)
-    }
-
-    public subscript(column: Expression<Bool>) -> Expression<Bool> {
-        return namespace(column)
-    }
-    public subscript(column: Expression<Bool?>) -> Expression<Bool?> {
+    public subscript(_ column: Expression<Blob?>) -> Expression<Blob?> {
         return namespace(column)
     }
 
-    public subscript(column: Expression<Double>) -> Expression<Double> {
+    public subscript(_ column: Expression<Bool>) -> Expression<Bool> {
         return namespace(column)
     }
-    public subscript(column: Expression<Double?>) -> Expression<Double?> {
-        return namespace(column)
-    }
-
-    public subscript(column: Expression<Int>) -> Expression<Int> {
-        return namespace(column)
-    }
-    public subscript(column: Expression<Int?>) -> Expression<Int?> {
+    public subscript(_ column: Expression<Bool?>) -> Expression<Bool?> {
         return namespace(column)
     }
 
-    public subscript(column: Expression<Int64>) -> Expression<Int64> {
+    public subscript(_ column: Expression<Double>) -> Expression<Double> {
         return namespace(column)
     }
-    public subscript(column: Expression<Int64?>) -> Expression<Int64?> {
+    public subscript(_ column: Expression<Double?>) -> Expression<Double?> {
         return namespace(column)
     }
 
-    public subscript(column: Expression<String>) -> Expression<String> {
+    public subscript(_ column: Expression<Int>) -> Expression<Int> {
         return namespace(column)
     }
-    public subscript(column: Expression<String?>) -> Expression<String?> {
+    public subscript(_ column: Expression<Int?>) -> Expression<Int?> {
+        return namespace(column)
+    }
+
+    public subscript(_ column: Expression<Int64>) -> Expression<Int64> {
+        return namespace(column)
+    }
+    public subscript(_ column: Expression<Int64?>) -> Expression<Int64?> {
+        return namespace(column)
+    }
+
+    public subscript(_ column: Expression<String>) -> Expression<String> {
+        return namespace(column)
+    }
+    public subscript(_ column: Expression<String?>) -> Expression<String?> {
         return namespace(column)
     }
 
@@ -733,7 +733,7 @@ extension QueryType {
 
     // TODO: alias support
     func tableName(alias aliased: Bool = false) -> Expressible {
-        guard let alias = clauses.from.alias, aliased else {
+        guard let alias = clauses.from.alias , aliased else {
             return database(namespace: clauses.from.alias ?? clauses.from.name)
         }
 
@@ -744,7 +744,7 @@ extension QueryType {
         ])
     }
 
-    func tableName(qualified: Bool) -> Expressible {
+    func tableName(isQualified qualified: Bool) -> Expressible {
         if qualified {
             return tableName()
         }
@@ -886,7 +886,13 @@ extension Connection {
 
         let columnNames: [String: Int] = try {
             var (columnNames, idx) = ([String: Int](), 0)
-            column: for each in query.clauses.select.columns {
+            let selectColumns: [Expressible]
+            if query.clauses.select.columns.isEmpty {
+                selectColumns = query.clauses.select.columns
+            } else {
+                selectColumns = [Expression<Void>(literal: "*")]
+            }
+            column: for each in selectColumns {
                 var names = each.expression.template.characters.split { $0 == "." }.map(String.init)
                 let column = names.removeLast()
                 let namespace = names.joined(separator: ".")
@@ -955,12 +961,7 @@ extension Connection {
     }
 
     public func pluck(_ query: QueryType) -> Row? {
-        guard let offset = query.clauses.limit?.offset else {
-            return nil
-        }
-        
-        let query = try? prepare(query.limit(1, offset: offset))
-        return query?.makeIterator().next()
+        return try! prepare(query.limit(1, query.clauses.limit?.offset)).makeIterator().next()
     }
 
     /// Runs an `Insert` query.
@@ -973,7 +974,6 @@ extension Connection {
     /// - Parameter query: An insert query.
     ///
     /// - Returns: The insert’s rowid.
-    @discardableResult
     public func run(_ query: Insert) throws -> Int64 {
         let expression = query.expression
         return try sync {
@@ -990,7 +990,6 @@ extension Connection {
     /// - Parameter query: An update query.
     ///
     /// - Returns: The number of updated rows.
-    @discardableResult
     public func run(_ query: Update) throws -> Int {
         let expression = query.expression
         return try sync {
@@ -1006,7 +1005,6 @@ extension Connection {
     /// - Parameter query: A delete query.
     ///
     /// - Returns: The number of deleted rows.
-    @discardableResult
     public func run(_ query: Delete) throws -> Int {
         let expression = query.expression
         return try sync {
@@ -1019,11 +1017,11 @@ extension Connection {
 
 public struct Row {
 
-    private let columnNames: [String: Int]
+    fileprivate let columnNames: [String: Int]
 
-    private let values: [Binding?]
+    fileprivate let values: [Binding?]
 
-    init(_ columnNames: [String: Int], _ values: [Binding?]) {
+    fileprivate init(_ columnNames: [String: Int], _ values: [Binding?]) {
         self.columnNames = columnNames
         self.values = values
     }

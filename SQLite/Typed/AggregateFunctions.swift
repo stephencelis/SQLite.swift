@@ -232,7 +232,7 @@ extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wr
 
 extension ExpressionType where UnderlyingType == Int {
 
-    static func count(_ star: Star) -> Expression<UnderlyingType> {
+    @discardableResult static func count(_ star: Star) -> Expression<UnderlyingType> {
         return wrap(star(nil, nil))
     }
 
@@ -246,6 +246,6 @@ extension ExpressionType where UnderlyingType == Int {
 ///
 /// - Returns: An expression returning `count(*)` (when called with the `*`
 ///   function literal).
-public func count(_ star: Star) -> Expression<Int> {
+@discardableResult public func count(_ star: Star) -> Expression<Int> {
     return Expression.count(star)
 }

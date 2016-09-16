@@ -24,19 +24,18 @@
 
 import Foundation
 
-extension NSData : Value {
+extension Data : Value {
 
     public static var declaredDatatype: String {
         return Blob.declaredDatatype
     }
 
-    public static func fromDatatypeValue(_ dataValue: Blob) -> NSData {
-        let newBytes = UnsafeRawPointer(dataValue.bytes)
-        return NSData(bytes: newBytes, length: dataValue.bytes.count)
+    public static func fromDatatypeValue(_ dataValue: Blob) -> Data {
+        return Data(bytes: dataValue.bytes)
     }
 
     public var datatypeValue: Blob {
-        return Blob(bytes: bytes, length: self.length)
+        return withUnsafeBytes { Blob(bytes: $0, length: count) }
     }
 
 }
@@ -72,10 +71,10 @@ public var dateFormatter: DateFormatter = {
 
 extension QueryType {
 
-    public subscript(column: Expression<NSData>) -> Expression<NSData> {
+    public subscript(column: Expression<Data>) -> Expression<Data> {
         return namespace(column)
     }
-    public subscript(column: Expression<NSData?>) -> Expression<NSData?> {
+    public subscript(column: Expression<Data?>) -> Expression<Data?> {
         return namespace(column)
     }
 
@@ -90,10 +89,10 @@ extension QueryType {
 
 extension Row {
 
-    public subscript(column: Expression<NSData>) -> NSData {
+    public subscript(column: Expression<Data>) -> Data {
         return get(column)
     }
-    public subscript(column: Expression<NSData?>) -> NSData? {
+    public subscript(column: Expression<Data?>) -> Data? {
         return get(column)
     }
 

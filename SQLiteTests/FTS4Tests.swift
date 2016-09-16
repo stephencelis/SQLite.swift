@@ -22,11 +22,11 @@ class FTS4Tests : XCTestCase {
         )
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(tokenize=unicode61 \"removeDiacritics=0\")",
-            virtualTable.create(.FTS4(tokenize: .Unicode61(removeDiacritics: false)))
+            virtualTable.create(.FTS4(tokenize: .Unicode61(false)))
         )
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(tokenize=unicode61 \"removeDiacritics=1\" \"tokenchars=.\" \"separators=X\")",
-            virtualTable.create(.FTS4(tokenize: .Unicode61(removeDiacritics: true, tokenchars: ["."], separators: ["X"])))
+            virtualTable.create(.FTS4(tokenize: .Unicode61(true, tokenchars: ["."], separators: ["X"])))
         )
     }
 
@@ -109,7 +109,7 @@ class FTS4ConfigTests : XCTestCase {
     func test_tokenizer_unicode61_with_options() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(tokenize=unicode61 \"removeDiacritics=1\" \"tokenchars=.\" \"separators=X\")",
-            sql(config.tokenizer(.Unicode61(removeDiacritics: true, tokenchars: ["."], separators: ["X"]))))
+            sql(config.tokenizer(.Unicode61(true, tokenchars: ["."], separators: ["X"]))))
     }
 
     func test_content_less() {
@@ -121,19 +121,19 @@ class FTS4ConfigTests : XCTestCase {
     func test_config_matchinfo() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(matchinfo=\"fts3\")",
-            sql(config.matchInfo(.FTS3)))
+            sql(config.matchInfo(.fts3)))
     }
 
     func test_config_order_asc() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(order=\"asc\")",
-            sql(config.order(.Asc)))
+            sql(config.order(.asc)))
     }
 
     func test_config_order_desc() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(order=\"desc\")",
-            sql(config.order(.Desc)))
+            sql(config.order(.desc)))
     }
 
     func test_config_compress() {
@@ -163,9 +163,9 @@ class FTS4ConfigTests : XCTestCase {
                 .column(string, [.unindexed])
                 .column(date, [.unindexed])
                 .externalContent(table)
-                .matchInfo(.FTS3)
+                .matchInfo(.fts3)
                 .languageId("lid")
-                .order(.Desc)
+                .order(.desc)
                 .prefix([2, 4]))
         )
     }
@@ -207,11 +207,10 @@ class FTS4IntegrationTests : SQLiteTestCase {
             let inputString = String(inputValue)
             return (tokenString, string.range(of: inputString)!)
         }
-
-        try! db.run(emails.create(.FTS4([subject, body], tokenize: .Custom(tokenizerName))))
+        _ = try! db.run(emails.create(.FTS4([subject, body], tokenize: .Custom(tokenizerName))))
         AssertSQL("CREATE VIRTUAL TABLE \"emails\" USING fts4(\"subject\", \"body\", tokenize=\"SQLite.swift\" \"tokenizer\")")
 
-        try! db.run(emails.insert(subject <- "Aún más cáfe!"))
+        _ = try! db.run(emails.insert(subject <- "Aún más cáfe!"))
         XCTAssertEqual(1, db.scalar(emails.filter(emails.match("aun")).count))
     }
 #endif
