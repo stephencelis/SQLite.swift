@@ -25,6 +25,9 @@ Pod::Spec.new do |s|
   s.osx.deployment_target = "10.9"
   s.watchos.deployment_target = "2.0"
   s.default_subspec  = 'standard'
+  s.pod_target_xcconfig = {
+    'SWIFT_VERSION' => '2.3',
+  }
 
   s.subspec 'standard' do |ss|
     ss.source_files = 'SQLite/**/*.{c,h,m,swift}'
