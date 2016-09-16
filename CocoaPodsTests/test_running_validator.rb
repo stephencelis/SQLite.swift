@@ -17,19 +17,26 @@ class TestRunningValidator < Pod::Validator
   end
 
   def create_app_project
-    super.tap do
-      project = Xcodeproj::Project.open(validation_dir + "#{APP_TARGET}.xcodeproj")
-      create_test_target(project)
-      set_swift_version(project, '2.3')
-      project.save
-    end
+    super
+    project = Xcodeproj::Project.open(validation_dir + "#{APP_TARGET}.xcodeproj")
+    create_test_target(project)
+    project.save
+  end
+
+  def add_app_project_import
+    super
+    project = Xcodeproj::Project.open(validation_dir + 'App.xcodeproj')
+    group = project.new_group(TEST_TARGET)
+    test_target = project.targets.last
+    test_target.add_file_references(test_files.map { |file| group.new_file(file) })
+    add_swift_version(test_target)
+    project.save
   end
 
   def install_pod
-    super.tap do
-      if local?
-        FileUtils.ln_s file.dirname, validation_dir + "Pods/#{spec.name}"
-      end
+    super
+    if local?
+      FileUtils.ln_s file.dirname, validation_dir + "Pods/#{spec.name}"
     end
   end
 
@@ -47,21 +54,9 @@ class TestRunningValidator < Pod::Validator
   end
 
   private
-  def set_swift_version(project, version)
-    project.targets.each do |target|
-      target.build_configuration_list.build_configurations.each do |configuration|
-        configuration.build_settings['SWIFT_VERSION'] = version
-      end
-    end
-  end
-
   def create_test_target(project)
     test_target = project.new_target(:unit_test_bundle, TEST_TARGET, consumer.platform_name, deployment_target)
-    group = project.new_group(TEST_TARGET)
-    test_target.add_file_references(test_files.map { |file| group.new_file(file) })
-    project.save
     create_test_scheme(project, test_target)
-    test_target
   end
 
   def create_test_scheme(project, test_target)
