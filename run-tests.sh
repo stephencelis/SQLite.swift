@@ -1,11 +1,13 @@
 #!/bin/bash
 set -ev
-if [ -n "$BUILD_SCHEME" ]; then
-    if [ -n "$IOS_SIMULATOR" ]; then
-        make test BUILD_SCHEME="$BUILD_SCHEME" IOS_SIMULATOR="$IOS_SIMULATOR"
-    else
-        make test BUILD_SCHEME="$BUILD_SCHEME"
-    fi
-elif [ -n "$VALIDATOR_SUBSPEC" ]; then
-    cd CocoaPodsTests && make test
+if [ $RUN_TESTS == "YES" ]; then
+  # Build Framework in Debug and Run Tests if specified
+  make test BUILD_SCHEME="$SCHEME" BUILD_SDK="$SDK" BUILD_DESTINATION="$DESTINATION" BUILD_CONFIGURATION=Debug
+  # Build Framework in Release and Run Tests if specified
+  make test BUILD_SCHEME="$SCHEME" BUILD_SDK="$SDK" BUILD_DESTINATION="$DESTINATION" BUILD_CONFIGURATION=Release
+else
+  # Build Framework in Debug
+  make build BUILD_SCHEME="$SCHEME" BUILD_SDK="$SDK" BUILD_DESTINATION="$DESTINATION" BUILD_CONFIGURATION=Debug
+  # Build Framework in Release
+  make build BUILD_SCHEME="$SCHEME" BUILD_SDK="$SDK" BUILD_DESTINATION="$DESTINATION" BUILD_CONFIGURATION=Release
 fi

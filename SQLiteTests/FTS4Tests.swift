@@ -121,19 +121,19 @@ class FTS4ConfigTests : XCTestCase {
     func test_config_matchinfo() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(matchinfo=\"fts3\")",
-            sql(config.matchInfo(.FTS3)))
+            sql(config.matchInfo(.fts3)))
     }
 
     func test_config_order_asc() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(order=\"asc\")",
-            sql(config.order(.Asc)))
+            sql(config.order(.asc)))
     }
 
     func test_config_order_desc() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(order=\"desc\")",
-            sql(config.order(.Desc)))
+            sql(config.order(.desc)))
     }
 
     func test_config_compress() {
@@ -163,14 +163,14 @@ class FTS4ConfigTests : XCTestCase {
                 .column(string, [.unindexed])
                 .column(date, [.unindexed])
                 .externalContent(table)
-                .matchInfo(.FTS3)
+                .matchInfo(.fts3)
                 .languageId("lid")
-                .order(.Desc)
+                .order(.desc)
                 .prefix([2, 4]))
         )
     }
 
-    func sql(config: FTS4Config) -> String {
+    func sql(_ config: FTS4Config) -> String {
         return virtualTable.create(.FTS4(config))
     }
 }
@@ -184,24 +184,24 @@ class FTS4IntegrationTests : SQLiteTestCase {
 
         let locale = CFLocaleCopyCurrent()
         let tokenizerName = "tokenizer"
-        let tokenizer = CFStringTokenizerCreate(nil, "", CFRangeMake(0, 0), UInt(kCFStringTokenizerUnitWord), locale)
+        let tokenizer = CFStringTokenizerCreate(nil, "" as CFString!, CFRangeMake(0, 0), UInt(kCFStringTokenizerUnitWord), locale)
         try! db.registerTokenizer(tokenizerName) { string in
-            CFStringTokenizerSetString(tokenizer, string, CFRangeMake(0, CFStringGetLength(string)))
-            if CFStringTokenizerAdvanceToNextToken(tokenizer) == .None {
+            CFStringTokenizerSetString(tokenizer, string as CFString, CFRangeMake(0, CFStringGetLength(string as CFString)))
+            if CFStringTokenizerAdvanceToNextToken(tokenizer).isEmpty {
                 return nil
             }
             let range = CFStringTokenizerGetCurrentTokenRange(tokenizer)
-            let input = CFStringCreateWithSubstring(kCFAllocatorDefault, string, range)
-            let token = CFStringCreateMutableCopy(nil, range.length, input)
+            let input = CFStringCreateWithSubstring(kCFAllocatorDefault, string as CFString, range)!
+            let token = CFStringCreateMutableCopy(nil, range.length, input)!
             CFStringLowercase(token, locale)
             CFStringTransform(token, nil, kCFStringTransformStripDiacritics, false)
-            return (token as String, string.rangeOfString(input as String)!)
+            return (token as String, string.range(of: input as String)!)
         }
 
-        try! db.run(emails.create(.FTS4([subject, body], tokenize: .Custom(tokenizerName))))
+        _ = try! db.run(emails.create(.FTS4([subject, body], tokenize: .Custom(tokenizerName))))
         AssertSQL("CREATE VIRTUAL TABLE \"emails\" USING fts4(\"subject\", \"body\", tokenize=\"SQLite.swift\" \"tokenizer\")")
 
-        try! db.run(emails.insert(subject <- "Aún más cáfe!"))
+        _ = try! db.run(emails.insert(subject <- "Aún más cáfe!"))
         XCTAssertEqual(1, try! db.scalar(emails.filter(emails.match("aun")).count))
     }
 #endif
