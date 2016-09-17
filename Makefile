@@ -1,11 +1,6 @@
 BUILD_TOOL = xcodebuild
-BUILD_SCHEME = SQLite Mac
-IOS_SIMULATOR = iPhone 6
-ifeq ($(BUILD_SCHEME),SQLite iOS)
-	BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)" -destination "platform=iOS Simulator,name=$(IOS_SIMULATOR)"
-else
-	BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)"
-endif
+
+BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)" -sdk "$(BUILD_SDK)" -destination "$(BUILD_DESTINATION)" -configuration Debug ONLY_ACTIVE_ARCH=NO
 
 XCPRETTY := $(shell command -v xcpretty)
 SWIFTCOV := $(shell command -v swiftcov)
@@ -14,13 +9,17 @@ GCOVR := $(shell command -v gcovr)
 default: test
 
 build:
-	$(BUILD_TOOL) $(BUILD_ARGUMENTS)
+ifdef XCPRETTY
+	@set -o pipefail && $(BUILD_TOOL) $(BUILD_ARGUMENTS) build | $(XCPRETTY) -c
+else
+	$(BUILD_TOOL) $(BUILD_ARGUMENTS) build
+endif
 
 test:
 ifdef XCPRETTY
-	@set -o pipefail && $(BUILD_TOOL) $(BUILD_ARGUMENTS) test | $(XCPRETTY) -c
+	@set -o pipefail && $(BUILD_TOOL) $(BUILD_ARGUMENTS) ENABLE_TESTABILITY=YES test | $(XCPRETTY) -c
 else
-	$(BUILD_TOOL) $(BUILD_ARGUMENTS) test
+	$(BUILD_TOOL) $(BUILD_ARGUMENTS) ENABLE_TESTABILITY=YES test
 endif
 
 coverage:

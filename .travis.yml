@@ -1,39 +1,31 @@
 language: objective-c
 rvm: 2.2
 osx_image: xcode8
-matrix:
-  include:
-    - env:
-        - BUILD_SCHEME="SQLite iOS"
-        - IOS_SIMULATOR="iPhone SE"
-    - env: BUILD_SCHEME="SQLite Mac"
-    - env:
-        - VALIDATOR_SUBSPEC="none"
-        - IOS_SIMULATOR="iPhone SE"
-    - env:
-        - VALIDATOR_SUBSPEC="standard"
-        - IOS_SIMULATOR="iPhone SE"
-    - env:
-        - VALIDATOR_SUBSPEC="standalone"
-        - IOS_SIMULATOR="iPhone SE"
-    - os: osx
-      osx_image: xcode7.3
-      env: BUILD_SCHEME="SQLite iOS"
-    - os: osx
-      osx_image: xcode7.3
-      env: BUILD_SCHEME="SQLite Mac"
-    - os: osx
-      osx_image: xcode7.3
-      env: VALIDATOR_SUBSPEC="none"
-    - os: osx
-      osx_image: xcode7.3
-      env: VALIDATOR_SUBSPEC="standard"
-    - os: osx
-      osx_image: xcode7.3
-      env: VALIDATOR_SUBSPEC="standalone"
+env:
+  global:
+  - LC_CTYPE=en_US.UTF-8
+  - LANG=en_US.UTF-8
+  - IOS_FRAMEWORK_SCHEME="SQLite iOS"
+  - OSX_FRAMEWORK_SCHEME="SQLite Mac"
+  - TVOS_FRAMEWORK_SCHEME="SQLite tvOS"
+  - WATCHOS_FRAMEWORK_SCHEME="SQLite watchOS"
+  - IOS_SDK="iphonesimulator10.0"
+  - OSX_SDK="macosx10.12"
+  - TVOS_SDK="appletvsimulator10.0"
+  - WATCHOS_SDK="watchsimulator3.0"
+  matrix:
+    - DESTINATION="OS=10.0,name=iPhone 7 Plus"     SCHEME="$IOS_FRAMEWORK_SCHEME"     SDK="$IOS_SDK"     RUN_TESTS="YES" POD_LINT="YES"
+
+    - DESTINATION="OS=3.0,name=Apple Watch - 42mm" SCHEME="$WATCHOS_FRAMEWORK_SCHEME" SDK="$WATCHOS_SDK" RUN_TESTS="NO" POD_LINT="NO"
+
+    - DESTINATION="OS=10.0,name=Apple TV 1080p"    SCHEME="$TVOS_FRAMEWORK_SCHEME"    SDK="$TVOS_SDK"    RUN_TESTS="YES" POD_LINT="NO"
+
+    - DESTINATION="arch=x86_64"                    SCHEME="$OSX_FRAMEWORK_SCHEME"     SDK="$OSX_SDK"     RUN_TESTS="YES" POD_LINT="NO"
 before_install:
   - gem install xcpretty --no-document
 script:
+  - xcodebuild -version
+  - xcodebuild -showsdks
   - ./run-tests.sh
 after_failure:
   - find $HOME/Library/Developer/Xcode/DerivedData/ -name '*.log' -print0 | xargs -0 cat
