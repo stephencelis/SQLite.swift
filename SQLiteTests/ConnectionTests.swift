@@ -127,7 +127,7 @@ class ConnectionTests : SQLiteTestCase {
 
     func test_transaction_rollsBackTransactionsIfCommitsFail() {
         // This test case needs to emulate an environment where the individual statements succeed, but committing the
-        // transactuin fails. Using deferred foreign keys is one option to achieve this.
+        // transaction fails. Using deferred foreign keys is one option to achieve this.
         try! db.execute("PRAGMA foreign_keys = ON;")
         try! db.execute("PRAGMA defer_foreign_keys = ON;")
         let stmt = try! db.prepare("INSERT INTO users (email, manager_id) VALUES (?, ?)", "alice@example.com", 100)
