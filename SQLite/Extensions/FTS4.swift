@@ -330,7 +330,7 @@ open class FTS4Config : FTSConfig {
     override func options() -> Options {
         var options = super.options()
         for (column, _) in (columnDefinitions.filter { $0.options.contains(.unindexed) }) {
-            options.append("notindexed", value: column)
+            _ = options.append("notindexed", value: column)
         }
         _ = options.append("languageid", value: languageId)
         _ = options.append("compress", value: compressFunction)
