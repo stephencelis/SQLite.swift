@@ -190,7 +190,7 @@ public final class Connection {
     /// - Throws: `Result.Error` if query execution fails.
     ///
     /// - Returns: The statement.
-    public func run(_ statement: String, _ bindings: Binding?...) throws -> Statement {
+    @discardableResult public func run(_ statement: String, _ bindings: Binding?...) throws -> Statement {
         return try run(statement, bindings)
     }
 
@@ -205,7 +205,7 @@ public final class Connection {
     /// - Throws: `Result.Error` if query execution fails.
     ///
     /// - Returns: The statement.
-    public func run(_ statement: String, _ bindings: [Binding?]) throws -> Statement {
+    @discardableResult public func run(_ statement: String, _ bindings: [Binding?]) throws -> Statement {
         return try prepare(statement).run(bindings)
     }
 
@@ -220,7 +220,7 @@ public final class Connection {
     /// - Throws: `Result.Error` if query execution fails.
     ///
     /// - Returns: The statement.
-    public func run(_ statement: String, _ bindings: [String: Binding?]) throws -> Statement {
+    @discardableResult public func run(_ statement: String, _ bindings: [String: Binding?]) throws -> Statement {
         return try prepare(statement).run(bindings)
     }
 

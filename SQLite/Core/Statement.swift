@@ -120,7 +120,7 @@ public final class Statement {
     /// - Throws: `Result.Error` if query execution fails.
     ///
     /// - Returns: The statement object (useful for chaining).
-    public func run(_ bindings: Binding?...) throws -> Statement {
+    @discardableResult public func run(_ bindings: Binding?...) throws -> Statement {
         guard bindings.isEmpty else {
             return try run(bindings)
         }
@@ -135,7 +135,7 @@ public final class Statement {
     /// - Throws: `Result.Error` if query execution fails.
     ///
     /// - Returns: The statement object (useful for chaining).
-    public func run(_ bindings: [Binding?]) throws -> Statement {
+    @discardableResult public func run(_ bindings: [Binding?]) throws -> Statement {
         return try bind(bindings).run()
     }
 
@@ -145,7 +145,7 @@ public final class Statement {
     /// - Throws: `Result.Error` if query execution fails.
     ///
     /// - Returns: The statement object (useful for chaining).
-    public func run(_ bindings: [String: Binding?]) throws -> Statement {
+    @discardableResult public func run(_ bindings: [String: Binding?]) throws -> Statement {
         return try bind(bindings).run()
     }
 
