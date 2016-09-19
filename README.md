@@ -149,7 +149,7 @@ SQLite.swift with CocoaPods:
     ``` sh
     # Using the default Ruby install will require you to use sudo when
     # installing and updating gems.
-    sudo gem install --pre cocoapods
+    [sudo] gem install cocoapods
     ```
 
  2. Update your Podfile to include the following:
