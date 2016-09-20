@@ -574,7 +574,7 @@ public final class Connection {
 
     // MARK: - Error Handling
 
-    func sync<T>(_ block: () throws -> T) rethrows -> T {
+    public func sync<T>(_ block: () throws -> T) rethrows -> T {
         var success: T?
         var failure: Error?
 
@@ -584,7 +584,7 @@ public final class Connection {
 			} catch {
 				failure = error
 			}
-        } else {
+		} else {
 			queue.sync {
 				do {
 					success = try block()
