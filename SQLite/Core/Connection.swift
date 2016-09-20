@@ -54,6 +54,32 @@ public final class Connection {
         case uri(String)
     }
 
+    /// An SQL operation passed to update callbacks.
+    public enum Operation {
+
+        /// An INSERT operation.
+        case insert
+
+        /// An UPDATE operation.
+        case update
+
+        /// A DELETE operation.
+        case delete
+
+        fileprivate init(rawValue:Int32) {
+            switch rawValue {
+            case SQLITE_INSERT:
+                self = .insert
+            case SQLITE_UPDATE:
+                self = .update
+            case SQLITE_DELETE:
+                self = .delete
+            default:
+                fatalError("unhandled operation code: \(rawValue)")
+            }
+        }
+    }
+
     public var handle: OpaquePointer { return _handle! }
 
     fileprivate var _handle: OpaquePointer? = nil
@@ -633,33 +659,6 @@ extension Connection.Location : CustomStringConvertible {
             return ""
         case .uri(let URI):
             return URI
-        }
-    }
-
-}
-
-/// An SQL operation passed to update callbacks.
-public enum Operation {
-
-    /// An INSERT operation.
-    case insert
-
-    /// An UPDATE operation.
-    case update
-
-    /// A DELETE operation.
-    case delete
-
-    fileprivate init(rawValue: Int32) {
-        switch rawValue {
-        case SQLITE_INSERT:
-            self = .insert
-        case SQLITE_UPDATE:
-            self = .update
-        case SQLITE_DELETE:
-            self = .delete
-        default:
-            fatalError("unhandled operation code: \(rawValue)")
         }
     }
 
