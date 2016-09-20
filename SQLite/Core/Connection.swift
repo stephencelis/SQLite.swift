@@ -274,13 +274,13 @@ public final class Connection {
     public enum TransactionMode : String {
 
         /// Defers locking the database till the first read/write executes.
-        case Deferred = "DEFERRED"
+        case deferred = "DEFERRED"
 
         /// Immediately acquires a reserved lock on the database.
-        case Immediate = "IMMEDIATE"
+        case immediate = "IMMEDIATE"
 
         /// Immediately acquires an exclusive lock on all databases.
-        case Exclusive = "EXCLUSIVE"
+        case exclusive = "EXCLUSIVE"
 
     }
 
@@ -301,7 +301,7 @@ public final class Connection {
     ///     must throw to roll the transaction back.
     ///
     /// - Throws: `Result.Error`, and rethrows.
-    public func transaction(_ mode: TransactionMode = .Deferred, block: @escaping () throws -> Void) throws {
+    public func transaction(_ mode: TransactionMode = .deferred, block: @escaping () throws -> Void) throws {
         try transaction("BEGIN \(mode.rawValue) TRANSACTION", block, "COMMIT TRANSACTION", or: "ROLLBACK TRANSACTION")
     }
 
