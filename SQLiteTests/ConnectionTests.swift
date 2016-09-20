@@ -95,19 +95,19 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_transaction_executesBeginDeferred() {
-        try! db.transaction(.Deferred) {}
+        try! db.transaction(.deferred) {}
 
         AssertSQL("BEGIN DEFERRED TRANSACTION")
     }
 
     func test_transaction_executesBeginImmediate() {
-        try! db.transaction(.Immediate) {}
+        try! db.transaction(.immediate) {}
 
         AssertSQL("BEGIN IMMEDIATE TRANSACTION")
     }
 
     func test_transaction_executesBeginExclusive() {
-        try! db.transaction(.Exclusive) {}
+        try! db.transaction(.exclusive) {}
 
         AssertSQL("BEGIN EXCLUSIVE TRANSACTION")
     }

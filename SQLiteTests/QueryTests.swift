@@ -20,11 +20,11 @@ class QueryTests : XCTestCase {
     func test_select_withExpression_compilesSelectClause() {
         AssertSQL("SELECT \"email\" FROM \"users\"", users.select(email))
     }
-    
+
     func test_select_withStarExpression_compilesSelectClause() {
         AssertSQL("SELECT * FROM \"users\"", users.select(*))
     }
-    
+
     func test_select_withNamespacedStarExpression_compilesSelectClause() {
         AssertSQL("SELECT \"users\".* FROM \"users\"", users.select(users[*]))
     }
@@ -59,12 +59,12 @@ class QueryTests : XCTestCase {
     func test_join_withExplicitType_compilesJoinClauseWithType() {
         AssertSQL(
             "SELECT * FROM \"users\" LEFT OUTER JOIN \"posts\" ON (\"posts\".\"user_id\" = \"users\".\"id\")",
-            users.join(.LeftOuter, posts, on: posts[userId] == users[id])
+            users.join(.leftOuter, posts, on: posts[userId] == users[id])
         )
 
         AssertSQL(
             "SELECT * FROM \"users\" CROSS JOIN \"posts\" ON (\"posts\".\"user_id\" = \"users\".\"id\")",
-            users.join(.Cross, posts, on: posts[userId] == users[id])
+            users.join(.cross, posts, on: posts[userId] == users[id])
         )
     }
 
@@ -192,7 +192,7 @@ class QueryTests : XCTestCase {
     func test_insert_withOnConflict_compilesInsertOrOnConflictExpression() {
         AssertSQL(
             "INSERT OR REPLACE INTO \"users\" (\"email\", \"age\") VALUES ('alice@example.com', 30)",
-            users.insert(or: .Replace, email <- "alice@example.com", age <- 30)
+            users.insert(or: .replace, email <- "alice@example.com", age <- 30)
         )
     }
 

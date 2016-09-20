@@ -192,7 +192,7 @@ On iOS, you can create a writable database in your app’s **Documents** directo
 
 ``` swift
 let path = NSSearchPathForDirectoriesInDomains(
-    .DocumentDirectory, .UserDomainMask, true
+    .documentDirectory, .userDomainMask, true
 ).first!
 
 let db = try Connection("\(path)/db.sqlite3")
@@ -202,7 +202,7 @@ On OS X, you can use your app’s **Application Support** directory:
 
 ``` swift
 var path = NSSearchPathForDirectoriesInDomains(
-    .ApplicationSupportDirectory, .UserDomainMask, true
+    .applicationSupportDirectory, .userDomainMask, true
 ).first! + NSBundle.mainBundle().bundleIdentifier!
 
 // create parent directory iff it doesn’t exist
@@ -225,7 +225,7 @@ let db = try Connection(path, readonly: true)
 ```
 
 > _Note:_ Signed applications cannot modify their bundle resources. If you bundle a database file with your app for the purpose of bootstrapping, copy it to a writable location _before_ establishing a connection (see [Read-Write Databases](#read-write-databases), above, for typical, writable locations).
-> 
+>
 > See these two Stack Overflow questions for more information about iOS apps with SQLite databases: [1](https://stackoverflow.com/questions/34609746/what-different-between-store-database-in-different-locations-in-ios), [2](https://stackoverflow.com/questions/34614968/ios-how-to-copy-pre-seeded-database-at-the-first-running-app-with-sqlite-swift). We welcome sample code to show how to successfully copy and use a bundled "seed" database for writing in an app.
 
 #### In-Memory Databases
@@ -233,13 +233,13 @@ let db = try Connection(path, readonly: true)
 If you omit the path, SQLite.swift will provision an [in-memory database](https://www.sqlite.org/inmemorydb.html).
 
 ``` swift
-let db = try Connection() // equivalent to `Connection(.InMemory)`
+let db = try Connection() // equivalent to `Connection(.inMemory)`
 ```
 
 To create a temporary, disk-backed database, pass an empty file name.
 
 ``` swift
-let db = try Connection(.Temporary)
+let db = try Connection(.temporary)
 ```
 
 In-memory databases are automatically deleted when the database connection is closed.
@@ -367,7 +367,7 @@ The `column` function is used for a single column definition. It takes an [expre
     t.column(id, primaryKey: true)
     // "id" INTEGER PRIMARY KEY NOT NULL
 
-    t.column(id, primaryKey: .Autoincrement)
+    t.column(id, primaryKey: .autoincrement)
     // "id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL
     ```
 
@@ -375,7 +375,7 @@ The `column` function is used for a single column definition. It takes an [expre
     >
     > Primary keys cannot be optional (_e.g._, `Expression<Int64?>`).
     >
-    > Only an `INTEGER PRIMARY KEY` can take `.Autoincrement`.
+    > Only an `INTEGER PRIMARY KEY` can take `.autoincrement`.
 
   - `unique` adds a `UNIQUE` constraint to the column. (See the `unique` function under [Table Constraints](#table-constraints) for uniqueness over multiple columns).
 
@@ -403,10 +403,10 @@ The `column` function is used for a single column definition. It takes an [expre
   - `collate` adds a `COLLATE` clause to `Expression<String>` (and `Expression<String?>`) column definitions with [a collating sequence](https://www.sqlite.org/datatype3.html#collation) defined in the `Collation` enumeration.
 
     ``` swift
-    t.column(email, collate: .Nocase)
+    t.column(email, collate: .nocase)
     // "email" TEXT NOT NULL COLLATE "NOCASE"
 
-    t.column(name, collate: .Rtrim)
+    t.column(name, collate: .rtrim)
     // "name" TEXT COLLATE "RTRIM"
     ```
 
@@ -454,7 +454,7 @@ Additional constraints may be provided outside the scope of a single column usin
   - `foreignKey` adds a `FOREIGN KEY` constraint to the table. Unlike [the `references` constraint, above](#column-constraints), it supports all SQLite types, both [`ON UPDATE` and `ON DELETE` actions](https://www.sqlite.org/foreignkeys.html#fk_actions), and composite (multiple column) keys.
 
     ``` swift
-    t.foreignKey(user_id, references: users, id, delete: .SetNull)
+    t.foreignKey(user_id, references: users, id, delete: .setNull)
     // FOREIGN KEY("user_id") REFERENCES "users"("id") ON DELETE SET NULL
     ```
 
@@ -471,7 +471,7 @@ We can insert rows into a table by calling a [query’s](#queries) `insert` func
 try db.run(users.insert(email <- "alice@mac.com", name <- "Alice"))
 // INSERT INTO "users" ("email", "name") VALUES ('alice@mac.com', 'Alice')
 
-try db.run(users.insert(or: .Replace, email <- "alice@mac.com", name <- "Alice B."))
+try db.run(users.insert(or: .replace, email <- "alice@mac.com", name <- "Alice B."))
 // INSERT OR REPLACE INTO "users" ("email", "name") VALUES ('alice@mac.com', 'Alice B.')
 ```
 
@@ -637,7 +637,7 @@ users.join(posts, on: user_id == users[id])
 // SELECT * FROM "users" INNER JOIN "posts" ON ("user_id" = "users"."id")
 ```
 
-The `join` function takes a [query](#queries) object (for the table being joined on), a join condition (`on`), and is prefixed with an optional join type (default: `.Inner`). Join conditions can be built using [filter operators and functions](#filter-operators-and-functions), generally require [namespacing](#column-namespacing), and sometimes require [aliasing](#table-aliasing).
+The `join` function takes a [query](#queries) object (for the table being joined on), a join condition (`on`), and is prefixed with an optional join type (default: `.inner`). Join conditions can be built using [filter operators and functions](#filter-operators-and-functions), generally require [namespacing](#column-namespacing), and sometimes require [aliasing](#table-aliasing).
 
 
 ##### Column Namespacing
@@ -996,10 +996,10 @@ The `addColumn` function shares several of the same [`column` function parameter
   - `collate` adds a `COLLATE` clause to `Expression<String>` (and `Expression<String?>`) column definitions with [a collating sequence](https://www.sqlite.org/datatype3.html#collation) defined in the `Collation` enumeration.
 
     ``` swift
-    try db.run(users.addColumn(email, collate: .Nocase))
+    try db.run(users.addColumn(email, collate: .nocase))
     // ALTER TABLE "users" ADD COLUMN "email" TEXT NOT NULL COLLATE "NOCASE"
 
-    try db.run(users.addColumn(name, collate: .Rtrim))
+    try db.run(users.addColumn(name, collate: .rtrim))
     // ALTER TABLE "users" ADD COLUMN "name" TEXT COLLATE "RTRIM"
     ```
 
@@ -1367,14 +1367,14 @@ We can create custom collating sequences by calling `createCollation` on a datab
 
 ``` swift
 try db.createCollation("NODIACRITIC") { lhs, rhs in
-    return lhs.compare(rhs, options: .DiacriticInsensitiveSearch)
+    return lhs.compare(rhs, options: .diacriticInsensitiveSearch)
 }
 ```
 
 We can reference a custom collation using the `Custom` member of the `Collation` enumeration.
 
 ``` swift
-restaurants.order(collate(.Custom("NODIACRITIC"), name))
+restaurants.order(collate(.custom("NODIACRITIC"), name))
 // SELECT * FROM "restaurants" ORDER BY "name" COLLATE "NODIACRITIC"
 ```
 
@@ -1409,7 +1409,7 @@ let config = FTS4Config()
     .column(subject)
     .column(body, [.unindexed])
     .languageId("lid")
-    .order(.Desc)
+    .order(.desc)
 
 try db.run(emails.create(.FTS4(config))
 // CREATE VIRTUAL TABLE "emails" USING fts4("subject", "body", notindexed="body", languageid="lid", order="desc")

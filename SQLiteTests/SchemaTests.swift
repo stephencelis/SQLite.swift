@@ -568,7 +568,7 @@ class SchemaTests : XCTestCase {
 
         XCTAssertEqual(
             "CREATE TABLE \"table\" (FOREIGN KEY (\"string\") REFERENCES \"table\" (\"string\") ON UPDATE CASCADE ON DELETE SET NULL)",
-            table.create { t in t.foreignKey(string, references: table, string, update: .Cascade, delete: .SetNull) }
+            table.create { t in t.foreignKey(string, references: table, string, update: .cascade, delete: .setNull) }
         )
 
         XCTAssertEqual(
