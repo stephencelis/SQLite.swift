@@ -192,7 +192,7 @@ class ConnectionTests : SQLiteTestCase {
     func test_updateHook_setsUpdateHook_withInsert() {
         async { done in
             db.updateHook { operation, db, table, rowid in
-                XCTAssertEqual(Operation.insert, operation)
+                XCTAssertEqual(Connection.Operation.insert, operation)
                 XCTAssertEqual("main", db)
                 XCTAssertEqual("users", table)
                 XCTAssertEqual(1, rowid)
@@ -206,7 +206,7 @@ class ConnectionTests : SQLiteTestCase {
         _ = try! InsertUser("alice")
         async { done in
             db.updateHook { operation, db, table, rowid in
-                XCTAssertEqual(Operation.update, operation)
+                XCTAssertEqual(Connection.Operation.update, operation)
                 XCTAssertEqual("main", db)
                 XCTAssertEqual("users", table)
                 XCTAssertEqual(1, rowid)
@@ -220,7 +220,7 @@ class ConnectionTests : SQLiteTestCase {
         _ = try! InsertUser("alice")
         async { done in
             db.updateHook { operation, db, table, rowid in
-                XCTAssertEqual(Operation.delete, operation)
+                XCTAssertEqual(Connection.Operation.delete, operation)
                 XCTAssertEqual("main", db)
                 XCTAssertEqual("users", table)
                 XCTAssertEqual(1, rowid)
