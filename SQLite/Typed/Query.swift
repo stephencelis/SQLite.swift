@@ -601,6 +601,29 @@ extension QueryType {
         return Insert(" ".join(clauses.flatMap { $0 }).expression)
     }
 
+    public func insertOrIgnore(values: Setter...) -> InsertOrIgnore {
+        return insertOrIgnore(values)
+    }
+    
+    public func insertOrIgnore(values: [Setter]) -> InsertOrIgnore {
+        let insert = values.reduce((columns: [Expressible](), values: [Expressible]())) { insert, setter in
+            (insert.columns + [setter.column], insert.values + [setter.value])
+        }
+        
+        let clauses: [Expressible?] = [
+            Expression<Void>(literal: "INSERT"),
+            Expression<Void>(literal: "OR \(OnConflict.Ignore.rawValue)"),
+            Expression<Void>(literal: "INTO"),
+            tableName(),
+            "".wrap(insert.columns) as Expression<Void>,
+            Expression<Void>(literal: "VALUES"),
+            "".wrap(insert.values) as Expression<Void>,
+            whereClause
+        ]
+        
+        return InsertOrIgnore(" ".join(clauses.flatMap { $0 }).expression)
+    }
+
     /// Runs an `INSERT` statement against the query with `DEFAULT VALUES`.
     public func insert() -> Insert {
         return Insert(" ".join([
@@ -854,6 +877,18 @@ public struct Insert : ExpressionType {
 
 }
 
+public struct InsertOrIgnore : ExpressionType {
+    
+    public var template: String
+    public var bindings: [Binding?]
+    
+    public init(_ template: String, _ bindings: [Binding?]) {
+        self.template = template
+        self.bindings = bindings
+    }
+    
+}
+
 public struct Update : ExpressionType {
 
     public var template: String
@@ -972,7 +1007,32 @@ extension Connection {
         let expression = query.expression
         return try sync {
             try self.run(expression.template, expression.bindings)
-            return self.lastInsertRowid!
+            if let rowid = self.lastInsertRowid
+            {
+                return rowid
+            }
+            else
+            {
+                throw Result.IgnoredError
+            }
+        }
+    }
+    
+    /// Runs an `INSERT OR IGNORE` query.
+    ///
+    /// - SeeAlso: `QueryType.insert(value:_:)`
+    /// - SeeAlso: `QueryType.insert(values:)`
+    /// - SeeAlso: `QueryType.insert(or:_:)`
+    /// - SeeAlso: `QueryType.insert()`
+    ///
+    /// - Parameter query: An insert query.
+    ///
+    /// - Returns: The insert’s rowid if any, nil if the insert has failed.
+    public func run(query: InsertOrIgnore) throws -> Int64? {
+        let expression = query.expression
+        return try sync {
+            try self.run(expression.template, expression.bindings)
+            return self.lastInsertRowid
         }
     }
 
