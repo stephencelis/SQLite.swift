@@ -238,9 +238,12 @@ public struct Cursor {
     }
 
     public subscript(idx: Int) -> Blob {
-        let bytes = sqlite3_column_blob(handle, Int32(idx))
-        let length = Int(sqlite3_column_bytes(handle, Int32(idx)))
-        return Blob(bytes: bytes!, length: length)
+        if let pointer = sqlite3_column_blob(handle, Int32(idx)) {
+            let length = Int(sqlite3_column_bytes(handle, Int32(idx)))
+            return Blob(bytes: pointer, length: length)
+        } else {
+            fatalError("sqlite3_column_blob returned NULL")
+        }
     }
 
     // MARK: -

@@ -31,7 +31,6 @@ public struct Blob {
     }
 
     public init(bytes: UnsafeRawPointer, length: Int) {
-        // TODO correct count
         let i8bufptr = UnsafeBufferPointer(start: bytes.assumingMemoryBound(to: UInt8.self), count: length)
         self.init(bytes: [UInt8](i8bufptr))
     }

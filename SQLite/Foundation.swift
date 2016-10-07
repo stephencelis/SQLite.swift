@@ -31,12 +31,12 @@ extension Data : Value {
     }
 
     public static func fromDatatypeValue(_ dataValue: Blob) -> Data {
-        return Data(bytes: UnsafePointer<UInt8>(dataValue.bytes), count: dataValue.bytes.count)
+        return Data(bytes: dataValue.bytes)
     }
 
     public var datatypeValue: Blob {
-        return withUnsafeBytes { ptr -> Blob in
-            return Blob(bytes: ptr, length: count)
+        return withUnsafeBytes { (pointer: UnsafePointer<UInt8>) -> Blob in
+            return Blob(bytes: pointer, length: count)
         }
     }
 
