@@ -94,6 +94,12 @@ class ConnectionTests : SQLiteTestCase {
         AssertSQL("SELECT count(*) FROM users WHERE admin = 0", 4)
     }
 
+    func test_execute_comment() {
+        try! db.run("-- this is a comment\nSELECT 1")
+        AssertSQL("-- this is a comment", 0)
+        AssertSQL("SELECT 1", 0)
+    }
+
     func test_transaction_executesBeginDeferred() {
         try! db.transaction(.deferred) {}
 
