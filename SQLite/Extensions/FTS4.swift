@@ -141,7 +141,7 @@ extension Tokenizer : CustomStringConvertible {
 extension Connection {
 
     public func registerTokenizer(_ submoduleName: String, next: @escaping (String) -> (String, Range<String.Index>)?) throws {
-        _ = try check(_SQLiteRegisterTokenizer(handle, Tokenizer.moduleName, submoduleName) { input, offset, length in
+        try check(_SQLiteRegisterTokenizer(handle, Tokenizer.moduleName, submoduleName) { input, offset, length in
             let string = String(cString: input)
 
             guard let (token, range) = next(string) else { return nil }
@@ -178,7 +178,7 @@ open class FTSConfig {
 
     open func columns(_ columns: [Expressible]) -> Self {
         for column in columns {
-            _ = self.column(column)
+            self.column(column)
         }
         return self
     }
@@ -217,15 +217,15 @@ open class FTSConfig {
 
     func options() -> Options {
         var options = Options()
-        _ = options.append(formatColumnDefinitions())
+        options.append(formatColumnDefinitions())
         if let tokenizer = tokenizer {
-            _ = options.append("tokenize", value: Expression<Void>(literal: tokenizer.description))
+            options.append("tokenize", value: Expression<Void>(literal: tokenizer.description))
         }
-        _ = options.appendCommaSeparated("prefix", values:prefixes.sorted().map { String($0) })
+        options.appendCommaSeparated("prefix", values:prefixes.sorted().map { String($0) })
         if isContentless {
-            _ = options.append("content", value: "")
+            options.append("content", value: "")
         } else if let externalContentSchema = externalContentSchema {
-            _ = options.append("content", value: externalContentSchema.tableName())
+            options.append("content", value: externalContentSchema.tableName())
         }
         return options
     }
@@ -238,7 +238,7 @@ open class FTSConfig {
             return self
         }
 
-        mutating func appendCommaSeparated(_ key: String, values: [String]) -> Options {
+        @discardableResult mutating func appendCommaSeparated(_ key: String, values: [String]) -> Options {
             if values.isEmpty {
                 return self
             } else {
@@ -246,7 +246,7 @@ open class FTSConfig {
             }
         }
 
-        mutating func append(_ key: String, value: CustomStringConvertible?) -> Options {
+        @discardableResult mutating func append(_ key: String, value: CustomStringConvertible?) -> Options {
             return append(key, value: value?.description)
         }
 
@@ -332,11 +332,11 @@ open class FTS4Config : FTSConfig {
         for (column, _) in (columnDefinitions.filter { $0.options.contains(.unindexed) }) {
             options.append("notindexed", value: column)
         }
-        _ = options.append("languageid", value: languageId)
-        _ = options.append("compress", value: compressFunction)
-        _ = options.append("uncompress", value: uncompressFunction)
-        _ = options.append("matchinfo", value: matchInfo)
-        _ = options.append("order", value: order)
+        options.append("languageid", value: languageId)
+        options.append("compress", value: compressFunction)
+        options.append("uncompress", value: uncompressFunction)
+        options.append("matchinfo", value: matchInfo)
+        options.append("order", value: order)
         return options
     }
 }

@@ -971,7 +971,7 @@ extension Connection {
     public func run(_ query: Insert) throws -> Int64 {
         let expression = query.expression
         return try sync {
-            _ = try self.run(expression.template, expression.bindings)
+            try self.run(expression.template, expression.bindings)
             return self.lastInsertRowid!
         }
     }
@@ -987,7 +987,7 @@ extension Connection {
     public func run(_ query: Update) throws -> Int {
         let expression = query.expression
         return try sync {
-            _ = try self.run(expression.template, expression.bindings)
+            try self.run(expression.template, expression.bindings)
             return self.changes
         }
     }
@@ -1002,7 +1002,7 @@ extension Connection {
     public func run(_ query: Delete) throws -> Int {
         let expression = query.expression
         return try sync {
-            _ = try self.run(expression.template, expression.bindings)
+            try self.run(expression.template, expression.bindings)
             return self.changes
         }
     }

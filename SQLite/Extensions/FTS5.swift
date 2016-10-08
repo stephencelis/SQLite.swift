@@ -77,11 +77,11 @@ open class FTS5Config : FTSConfig {
 
     override func options() -> Options {
         var options = super.options()
-        _ = options.append("content_rowid", value: contentRowId)
+        options.append("content_rowid", value: contentRowId)
         if let columnSize = columnSize {
-            _ = options.append("columnsize", value: Expression<Int>(value: columnSize))
+            options.append("columnsize", value: Expression<Int>(value: columnSize))
         }
-        _ = options.append("detail", value: detail)
+        options.append("detail", value: detail)
         return options
     }
 

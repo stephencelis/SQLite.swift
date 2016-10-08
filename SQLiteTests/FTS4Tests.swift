@@ -198,10 +198,10 @@ class FTS4IntegrationTests : SQLiteTestCase {
             return (token as String, string.range(of: input as String)!)
         }
 
-        _ = try! db.run(emails.create(.FTS4([subject, body], tokenize: .Custom(tokenizerName))))
+        try! db.run(emails.create(.FTS4([subject, body], tokenize: .Custom(tokenizerName))))
         AssertSQL("CREATE VIRTUAL TABLE \"emails\" USING fts4(\"subject\", \"body\", tokenize=\"SQLite.swift\" \"tokenizer\")")
 
-        _ = try! db.run(emails.insert(subject <- "Aún más cáfe!"))
+        try! db.run(emails.insert(subject <- "Aún más cáfe!"))
         XCTAssertEqual(1, try! db.scalar(emails.filter(emails.match("aun")).count))
     }
 #endif

@@ -100,7 +100,7 @@ public final class Connection {
     /// - Returns: A new database connection.
     public init(_ location: Location = .inMemory, readonly: Bool = false) throws {
         let flags = readonly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE
-        _ = try check(sqlite3_open_v2(location.description, &_handle, flags | SQLITE_OPEN_FULLMUTEX, nil))
+        try check(sqlite3_open_v2(location.description, &_handle, flags | SQLITE_OPEN_FULLMUTEX, nil))
         queue.setSpecific(key: /*Migrator FIXME: Use a variable of type DispatchSpecificKey*/ Connection.queueKey, value: queueContext)
     }
 
@@ -356,14 +356,14 @@ public final class Connection {
 
     fileprivate func transaction(_ begin: String, _ block: @escaping () throws -> Void, _ commit: String, or rollback: String) throws {
         return try sync {
-            _ = try self.run(begin)
+            try self.run(begin)
             do {
                 try block()
             } catch {
-                _ = try self.run(rollback)
+                try self.run(rollback)
                 throw error
             }
-            _ = try self.run(commit)
+            try self.run(commit)
         }
     }
 
@@ -590,7 +590,7 @@ public final class Connection {
             let rstr = String(cString: rhs.bindMemory(to: UInt8.self, capacity: 0))
             return Int32(Int(block(lstr, rstr).rawValue))
         }
-        _ = try check(sqlite3_create_collation_v2(handle, collation, SQLITE_UTF8, unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { callback, _, lhs, _, rhs in
+        try check(sqlite3_create_collation_v2(handle, collation, SQLITE_UTF8, unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { callback, _, lhs, _, rhs in
             unsafeBitCast(callback, to: Collation.self)(lhs!, rhs!)
         }, nil))
         collations[collation] = box
@@ -625,7 +625,7 @@ public final class Connection {
         return success!
     }
 
-    func check(_ resultCode: Int32, statement: Statement? = nil) throws -> Int32 {
+    @discardableResult func check(_ resultCode: Int32, statement: Statement? = nil) throws -> Int32 {
         guard let error = Result(errorCode: resultCode, connection: self, statement: statement) else {
             return resultCode
         }
