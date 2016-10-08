@@ -310,7 +310,8 @@ class ConnectionTests : SQLiteTestCase {
         let stmt = try! db.prepare("SELECT *, sleep(?) FROM users", 0.1)
         try! stmt.run()
 
-        _ = DispatchQueue.global(qos: .background).asyncAfter(deadline: DispatchTime.now() + Double(Int64(10 * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC), execute: db.interrupt)
+        let deadline = DispatchTime.now() + Double(Int64(10 * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC)
+        _ = DispatchQueue.global(priority: .background).asyncAfter(deadline: deadline, execute: db.interrupt)
         AssertThrows(try stmt.run())
     }
 
