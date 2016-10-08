@@ -171,12 +171,12 @@ open class FTSConfig {
     var isContentless: Bool = false
 
     /// Adds a column definition
-    open func column(_ column: Expressible, _ options: [ColumnOption] = []) -> Self {
+    @discardableResult open func column(_ column: Expressible, _ options: [ColumnOption] = []) -> Self {
         self.columnDefinitions.append((column, options))
         return self
     }
 
-    open func columns(_ columns: [Expressible]) -> Self {
+    @discardableResult open func columns(_ columns: [Expressible]) -> Self {
         for column in columns {
             self.column(column)
         }
@@ -233,7 +233,7 @@ open class FTSConfig {
     struct Options {
         var arguments = [Expressible]()
 
-        mutating func append(_ columns: [Expressible]) -> Options {
+        @discardableResult mutating func append(_ columns: [Expressible]) -> Options {
             arguments.append(contentsOf: columns)
             return self
         }
@@ -250,11 +250,11 @@ open class FTSConfig {
             return append(key, value: value?.description)
         }
 
-        mutating func append(_ key: String, value: String?) -> Options {
+        @discardableResult mutating func append(_ key: String, value: String?) -> Options {
             return append(key, value: value.map { Expression<String>($0) })
         }
 
-        mutating func append(_ key: String, value: Expressible?) -> Options {
+        @discardableResult mutating func append(_ key: String, value: Expressible?) -> Options {
             if let value = value {
                 arguments.append("=".join([Expression<Void>(literal: key), value]))
             }
