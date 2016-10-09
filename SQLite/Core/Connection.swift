@@ -419,9 +419,13 @@ public final class Connection {
         }
 
         let box: Trace = { callback(String(cString: $0)) }
-        sqlite3_trace(handle, { callback, SQL in
-            unsafeBitCast(callback, to: Trace.self)(SQL!)
-        }, unsafeBitCast(box, to: UnsafeMutableRawPointer.self))
+        sqlite3_trace(handle, {
+            (callback: UnsafeMutableRawPointer?, SQL: UnsafePointer<Int8>?) in
+                 guard let callback = callback, let SQL = SQL else { return }
+                 unsafeBitCast(callback, to: Trace.self)(SQL)
+            },
+            unsafeBitCast(box, to: UnsafeMutableRawPointer.self)
+        )
         trace = box
     }
     fileprivate typealias Trace = @convention(block) (UnsafePointer<Int8>) -> Void
@@ -584,14 +588,14 @@ public final class Connection {
     ///   - block: A collation function that takes two strings and returns the
     ///     comparison result.
     public func createCollation(_ collation: String, _ block: @escaping (_ lhs: String, _ rhs: String) -> ComparisonResult) throws {
-        let box: Collation = { (lhs:UnsafeRawPointer, rhs:UnsafeRawPointer) in
+        let box: Collation = { (lhs: UnsafeRawPointer, rhs: UnsafeRawPointer) in
             let lstr = String(cString: lhs.assumingMemoryBound(to: UInt8.self))
             let rstr = String(cString: rhs.assumingMemoryBound(to: UInt8.self))
             return Int32(block(lstr, rstr).rawValue)
         }
         try check(sqlite3_create_collation_v2(handle, collation, SQLITE_UTF8,
             unsafeBitCast(box, to: UnsafeMutableRawPointer.self),
-            { (callback:UnsafeMutableRawPointer?, _, lhs:UnsafeRawPointer?, _, rhs:UnsafeRawPointer?) in /* xCompare */
+            { (callback: UnsafeMutableRawPointer?, _, lhs: UnsafeRawPointer?, _, rhs: UnsafeRawPointer?) in /* xCompare */
             if let lhs = lhs, let rhs = rhs {
                 return unsafeBitCast(callback, to: Collation.self)(lhs, rhs)
             } else {
