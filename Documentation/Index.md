@@ -65,7 +65,7 @@
 
 ## Installation
 
-> _Note:_ SQLite.swift requires Swift 2 (and [Xcode 7](https://developer.apple.com/xcode/downloads/)) or greater.
+> _Note:_ SQLite.swift requires Swift 3 (and [Xcode 8](https://developer.apple.com/xcode/downloads/)) or greater.
 
 
 ### Carthage
@@ -203,10 +203,10 @@ On OS X, you can use your app’s **Application Support** directory:
 ``` swift
 var path = NSSearchPathForDirectoriesInDomains(
     .applicationSupportDirectory, .userDomainMask, true
-).first! + NSBundle.mainBundle().bundleIdentifier!
+).first! + Bundle.main.bundleIdentifier!
 
 // create parent directory iff it doesn’t exist
-try NSFileManager.defaultManager().createDirectoryAtPath(
+try FileManager.default.createDirectoryAtPath(
     path, withIntermediateDirectories: true, attributes: nil
 )
 
@@ -219,7 +219,7 @@ let db = try Connection("\(path)/db.sqlite3")
 If you bundle a database with your app (_i.e._, you’ve copied a database file into your Xcode project and added it to your application target), you can establish a _read-only_ connection to it.
 
 ``` swift
-let path = NSBundle.mainBundle().pathForResource("db", ofType: "sqlite3")!
+let path = Bundle.main.pathForResource("db", ofType: "sqlite3")!
 
 let db = try Connection(path, readonly: true)
 ```
@@ -1114,16 +1114,16 @@ Once extended, the type can be used [_almost_](#custom-type-caveats) wherever ty
 
 ### Date-Time Values
 
-In SQLite, `DATETIME` columns can be treated as strings or numbers, so we can transparently bridge `NSDate` objects through Swift’s `String` or `Int` types.
+In SQLite, `DATETIME` columns can be treated as strings or numbers, so we can transparently bridge `Date` objects through Swift’s `String` or `Int` types.
 
-To serialize `NSDate` objects as `TEXT` values (in ISO 8601), we’ll use `String`.
+To serialize `Date` objects as `TEXT` values (in ISO 8601), we’ll use `String`.
 
 ``` swift
-extension NSDate: Value {
+extension Date: Value {
     class var declaredDatatype: String {
         return String.declaredDatatype
     }
-    class func fromDatatypeValue(stringValue: String) -> NSDate {
+    class func fromDatatypeValue(stringValue: String) -> Date {
         return SQLDateFormatter.dateFromString(stringValue)!
     }
     var datatypeValue: String {
@@ -1131,11 +1131,11 @@ extension NSDate: Value {
     }
 }
 
-let SQLDateFormatter: NSDateFormatter = {
-    let formatter = NSDateFormatter()
+let SQLDateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
     formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-    formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
-    formatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+    formatter.locale = Locale(localeIdentifier: "en_US_POSIX")
+    formatter.timeZone = TimeZone(forSecondsFromGMT: 0)
     return formatter
 }()
 ```
@@ -1143,12 +1143,12 @@ let SQLDateFormatter: NSDateFormatter = {
 We can also treat them as `INTEGER` values using `Int`.
 
 ``` swift
-extension NSDate: Value {
+extension Date: Value {
     class var declaredDatatype: String {
         return Int.declaredDatatype
     }
     class func fromDatatypeValue(intValue: Int) -> Self {
-        return self(timeIntervalSince1970: NSTimeInterval(intValue))
+        return self(timeIntervalSince1970: TimeInterval(intValue))
     }
     var datatypeValue: Int {
         return Int(timeIntervalSince1970)
@@ -1161,9 +1161,9 @@ extension NSDate: Value {
 Once defined, we can use these types directly in SQLite statements.
 
 ``` swift
-let published_at = Expression<NSDate>("published_at")
+let published_at = Expression<Date>("published_at")
 
-let published = posts.filter(published_at <= NSDate())
+let published = posts.filter(published_at <= Date())
 // extension where Datatype == String:
 //     SELECT * FROM "posts" WHERE "published_at" <= '2014-11-18 12:45:30'
 // extension where Datatype == Int:
@@ -1175,10 +1175,10 @@ let published = posts.filter(published_at <= NSDate())
 
 Any object that can be encoded and decoded can be stored as a blob of data in SQL.
 
-We can create an `NSData` bridge rather trivially.
+We can create an `Data` bridge rather trivially.
 
 ``` swift
-extension NSData: Value {
+extension Data: Value {
     class var declaredDatatype: String {
         return Blob.declaredDatatype
     }
@@ -1191,16 +1191,16 @@ extension NSData: Value {
 }
 ```
 
-We can bridge any type that can be initialized from and encoded to `NSData`.
+We can bridge any type that can be initialized from and encoded to `Data`.
 
 ``` swift
-// assumes NSData conformance, above
+// assumes Data conformance, above
 extension UIImage: Value {
     public class var declaredDatatype: String {
         return Blob.declaredDatatype
     }
     public class func fromDatatypeValue(blobValue: Blob) -> UIImage {
-        return UIImage(data: NSData.fromDatatypeValue(blobValue))!
+        return UIImage(data: Data.fromDatatypeValue(blobValue))!
     }
     public var datatypeValue: Blob {
         return UIImagePNGRepresentation(self)!.datatypeValue
