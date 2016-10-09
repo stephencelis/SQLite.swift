@@ -1175,7 +1175,7 @@ let published = posts.filter(published_at <= NSDate())
 
 Any object that can be encoded and decoded can be stored as a blob of data in SQL.
 
-We can create an `NSData` bridge rather trivially.
+An `NSData` bridge can be created rather trivially. It is already included in the SQLite.swift.
 
 ``` swift
 extension NSData: Value {
@@ -1183,7 +1183,7 @@ extension NSData: Value {
         return Blob.declaredDatatype
     }
     class func fromDatatypeValue(blobValue: Blob) -> Self {
-        return self(bytes: blobValue.bytes, length: blobValue.length)
+        return self(bytes: blobValue.bytes, length: blobValue.bytes.count)
     }
     var datatypeValue: Blob {
         return Blob(bytes: bytes, length: length)
