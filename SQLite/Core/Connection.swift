@@ -576,9 +576,6 @@ public final class Connection {
     fileprivate typealias Function = @convention(block) (OpaquePointer?, Int32, UnsafeMutablePointer<OpaquePointer?>?) -> Void
     fileprivate var functions = [String: [Int: Function]]()
 
-    /// The return type of a collation comparison function.
-    public typealias ComparisonResult = Foundation.ComparisonResult
-
     /// Defines a new collating sequence.
     ///
     /// - Parameters:
