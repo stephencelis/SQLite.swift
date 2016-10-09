@@ -584,15 +584,20 @@ public final class Connection {
     ///   - block: A collation function that takes two strings and returns the
     ///     comparison result.
     public func createCollation(_ collation: String, _ block: @escaping (_ lhs: String, _ rhs: String) -> ComparisonResult) throws {
-        // TODO correct capacity
-        let box: Collation = { lhs, rhs in
-            let lstr = String(cString: lhs.bindMemory(to: UInt8.self, capacity: 0))
-            let rstr = String(cString: rhs.bindMemory(to: UInt8.self, capacity: 0))
-            return Int32(Int(block(lstr, rstr).rawValue))
+        let box: Collation = { (lhs:UnsafeRawPointer, rhs:UnsafeRawPointer) in
+            let lstr = String(cString: lhs.assumingMemoryBound(to: UInt8.self))
+            let rstr = String(cString: rhs.assumingMemoryBound(to: UInt8.self))
+            return Int32(block(lstr, rstr).rawValue)
         }
-        try check(sqlite3_create_collation_v2(handle, collation, SQLITE_UTF8, unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { callback, _, lhs, _, rhs in
-            unsafeBitCast(callback, to: Collation.self)(lhs!, rhs!)
-        }, nil))
+        try check(sqlite3_create_collation_v2(handle, collation, SQLITE_UTF8,
+            unsafeBitCast(box, to: UnsafeMutableRawPointer.self),
+            { (callback:UnsafeMutableRawPointer?, _, lhs:UnsafeRawPointer?, _, rhs:UnsafeRawPointer?) in /* xCompare */
+            if let lhs = lhs, let rhs = rhs {
+                return unsafeBitCast(callback, to: Collation.self)(lhs, rhs)
+            } else {
+                fatalError("sqlite3_create_collation_v2 callback called with NULL pointer")
+            }
+        }, nil /* xDestroy */))
         collations[collation] = box
     }
     fileprivate typealias Collation = @convention(block) (UnsafeRawPointer, UnsafeRawPointer) -> Int32
