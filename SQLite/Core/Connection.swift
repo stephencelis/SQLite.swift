@@ -101,7 +101,7 @@ public final class Connection {
     public init(_ location: Location = .inMemory, readonly: Bool = false) throws {
         let flags = readonly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE
         try check(sqlite3_open_v2(location.description, &_handle, flags | SQLITE_OPEN_FULLMUTEX, nil))
-        queue.setSpecific(key: /*Migrator FIXME: Use a variable of type DispatchSpecificKey*/ Connection.queueKey, value: queueContext)
+        queue.setSpecific(key: Connection.queueKey, value: queueContext)
     }
 
     /// Initializes a new connection to a database.
