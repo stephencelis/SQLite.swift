@@ -62,8 +62,8 @@ extension NSDate : Value {
 public var dateFormatter: NSDateFormatter = {
     let formatter = NSDateFormatter()
     formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-    formatter.locale = NSLocale(localeIdentifier: "en_US_POSIX")
-    formatter.timeZone = NSTimeZone(forSecondsFromGMT: 0)
+    formatter.locale = NSLocale.currentLocale() // changed for international compatibility
+    formatter.timeZone = NSTimeZone.systemTimeZone() // changed for international compatibility
     return formatter
 }()
 
