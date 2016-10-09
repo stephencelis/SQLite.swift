@@ -22,26 +22,58 @@
 // THE SOFTWARE.
 //
 
-public struct Blob {
+import Foundation
 
-    public let bytes: [UInt8]
 
-    public init(bytes: [UInt8]) {
-        self.bytes = bytes
+public final class Blob {
+    
+    public let data: NSData
+    public var bytes: UnsafePointer<Void> {
+        return self.data.bytes
     }
-
-    public init(bytes: UnsafePointer<Void>, length: Int) {
-        self.init(bytes: [UInt8](UnsafeBufferPointer(
-            start: UnsafePointer(bytes), count: length
-        )))
+    public var length: Int {
+        return self.data.length
     }
+    
+    public convenience init(bytes: [UInt8]) {
+        let buffer = UnsafeMutablePointer<UInt8>.alloc(bytes.count)
+        for idx in 0..<bytes.count {
+            buffer.advancedBy(idx).memory = bytes[idx]
+        }
+        let data = NSData(
+            bytesNoCopy: UnsafeMutablePointer<Void>(buffer),
+            length: bytes.count,
+            freeWhenDone: true
+        )
+        self.init(data: data)
+    }
+    
+    public convenience init(bytes: UnsafePointer<Void>, length: Int) {
+        self.init(data: NSData(bytes: bytes, length: length))
+    }
+    
+    public init(data: NSData) {
+        self.data = data
+    }
+    
+}
 
+extension Blob {
+    
     public func toHex() -> String {
-        return bytes.map {
-            ($0 < 16 ? "0" : "") + String($0, radix: 16, uppercase: false)
-        }.joinWithSeparator("")
+        let bytes = UnsafePointer<UInt8>(self.bytes)
+        
+        var hex = ""
+        for idx in 0..<self.length {
+            let byte = bytes.advancedBy(idx).memory
+            if byte < 16 {
+                hex += "0"
+            }
+            hex += String(byte, radix: 16, uppercase: false)
+        }
+        return hex
     }
-
+    
 }
 
 extension Blob : CustomStringConvertible {
