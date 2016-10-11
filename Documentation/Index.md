@@ -1173,28 +1173,9 @@ let published = posts.filter(published_at <= Date())
 
 ### Binary Data
 
-Any object that can be encoded and decoded can be stored as a blob of data in SQL.
-
-We can create an `Data` bridge rather trivially.
-
-``` swift
-extension Data: Value {
-    class var declaredDatatype: String {
-        return Blob.declaredDatatype
-    }
-    class func fromDatatypeValue(blobValue: Blob) -> Self {
-        return self(bytes: blobValue.bytes, length: blobValue.length)
-    }
-    var datatypeValue: Blob {
-        return Blob(bytes: bytes, length: length)
-    }
-}
-```
-
 We can bridge any type that can be initialized from and encoded to `Data`.
 
 ``` swift
-// assumes Data conformance, above
 extension UIImage: Value {
     public class var declaredDatatype: String {
         return Blob.declaredDatatype
