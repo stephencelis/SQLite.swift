@@ -55,15 +55,15 @@ class CoreFunctionsTests : XCTestCase {
     }
 
     func test_collate_buildsExpressionWithCollateOperator() {
-        AssertSQL("(\"string\" COLLATE BINARY)", string.collate(.Binary))
-        AssertSQL("(\"string\" COLLATE NOCASE)", string.collate(.Nocase))
-        AssertSQL("(\"string\" COLLATE RTRIM)", string.collate(.Rtrim))
-        AssertSQL("(\"string\" COLLATE \"CUSTOM\")", string.collate(.Custom("CUSTOM")))
+        AssertSQL("(\"string\" COLLATE BINARY)", string.collate(.binary))
+        AssertSQL("(\"string\" COLLATE NOCASE)", string.collate(.nocase))
+        AssertSQL("(\"string\" COLLATE RTRIM)", string.collate(.rtrim))
+        AssertSQL("(\"string\" COLLATE \"CUSTOM\")", string.collate(.custom("CUSTOM")))
 
-        AssertSQL("(\"stringOptional\" COLLATE BINARY)", stringOptional.collate(.Binary))
-        AssertSQL("(\"stringOptional\" COLLATE NOCASE)", stringOptional.collate(.Nocase))
-        AssertSQL("(\"stringOptional\" COLLATE RTRIM)", stringOptional.collate(.Rtrim))
-        AssertSQL("(\"stringOptional\" COLLATE \"CUSTOM\")", stringOptional.collate(.Custom("CUSTOM")))
+        AssertSQL("(\"stringOptional\" COLLATE BINARY)", stringOptional.collate(.binary))
+        AssertSQL("(\"stringOptional\" COLLATE NOCASE)", stringOptional.collate(.nocase))
+        AssertSQL("(\"stringOptional\" COLLATE RTRIM)", stringOptional.collate(.rtrim))
+        AssertSQL("(\"stringOptional\" COLLATE \"CUSTOM\")", stringOptional.collate(.custom("CUSTOM")))
     }
 
     func test_ltrim_wrapsStringWithLtrimFunction() {

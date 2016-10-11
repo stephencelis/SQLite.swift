@@ -30,16 +30,15 @@ public struct Blob {
         self.bytes = bytes
     }
 
-    public init(bytes: UnsafePointer<Void>, length: Int) {
-        self.init(bytes: [UInt8](UnsafeBufferPointer(
-            start: UnsafePointer(bytes), count: length
-        )))
+    public init(bytes: UnsafeRawPointer, length: Int) {
+        let i8bufptr = UnsafeBufferPointer(start: bytes.assumingMemoryBound(to: UInt8.self), count: length)
+        self.init(bytes: [UInt8](i8bufptr))
     }
 
     public func toHex() -> String {
         return bytes.map {
             ($0 < 16 ? "0" : "") + String($0, radix: 16, uppercase: false)
-        }.joinWithSeparator("")
+        }.joined(separator: "")
     }
 
 }

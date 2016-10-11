@@ -23,7 +23,7 @@
 //
 
 extension Module {
-    @warn_unused_result public static func FTS5(config: FTS5Config) -> Module {
+    public static func FTS5(_ config: FTS5Config) -> Module {
         return Module(name: "fts5", arguments: config.arguments())
     }
 }
@@ -32,20 +32,20 @@ extension Module {
 ///
 /// **Note:** this is currently only applicable when using SQLite.swift together with a FTS5-enabled version
 /// of SQLite.
-public class FTS5Config : FTSConfig {
+open class FTS5Config : FTSConfig {
     public enum Detail : CustomStringConvertible {
         /// store rowid, column number, term offset
-        case Full
+        case full
         /// store rowid, column number
-        case Column
+        case column
         /// store rowid
-        case None
+        case none
 
         public var description: String {
             switch self {
-            case Full: return "full"
-            case Column: return "column"
-            case None: return "none"
+            case .full: return "full"
+            case .column: return "column"
+            case .none: return "none"
             }
         }
     }
@@ -58,19 +58,19 @@ public class FTS5Config : FTSConfig {
     }
 
     /// [External Content Tables](https://www.sqlite.org/fts5.html#section_4_4_2)
-    public func contentRowId(column: Expressible) -> Self {
+    open func contentRowId(_ column: Expressible) -> Self {
         self.contentRowId = column
         return self
     }
 
     /// [The Columnsize Option](https://www.sqlite.org/fts5.html#section_4_5)
-    public func columnSize(size: Int) -> Self {
+    open func columnSize(_ size: Int) -> Self {
         self.columnSize = size
         return self
     }
 
     /// [The Detail Option](https://www.sqlite.org/fts5.html#section_4_6)
-    public func detail(detail: Detail) -> Self {
+    open func detail(_ detail: Detail) -> Self {
         self.detail = detail
         return self
     }
