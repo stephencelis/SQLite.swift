@@ -24,7 +24,7 @@
 
 #if SQLITE_SWIFT_STANDALONE
 import sqlite3
-#else
+#elseif COCOAPODS
 import CSQLite
 #endif
 
@@ -37,7 +37,7 @@ public final class Statement {
 
     init(_ connection: Connection, _ SQL: String) throws {
         self.connection = connection
-        _ = try connection.check(sqlite3_prepare_v2(connection.handle, SQL, -1, &handle, nil))
+        try connection.check(sqlite3_prepare_v2(connection.handle, SQL, -1, &handle, nil))
     }
 
     deinit {
@@ -238,9 +238,12 @@ public struct Cursor {
     }
 
     public subscript(idx: Int) -> Blob {
-        let bytes = sqlite3_column_blob(handle, Int32(idx))
-        let length = Int(sqlite3_column_bytes(handle, Int32(idx)))
-        return Blob(bytes: bytes!, length: length)
+        if let pointer = sqlite3_column_blob(handle, Int32(idx)) {
+            let length = Int(sqlite3_column_bytes(handle, Int32(idx)))
+            return Blob(bytes: pointer, length: length)
+        } else {
+            fatalError("sqlite3_column_blob returned NULL")
+        }
     }
 
     // MARK: -

@@ -12,6 +12,7 @@ matrix:
     - env: VALIDATOR_SUBSPEC="standard"
     - env: VALIDATOR_SUBSPEC="standalone"
 before_install:
+  - gem update bundler
   - gem install xcpretty --no-document
 script:
   - ./run-tests.sh

@@ -968,10 +968,10 @@ extension Connection {
     /// - Parameter query: An insert query.
     ///
     /// - Returns: The insert’s rowid.
-    public func run(_ query: Insert) throws -> Int64 {
+    @discardableResult public func run(_ query: Insert) throws -> Int64 {
         let expression = query.expression
         return try sync {
-            _ = try self.run(expression.template, expression.bindings)
+            try self.run(expression.template, expression.bindings)
             return self.lastInsertRowid!
         }
     }
@@ -987,7 +987,7 @@ extension Connection {
     @discardableResult public func run(_ query: Update) throws -> Int {
         let expression = query.expression
         return try sync {
-            _ = try self.run(expression.template, expression.bindings)
+            try self.run(expression.template, expression.bindings)
             return self.changes
         }
     }
@@ -1002,7 +1002,7 @@ extension Connection {
     @discardableResult public func run(_ query: Delete) throws -> Int {
         let expression = query.expression
         return try sync {
-            _ = try self.run(expression.template, expression.bindings)
+            try self.run(expression.template, expression.bindings)
             return self.changes
         }
     }
