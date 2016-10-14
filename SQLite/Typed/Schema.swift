@@ -369,16 +369,16 @@ public final class TableBuilder {
 
     public enum Dependency: String {
 
-        case NoAction = "NO ACTION"
+        case noAction = "NO ACTION"
 
-        case Restrict = "RESTRICT"
+        case restrict = "RESTRICT"
 
-        case SetNull = "SET NULL"
+        case setNull = "SET NULL"
 
-        case SetDefault = "SET DEFAULT"
+        case setDefault = "SET DEFAULT"
 
-        case Cascade = "CASCADE"
-        
+        case cascade = "CASCADE"
+
     }
 
     public func foreignKey<T : Value>(_ column: Expression<T>, references table: QueryType, _ other: Expression<T>, update: Dependency? = nil, delete: Dependency? = nil) {

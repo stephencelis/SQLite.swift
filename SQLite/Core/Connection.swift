@@ -54,6 +54,32 @@ public final class Connection {
         case uri(String)
     }
 
+    /// An SQL operation passed to update callbacks.
+    public enum Operation {
+
+        /// An INSERT operation.
+        case insert
+
+        /// An UPDATE operation.
+        case update
+
+        /// A DELETE operation.
+        case delete
+
+        fileprivate init(rawValue:Int32) {
+            switch rawValue {
+            case SQLITE_INSERT:
+                self = .insert
+            case SQLITE_UPDATE:
+                self = .update
+            case SQLITE_DELETE:
+                self = .delete
+            default:
+                fatalError("unhandled operation code: \(rawValue)")
+            }
+        }
+    }
+
     public var handle: OpaquePointer { return _handle! }
 
     fileprivate var _handle: OpaquePointer? = nil
@@ -274,13 +300,13 @@ public final class Connection {
     public enum TransactionMode : String {
 
         /// Defers locking the database till the first read/write executes.
-        case Deferred = "DEFERRED"
+        case deferred = "DEFERRED"
 
         /// Immediately acquires a reserved lock on the database.
-        case Immediate = "IMMEDIATE"
+        case immediate = "IMMEDIATE"
 
         /// Immediately acquires an exclusive lock on all databases.
-        case Exclusive = "EXCLUSIVE"
+        case exclusive = "EXCLUSIVE"
 
     }
 
@@ -301,7 +327,7 @@ public final class Connection {
     ///     must throw to roll the transaction back.
     ///
     /// - Throws: `Result.Error`, and rethrows.
-    public func transaction(_ mode: TransactionMode = .Deferred, block: () throws -> Void) throws {
+    public func transaction(_ mode: TransactionMode = .deferred, block: () throws -> Void) throws {
         try transaction("BEGIN \(mode.rawValue) TRANSACTION", block, "COMMIT TRANSACTION", or: "ROLLBACK TRANSACTION")
     }
 
@@ -579,18 +605,18 @@ public final class Connection {
         var failure: Error?
 
         if DispatchQueue.getSpecific(key: Connection.queueKey) == queueContext {
-			do {
-				success = try block()
-			} catch {
-				failure = error
-			}
-		} else {
+            do {
+                success = try block()
+            } catch {
+                failure = error
+            }
+        } else {
 			queue.sync {
 				do {
 					success = try block()
 				} catch {
 					failure = error
-				}
+        }
 			}
         }
 
@@ -635,33 +661,6 @@ extension Connection.Location : CustomStringConvertible {
             return ""
         case .uri(let URI):
             return URI
-        }
-    }
-
-}
-
-/// An SQL operation passed to update callbacks.
-public enum Operation {
-
-    /// An INSERT operation.
-    case insert
-
-    /// An UPDATE operation.
-    case update
-
-    /// A DELETE operation.
-    case delete
-
-    fileprivate init(rawValue: Int32) {
-        switch rawValue {
-        case SQLITE_INSERT:
-            self = .insert
-        case SQLITE_UPDATE:
-            self = .update
-        case SQLITE_DELETE:
-            self = .delete
-        default:
-            fatalError("unhandled operation code: \(rawValue)")
         }
     }
 

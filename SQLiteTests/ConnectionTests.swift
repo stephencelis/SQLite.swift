@@ -95,19 +95,19 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_transaction_executesBeginDeferred() {
-        try! db.transaction(.Deferred) {}
+        try! db.transaction(.deferred) {}
 
         AssertSQL("BEGIN DEFERRED TRANSACTION")
     }
 
     func test_transaction_executesBeginImmediate() {
-        try! db.transaction(.Immediate) {}
+        try! db.transaction(.immediate) {}
 
         AssertSQL("BEGIN IMMEDIATE TRANSACTION")
     }
 
     func test_transaction_executesBeginExclusive() {
-        try! db.transaction(.Exclusive) {}
+        try! db.transaction(.exclusive) {}
 
         AssertSQL("BEGIN EXCLUSIVE TRANSACTION")
     }
@@ -219,7 +219,7 @@ class ConnectionTests : SQLiteTestCase {
     func test_updateHook_setsUpdateHook_withInsert() {
         async { done in
             db.updateHook { operation, db, table, rowid in
-                XCTAssertEqual(Operation.insert, operation)
+                XCTAssertEqual(Connection.Operation.insert, operation)
                 XCTAssertEqual("main", db)
                 XCTAssertEqual("users", table)
                 XCTAssertEqual(1, rowid)
@@ -233,7 +233,7 @@ class ConnectionTests : SQLiteTestCase {
         _ = try! InsertUser("alice")
         async { done in
             db.updateHook { operation, db, table, rowid in
-                XCTAssertEqual(Operation.update, operation)
+                XCTAssertEqual(Connection.Operation.update, operation)
                 XCTAssertEqual("main", db)
                 XCTAssertEqual("users", table)
                 XCTAssertEqual(1, rowid)
@@ -247,7 +247,7 @@ class ConnectionTests : SQLiteTestCase {
         _ = try! InsertUser("alice")
         async { done in
             db.updateHook { operation, db, table, rowid in
-                XCTAssertEqual(Operation.delete, operation)
+                XCTAssertEqual(Connection.Operation.delete, operation)
                 XCTAssertEqual("main", db)
                 XCTAssertEqual("users", table)
                 XCTAssertEqual(1, rowid)
