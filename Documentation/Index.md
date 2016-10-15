@@ -126,7 +126,7 @@ By default this will use the most recent version of SQLite without any extras. I
 
 ``` ruby
     pod 'SQLite.swift/standalone', '~> 0.11.0'
-    pod 'sqlite3/fts5', '= 3.11.1'  # SQLite 3.11.1 with FTS5 enabled
+    pod 'sqlite3/fts5', '= 3.15.0'  # SQLite 3.15.0 with FTS5 enabled
 ```
 
 See the [sqlite3 podspec][sqlite3pod] for more details.
