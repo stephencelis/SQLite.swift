@@ -1,8 +1,3 @@
-#
-# `pod lib lint SQLite.swift.podspec' fails - see
-#    https://github.com/CocoaPods/CocoaPods/issues/4607
-#
-
 Pod::Spec.new do |s|
   s.name             = "SQLite.swift"
   s.version          = "0.11.0"
