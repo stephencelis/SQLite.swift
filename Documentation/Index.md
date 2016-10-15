@@ -142,7 +142,7 @@ To install SQLite.swift as an Xcode sub-project:
 
  1. Drag the **SQLite.xcodeproj** file into your own project. ([Submodule](http://git-scm.com/book/en/Git-Tools-Submodules), clone, or [download](https://github.com/stephencelis/SQLite.swift/archive/master.zip) the project first.)
 
-    ![Installation Screen Shot](Documentation/Resources/installation@2x.png)
+    ![Installation Screen Shot](Resources/installation@2x.png)
 
  2. In your target’s **General** tab, click the **+** button under **Linked Frameworks and Libraries**.
 
