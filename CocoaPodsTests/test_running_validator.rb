@@ -94,8 +94,8 @@ class TestRunningValidator < Pod::Validator
       command += %w(CODE_SIGN_IDENTITY=- -sdk appletvsimulator)
       command += Fourflusher::SimControl.new.destination(tvos_simulator, 'tvOS', deployment_target)
     when :watchos
-      command += %w(CODE_SIGN_IDENTITY=- -sdk watchsimulator)
-      command += Fourflusher::SimControl.new.destination(watchos_simulator, 'watchOS', deployment_target)
+      # there's no XCTest on watchOS (https://openradar.appspot.com/21760513)
+      return
     else
       return
     end
