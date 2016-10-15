@@ -16,6 +16,3 @@ before_install:
   - gem install xcpretty --no-document
 script:
   - ./run-tests.sh
-after_failure:
-  - find $HOME/Library/Developer/Xcode/DerivedData/ -name '*.log' -print0 | xargs -0 cat
-  - cat /var/log/system.log
