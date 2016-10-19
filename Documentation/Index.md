@@ -78,7 +78,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```
-    github "stephencelis/SQLite.swift" ~> 0.10.1
+    github "stephencelis/SQLite.swift" ~> 0.11.0
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -93,37 +93,40 @@ install SQLite.swift with Carthage:
 
 [CocoaPods][] is a dependency manager for Cocoa projects. To install SQLite.swift with CocoaPods:
 
- 1. Make sure the latest CocoaPods beta is [installed][CocoaPods Installation]. (SQLite.swift requires version 1.0.0.beta.6 or greater.)
+ 1. Verify that your copy of Xcode is installed in the default location (`/Application/Xcode.app`).
+
+ 2. Make sure CocoaPods is [installed][CocoaPods Installation] (SQLite.swift requires version 1.0.0 or greater).
 
     ``` sh
     # Using the default Ruby install will require you to use sudo when
     # installing and updating gems.
-    sudo gem install --pre cocoapods
+    sudo gem install cocoapods
     ```
 
- 2. Update your Podfile to include the following:
+ 3. Update your Podfile to include the following:
 
     ``` ruby
     use_frameworks!
 
-    pod 'SQLite.swift', '~> 0.10.1'
+    pod 'SQLite.swift', '~> 0.11.0'
     ```
 
- 3. Run `pod install`.
+ 4. Run `pod install`.
+
 
  #### Requiring a specific version of SQLite
 
  If you want to use a more recent version of SQLite than what is provided with the OS you can require the `standalone` subspec:
 
 ``` ruby
-    pod 'SQLite.swift/standalone', '~> 0.10.1'
+    pod 'SQLite.swift/standalone', '~> 0.11.0'
 ```
 
 By default this will use the most recent version of SQLite without any extras. If you want you can further customize this by adding another dependency to sqlite3 or one of its subspecs:
 
 ``` ruby
-    pod 'SQLite.swift/standalone', '~> 0.10.1'
-    pod 'sqlite3/fts5', '= 3.11.1'  # SQLite 3.11.1 with FTS5 enabled
+    pod 'SQLite.swift/standalone', '~> 0.11.0'
+    pod 'sqlite3/fts5', '= 3.15.0'  # SQLite 3.15.0 with FTS5 enabled
 ```
 
 See the [sqlite3 podspec][sqlite3pod] for more details.
@@ -139,7 +142,7 @@ To install SQLite.swift as an Xcode sub-project:
 
  1. Drag the **SQLite.xcodeproj** file into your own project. ([Submodule](http://git-scm.com/book/en/Git-Tools-Submodules), clone, or [download](https://github.com/stephencelis/SQLite.swift/archive/master.zip) the project first.)
 
-    ![Installation Screen Shot](Documentation/Resources/installation@2x.png)
+    ![Installation Screen Shot](Resources/installation@2x.png)
 
  2. In your target’s **General** tab, click the **+** button under **Linked Frameworks and Libraries**.
 

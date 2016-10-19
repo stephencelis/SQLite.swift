@@ -1,11 +1,6 @@
-#
-# `pod lib lint SQLite.swift.podspec' fails - see
-#    https://github.com/CocoaPods/CocoaPods/issues/4607
-#
-
 Pod::Spec.new do |s|
   s.name             = "SQLite.swift"
-  s.version          = "0.10.1"
+  s.version          = "0.11.0"
   s.summary          = "A type-safe, Swift-language layer over SQLite3 for iOS and OS X."
 
   s.description      = <<-DESC

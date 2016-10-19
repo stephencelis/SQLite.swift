@@ -9,11 +9,13 @@ class TestRunningValidator < Pod::Validator
   attr_accessor :test_files
   attr_accessor :ios_simulator
   attr_accessor :tvos_simulator
+  attr_accessor :watchos_simulator
 
   def initialize(spec_or_path, source_urls)
     super(spec_or_path, source_urls)
     self.ios_simulator = :oldest
     self.tvos_simulator = :oldest
+    self.watchos_simulator = :oldest
   end
 
   def create_app_project
@@ -91,8 +93,11 @@ class TestRunningValidator < Pod::Validator
     when :tvos
       command += %w(CODE_SIGN_IDENTITY=- -sdk appletvsimulator)
       command += Fourflusher::SimControl.new.destination(tvos_simulator, 'tvOS', deployment_target)
+    when :watchos
+      # there's no XCTest on watchOS (https://openradar.appspot.com/21760513)
+      return
     else
-      return # skip watchos
+      return
     end
 
     output, status = _xcodebuild(command)
