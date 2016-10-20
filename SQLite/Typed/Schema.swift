@@ -347,7 +347,7 @@ public final class TableBuilder {
         primaryKey([compositeA, b, c])
     }
 
-    private func primaryKey(composite: [Expressible]) {
+    public func primaryKey(composite: [Expressible]) {
         definitions.append("PRIMARY KEY".prefix(composite))
     }
 
