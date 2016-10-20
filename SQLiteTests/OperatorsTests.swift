@@ -255,6 +255,11 @@ class OperatorsTests : XCTestCase {
         AssertSQL("\"doubleOptional\" BETWEEN 1.2 AND 4.5", 1.2...4.5 ~= doubleOptional)
     }
 
+    func test_patternMatchingOperator_withomparableClosedRangeString_buildsBetweenBooleanExpression() {
+        AssertSQL("\"string\" BETWEEN 'a' AND 'b'", "a"..."b" ~= string)
+        AssertSQL("\"stringOptional\" BETWEEN 'a' AND 'b'", "a"..."b" ~= stringOptional)
+    }
+
     func test_doubleAndOperator_withBooleanExpressions_buildsCompoundExpression() {
         AssertSQL("(\"bool\" AND \"bool\")", bool && bool)
         AssertSQL("(\"bool\" AND \"boolOptional\")", bool && boolOptional)
