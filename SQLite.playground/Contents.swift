@@ -35,7 +35,7 @@ try! db.run(emails.insert(
     body <- "This is a hello world message."
 ))
 
-let row = db.pluck(emails.match("hello"))
+let row = try! db.pluck(emails.match("hello"))
 
 let query = try! db.prepare(emails.match("hello"))
 for row in query {
