@@ -78,7 +78,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```
-    github "stephencelis/SQLite.swift" ~> 0.11.0
+    github "stephencelis/SQLite.swift" ~> 0.11.1
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -108,7 +108,7 @@ install SQLite.swift with Carthage:
     ``` ruby
     use_frameworks!
 
-    pod 'SQLite.swift', '~> 0.11.0'
+    pod 'SQLite.swift', '~> 0.11.1'
     ```
 
  4. Run `pod install`.
@@ -119,13 +119,13 @@ install SQLite.swift with Carthage:
  If you want to use a more recent version of SQLite than what is provided with the OS you can require the `standalone` subspec:
 
 ``` ruby
-    pod 'SQLite.swift/standalone', '~> 0.11.0'
+    pod 'SQLite.swift/standalone', '~> 0.11.1'
 ```
 
 By default this will use the most recent version of SQLite without any extras. If you want you can further customize this by adding another dependency to sqlite3 or one of its subspecs:
 
 ``` ruby
-    pod 'SQLite.swift/standalone', '~> 0.11.0'
+    pod 'SQLite.swift/standalone', '~> 0.11.1'
     pod 'sqlite3/fts5', '= 3.15.0'  # SQLite 3.15.0 with FTS5 enabled
 ```
 

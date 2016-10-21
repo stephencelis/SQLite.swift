@@ -129,7 +129,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```
-    github "stephencelis/SQLite.swift" ~> 0.11.0
+    github "stephencelis/SQLite.swift" ~> 0.11.1
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -159,7 +159,7 @@ SQLite.swift with CocoaPods:
     ``` ruby
     use_frameworks!
 
-    pod 'SQLite.swift', '~> 0.11.0'
+    pod 'SQLite.swift', '~> 0.11.1'
     ```
 
  3. Run `pod install`.
