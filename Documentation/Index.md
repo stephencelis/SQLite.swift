@@ -1086,9 +1086,11 @@ You can add a convenience property on `Connection` to query and set the [`PRAGMA
 This is a great way to manage your schema’s version over migrations.
 
 ``` swift
-public var userVersion: Int32 {
-      get { return Int32(try! scalar("PRAGMA user_version") as! Int64)}
-      set { try! run("PRAGMA user_version = \(newValue)") }
+extension Connection {
+    public var userVersion: Int32 {
+        get { return Int32(try! scalar("PRAGMA user_version") as! Int64)}
+        set { try! run("PRAGMA user_version = \(newValue)") }
+    }
 }
 ```
 
