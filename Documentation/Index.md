@@ -1081,7 +1081,7 @@ try db.run(users.drop(ifExists: true))
 
 ### Migrations and Schema Versioning
 
-You can add a convenience property on `Connection` to query and set the [`PRAGMA user_version`](https://sqlite.org/pragma.html#pragma_schema_version).
+You can add a convenience property on `Connection` to query and set the [`PRAGMA user_version`](https://sqlite.org/pragma.html#pragma_user_version).
 
 This is a great way to manage your schema’s version over migrations.
 
