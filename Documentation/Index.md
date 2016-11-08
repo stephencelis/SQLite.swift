@@ -1079,11 +1079,22 @@ try db.run(users.drop(ifExists: true))
 ```
 
 
-<!-- ### Migrations and Schema Versioning
+### Migrations and Schema Versioning
 
-SQLite.swift provides a convenience property on `Database` to query and set the [`PRAGMA user_version`](https://sqlite.org/pragma.html#pragma_schema_version). This is a great way to manage your schema’s version over migrations.
+You can add a convenience property on `Connection` to query and set the [`PRAGMA user_version`](https://sqlite.org/pragma.html#pragma_schema_version).
+
+This is a great way to manage your schema’s version over migrations.
 
 ``` swift
+public var userVersion: Int32 {
+      get { return Int32(try! scalar("PRAGMA user_version") as! Int64)}
+      set { try! run("PRAGMA user_version = \(newValue)") }
+}
+```
+
+Then you can conditionally run your migrations along the lines of:
+
+```swift
 if db.userVersion == 0 {
     // handle first migration
     db.userVersion = 1
@@ -1092,7 +1103,7 @@ if db.userVersion == 1 {
     // handle second migration
     db.userVersion = 2
 }
-``` -->
+```
 
 
 ## Custom Types
