@@ -163,7 +163,7 @@ SQLite.swift with CocoaPods:
     pod 'SQLite.swift', '~> 0.11.1'
     ```
 
- 4. Run `pod install`.
+ 4. Run `pod install --repo-update`.
 
 [CocoaPods]: https://cocoapods.org
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
