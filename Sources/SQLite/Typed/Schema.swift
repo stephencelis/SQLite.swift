@@ -36,14 +36,15 @@ extension Table {
 
     // MARK: - CREATE TABLE
 
-    public func create(temporary: Bool = false, ifNotExists: Bool = false, block: (TableBuilder) -> Void) -> String {
+    public func create(temporary: Bool = false, ifNotExists: Bool = false, withoutRowid: Bool = false, block: (TableBuilder) -> Void) -> String {
         let builder = TableBuilder()
 
         block(builder)
 
         let clauses: [Expressible?] = [
             create(Table.identifier, tableName(), temporary ? .Temporary : nil, ifNotExists),
-            "".wrap(builder.definitions) as Expression<Void>
+            "".wrap(builder.definitions) as Expression<Void>,
+            withoutRowid ? Expression<Void>(literal: "WITHOUT ROWID") : nil
         ]
 
         return " ".join(clauses.flatMap { $0 }).asSQL()
