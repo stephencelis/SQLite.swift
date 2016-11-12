@@ -1107,6 +1107,8 @@ if db.userVersion == 1 {
 }
 ```
 
+For more complex migration requirements check out the schema management system
+[SQLiteMigrationManager.swift][].
 
 ## Custom Types
 
@@ -1526,3 +1528,4 @@ We can log SQL using the database’s `trace` function.
 
 
 [ROWID]: https://sqlite.org/lang_createtable.html#rowid
+[SQLiteMigrationManager.swift]: https://github.com/garriguv/SQLiteMigrationManager.swift
