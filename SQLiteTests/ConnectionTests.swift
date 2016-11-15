@@ -43,17 +43,29 @@ class ConnectionTests : SQLiteTestCase {
         XCTAssertTrue(db.readonly)
     }
 
-    func test_lastInsertRowid_returnsNilOnNewConnections() {
-        XCTAssert(db.lastInsertRowid == nil)
+    func test_changes_returnsZeroOnNewConnections() {
+        XCTAssertEqual(0, db.changes)
     }
 
     func test_lastInsertRowid_returnsLastIdAfterInserts() {
         try! InsertUser("alice")
-        XCTAssertEqual(1, db.lastInsertRowid!)
+        XCTAssertEqual(1, db.lastInsertRowid)
     }
 
-    func test_changes_returnsZeroOnNewConnections() {
-        XCTAssertEqual(0, db.changes)
+    func test_lastInsertRowid_doesNotResetAfterError() {
+        XCTAssert(db.lastInsertRowid == 0)
+        try! InsertUser("alice")
+        XCTAssertEqual(1, db.lastInsertRowid)
+        XCTAssertThrowsError(
+            try db.run("INSERT INTO \"users\" (email, age, admin) values ('invalid@example.com', 12, 'invalid')")
+        ) { error in
+            if case SQLite.Result.error(_, let code, _) = error {
+                XCTAssertEqual(SQLITE_CONSTRAINT, code)
+            } else {
+                XCTFail("expected error")
+            }
+        }
+        XCTAssertEqual(1, db.lastInsertRowid)
     }
 
     func test_changes_returnsNumberOfChanges() {

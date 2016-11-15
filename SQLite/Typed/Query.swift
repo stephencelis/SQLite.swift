@@ -972,7 +972,7 @@ extension Connection {
         let expression = query.expression
         return try sync {
             try self.run(expression.template, expression.bindings)
-            return self.lastInsertRowid!
+            return self.lastInsertRowid
         }
     }
 

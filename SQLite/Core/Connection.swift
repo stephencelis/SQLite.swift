@@ -132,9 +132,8 @@ public final class Connection {
     public var readonly: Bool { return sqlite3_db_readonly(handle, nil) == 1 }
 
     /// The last rowid inserted into the database via this connection.
-    public var lastInsertRowid: Int64? {
-        let rowid = sqlite3_last_insert_rowid(handle)
-        return rowid != 0 ? rowid : nil
+    public var lastInsertRowid: Int64 {
+        return sqlite3_last_insert_rowid(handle)
     }
 
     /// The last number of changes (inserts, updates, or deletes) made to the
