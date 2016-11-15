@@ -1,5 +1,10 @@
 import XCTest
 import SQLite
+#if SQLITE_SWIFT_STANDALONE
+import sqlite3
+#elseif COCOAPODS
+import CSQLite
+#endif
 
 class ConnectionTests : SQLiteTestCase {
 
