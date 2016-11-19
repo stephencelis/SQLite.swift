@@ -6,7 +6,8 @@ let package = Package(
         Target(
             name: "SQLite",
             dependencies: [
-                .Target(name: "SQLiteObjc")
+                .Target(name: "SQLiteObjc"),
+                .Target(name: "CSQLite")
             ]),
         Target(
             name: "SQLiteObjc",
