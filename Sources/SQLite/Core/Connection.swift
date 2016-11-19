@@ -26,7 +26,7 @@ import Foundation.NSUUID
 import Dispatch
 #if SQLITE_SWIFT_STANDALONE
 import sqlite3
-#elseif COCOAPODS
+#else
 import CSQLite
 #endif
 
