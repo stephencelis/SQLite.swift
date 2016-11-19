@@ -22,6 +22,9 @@
 // THE SOFTWARE.
 //
 
+import SQLiteObjc
+
+
 extension Module {
 
     public static func FTS4(_ column: Expressible, _ more: Expressible...) -> Module {
