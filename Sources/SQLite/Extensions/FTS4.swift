@@ -22,8 +22,11 @@
 // THE SOFTWARE.
 //
 
+#if ALL_IN_ONE_BUILD
+// Nothing required
+#else
 import SQLiteObjc
-
+#endif
 
 extension Module {
 
