@@ -1,7 +1,7 @@
 import PackageDescription
 
 let package = Package(
-    name: "SQLite.swift",
+    name: "SQLite",
     targets: [
         Target(
             name: "SQLite",
