@@ -3,7 +3,7 @@ rvm: 2.2
 osx_image: xcode8.2
 env:
   global:
-    - IOS_SIMULATOR="iPhone SE"
+    - IOS_SIMULATOR="iPhone 6s"
 matrix:
   include:
     - env: BUILD_SCHEME="SQLite iOS"
