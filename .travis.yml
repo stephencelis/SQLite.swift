@@ -15,4 +15,4 @@ before_install:
   - gem update bundler
   - gem install xcpretty --no-document
 script:
-  - travis_retry ./run-tests.sh
+  - ./run-tests.sh
