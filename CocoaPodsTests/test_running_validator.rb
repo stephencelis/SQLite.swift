@@ -79,7 +79,7 @@ class TestRunningValidator < Pod::Validator
 
   def run_tests
     command = [
-      'clean', 'test',
+      'clean', 'build', 'build-for-testing', 'test-without-building',
       '-workspace', File.join(validation_dir, "#{APP_TARGET}.xcworkspace"),
       '-scheme', TEST_TARGET,
       '-configuration', 'Debug'

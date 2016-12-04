@@ -11,6 +11,7 @@ endif
 XCPRETTY := $(shell command -v xcpretty)
 SWIFTCOV := $(shell command -v swiftcov)
 GCOVR := $(shell command -v gcovr)
+TEST_ACTIONS := clean build build-for-testing test-without-building
 
 default: test
 
@@ -19,9 +20,9 @@ build:
 
 test:
 ifdef XCPRETTY
-	@set -o pipefail && $(BUILD_TOOL) $(BUILD_ARGUMENTS) test | $(XCPRETTY) -c
+	@set -o pipefail && $(BUILD_TOOL) $(BUILD_ARGUMENTS) $(TEST_ACTIONS) | $(XCPRETTY) -c
 else
-	$(BUILD_TOOL) $(BUILD_ARGUMENTS) test
+	$(BUILD_TOOL) $(BUILD_ARGUMENTS) $(TEST_ACTIONS)
 endif
 
 coverage:
