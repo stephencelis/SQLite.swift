@@ -11,6 +11,7 @@ matrix:
     - env: VALIDATOR_SUBSPEC="none"
     - env: VALIDATOR_SUBSPEC="standard"
     - env: VALIDATOR_SUBSPEC="standalone"
+    - env: VALIDATOR_SUBSPEC="sqlcipher"
 before_install:
   - gem update bundler
   - gem install xcpretty --no-document
