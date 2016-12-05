@@ -114,7 +114,7 @@ install SQLite.swift with Carthage:
  4. Run `pod install --repo-update`.
 
 
- #### Requiring a specific version of SQLite
+#### Requiring a specific version of SQLite
 
  If you want to use a more recent version of SQLite than what is provided with the OS you can require the `standalone` subspec:
 
