@@ -651,7 +651,7 @@ public final class Connection {
         return success!
     }
 
-    @discardableResult public func check(_ resultCode: Int32, statement: Statement? = nil) throws -> Int32 {
+    @discardableResult func check(_ resultCode: Int32, statement: Statement? = nil) throws -> Int32 {
         guard let error = Result(errorCode: resultCode, connection: self, statement: statement) else {
             return resultCode
         }

@@ -340,11 +340,4 @@ class ConnectionTests : SQLiteTestCase {
         AssertThrows(try stmt.run())
     }
 
-    func test_check_with_successCode_returnsCode() {
-        try! XCTAssertEqual(SQLITE_OK, db.check(SQLITE_OK))
-    }
-
-    func test_check_with_errorCode_throws() {
-        XCTAssertThrowsError(try db.check(SQLITE_CONSTRAINT))
-    }
 }
