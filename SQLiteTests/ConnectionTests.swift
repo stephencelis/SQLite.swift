@@ -2,6 +2,8 @@ import XCTest
 import SQLite
 #if SQLITE_SWIFT_STANDALONE
 import sqlite3
+#elseif SQLITE_SWIFT_SQLCIPHER
+import SQLCipher
 #elseif COCOAPODS
 import CSQLite
 #endif

@@ -1,6 +1,7 @@
 0.11.1 (05-12-2016), [diff][diff-0.11.1])
 ========================================
 
+* Integrate SQLCipher via CocoaPods (#546)
 * Made lastInsertRowid consistent with other SQLite wrappers (#532)
 * Fix for ~= operator used with Double ranges
 * Various documentation updates
