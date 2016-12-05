@@ -133,11 +133,11 @@ See the [sqlite3 podspec][sqlite3pod] for more details.
 
 #### Using SQLite.swift with SQLCipher
 
-If you want to use [SQLCipher][] with SQLite.swift you can require the `sqlcipher`
+If you want to use [SQLCipher][] with SQLite.swift you can require the `SQLCipher`
 subspec in your Podfile:
 
 ``` ruby
-    pod 'SQLite.swift/sqlcipher', '~> 0.11.1'
+    pod 'SQLite.swift/SQLCipher', '~> 0.11.1'
 ```
 
 This will automatically add a dependency to the SQLCipher pod as well as extend
