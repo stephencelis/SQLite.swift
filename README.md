@@ -129,7 +129,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```
-    github "stephencelis/SQLite.swift" ~> 0.11.0
+    github "stephencelis/SQLite.swift" ~> 0.11.1
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -145,8 +145,9 @@ install SQLite.swift with Carthage:
 [CocoaPods][] is a dependency manager for Cocoa projects. To install
 SQLite.swift with CocoaPods:
 
- 1. Make sure the latest CocoaPods beta is [installed][CocoaPods
-    Installation]. (SQLite.swift requires version 1.0.0.beta.6 or greater.)
+ 1. Verify that your copy of Xcode is installed in the default location (`/Application/Xcode.app`).
+
+ 2. Make sure the latest CocoaPods beta is [installed][CocoaPods Installation]. (SQLite.swift requires version 1.0.0 or greater.)
 
     ``` sh
     # Using the default Ruby install will require you to use sudo when
@@ -154,15 +155,15 @@ SQLite.swift with CocoaPods:
     [sudo] gem install cocoapods
     ```
 
- 2. Update your Podfile to include the following:
+ 3. Update your Podfile to include the following:
 
     ``` ruby
     use_frameworks!
 
-    pod 'SQLite.swift', '~> 0.11.0'
+    pod 'SQLite.swift', '~> 0.11.1'
     ```
 
- 3. Run `pod install`.
+ 4. Run `pod install --repo-update`.
 
 [CocoaPods]: https://cocoapods.org
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started

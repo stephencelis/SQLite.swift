@@ -1,8 +1,9 @@
 BUILD_TOOL = xcodebuild
 BUILD_SCHEME = SQLite Mac
-IOS_SIMULATOR = iPhone SE
+IOS_SIMULATOR = iPhone 6s
+IOS_VERSION = 9.3
 ifeq ($(BUILD_SCHEME),SQLite iOS)
-	BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)" -destination "platform=iOS Simulator,name=$(IOS_SIMULATOR)"
+	BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)" -destination "platform=iOS Simulator,name=$(IOS_SIMULATOR),OS=$(IOS_VERSION)"
 else
 	BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)"
 endif
@@ -10,6 +11,7 @@ endif
 XCPRETTY := $(shell command -v xcpretty)
 SWIFTCOV := $(shell command -v swiftcov)
 GCOVR := $(shell command -v gcovr)
+TEST_ACTIONS := clean build build-for-testing test-without-building
 
 default: test
 
@@ -18,9 +20,9 @@ build:
 
 test:
 ifdef XCPRETTY
-	@set -o pipefail && $(BUILD_TOOL) $(BUILD_ARGUMENTS) test | $(XCPRETTY) -c
+	@set -o pipefail && $(BUILD_TOOL) $(BUILD_ARGUMENTS) $(TEST_ACTIONS) | $(XCPRETTY) -c
 else
-	$(BUILD_TOOL) $(BUILD_ARGUMENTS) test
+	$(BUILD_TOOL) $(BUILD_ARGUMENTS) $(TEST_ACTIONS)
 endif
 
 coverage:
