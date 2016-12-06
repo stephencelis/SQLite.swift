@@ -1,15 +1,11 @@
 # SQLite.swift Planning
 
-This document captures both near term steps (aka Roadmap) and feature requests. 
+This document captures both near term steps (aka Roadmap) and feature requests.
 The goal is to add some visibility and guidance for future additions and Pull Requests, as well as to keep the Issues list clear of enhancement requests so that bugs are more visible.
 
 ## Roadmap
 
 _Lists agreed upon next steps in approximate priority order._
-
- * ~~publish to the CocoaPods directory at https://cocoapods.org/, per [#257](https://github.com/stephencelis/SQLite.swift/issues/257)~~ _jan 7, 2016_)
- * add SQLCipher back into the product as a separate repo, per [#311](https://github.com/stephencelis/SQLite.swift/issues/311), _in progress jan 6, 2016_
-
 
 ## Feature Requests
 
@@ -17,8 +13,7 @@ _A gathering point for ideas for new features. In general, the corresponding iss
 
 ### Packaging
 
- * add TV OS support, per [#272](https://github.com/stephencelis/SQLite.swift/issues/272) - currently pending SQLiteCipher merge and/or adding ability for user to pick their preferred [SQLCipher](https://github.com/sqlcipher/sqlcipher) branch
- * linux support via Swift Package Manager, per [#315](https://github.com/stephencelis/SQLite.swift/issues/315)
+ * linux support via Swift Package Manager, per [#315](https://github.com/stephencelis/SQLite.swift/issues/315), _in progress_: [#548](https://github.com/stephencelis/SQLite.swift/pull/548)
 
 ### Features
 

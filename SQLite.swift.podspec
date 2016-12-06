@@ -26,6 +26,7 @@ Pod::Spec.new do |s|
 
   s.subspec 'standard' do |ss|
     ss.source_files = 'SQLite/**/*.{c,h,m,swift}'
+    ss.exclude_files = 'SQLite/Extensions/Cipher.swift'
     ss.private_header_files = 'SQLite/Core/fts3_tokenizer.h'
 
     ss.library = 'sqlite3'
@@ -47,9 +48,23 @@ Pod::Spec.new do |s|
 
   s.subspec 'standalone' do |ss|
     ss.source_files = 'SQLite/**/*.{c,h,m,swift}'
+    ss.exclude_files = 'SQLite/Extensions/Cipher.swift'
     ss.private_header_files = 'SQLite/Core/fts3_tokenizer.h'
-    ss.xcconfig = { 'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_STANDALONE' }
+    ss.xcconfig = {
+      'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_STANDALONE'
+    }
 
-    ss.dependency 'sqlite3'
+    ss.dependency 'sqlite3', '>= 3.14.0'
+  end
+
+  s.subspec 'SQLCipher' do |ss|
+    ss.source_files = 'SQLite/**/*.{c,h,m,swift}'
+    ss.private_header_files = 'SQLite/Core/fts3_tokenizer.h'
+    ss.xcconfig = {
+      'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_SQLCIPHER',
+      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1'
+    }
+
+    ss.dependency 'SQLCipher', '>= 3.4.0'
   end
 end

@@ -114,7 +114,7 @@ install SQLite.swift with Carthage:
  4. Run `pod install --repo-update`.
 
 
- #### Requiring a specific version of SQLite
+#### Requiring a specific version of SQLite
 
  If you want to use a more recent version of SQLite than what is provided with the OS you can require the `standalone` subspec:
 
@@ -131,10 +131,30 @@ By default this will use the most recent version of SQLite without any extras. I
 
 See the [sqlite3 podspec][sqlite3pod] for more details.
 
+#### Using SQLite.swift with SQLCipher
+
+If you want to use [SQLCipher][] with SQLite.swift you can require the `SQLCipher`
+subspec in your Podfile:
+
+``` ruby
+    pod 'SQLite.swift/SQLCipher', '~> 0.11.1'
+```
+
+This will automatically add a dependency to the SQLCipher pod as well as extend
+`Connection` with methods to change the database key:
+
+``` swift
+import SQLite
+
+let db = try Connection("path/to/db.sqlite3")
+try db.key("secret")
+try db.rekey("another secret")
+```
+
 [CocoaPods]: https://cocoapods.org
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
 [sqlite3pod]: https://github.com/clemensg/sqlite3pod
-
+[SQLCipher]: https://www.zetetic.net/sqlcipher/
 
 ### Manual
 

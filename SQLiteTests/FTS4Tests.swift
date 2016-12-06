@@ -176,7 +176,7 @@ class FTS4ConfigTests : XCTestCase {
 }
 
 class FTS4IntegrationTests : SQLiteTestCase {
-#if !SQLITE_SWIFT_STANDALONE
+#if !SQLITE_SWIFT_STANDALONE && !SQLITE_SWIFT_SQLCIPHER
     func test_registerTokenizer_registersTokenizer() {
         let emails = VirtualTable("emails")
         let subject = Expression<String?>("subject")
