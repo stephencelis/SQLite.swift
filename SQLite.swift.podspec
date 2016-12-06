@@ -62,7 +62,7 @@ Pod::Spec.new do |s|
     ss.private_header_files = 'SQLite/Core/fts3_tokenizer.h'
     ss.xcconfig = {
       'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_SQLCIPHER',
-      'GCC_PREPROCESSOR_DEFINITIONS' => 'SQLITE_HAS_CODEC=1'
+      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1'
     }
 
     ss.dependency 'SQLCipher'
