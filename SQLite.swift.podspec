@@ -54,7 +54,7 @@ Pod::Spec.new do |s|
       'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_STANDALONE'
     }
 
-    ss.dependency 'sqlite3'
+    ss.dependency 'sqlite3', '>= 3.14.0'
   end
 
   s.subspec 'SQLCipher' do |ss|
@@ -65,6 +65,6 @@ Pod::Spec.new do |s|
       'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1'
     }
 
-    ss.dependency 'SQLCipher'
+    ss.dependency 'SQLCipher', '>= 3.4.0'
   end
 end
