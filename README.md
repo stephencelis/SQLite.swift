@@ -160,7 +160,9 @@ SQLite.swift with CocoaPods:
     ``` ruby
     use_frameworks!
 
-    pod 'SQLite.swift', '~> 0.11.1'
+    target 'YourAppTargetName' do
+        pod 'SQLite.swift', '~> 0.11.1'
+    end
     ```
 
  4. Run `pod install --repo-update`.
