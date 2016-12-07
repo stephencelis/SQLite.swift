@@ -172,6 +172,13 @@ To install SQLite.swift as an Xcode sub-project:
 
 You should now be able to `import SQLite` from any of your target’s source files and begin using SQLite.swift.
 
+Some additional steps are required to install the application on an actual device:
+
+ 5. In the **General** tab, click the **+** button under **Embedded Binaries**.
+
+ 6. Select the appropriate **SQLite.framework** for your platform.
+
+ 7. **Add**.
 
 ### Frameworkless Targets
 

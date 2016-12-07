@@ -185,6 +185,15 @@ To install SQLite.swift as an Xcode sub-project:
 
  4. **Add**.
 
+Some additional steps are required to install the application on an actual device:
+
+ 5. In the **General** tab, click the **+** button under **Embedded Binaries**.
+
+ 6. Select the appropriate **SQLite.framework** for your platform.
+
+ 7. **Add**.
+
+
 [Frameworkless Targets]: Documentation/Index.md#frameworkless-targets
 [Xcode]: https://developer.apple.com/xcode/downloads/
 [Submodule]: http://git-scm.com/book/en/Git-Tools-Submodules
