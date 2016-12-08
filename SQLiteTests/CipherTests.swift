@@ -30,6 +30,11 @@ class CipherTests: XCTestCase {
         XCTAssertEqual(1, try! db1.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
+    func test_key_blob_literal() {
+        let db = try! Connection()
+        try! db.key("x'2DD29CA851E7B56E4697B0E1F08507293D761A05CE4D1B628663F411A8086D99'")
+    }
+
     func test_rekey() {
         try! db1.rekey("goodbye")
         XCTAssertEqual(1, try! db1.scalar("SELECT count(*) FROM foo") as? Int64)
@@ -65,6 +70,17 @@ class CipherTests: XCTestCase {
             XCTFail()
         }
         XCTAssertEqual(SQLITE_NOTADB, rc)
+    }
+
+    func test_open_db_encrypted_with_sqlcipher() {
+        // $ sqlcipher SQLiteTests/fixtures/encrypted.sqlite
+        // sqlite> pragma key = 'sqlcipher-test';
+        // sqlite> CREATE TABLE foo (bar TEXT);
+        // sqlite> INSERT INTO foo (bar) VALUES ('world');
+        let encryptedFile = fixture("encrypted", withExtension: "sqlite")
+        let conn = try! Connection(encryptedFile)
+        try! conn.key("sqlcipher-test")
+        XCTAssertEqual(1, try! conn.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
     private func keyData(length: Int = 64) -> NSMutableData {
