@@ -16,10 +16,8 @@ class CipherTests: XCTestCase {
         try! db.run("INSERT INTO foo (bar) VALUES ('world')")
 
         // db2
-        let keyData = NSMutableData(length: 64)!
-        let _ = SecRandomCopyBytes(kSecRandomDefault, 64,
-                                   keyData.mutableBytes.assumingMemoryBound(to: UInt8.self))
-        try! db2.key(Blob(bytes: keyData.bytes, length: keyData.length))
+        let key = keyData()
+        try! db2.key(Blob(bytes: key.bytes, length: key.length))
 
         try! db2.run("CREATE TABLE foo (bar TEXT)")
         try! db2.run("INSERT INTO foo (bar) VALUES ('world')")
@@ -41,11 +39,8 @@ class CipherTests: XCTestCase {
     }
 
     func test_data_rekey() {
-        let keyData = NSMutableData(length: 64)!
-        let _  = SecRandomCopyBytes(kSecRandomDefault, 64,
-                           keyData.mutableBytes.assumingMemoryBound(to: UInt8.self))
-
-        try! db2.rekey(Blob(bytes: keyData.bytes, length: keyData.length))
+        let key = keyData()
+        try! db2.rekey(Blob(bytes: key.bytes, length: key.length))
         XCTAssertEqual(1, try! db2.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
@@ -69,6 +64,14 @@ class CipherTests: XCTestCase {
             XCTFail()
         }
         XCTAssertEqual(SQLITE_NOTADB, rc)
+    }
+
+    private func keyData(length: Int = 64) -> NSMutableData {
+        let keyData = NSMutableData(length: length)!
+        let result  = SecRandomCopyBytes(kSecRandomDefault, length,
+                                         keyData.mutableBytes.assumingMemoryBound(to: UInt8.self))
+        XCTAssertEqual(0, result)
+        return keyData
     }
 }
 #endif
