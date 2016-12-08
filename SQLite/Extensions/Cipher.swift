@@ -3,6 +3,7 @@ import SQLCipher
 
 
 /// Extension methods for [SQLCipher](https://www.zetetic.net/sqlcipher/).
+/// @see [sqlcipher api](https://www.zetetic.net/sqlcipher/sqlcipher-api/)
 extension Connection {
 
     /// Specify the key for an encrypted database.  This routine should be
