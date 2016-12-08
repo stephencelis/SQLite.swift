@@ -160,7 +160,9 @@ SQLite.swift with CocoaPods:
     ``` ruby
     use_frameworks!
 
-    pod 'SQLite.swift', '~> 0.11.1'
+    target 'YourAppTargetName' do
+        pod 'SQLite.swift', '~> 0.11.1'
+    end
     ```
 
  4. Run `pod install --repo-update`.
@@ -184,6 +186,15 @@ To install SQLite.swift as an Xcode sub-project:
  3. Select the appropriate **SQLite.framework** for your platform.
 
  4. **Add**.
+
+Some additional steps are required to install the application on an actual device:
+
+ 5. In the **General** tab, click the **+** button under **Embedded Binaries**.
+
+ 6. Select the appropriate **SQLite.framework** for your platform.
+
+ 7. **Add**.
+
 
 [Frameworkless Targets]: Documentation/Index.md#frameworkless-targets
 [Xcode]: https://developer.apple.com/xcode/downloads/
