@@ -7,12 +7,15 @@ class TestRunningValidator < Pod::Validator
   TEST_TARGET = 'Tests'
 
   attr_accessor :test_files
+  attr_accessor :test_resources
   attr_accessor :ios_simulator
   attr_accessor :tvos_simulator
   attr_accessor :watchos_simulator
 
   def initialize(spec_or_path, source_urls)
     super(spec_or_path, source_urls)
+    self.test_files = []
+    self.test_resources = []
     self.ios_simulator = :oldest
     self.tvos_simulator = :oldest
     self.watchos_simulator = :oldest
@@ -30,6 +33,7 @@ class TestRunningValidator < Pod::Validator
     project = Xcodeproj::Project.open(validation_dir + 'App.xcodeproj')
     group = project.new_group(TEST_TARGET)
     test_target = project.targets.last
+    test_target.add_resources(test_resources.map { |resource| group.new_file(resource) })
     test_target.add_file_references(test_files.map { |file| group.new_file(file) })
     add_swift_version(test_target)
     project.save

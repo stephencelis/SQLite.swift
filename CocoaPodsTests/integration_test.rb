@@ -14,6 +14,7 @@ class IntegrationTest < Minitest::Test
   def validator
     @validator ||= TestRunningValidator.new(podspec, []).tap do |validator|
         validator.test_files = Dir["#{project_test_dir}/*.swift"]
+        validator.test_resources = Dir["#{project_test_dir}/fixtures"]
         validator.config.verbose = true
         validator.no_clean = true
         validator.use_frameworks = true
