@@ -55,10 +55,7 @@ extension Connection {
     // the key provided is incorrect. To test that the database can be successfully opened with the
     // provided key, it is necessary to perform some operation on the database (i.e. read from it).
     private func cipher_key_check() throws {
-        try execute(
-            "CREATE TABLE \"__SQLCipher.swift__\" (\"cipher key check\");\n" +
-            "DROP TABLE \"__SQLCipher.swift__\";"
-        )
+        try scalar("SELECT count(*) FROM sqlite_master;")
     }
 }
 #endif

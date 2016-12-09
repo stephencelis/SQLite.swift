@@ -59,11 +59,12 @@ class CipherTests: XCTestCase {
 
         try! connA.key("hello")
 
-        let connB = try! Connection(path)
+        let connB = try! Connection(path, readonly: true)
 
         var rc: Int32?
         do {
             try connB.key("world")
+            XCTFail("expected exception")
         } catch Result.error(_, let code, _) {
             rc = code
         } catch {
@@ -78,6 +79,10 @@ class CipherTests: XCTestCase {
         // sqlite> CREATE TABLE foo (bar TEXT);
         // sqlite> INSERT INTO foo (bar) VALUES ('world');
         let encryptedFile = fixture("encrypted", withExtension: "sqlite")
+
+        try! FileManager.default.setAttributes([FileAttributeKey.immutable : 1], ofItemAtPath: encryptedFile)
+        XCTAssertFalse(FileManager.default.isWritableFile(atPath: encryptedFile))
+
         let conn = try! Connection(encryptedFile)
         try! conn.key("sqlcipher-test")
         XCTAssertEqual(1, try! conn.scalar("SELECT count(*) FROM foo") as? Int64)
