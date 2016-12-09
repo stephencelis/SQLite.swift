@@ -58,19 +58,18 @@ class CipherTests: XCTestCase {
         defer { try! FileManager.default.removeItem(atPath: path) }
 
         try! connA.key("hello")
+        try! connA.run("CREATE TABLE foo (bar TEXT)")
 
         let connB = try! Connection(path, readonly: true)
 
-        var rc: Int32?
         do {
             try connB.key("world")
             XCTFail("expected exception")
         } catch Result.error(_, let code, _) {
-            rc = code
+            XCTAssertEqual(SQLITE_NOTADB, code)
         } catch {
-            XCTFail()
+            XCTFail("unexpected error: \(error)")
         }
-        XCTAssertEqual(SQLITE_NOTADB, rc)
     }
 
     func test_open_db_encrypted_with_sqlcipher() {
