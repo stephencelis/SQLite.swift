@@ -709,13 +709,14 @@ extension Result : CustomStringConvertible {
 
     public var description: String {
         switch self {
-        case let .error(message, _, statement):
-            guard let statement = statement else { return message }
-
-            return "\(message) (\(statement))"
+        case let .error(message, errorCode, statement):
+            if let statement = statement {
+                return "\(message) (\(statement)) (code: \(errorCode))"
+            } else {
+                return "\(message) (code: \(errorCode))"
+            }
         }
     }
-
 }
 
 #if !SQLITE_SWIFT_SQLCIPHER
