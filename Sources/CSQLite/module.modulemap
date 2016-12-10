@@ -1,4 +1,0 @@
-module CSQLite {
-    umbrella header "include/sqlite3.h"
-    export *
-}

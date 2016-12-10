@@ -2,6 +2,7 @@
 ========================================
 
 * Fixed SQLCipher integration with read-only databases ([#559][])
+* Preliminary Swift Package Manager support ([#548][], [#560][])
 * Fixed null pointer when fetching an empty BLOB ([#561][])
 
 0.11.1 (06-12-2016), [diff][diff-0.11.1]
@@ -24,6 +25,8 @@
 
 [#532]: https://github.com/stephencelis/SQLite.swift/issues/532
 [#546]: https://github.com/stephencelis/SQLite.swift/issues/546
+[#548]: https://github.com/stephencelis/SQLite.swift/pull/548
 [#553]: https://github.com/stephencelis/SQLite.swift/pull/553
 [#559]: https://github.com/stephencelis/SQLite.swift/pull/559
+[#560]: https://github.com/stephencelis/SQLite.swift/pull/560
 [#561]: https://github.com/stephencelis/SQLite.swift/issues/561

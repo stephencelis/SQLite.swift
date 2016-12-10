@@ -22,9 +22,7 @@
 // THE SOFTWARE.
 //
 
-#if ALL_IN_ONE_BUILD
-// Nothing required
-#else
+#if SWIFT_PACKAGE
 import SQLiteObjc
 #endif
 

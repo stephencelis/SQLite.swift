@@ -12,6 +12,7 @@ matrix:
     - env: VALIDATOR_SUBSPEC="standard"
     - env: VALIDATOR_SUBSPEC="standalone"
     - env: VALIDATOR_SUBSPEC="SQLCipher"
+    - env: PACKAGE_MANAGER_COMMAND="test -Xlinker -lsqlite3"
 before_install:
   - gem update bundler
   - gem install xcpretty --no-document

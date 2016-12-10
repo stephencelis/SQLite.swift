@@ -8,4 +8,6 @@ if [ -n "$BUILD_SCHEME" ]; then
     fi
 elif [ -n "$VALIDATOR_SUBSPEC" ]; then
     cd CocoaPodsTests && make test
+elif [ -n "${PACKAGE_MANAGER_COMMAND}" ]; then
+    swift ${PACKAGE_MANAGER_COMMAND}
 fi

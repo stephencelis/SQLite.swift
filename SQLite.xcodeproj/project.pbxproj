@@ -455,6 +455,7 @@
 		EE247AE11C3F04ED00AE3E12 /* SQLiteTests */ = {
 			isa = PBXGroup;
 			children = (
+				19A17E2695737FAB5D6086E3 /* fixtures */,
 				EE247B1A1C3F137700AE3E12 /* AggregateFunctionsTests.swift */,
 				EE247B1B1C3F137700AE3E12 /* BlobTests.swift */,
 				EE247B1D1C3F137700AE3E12 /* ConnectionTests.swift */,
@@ -474,7 +475,6 @@
 				19A1721B8984686B9963B45D /* FTS5Tests.swift */,
 				19A1794CC4D7827E997E32A7 /* FoundationTests.swift */,
 				19A17399EA9E61235D5D77BF /* CipherTests.swift */,
-				19A17E2695737FAB5D6086E3 /* fixtures */,
 				19A17B93B48B5560E6E51791 /* Fixtures.swift */,
 			);
 			name = SQLiteTests;
@@ -1104,7 +1104,7 @@
 		03A65E6D1C6BB0F60062603F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = SQLite/Info.plist;
+				INFOPLIST_FILE = Tests/SQLite/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1117,7 +1117,7 @@
 		03A65E6E1C6BB0F60062603F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = SQLite/Info.plist;
+				INFOPLIST_FILE = Tests/SQLite/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1222,7 +1222,6 @@
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "";
 				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = ALL_IN_ONE_BUILD;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				TARGETED_DEVICE_FAMILY = "1,2,3";
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1268,7 +1267,6 @@
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "";
 				SDKROOT = iphoneos;
-				SWIFT_ACTIVE_COMPILATION_CONDITIONS = ALL_IN_ONE_BUILD;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				TARGETED_DEVICE_FAMILY = "1,2,3";
 				VALIDATE_PRODUCT = YES;
@@ -1331,7 +1329,7 @@
 		EE247AEB1C3F04ED00AE3E12 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = SQLiteTests/Info.plist;
+				INFOPLIST_FILE = Tests/SQLiteTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1342,7 +1340,7 @@
 		EE247AEC1C3F04ED00AE3E12 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				INFOPLIST_FILE = SQLiteTests/Info.plist;
+				INFOPLIST_FILE = Tests/SQLiteTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -1409,7 +1407,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = SQLiteTests/Info.plist;
+				INFOPLIST_FILE = Tests/SQLiteTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
@@ -1424,7 +1422,7 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
-				INFOPLIST_FILE = SQLiteTests/Info.plist;
+				INFOPLIST_FILE = Tests/SQLiteTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 10.11;
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
