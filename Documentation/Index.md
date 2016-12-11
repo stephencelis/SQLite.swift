@@ -170,19 +170,19 @@ downloading, compiling, and linking dependencies.
 
 It is the recommended approach for using SQLite.swift in OSX CLI applications.
 
-1. Add the following to your `Package.swift` file:
+ 1. Add the following to your `Package.swift` file:
 
-```swift
-dependencies: [
+  ``` swift
+  dependencies: [
     .Package(url: "https://github.com/stephencelis/SQLite.swift.git", majorVersion: 0, minor: 11)
-]
-```
+  ]
+  ```
 
-2. Build your project:
+ 2. Build your project:
 
-```shell
-$ swift build -Xlinker -lsqlite3
-```
+  ``` sh
+  $ swift build -Xlinker -lsqlite3
+  ```
 
 [Swift Package Manager]: https://swift.org/package-manager
 
