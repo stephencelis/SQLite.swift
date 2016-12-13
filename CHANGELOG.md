@@ -2,6 +2,7 @@
 ========================================
 
 * Fixed SQLCipher integration with read-only databases ([#559][])
+* Fixed null pointer when fetching an empty BLOB ([#561][])
 
 0.11.1 (06-12-2016), [diff][diff-0.11.1]
 ========================================
@@ -25,3 +26,4 @@
 [#546]: https://github.com/stephencelis/SQLite.swift/issues/546
 [#553]: https://github.com/stephencelis/SQLite.swift/pull/553
 [#559]: https://github.com/stephencelis/SQLite.swift/pull/559
+[#561]: https://github.com/stephencelis/SQLite.swift/issues/561
