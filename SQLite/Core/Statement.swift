@@ -244,7 +244,9 @@ public struct Cursor {
             let length = Int(sqlite3_column_bytes(handle, Int32(idx)))
             return Blob(bytes: pointer, length: length)
         } else {
-            fatalError("sqlite3_column_blob returned NULL")
+            // The return value from sqlite3_column_blob() for a zero-length BLOB is a NULL pointer.
+            // https://www.sqlite.org/c3ref/column_blob.html
+            return Blob(bytes: [])
         }
     }
 
