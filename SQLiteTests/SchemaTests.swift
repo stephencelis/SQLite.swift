@@ -53,6 +53,15 @@ class SchemaTests : XCTestCase {
             "CREATE TEMPORARY TABLE IF NOT EXISTS \"table\" (\"int64\" INTEGER NOT NULL)",
             table.create(temporary: true, ifNotExists: true) { $0.column(int64) }
         )
+
+        XCTAssertEqual(
+            "CREATE TABLE \"table\" (\"int64\" INTEGER NOT NULL) WITHOUT ROWID",
+            table.create(withoutRowid: true) { $0.column(int64) }
+        )
+        XCTAssertEqual(
+            "CREATE TEMPORARY TABLE IF NOT EXISTS \"table\" (\"int64\" INTEGER NOT NULL) WITHOUT ROWID",
+            table.create(temporary: true, ifNotExists: true, withoutRowid: true) { $0.column(int64) }
+        )
     }
 
     func test_create_withQuery_compilesCreateTableExpression() {
