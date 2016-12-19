@@ -203,7 +203,12 @@ extension Statement : Sequence {
 extension Statement : IteratorProtocol {
 
     public func next() -> [Binding?]? {
-        return try! step() ? Array(row) : nil
+        do {
+            return try step() ? Array(row) : nil
+        } catch {
+            print("Error in Statement.next()", error)
+            return nil
+        }
     }
 
 }
