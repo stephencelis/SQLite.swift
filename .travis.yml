@@ -12,6 +12,8 @@ matrix:
     - env: VALIDATOR_SUBSPEC="standard"
     - env: VALIDATOR_SUBSPEC="standalone"
     - env: VALIDATOR_SUBSPEC="SQLCipher"
+    - env: CARTHAGE_PLATFORM="iOS"
+    - env: CARTHAGE_PLATFORM="Mac"
     - env: PACKAGE_MANAGER_COMMAND="test -Xlinker -lsqlite3"
 before_install:
   - gem update bundler
