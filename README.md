@@ -145,7 +145,7 @@ install SQLite.swift with Carthage:
 [CocoaPods][] is a dependency manager for Cocoa projects. To install
 SQLite.swift with CocoaPods:
 
- 1. Verify that your copy of Xcode is installed and active in the default location (`/Application/Xcode.app`).
+ 1. Verify that your copy of Xcode is installed and active in the default location (`/Applications/Xcode.app`).
 
     ```sh
     sudo xcode-select --switch /Applications/Xcode.app
