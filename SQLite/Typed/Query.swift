@@ -578,6 +578,29 @@ extension QueryType {
         return insert(or: onConflict, values)
     }
 
+    public func insert(dicinfo:NSDictionary)->Insert{
+        var insert_setter_dic = [Setter]()
+        
+        for (key,value) in dicinfo as! [String:NSObject] {
+            switch value{
+            case is NSString:
+                insert_setter_dic.append(Expression<String>(key) <- (value as! String))
+            case is Int:
+                let _t =  (value as! NSNumber)
+                if(_t.stringValue.containsString(".")){
+                    insert_setter_dic.append(Expression<Double>(key) <- _t.doubleValue )
+                }else{
+                    insert_setter_dic.append(Expression<Int64>(key) <- _t.longLongValue)
+                }
+            case is NSNull:
+                insert_setter_dic.append(Expression<Bool?>(key) <- nil)
+            default:
+                insert_setter_dic.append(Expression<Bool?>(key) <- nil)
+            }
+        }
+        return insert(insert_setter_dic)
+    }
+    
     public func insert(or onConflict: OnConflict, _ values: [Setter]) -> Insert {
         return insert(onConflict, values)
     }
@@ -1019,7 +1042,37 @@ public struct Row {
         self.columnNames = columnNames
         self.values = values
     }
-
+    
+    /// Returns a row’s value for the given column.
+    ///
+    /// - Parameter column: An expression representing a column selected in a Query.
+    ///
+    /// - Returns: The value for the given column.
+    public func toDictionary() -> [String:NSObject] {
+        var _result:[String:NSObject] = [:]
+        columnNames.map { (s,i) in
+            let key = s.substringWithRange(Range(start: s.startIndex.advancedBy(1), end: s.endIndex.advancedBy(-1)))
+            let v = values[i]
+            switch v{
+            case is NSString:
+                _result[key] = v as! NSString
+                break
+            case is Int64:
+                _result[key] = Int(v as! Int64)
+                break
+            case is Bool:
+                _result[key] = v as! Bool
+                break
+            case is Double:
+                _result[key] = v as! Double
+            case nil:
+                _result[key] = NSNULL()
+            default:
+                _result[key] = false
+            }
+        }
+        return _result
+    }
     /// Returns a row’s value for the given column.
     ///
     /// - Parameter column: An expression representing a column selected in a Query.
