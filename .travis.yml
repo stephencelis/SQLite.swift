@@ -18,5 +18,7 @@ matrix:
 before_install:
   - gem update bundler
   - gem install xcpretty --no-document
+  - brew update
+  - brew outdated carthage || brew upgrade carthage
 script:
   - ./run-tests.sh
