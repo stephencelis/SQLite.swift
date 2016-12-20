@@ -206,7 +206,7 @@ extension Statement : IteratorProtocol {
         do {
             return try step() ? Array(row) : nil
         } catch {
-            print("Error in Statement.next()", error)
+            assert(false, "Error in Statement.next(): \(error)")
             return nil
         }
     }
