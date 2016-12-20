@@ -34,10 +34,10 @@ class IntegrationTest < Minitest::Test
   end
 
   def podspec
-    File.expand_path(File.dirname(__FILE__) + '/../SQLite.swift.podspec')
+    File.expand_path(File.dirname(__FILE__) + '/../../SQLite.swift.podspec')
   end
 
   def project_test_dir
-    File.expand_path(File.dirname(__FILE__) + '/../Tests/SQLiteTests')
+    File.expand_path(File.dirname(__FILE__) + '/../SQLiteTests')
   end
 end
