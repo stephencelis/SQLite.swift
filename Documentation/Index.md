@@ -3,8 +3,8 @@
   - [Installation](#installation)
     - [Carthage](#carthage)
     - [CocoaPods](#cocoapods)
+    - [Swift Package Manager](#swift-package-manager)
     - [Manual](#manual)
-    - [Frameworkless Targets](#frameworkless-targets)
   - [Getting Started](#getting-started)
     - [Connecting to a Database](#connecting-to-a-database)
       - [Read-Write Databases](#read-write-databases)
@@ -162,6 +162,30 @@ try db.rekey("another secret")
 [sqlite3pod]: https://github.com/clemensg/sqlite3pod
 [SQLCipher]: https://www.zetetic.net/sqlcipher/
 
+### Swift Package Manager
+
+The [Swift Package Manager][] is a tool for managing the distribution of Swift code.
+It’s integrated with the Swift build system to automate the process of
+downloading, compiling, and linking dependencies.
+
+It is the recommended approach for using SQLite.swift in OSX CLI applications.
+
+ 1. Add the following to your `Package.swift` file:
+
+  ``` swift
+  dependencies: [
+    .Package(url: "https://github.com/stephencelis/SQLite.swift.git", majorVersion: 0, minor: 11)
+  ]
+  ```
+
+ 2. Build your project:
+
+  ``` sh
+  $ swift build -Xlinker -lsqlite3
+  ```
+
+[Swift Package Manager]: https://swift.org/package-manager
+
 ### Manual
 
 To install SQLite.swift as an Xcode sub-project:
@@ -185,24 +209,6 @@ Some additional steps are required to install the application on an actual devic
  6. Select the appropriate **SQLite.framework** for your platform.
 
  7. **Add**.
-
-### Frameworkless Targets
-
-It’s possible to use SQLite.swift in a target that doesn’t support frameworks, including iOS 7 apps and OS X command line tools, though it takes a little extra work.
-
- 1. In your target’s **Build Phases**, add **libsqlite3.dylib** to the **Link Binary With Libraries** build phase.
-
- 2. Copy the SQLite.swift source files (from its **SQLite** directory) into your Xcode project.
-
- 3. Add the following lines to your project’s [bridging header](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html#//apple_ref/doc/uid/TP40014216-CH10-XID_79) (a file usually in the form of `$(TARGET_NAME)-Bridging-Header.h`).
-
-    ``` swift
-    #import <sqlite3.h>
-    #import "SQLite-Bridging.h"
-    ```
-
-> _Note:_ Adding SQLite.swift source files directly to your application will both remove the `SQLite` module namespace (no need—or ability—to `import SQLite`) and expose internal functions and variables. You will need to rename anything that conflicts with code of your own. Please [report any bugs](https://github.com/stephencelis/SQLite.swift/issues/new) (_e.g._, segfaults) you encounter.
-
 
 ## Getting Started
 

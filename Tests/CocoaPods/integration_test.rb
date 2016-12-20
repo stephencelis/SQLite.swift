@@ -13,7 +13,7 @@ class IntegrationTest < Minitest::Test
 
   def validator
     @validator ||= TestRunningValidator.new(podspec, []).tap do |validator|
-        validator.test_files = Dir["#{project_test_dir}/*.swift"]
+        validator.test_files = Dir["#{project_test_dir}/**/*.swift"]
         validator.test_resources = Dir["#{project_test_dir}/fixtures"]
         validator.config.verbose = true
         validator.no_clean = true
@@ -34,7 +34,7 @@ class IntegrationTest < Minitest::Test
   end
 
   def podspec
-    File.expand_path(File.dirname(__FILE__) + '/../SQLite.swift.podspec')
+    File.expand_path(File.dirname(__FILE__) + '/../../SQLite.swift.podspec')
   end
 
   def project_test_dir

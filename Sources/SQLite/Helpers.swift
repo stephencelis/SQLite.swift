@@ -26,7 +26,7 @@
 import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif COCOAPODS
+#else
 import CSQLite
 #endif
 
