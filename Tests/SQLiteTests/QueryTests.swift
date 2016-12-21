@@ -8,6 +8,7 @@ class QueryTests : XCTestCase {
     let email = Expression<String>("email")
     let age = Expression<Int?>("age")
     let admin = Expression<Bool>("admin")
+    let optionalAdmin = Expression<Bool?>("admin")
 
     let posts = Table("posts")
     let userId = Expression<Int64>("user_id")
@@ -86,6 +87,34 @@ class QueryTests : XCTestCase {
 
     func test_filter_compilesWhereClause() {
         AssertSQL("SELECT * FROM \"users\" WHERE (\"admin\" = 1)", users.filter(admin == true))
+    }
+
+    func test_filter_compilesWhereClause_false() {
+        AssertSQL("SELECT * FROM \"users\" WHERE (\"admin\" = 0)", users.filter(admin == false))
+    }
+
+    func test_filter_compilesWhereClause_optional() {
+        AssertSQL("SELECT * FROM \"users\" WHERE (\"admin\" = 1)", users.filter(optionalAdmin == true))
+    }
+
+    func test_filter_compilesWhereClause_optional_false() {
+        AssertSQL("SELECT * FROM \"users\" WHERE (\"admin\" = 0)", users.filter(optionalAdmin == false))
+    }
+
+    func test_where_compilesWhereClause() {
+        AssertSQL("SELECT * FROM \"users\" WHERE (\"admin\" = 1)", users.where(admin == true))
+    }
+
+    func test_where_compilesWhereClause_false() {
+        AssertSQL("SELECT * FROM \"users\" WHERE (\"admin\" = 0)", users.where(admin == false))
+    }
+
+    func test_where_compilesWhereClause_optional() {
+        AssertSQL("SELECT * FROM \"users\" WHERE (\"admin\" = 1)", users.where(optionalAdmin == true))
+    }
+
+    func test_where_compilesWhereClause_optional_false() {
+        AssertSQL("SELECT * FROM \"users\" WHERE (\"admin\" = 0)", users.where(optionalAdmin == false))
     }
 
     func test_filter_whenChained_compilesAggregateWhereClause() {
