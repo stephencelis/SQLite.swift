@@ -755,8 +755,12 @@ users.filter(verified || balance >= 10_000)
 
 We can build our own boolean expressions by using one of the many [filter operators and functions](#filter-operators-and-functions).
 
-> _Note:_ SQLite.swift defines `filter` instead of `where` because `where` is [a reserved keyword](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/Swift_Programming_Language/LexicalStructure.html#//apple_ref/doc/uid/TP40014097-CH30-ID413).
+Instead of `filter` we can also use the `where` function which is an alias:
 
+``` swift
+users.where(id == 1)
+// SELECT * FROM "users" WHERE ("id" = 1)
+```
 
 ##### Filter Operators and Functions
 

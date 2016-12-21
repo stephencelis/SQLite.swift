@@ -4,6 +4,7 @@
 * Fixed SQLCipher integration with read-only databases ([#559][])
 * Preliminary Swift Package Manager support ([#548][], [#560][])
 * Fixed null pointer when fetching an empty BLOB ([#561][])
+* Allow `where` as alias for `filter` ([#571][])
 
 0.11.1 (06-12-2016), [diff][diff-0.11.1]
 ========================================
@@ -30,3 +31,4 @@
 [#559]: https://github.com/stephencelis/SQLite.swift/pull/559
 [#560]: https://github.com/stephencelis/SQLite.swift/pull/560
 [#561]: https://github.com/stephencelis/SQLite.swift/issues/561
+[#571]: https://github.com/stephencelis/SQLite.swift/issues/571
