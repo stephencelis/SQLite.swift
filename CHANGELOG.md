@@ -1,4 +1,4 @@
-0.11.2 (unreleased), [diff][diff-0.11.2]
+0.11.2 (25-12-2016), [diff][diff-0.11.2]
 ========================================
 
 * Fixed SQLCipher integration with read-only databases ([#559][])
