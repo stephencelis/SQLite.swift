@@ -673,6 +673,35 @@ extension Collection where Iterator.Element : Value, IndexDistance == Int {
 
 }
 
+extension String {
+    
+    /// Builds a copy of the expression appended with a `LIKE` query against the
+    /// given pattern.
+    ///
+    ///     let email = "some@thing.com"
+    ///     let pattern = Expression<String>("pattern")
+    ///     email.like(pattern)
+    ///     // 'some@thing.com' LIKE "pattern"
+    ///
+    /// - Parameters:
+    ///
+    ///   - pattern: A pattern to match.
+    ///
+    ///   - escape: An (optional) character designated for escaping
+    ///     pattern-matching characters (*i.e.*, the `%` and `_` characters).
+    ///
+    /// - Returns: A copy of the expression appended with a `LIKE` query against
+    ///   the given pattern.
+    public func like(_ pattern: Expression<String>, escape character: Character? = nil) -> Expression<Bool> {
+        guard let character = character else {
+            return "LIKE".infix(self, pattern)
+        }
+        let like: Expression<Bool> = "LIKE".infix(self, pattern, wrap: false)
+        return Expression("(\(like.template) ESCAPE ?)", like.bindings + [String(character)])
+    }
+
+}
+
 /// Builds a copy of the given expressions wrapped with the `ifnull` function.
 ///
 ///     let name = Expression<String?>("name")
