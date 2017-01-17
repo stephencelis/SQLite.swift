@@ -1,4 +1,5 @@
 import XCTest
+import Foundation
 import SQLite
 
 class FoundationTests : XCTestCase {

@@ -1,4 +1,6 @@
 import XCTest
+import Foundation
+import Dispatch
 @testable import SQLite
 
 #if SQLITE_SWIFT_STANDALONE
@@ -6,11 +8,14 @@ import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
 #elseif SWIFT_PACKAGE || COCOAPODS
-import CSQLite
+    #if os(Linux)
+    import CSQLiteLinux
+    #else
+    import CSQLite
+    #endif
 #endif
 
 class ConnectionTests : SQLiteTestCase {
-
     override func setUp() {
         super.setUp()
 
@@ -336,7 +341,7 @@ class ConnectionTests : SQLiteTestCase {
         let stmt = try! db.prepare("SELECT *, sleep(?) FROM users", 0.1)
         try! stmt.run()
 
-        let deadline = DispatchTime.now() + Double(Int64(10 * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC)
+	    let deadline = DispatchTime.now() + 0.01
         _ = DispatchQueue.global(priority: .background).asyncAfter(deadline: deadline, execute: db.interrupt)
         AssertThrows(try stmt.run())
     }
@@ -344,41 +349,3 @@ class ConnectionTests : SQLiteTestCase {
 }
 
 
-class ResultTests : XCTestCase {
-    let connection = try! Connection(.inMemory)
-
-    func test_init_with_ok_code_returns_nil() {
-        XCTAssertNil(Result(errorCode: SQLITE_OK, connection: connection, statement: nil) as Result?)
-    }
-
-    func test_init_with_row_code_returns_nil() {
-        XCTAssertNil(Result(errorCode: SQLITE_ROW, connection: connection, statement: nil) as Result?)
-    }
-
-    func test_init_with_done_code_returns_nil() {
-        XCTAssertNil(Result(errorCode: SQLITE_DONE, connection: connection, statement: nil) as Result?)
-    }
-
-    func test_init_with_other_code_returns_error() {
-        if case .some(.error(let message, let code, let statement)) =
-            Result(errorCode: SQLITE_MISUSE, connection: connection, statement: nil)  {
-            XCTAssertEqual("not an error", message)
-            XCTAssertEqual(SQLITE_MISUSE, code)
-            XCTAssertNil(statement)
-            XCTAssert(self.connection === connection)
-        } else {
-            XCTFail()
-        }
-    }
-
-    func test_description_contains_error_code() {
-        XCTAssertEqual("not an error (code: 21)",
-            Result(errorCode: SQLITE_MISUSE, connection: connection, statement: nil)?.description)
-    }
-
-    func test_description_contains_statement_and_error_code() {
-        let statement = try! Statement(connection, "SELECT 1")
-        XCTAssertEqual("not an error (SELECT 1) (code: 21)",
-            Result(errorCode: SQLITE_MISUSE, connection: connection, statement: statement)?.description)
-    }
-}

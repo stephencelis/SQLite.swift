@@ -1,4 +1,5 @@
 import XCTest
+import Foundation
 import SQLite
 
 class SQLiteTestCase : XCTestCase {
@@ -69,7 +70,7 @@ class SQLiteTestCase : XCTestCase {
 
     func async(expect description: String = "async", timeout: Double = 5, block: (@escaping () -> Void) -> Void) {
         let expectation = self.expectation(description: description)
-        block(expectation.fulfill)
+        block({ expectation.fulfill() })
         waitForExpectations(timeout: timeout, handler: nil)
     }
 
