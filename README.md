@@ -123,7 +123,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```
-    github "stephencelis/SQLite.swift" ~> 0.11.1
+    github "stephencelis/SQLite.swift" ~> 0.11.2
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -159,7 +159,7 @@ SQLite.swift with CocoaPods:
     use_frameworks!
 
     target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.11.1'
+        pod 'SQLite.swift', '~> 0.11.2'
     end
     ```
 
@@ -174,11 +174,17 @@ The [Swift Package Manager][] is a tool for managing the distribution of Swift c
 
 1. Add the following to your `Package.swift` file:
 
-```swift
-dependencies: [
-    .Package(url: "https://github.com/stephencelis/SQLite.swift.git", majorVersion: 0, minor: 11)
-]
-```
+  ```swift
+  dependencies: [
+      .Package(url: "https://github.com/stephencelis/SQLite.swift.git", majorVersion: 0, minor: 11)
+  ]
+  ```
+
+2. Build your project:
+
+  ``` sh
+  $ swift build -Xlinker -lsqlite3
+  ```
 
 [Swift Package Manager]: https://swift.org/package-manager
 

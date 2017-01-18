@@ -78,7 +78,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```
-    github "stephencelis/SQLite.swift" ~> 0.11.1
+    github "stephencelis/SQLite.swift" ~> 0.11.2
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -113,7 +113,7 @@ install SQLite.swift with Carthage:
     use_frameworks!
 
     target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.11.1'
+        pod 'SQLite.swift', '~> 0.11.2'
     end
     ```
 
@@ -125,14 +125,18 @@ install SQLite.swift with Carthage:
  If you want to use a more recent version of SQLite than what is provided with the OS you can require the `standalone` subspec:
 
 ``` ruby
-    pod 'SQLite.swift/standalone', '~> 0.11.1'
+target 'YourAppTargetName' do
+  pod 'SQLite.swift/standalone', '~> 0.11.2'
+end
 ```
 
 By default this will use the most recent version of SQLite without any extras. If you want you can further customize this by adding another dependency to sqlite3 or one of its subspecs:
 
 ``` ruby
-    pod 'SQLite.swift/standalone', '~> 0.11.1'
-    pod 'sqlite3/fts5', '= 3.15.0'  # SQLite 3.15.0 with FTS5 enabled
+target 'YourAppTargetName' do
+  pod 'SQLite.swift/standalone', '~> 0.11.2'
+  pod 'sqlite3/fts5', '= 3.15.0'  # SQLite 3.15.0 with FTS5 enabled
+end
 ```
 
 See the [sqlite3 podspec][sqlite3pod] for more details.
@@ -143,7 +147,9 @@ If you want to use [SQLCipher][] with SQLite.swift you can require the `SQLCiphe
 subspec in your Podfile:
 
 ``` ruby
-    pod 'SQLite.swift/SQLCipher', '~> 0.11.1'
+target 'YourAppTargetName' do
+  pod 'SQLite.swift/SQLCipher', '~> 0.11.2'
+end
 ```
 
 This will automatically add a dependency to the SQLCipher pod as well as extend
@@ -755,8 +761,12 @@ users.filter(verified || balance >= 10_000)
 
 We can build our own boolean expressions by using one of the many [filter operators and functions](#filter-operators-and-functions).
 
-> _Note:_ SQLite.swift defines `filter` instead of `where` because `where` is [a reserved keyword](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/Swift_Programming_Language/LexicalStructure.html#//apple_ref/doc/uid/TP40014097-CH30-ID413).
+Instead of `filter` we can also use the `where` function which is an alias:
 
+``` swift
+users.where(id == 1)
+// SELECT * FROM "users" WHERE ("id" = 1)
+```
 
 ##### Filter Operators and Functions
 

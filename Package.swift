@@ -11,7 +11,7 @@ let package = Package(
         Target(name: "SQLiteObjc")
     ],
     dependencies: [
-        .Package(url: "https://github.com/jberkel/CSQLite.git", majorVersion: 0)
+        .Package(url: "https://github.com/stephencelis/CSQLite.git", majorVersion: 0)
     ],
     exclude: ["Tests/CocoaPods", "Tests/Carthage"]
 )
