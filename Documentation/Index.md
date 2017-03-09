@@ -1471,7 +1471,7 @@ try db.run(emails.insert(
     body <- "Hey, I was just wondering...did you get my last email?"
 ))
 
-let wonderfulEmails = emails.match("wonder*")
+let wonderfulEmails: QueryType = emails.match("wonder*")
 // SELECT * FROM "emails" WHERE "emails" MATCH 'wonder*'
 
 let replies = emails.filter(subject.match("Re:*"))

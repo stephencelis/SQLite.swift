@@ -174,11 +174,17 @@ The [Swift Package Manager][] is a tool for managing the distribution of Swift c
 
 1. Add the following to your `Package.swift` file:
 
-```swift
-dependencies: [
-    .Package(url: "https://github.com/stephencelis/SQLite.swift.git", majorVersion: 0, minor: 11)
-]
-```
+  ```swift
+  dependencies: [
+      .Package(url: "https://github.com/stephencelis/SQLite.swift.git", majorVersion: 0, minor: 11)
+  ]
+  ```
+
+2. Build your project:
+
+  ``` sh
+  $ swift build -Xlinker -lsqlite3
+  ```
 
 [Swift Package Manager]: https://swift.org/package-manager
 
