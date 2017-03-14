@@ -57,4 +57,12 @@ repl:
 sloc:
 	@zsh -c "grep -vE '^ *//|^$$' SQLite/*/*.{swift,h,m} | wc -l"
 
+tests.json:
+	find Tests -name '*.swift' -a ! -name '*FTS*' -a ! -name '*Cipher*' \
+		-exec sourcekitten structure --file {} \; \
+		| jq -f BuildSupport/find-tests.jq | jq add -s --sort-keys > $@
+
+Tests/LinuxMain.swift: tests.json
+	./BuildSupport/generate-linux-tests.py $< > $@
+
 .PHONY: test coverage clean repl sloc

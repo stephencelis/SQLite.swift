@@ -1,26 +1,53 @@
-language: objective-c
-rvm: 2.2
-osx_image: xcode8.2
 env:
   global:
     - IOS_SIMULATOR="iPhone 6s"
 matrix:
   include:
-    - env: BUILD_SCHEME="SQLite iOS"
-    - env: BUILD_SCHEME="SQLite Mac"
-    - env: VALIDATOR_SUBSPEC="none"
-    - env: VALIDATOR_SUBSPEC="standard"
-    - env: VALIDATOR_SUBSPEC="standalone"
-    - env: VALIDATOR_SUBSPEC="SQLCipher"
-    - env: CARTHAGE_PLATFORM="iOS"
-    - env: CARTHAGE_PLATFORM="Mac"
-    - env: CARTHAGE_PLATFORM="watchOS"
-    - env: CARTHAGE_PLATFORM="tvOS"
-    - env: PACKAGE_MANAGER_COMMAND="test -Xlinker -lsqlite3"
+    - os: osx
+      osx_image: xcode8.2
+      env: BUILD_SCHEME="SQLite iOS"
+    - os: osx
+      osx_image: xcode8.2
+      env: BUILD_SCHEME="SQLite Mac"
+    - os: osx
+      osx_image: xcode8.2
+      env: VALIDATOR_SUBSPEC="none"
+    - os: osx
+      osx_image: xcode8.2
+      env: VALIDATOR_SUBSPEC="standard"
+    - os: osx
+      osx_image: xcode8.2
+      env: VALIDATOR_SUBSPEC="standalone"
+    - os: osx
+      osx_image: xcode8.2
+      env: VALIDATOR_SUBSPEC="SQLCipher"
+    - os: osx
+      osx_image: xcode8.2
+      env: CARTHAGE_PLATFORM="iOS"
+    - os: osx
+      osx_image: xcode8.2
+      env: CARTHAGE_PLATFORM="Mac"
+    - os: osx
+      osx_image: xcode8.2
+      env: CARTHAGE_PLATFORM="watchOS"
+    - os: osx
+      osx_image: xcode8.2
+      env: CARTHAGE_PLATFORM="tvOS"
+    - os: osx
+      osx_image: xcode8.2
+      env: PACKAGE_MANAGER_COMMAND="test -Xlinker -lsqlite3"
+    - os: linux
+      dist: trusty
+      sudo: required
+      language: generic
+      env: PACKAGE_MANAGER_COMMAND="test -Xlinker -lsqlite3"
 before_install:
-  - gem update bundler
-  - gem install xcpretty --no-document
-  - brew update
-  - brew outdated carthage || brew upgrade carthage
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then gem update bundler; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then gem install xcpretty --no-document; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew outdated carthage || brew upgrade carthage; fi
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then sudo apt-get update && sudo apt-get install -y clang libicu-dev libsqlite3-dev; fi
+install:
+  - eval "$(curl -sL https://gist.githubusercontent.com/kylef/5c0475ff02b7c7671d2a/raw/9f442512a46d7a2af7b850d65a7e9bd31edfb09b/swiftenv-install.sh)"
 script:
-  - ./run-tests.sh
+  - ./BuildSupport/run-tests.sh
