@@ -1,3 +1,9 @@
+0.11.3 (tba), [diff][diff-0.11.3]
+========================================
+
+* Fix compilation problems when using Carthage ([#615][])
+* Documentation updates
+
 0.11.2 (25-12-2016), [diff][diff-0.11.2]
 ========================================
 
@@ -23,6 +29,7 @@
 [diff-0.11.0]: https://github.com/stephencelis/SQLite.swift/compare/0.10.1...0.11.0
 [diff-0.11.1]: https://github.com/stephencelis/SQLite.swift/compare/0.11.0...0.11.1
 [diff-0.11.2]: https://github.com/stephencelis/SQLite.swift/compare/0.11.1...0.11.2
+[diff-0.11.3]: https://github.com/stephencelis/SQLite.swift/compare/0.11.2...0.11.3
 
 [#532]: https://github.com/stephencelis/SQLite.swift/issues/532
 [#546]: https://github.com/stephencelis/SQLite.swift/issues/546
@@ -32,3 +39,4 @@
 [#560]: https://github.com/stephencelis/SQLite.swift/pull/560
 [#561]: https://github.com/stephencelis/SQLite.swift/issues/561
 [#571]: https://github.com/stephencelis/SQLite.swift/issues/571
+[#615]: https://github.com/stephencelis/SQLite.swift/pull/615
