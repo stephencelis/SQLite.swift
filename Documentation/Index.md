@@ -1359,7 +1359,7 @@ For example, to give queries access to [`MobileCoreServices.UTTypeConformsTo`](h
 ``` swift
 import MobileCoreServices
 
-let typeConformsTo: (Expression<String>, String) -> Expression<Bool> = (
+let typeConformsTo: (Expression<String>, Expression<String>) -> Expression<Bool> = (
     try db.createFunction("typeConformsTo", deterministic: true) { UTI, conformsToUTI in
         return UTTypeConformsTo(UTI, conformsToUTI)
     }
@@ -1371,7 +1371,7 @@ let typeConformsTo: (Expression<String>, String) -> Expression<Bool> = (
 Note `typeConformsTo`’s signature:
 
 ``` swift
-(Expression<String>, String) -> Expression<Bool>
+(Expression<String>, Expression<String>) -> Expression<Bool>
 ```
 
 Because of this, `createFunction` expects a block with the following signature:
