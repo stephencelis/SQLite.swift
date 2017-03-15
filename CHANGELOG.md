@@ -3,6 +3,7 @@
 
 * Fix compilation problems when using Carthage ([#615][])
 * Add "WITHOUT ROWID" table option ([#541][])
+* Argument count fixed for binary custom functions ([#481][])
 * Documentation updates
 
 0.11.2 (25-12-2016), [diff][diff-0.11.2]
@@ -32,6 +33,7 @@
 [diff-0.11.2]: https://github.com/stephencelis/SQLite.swift/compare/0.11.1...0.11.2
 [diff-0.11.3]: https://github.com/stephencelis/SQLite.swift/compare/0.11.2...0.11.3
 
+[#481]: https://github.com/stephencelis/SQLit1e.swift/pull/481
 [#532]: https://github.com/stephencelis/SQLit1e.swift/issues/532
 [#541]: https://github.com/stephencelis/SQLit1e.swift/issues/541
 [#546]: https://github.com/stephencelis/SQLite.swift/issues/546
