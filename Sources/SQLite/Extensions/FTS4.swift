@@ -145,13 +145,14 @@ extension Tokenizer : CustomStringConvertible {
 extension Connection {
 
     public func registerTokenizer(_ submoduleName: String, next: @escaping (String) -> (String, Range<String.Index>)?) throws {
-        try check(_SQLiteRegisterTokenizer(handle, Tokenizer.moduleName, submoduleName) { input, offset, length in
+        try check(_SQLiteRegisterTokenizer(handle, Tokenizer.moduleName, submoduleName) { (
+                input: UnsafePointer<Int8>, offset: UnsafeMutablePointer<Int32>, length: UnsafeMutablePointer<Int32>) in
             let string = String(cString: input)
 
             guard let (token, range) = next(string) else { return nil }
 
             let view = string.utf8
-            offset.pointee += string.substring(to: range.lowerBound).utf8.count
+            offset.pointee += Int32(string.substring(to: range.lowerBound).utf8.count)
             length.pointee = Int32(view.distance(from: range.lowerBound.samePosition(in: view), to: range.upperBound.samePosition(in: view)))
             return token
         })
