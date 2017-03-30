@@ -1,10 +1,11 @@
-0.11.3 (tba), [diff][diff-0.11.3]
+0.11.3 (30-03-2017), [diff][diff-0.11.3]
 ========================================
 
 * Fix compilation problems when using Carthage ([#615][])
 * Add "WITHOUT ROWID" table option ([#541][])
 * Argument count fixed for binary custom functions ([#481][])
 * Documentation updates
+* Tested with Xcode 8.3 / iOS 10.3
 
 0.11.2 (25-12-2016), [diff][diff-0.11.2]
 ========================================
