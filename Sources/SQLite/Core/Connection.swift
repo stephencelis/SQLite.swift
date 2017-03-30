@@ -579,7 +579,7 @@ public final class Connection {
             } else if result == nil {
                 sqlite3_result_null(context)
             } else {
-                fatalError("unsupported result type: \(result)")
+                fatalError("unsupported result type: \(String(describing: result))")
             }
         }
         var flags = SQLITE_UTF8
