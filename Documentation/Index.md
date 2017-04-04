@@ -78,7 +78,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```
-    github "stephencelis/SQLite.swift" ~> 0.11.2
+    github "stephencelis/SQLite.swift" ~> 0.11.3
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -113,7 +113,7 @@ install SQLite.swift with Carthage:
     use_frameworks!
 
     target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.11.2'
+        pod 'SQLite.swift', '~> 0.11.3'
     end
     ```
 
@@ -126,7 +126,7 @@ install SQLite.swift with Carthage:
 
 ``` ruby
 target 'YourAppTargetName' do
-  pod 'SQLite.swift/standalone', '~> 0.11.2'
+  pod 'SQLite.swift/standalone', '~> 0.11.3'
 end
 ```
 
@@ -134,7 +134,7 @@ By default this will use the most recent version of SQLite without any extras. I
 
 ``` ruby
 target 'YourAppTargetName' do
-  pod 'SQLite.swift/standalone', '~> 0.11.2'
+  pod 'SQLite.swift/standalone', '~> 0.11.3'
   pod 'sqlite3/fts5', '= 3.15.0'  # SQLite 3.15.0 with FTS5 enabled
 end
 ```
@@ -148,7 +148,7 @@ subspec in your Podfile:
 
 ``` ruby
 target 'YourAppTargetName' do
-  pod 'SQLite.swift/SQLCipher', '~> 0.11.2'
+  pod 'SQLite.swift/SQLCipher', '~> 0.11.3'
 end
 ```
 
@@ -1359,7 +1359,7 @@ For example, to give queries access to [`MobileCoreServices.UTTypeConformsTo`](h
 ``` swift
 import MobileCoreServices
 
-let typeConformsTo: (Expression<String>, String) -> Expression<Bool> = (
+let typeConformsTo: (Expression<String>, Expression<String>) -> Expression<Bool> = (
     try db.createFunction("typeConformsTo", deterministic: true) { UTI, conformsToUTI in
         return UTTypeConformsTo(UTI, conformsToUTI)
     }
@@ -1371,7 +1371,7 @@ let typeConformsTo: (Expression<String>, String) -> Expression<Bool> = (
 Note `typeConformsTo`’s signature:
 
 ``` swift
-(Expression<String>, String) -> Expression<Bool>
+(Expression<String>, Expression<String>) -> Expression<Bool>
 ```
 
 Because of this, `createFunction` expects a block with the following signature:
@@ -1471,7 +1471,7 @@ try db.run(emails.insert(
     body <- "Hey, I was just wondering...did you get my last email?"
 ))
 
-let wonderfulEmails = emails.match("wonder*")
+let wonderfulEmails: QueryType = emails.match("wonder*")
 // SELECT * FROM "emails" WHERE "emails" MATCH 'wonder*'
 
 let replies = emails.filter(subject.match("Re:*"))

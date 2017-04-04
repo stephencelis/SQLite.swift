@@ -1,3 +1,12 @@
+0.11.3 (30-03-2017), [diff][diff-0.11.3]
+========================================
+
+* Fix compilation problems when using Carthage ([#615][])
+* Add "WITHOUT ROWID" table option ([#541][])
+* Argument count fixed for binary custom functions ([#481][])
+* Documentation updates
+* Tested with Xcode 8.3 / iOS 10.3
+
 0.11.2 (25-12-2016), [diff][diff-0.11.2]
 ========================================
 
@@ -23,8 +32,11 @@
 [diff-0.11.0]: https://github.com/stephencelis/SQLite.swift/compare/0.10.1...0.11.0
 [diff-0.11.1]: https://github.com/stephencelis/SQLite.swift/compare/0.11.0...0.11.1
 [diff-0.11.2]: https://github.com/stephencelis/SQLite.swift/compare/0.11.1...0.11.2
+[diff-0.11.3]: https://github.com/stephencelis/SQLite.swift/compare/0.11.2...0.11.3
 
-[#532]: https://github.com/stephencelis/SQLite.swift/issues/532
+[#481]: https://github.com/stephencelis/SQLit1e.swift/pull/481
+[#532]: https://github.com/stephencelis/SQLit1e.swift/issues/532
+[#541]: https://github.com/stephencelis/SQLit1e.swift/issues/541
 [#546]: https://github.com/stephencelis/SQLite.swift/issues/546
 [#548]: https://github.com/stephencelis/SQLite.swift/pull/548
 [#553]: https://github.com/stephencelis/SQLite.swift/pull/553
@@ -32,3 +44,4 @@
 [#560]: https://github.com/stephencelis/SQLite.swift/pull/560
 [#561]: https://github.com/stephencelis/SQLite.swift/issues/561
 [#571]: https://github.com/stephencelis/SQLite.swift/issues/571
+[#615]: https://github.com/stephencelis/SQLite.swift/pull/615
