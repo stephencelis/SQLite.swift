@@ -266,6 +266,10 @@ let db = try Connection("\(path)/db.sqlite3")
 
 If you bundle a database with your app (_i.e._, you’ve copied a database file into your Xcode project and added it to your application target), you can establish a _read-only_ connection to it.
 
+To bundle your database into your project:
+
+![screen shot 2015-01-18 at 2 05 59 pm](https://cloud.githubusercontent.com/assets/4943759/5793698/a559fe84-9f1b-11e4-820c-4372d5721995.png)
+
 ``` swift
 let path = Bundle.main.pathForResource("db", ofType: "sqlite3")!
 
