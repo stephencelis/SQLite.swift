@@ -5,7 +5,7 @@ import XCTest
 import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#else
+#elseif SWIFT_PACKAGE || COCOAPODS
 import CSQLite
 #endif
 
@@ -337,7 +337,7 @@ class ConnectionTests : SQLiteTestCase {
         try! stmt.run()
 
         let deadline = DispatchTime.now() + Double(Int64(10 * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC)
-        _ = DispatchQueue.global(priority: .background).asyncAfter(deadline: deadline, execute: db.interrupt)
+        _ = DispatchQueue(label: "queue", qos: .background).asyncAfter(deadline: deadline, execute: db.interrupt)
         AssertThrows(try stmt.run())
     }
 
