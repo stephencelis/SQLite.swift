@@ -191,6 +191,14 @@ public final class Statement {
 
 }
 
+extension Statement {
+    
+    func rowCursorNext() throws -> [Binding?]? {
+        return try step() ? Array(row) : nil
+    }
+    
+}
+
 extension Statement : Sequence {
 
     public func makeIterator() -> Statement {
