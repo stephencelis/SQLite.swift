@@ -92,17 +92,17 @@ extension QueryType {
 extension Row {
 
     public subscript(column: Expression<Data>) -> Data {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<Data?>) -> Data? {
-        return get(column)
+        return try! get(column)
     }
 
     public subscript(column: Expression<Date>) -> Date {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<Date?>) -> Date? {
-        return get(column)
+        return try! get(column)
     }
 
 }
