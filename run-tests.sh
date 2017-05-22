@@ -7,5 +7,9 @@ if [ -n "$BUILD_SCHEME" ]; then
         make test BUILD_SCHEME="$BUILD_SCHEME"
     fi
 elif [ -n "$VALIDATOR_SUBSPEC" ]; then
-    cd CocoaPodsTests && make test
+    cd Tests/CocoaPods && make test
+elif [ -n "$CARTHAGE_PLATFORM" ]; then
+    cd Tests/Carthage && make test CARTHAGE_PLATFORM="$CARTHAGE_PLATFORM"
+elif [ -n "${PACKAGE_MANAGER_COMMAND}" ]; then
+    swift ${PACKAGE_MANAGER_COMMAND}
 fi

@@ -3,8 +3,8 @@
   - [Installation](#installation)
     - [Carthage](#carthage)
     - [CocoaPods](#cocoapods)
+    - [Swift Package Manager](#swift-package-manager)
     - [Manual](#manual)
-    - [Frameworkless Targets](#frameworkless-targets)
   - [Getting Started](#getting-started)
     - [Connecting to a Database](#connecting-to-a-database)
       - [Read-Write Databases](#read-write-databases)
@@ -78,7 +78,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```
-    github "stephencelis/SQLite.swift" ~> 0.10.1
+    github "stephencelis/SQLite.swift" ~> 0.11.3
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -93,45 +93,104 @@ install SQLite.swift with Carthage:
 
 [CocoaPods][] is a dependency manager for Cocoa projects. To install SQLite.swift with CocoaPods:
 
- 1. Make sure the latest CocoaPods beta is [installed][CocoaPods Installation]. (SQLite.swift requires version 1.0.0.beta.6 or greater.)
+ 1. Verify that your copy of Xcode is installed and active in the default location (`/Applications/Xcode.app`).
+
+    ```sh
+    sudo xcode-select --switch /Applications/Xcode.app
+    ```
+
+ 2. Make sure CocoaPods is [installed][CocoaPods Installation] (SQLite.swift requires version 1.0.0 or greater).
 
     ``` sh
     # Using the default Ruby install will require you to use sudo when
     # installing and updating gems.
-    sudo gem install --pre cocoapods
+    [sudo] gem install cocoapods
     ```
 
- 2. Update your Podfile to include the following:
+ 3. Update your Podfile to include the following:
 
     ``` ruby
     use_frameworks!
 
-    pod 'SQLite.swift', '~> 0.10.1'
+    target 'YourAppTargetName' do
+        pod 'SQLite.swift', '~> 0.11.3'
+    end
     ```
 
- 3. Run `pod install`.
+ 4. Run `pod install --repo-update`.
 
- #### Requiring a specific version of SQLite
+
+#### Requiring a specific version of SQLite
 
  If you want to use a more recent version of SQLite than what is provided with the OS you can require the `standalone` subspec:
 
 ``` ruby
-    pod 'SQLite.swift/standalone', '~> 0.10.1'
+target 'YourAppTargetName' do
+  pod 'SQLite.swift/standalone', '~> 0.11.3'
+end
 ```
 
 By default this will use the most recent version of SQLite without any extras. If you want you can further customize this by adding another dependency to sqlite3 or one of its subspecs:
 
 ``` ruby
-    pod 'SQLite.swift/standalone', '~> 0.10.1'
-    pod 'sqlite3/fts5', '= 3.11.1'  # SQLite 3.11.1 with FTS5 enabled
+target 'YourAppTargetName' do
+  pod 'SQLite.swift/standalone', '~> 0.11.3'
+  pod 'sqlite3/fts5', '= 3.15.0'  # SQLite 3.15.0 with FTS5 enabled
+end
 ```
 
 See the [sqlite3 podspec][sqlite3pod] for more details.
 
+#### Using SQLite.swift with SQLCipher
+
+If you want to use [SQLCipher][] with SQLite.swift you can require the `SQLCipher`
+subspec in your Podfile:
+
+``` ruby
+target 'YourAppTargetName' do
+  pod 'SQLite.swift/SQLCipher', '~> 0.11.3'
+end
+```
+
+This will automatically add a dependency to the SQLCipher pod as well as extend
+`Connection` with methods to change the database key:
+
+``` swift
+import SQLite
+
+let db = try Connection("path/to/db.sqlite3")
+try db.key("secret")
+try db.rekey("another secret")
+```
+
 [CocoaPods]: https://cocoapods.org
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
 [sqlite3pod]: https://github.com/clemensg/sqlite3pod
+[SQLCipher]: https://www.zetetic.net/sqlcipher/
 
+### Swift Package Manager
+
+The [Swift Package Manager][] is a tool for managing the distribution of Swift code.
+It’s integrated with the Swift build system to automate the process of
+downloading, compiling, and linking dependencies.
+
+It is the recommended approach for using SQLite.swift in OSX CLI applications.
+
+ 1. Add the following to your `Package.swift` file:
+
+  ``` swift
+  dependencies: [
+    .Package(url: "https://github.com/stephencelis/SQLite.swift.git", majorVersion: 0, minor: 11)
+  ]
+  ```
+
+ 2. Build your project:
+
+  ``` sh
+  $ swift build -Xlinker -lsqlite3
+  ```
+
+[Swift Package Manager]: https://swift.org/package-manager
 
 ### Manual
 
@@ -139,7 +198,7 @@ To install SQLite.swift as an Xcode sub-project:
 
  1. Drag the **SQLite.xcodeproj** file into your own project. ([Submodule](http://git-scm.com/book/en/Git-Tools-Submodules), clone, or [download](https://github.com/stephencelis/SQLite.swift/archive/master.zip) the project first.)
 
-    ![Installation Screen Shot](Documentation/Resources/installation@2x.png)
+    ![Installation Screen Shot](Resources/installation@2x.png)
 
  2. In your target’s **General** tab, click the **+** button under **Linked Frameworks and Libraries**.
 
@@ -149,24 +208,13 @@ To install SQLite.swift as an Xcode sub-project:
 
 You should now be able to `import SQLite` from any of your target’s source files and begin using SQLite.swift.
 
+Some additional steps are required to install the application on an actual device:
 
-### Frameworkless Targets
+ 5. In the **General** tab, click the **+** button under **Embedded Binaries**.
 
-It’s possible to use SQLite.swift in a target that doesn’t support frameworks, including iOS 7 apps and OS X command line tools, though it takes a little extra work.
+ 6. Select the appropriate **SQLite.framework** for your platform.
 
- 1. In your target’s **Build Phases**, add **libsqlite3.dylib** to the **Link Binary With Libraries** build phase.
-
- 2. Copy the SQLite.swift source files (from its **SQLite** directory) into your Xcode project.
-
- 3. Add the following lines to your project’s [bridging header](https://developer.apple.com/library/prerelease/ios/documentation/Swift/Conceptual/BuildingCocoaApps/MixandMatch.html#//apple_ref/doc/uid/TP40014216-CH10-XID_79) (a file usually in the form of `$(TARGET_NAME)-Bridging-Header.h`).
-
-    ``` swift
-    #import <sqlite3.h>
-    #import "SQLite-Bridging.h"
-    ```
-
-> _Note:_ Adding SQLite.swift source files directly to your application will both remove the `SQLite` module namespace (no need—or ability—to `import SQLite`) and expose internal functions and variables. You will need to rename anything that conflicts with code of your own. Please [report any bugs](https://github.com/stephencelis/SQLite.swift/issues/new) (_e.g._, segfaults) you encounter.
-
+ 7. **Add**.
 
 ## Getting Started
 
@@ -713,8 +761,12 @@ users.filter(verified || balance >= 10_000)
 
 We can build our own boolean expressions by using one of the many [filter operators and functions](#filter-operators-and-functions).
 
-> _Note:_ SQLite.swift defines `filter` instead of `where` because `where` is [a reserved keyword](https://developer.apple.com/library/ios/documentation/Swift/Conceptual/Swift_Programming_Language/LexicalStructure.html#//apple_ref/doc/uid/TP40014097-CH30-ID413).
+Instead of `filter` we can also use the `where` function which is an alias:
 
+``` swift
+users.where(id == 1)
+// SELECT * FROM "users" WHERE ("id" = 1)
+```
 
 ##### Filter Operators and Functions
 
@@ -1076,11 +1128,24 @@ try db.run(users.drop(ifExists: true))
 ```
 
 
-<!-- ### Migrations and Schema Versioning
+### Migrations and Schema Versioning
 
-SQLite.swift provides a convenience property on `Database` to query and set the [`PRAGMA user_version`](https://sqlite.org/pragma.html#pragma_schema_version). This is a great way to manage your schema’s version over migrations.
+You can add a convenience property on `Connection` to query and set the [`PRAGMA user_version`](https://sqlite.org/pragma.html#pragma_user_version).
+
+This is a great way to manage your schema’s version over migrations.
 
 ``` swift
+extension Connection {
+    public var userVersion: Int32 {
+        get { return Int32(try! scalar("PRAGMA user_version") as! Int64)}
+        set { try! run("PRAGMA user_version = \(newValue)") }
+    }
+}
+```
+
+Then you can conditionally run your migrations along the lines of:
+
+```swift
 if db.userVersion == 0 {
     // handle first migration
     db.userVersion = 1
@@ -1089,8 +1154,10 @@ if db.userVersion == 1 {
     // handle second migration
     db.userVersion = 2
 }
-``` -->
+```
 
+For more complex migration requirements check out the schema management system
+[SQLiteMigrationManager.swift][].
 
 ## Custom Types
 
@@ -1292,7 +1359,7 @@ For example, to give queries access to [`MobileCoreServices.UTTypeConformsTo`](h
 ``` swift
 import MobileCoreServices
 
-let typeConformsTo: (Expression<String>, String) -> Expression<Bool> = (
+let typeConformsTo: (Expression<String>, Expression<String>) -> Expression<Bool> = (
     try db.createFunction("typeConformsTo", deterministic: true) { UTI, conformsToUTI in
         return UTTypeConformsTo(UTI, conformsToUTI)
     }
@@ -1304,7 +1371,7 @@ let typeConformsTo: (Expression<String>, String) -> Expression<Bool> = (
 Note `typeConformsTo`’s signature:
 
 ``` swift
-(Expression<String>, String) -> Expression<Bool>
+(Expression<String>, Expression<String>) -> Expression<Bool>
 ```
 
 Because of this, `createFunction` expects a block with the following signature:
@@ -1404,7 +1471,7 @@ try db.run(emails.insert(
     body <- "Hey, I was just wondering...did you get my last email?"
 ))
 
-let wonderfulEmails = emails.match("wonder*")
+let wonderfulEmails: QueryType = emails.match("wonder*")
 // SELECT * FROM "emails" WHERE "emails" MATCH 'wonder*'
 
 let replies = emails.filter(subject.match("Re:*"))
@@ -1426,6 +1493,13 @@ let config = FTS5Config()
 
 try db.run(emails.create(.FTS5(config))
 // CREATE VIRTUAL TABLE "emails" USING fts5("subject", "body" UNINDEXED)
+
+// Note that FTS5 uses a different syntax to select columns, so we need to rewrite
+// the last FTS4 query above as:
+let replies = emails.filter(emails.match("subject:\"Re:\"*))
+// SELECT * FROM "emails" WHERE "emails" MATCH 'subject:"Re:"*'
+
+// https://www.sqlite.org/fts5.html#_changes_to_select_statements_
 ```
 
 ## Executing Arbitrary SQL
@@ -1510,3 +1584,4 @@ We can log SQL using the database’s `trace` function.
 
 
 [ROWID]: https://sqlite.org/lang_createtable.html#rowid
+[SQLiteMigrationManager.swift]: https://github.com/garriguv/SQLiteMigrationManager.swift

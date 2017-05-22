@@ -25,7 +25,7 @@ syntax _and_ intent.
  - [Full-text search][] support
  - [Well-documented][See Documentation]
  - Extensively tested
- - Companion project has [SQLCipher support](https://github.com/stephencelis/SQLiteCipher.swift)
+ - SQLCipher support via CocoaPods
  - Active support at [StackOverflow](http://stackoverflow.com/questions/tagged/sqlite.swift), and [Gitter Chat Room](https://gitter.im/stephencelis/SQLite.swift) (_experimental_)
 
 [Full-text search]: Documentation/Index.md#full-text-search
@@ -112,12 +112,6 @@ For a more comprehensive example, see [this article](http://masteringswift.blogs
 > _Note:_ SQLite.swift requires Swift 3 (and [Xcode][] 8) or greater. If you absolutely
 > need compatibility with Swift 2.3 you can use the [swift-2.3][] branch or older
 > released versions. New development will happen exclusively on the master/Swift 3 branch.
->
-> The following instructions apply to targets that support embedded
-> Swift frameworks. To use SQLite.swift in iOS 7 or an OS X command line
-> tool, please read the [Frameworkless Targets][] section of the
-> documentation.
-
 
 ### Carthage
 
@@ -129,7 +123,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```
-    github "stephencelis/SQLite.swift" ~> 0.10.1
+    github "stephencelis/SQLite.swift" ~> 0.11.3
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -145,8 +139,13 @@ install SQLite.swift with Carthage:
 [CocoaPods][] is a dependency manager for Cocoa projects. To install
 SQLite.swift with CocoaPods:
 
- 1. Make sure the latest CocoaPods beta is [installed][CocoaPods
-    Installation]. (SQLite.swift requires version 1.0.0.beta.6 or greater.)
+ 1. Verify that your copy of Xcode is installed and active in the default location (`/Applications/Xcode.app`).
+
+    ```sh
+    sudo xcode-select --switch /Applications/Xcode.app
+    ```
+
+ 2. Make sure CocoaPods is [installed][CocoaPods Installation]. (SQLite.swift requires version 1.0.0 or greater.)
 
     ``` sh
     # Using the default Ruby install will require you to use sudo when
@@ -154,19 +153,40 @@ SQLite.swift with CocoaPods:
     [sudo] gem install cocoapods
     ```
 
- 2. Update your Podfile to include the following:
+ 3. Update your Podfile to include the following:
 
     ``` ruby
     use_frameworks!
 
-    pod 'SQLite.swift', '~> 0.10.1'
+    target 'YourAppTargetName' do
+        pod 'SQLite.swift', '~> 0.11.3'
+    end
     ```
 
- 3. Run `pod install`.
+ 4. Run `pod install --repo-update`.
 
 [CocoaPods]: https://cocoapods.org
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
 
+### Swift Package Manager
+
+The [Swift Package Manager][] is a tool for managing the distribution of Swift code.
+
+1. Add the following to your `Package.swift` file:
+
+  ```swift
+  dependencies: [
+      .Package(url: "https://github.com/stephencelis/SQLite.swift.git", majorVersion: 0, minor: 11)
+  ]
+  ```
+
+2. Build your project:
+
+  ``` sh
+  $ swift build -Xlinker -lsqlite3
+  ```
+
+[Swift Package Manager]: https://swift.org/package-manager
 
 ### Manual
 
@@ -184,7 +204,15 @@ To install SQLite.swift as an Xcode sub-project:
 
  4. **Add**.
 
-[Frameworkless Targets]: Documentation/Index.md#frameworkless-targets
+Some additional steps are required to install the application on an actual device:
+
+ 5. In the **General** tab, click the **+** button under **Embedded Binaries**.
+
+ 6. Select the appropriate **SQLite.framework** for your platform.
+
+ 7. **Add**.
+
+
 [Xcode]: https://developer.apple.com/xcode/downloads/
 [Submodule]: http://git-scm.com/book/en/Git-Tools-Submodules
 [download]: https://github.com/stephencelis/SQLite.swift/archive/master.zip
@@ -223,7 +251,6 @@ file](./LICENSE.txt) for more information.
 
 These projects enhance or use SQLite.swift:
 
- - [SQLiteCipher.swift](https://github.com/stephencelis/SQLiteCipher.swift)
  - [SQLiteMigrationManager.swift](https://github.com/garriguv/SQLiteMigrationManager.swift) (inspired by [FMDBMigrationManager](https://github.com/layerhq/FMDBMigrationManager))
 
 
