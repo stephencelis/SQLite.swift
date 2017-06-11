@@ -127,11 +127,7 @@ extension Table {
 
     // MARK: - CREATE INDEX
 
-    public func createIndex(_ columns: Expressible...) -> String {
-        return createIndex(columns)
-    }
-
-    public func createIndex(_ columns: [Expressible], unique: Bool = false, ifNotExists: Bool = false) -> String {
+    public func createIndex(_ columns: Expressible..., unique: Bool = false, ifNotExists: Bool = false) -> String {
         let clauses: [Expressible?] = [
             create("INDEX", indexName(columns), unique ? .Unique : nil, ifNotExists),
             Expression<Void>(literal: "ON"),
@@ -144,11 +140,7 @@ extension Table {
 
     // MARK: - DROP INDEX
 
-    public func dropIndex(_ columns: Expressible...) -> String {
-        return dropIndex(columns)
-    }
-
-    public func dropIndex(_ columns: [Expressible], ifExists: Bool = false) -> String {
+    public func dropIndex(_ columns: Expressible..., ifExists: Bool = false) -> String {
         return drop("INDEX", indexName(columns), ifExists)
     }
 
