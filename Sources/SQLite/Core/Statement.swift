@@ -27,7 +27,7 @@ import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
 #elseif SWIFT_PACKAGE || COCOAPODS
-import CSQLite
+import SQLite3
 #endif
 
 /// A single SQL statement.
