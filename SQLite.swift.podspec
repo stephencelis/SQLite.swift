@@ -30,7 +30,6 @@ Pod::Spec.new do |s|
     ss.private_header_files = 'Sources/SQLiteObjc/*.h'
 
     ss.library = 'sqlite3'
-    ss.preserve_paths = 'CocoaPods/**/*'
   end
 
   s.subspec 'standalone' do |ss|
