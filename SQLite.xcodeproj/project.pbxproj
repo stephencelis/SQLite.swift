@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		03A65E641C6BB0F60062603F /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03A65E5A1C6BB0F50062603F /* SQLite.framework */; };
-		03A65E711C6BB2CD0062603F /* usr/include/sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = EE91808B1C46E34A0038162A /* usr/include/sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		03A65E721C6BB2D30062603F /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		03A65E731C6BB2D80062603F /* Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AF71C3F06E900AE3E12 /* Foundation.swift */; };
 		03A65E741C6BB2DA0062603F /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AF81C3F06E900AE3E12 /* Helpers.swift */; };
@@ -88,7 +87,6 @@
 		3D67B3F71DB246D700A4F4C6 /* Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AF71C3F06E900AE3E12 /* Foundation.swift */; };
 		3D67B3F81DB246D700A4F4C6 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AF81C3F06E900AE3E12 /* Helpers.swift */; };
 		3D67B3F91DB246E700A4F4C6 /* SQLite-Bridging.m in Sources */ = {isa = PBXBuildFile; fileRef = EE247AF11C3F06E900AE3E12 /* SQLite-Bridging.m */; };
-		3D67B3FA1DB2470600A4F4C6 /* usr/include/sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = EE91808B1C46E34A0038162A /* usr/include/sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3D67B3FB1DB2470600A4F4C6 /* SQLite-Bridging.h in Headers */ = {isa = PBXBuildFile; fileRef = EE91808D1C46E5230038162A /* SQLite-Bridging.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3D67B3FC1DB2471B00A4F4C6 /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3D67B3FD1DB2472D00A4F4C6 /* fts3_tokenizer.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AF01C3F06E900AE3E12 /* fts3_tokenizer.h */; };
@@ -164,10 +162,8 @@
 		EE247B731C3F3FEC00AE3E12 /* Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247B001C3F06E900AE3E12 /* Query.swift */; };
 		EE247B741C3F3FEC00AE3E12 /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247B011C3F06E900AE3E12 /* Schema.swift */; };
 		EE247B751C3F3FEC00AE3E12 /* Setter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247B021C3F06E900AE3E12 /* Setter.swift */; };
-		EE91808C1C46E34A0038162A /* usr/include/sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = EE91808B1C46E34A0038162A /* usr/include/sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE91808E1C46E5230038162A /* SQLite-Bridging.h in Headers */ = {isa = PBXBuildFile; fileRef = EE91808D1C46E5230038162A /* SQLite-Bridging.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE91808F1C46E76D0038162A /* SQLite-Bridging.h in Headers */ = {isa = PBXBuildFile; fileRef = EE91808D1C46E5230038162A /* SQLite-Bridging.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		EE9180901C46E8980038162A /* usr/include/sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = EE91808B1C46E34A0038162A /* usr/include/sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE9180941C46EA210038162A /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EE9180931C46EA210038162A /* libsqlite3.tbd */; };
 		EE9180951C46EBCC0038162A /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EE9180911C46E9D30038162A /* libsqlite3.tbd */; };
 /* End PBXBuildFile section */
@@ -207,13 +203,6 @@
 		19A1794CC4D7827E997E32A7 /* FoundationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoundationTests.swift; sourceTree = "<group>"; };
 		19A17B93B48B5560E6E51791 /* Fixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
 		19A17E2695737FAB5D6086E3 /* fixtures */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; path = fixtures; sourceTree = "<group>"; };
-		39548A631CA63C740003E3B5 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		39548A651CA63C740003E3B5 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		39548A671CA63C740003E3B5 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		39548A691CA63C740003E3B5 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		39548A6B1CA63C740003E3B5 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		39548A6D1CA63C740003E3B5 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		39548A6F1CA63C740003E3B5 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		3D67B3E51DB2469200A4F4C6 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS3.0.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		A121AC451CA35C79005A31D1 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE247AD31C3F04ED00AE3E12 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -265,7 +254,6 @@
 		EE247B911C3F822500AE3E12 /* installation@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "installation@2x.png"; sourceTree = "<group>"; };
 		EE247B921C3F822600AE3E12 /* playground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playground@2x.png"; sourceTree = "<group>"; };
 		EE247B931C3F826100AE3E12 /* SQLite.swift.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = SQLite.swift.podspec; sourceTree = "<group>"; };
-		EE91808B1C46E34A0038162A /* usr/include/sqlite3.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = usr/include/sqlite3.h; sourceTree = SDKROOT; };
 		EE91808D1C46E5230038162A /* SQLite-Bridging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SQLite-Bridging.h"; path = "../../SQLiteObjc/include/SQLite-Bridging.h"; sourceTree = "<group>"; };
 		EE9180911C46E9D30038162A /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		EE9180931C46EA210038162A /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
@@ -331,76 +319,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		39548A611CA63C740003E3B5 /* CocoaPods */ = {
-			isa = PBXGroup;
-			children = (
-				39548A621CA63C740003E3B5 /* appletvos */,
-				39548A641CA63C740003E3B5 /* appletvsimulator */,
-				39548A661CA63C740003E3B5 /* iphoneos */,
-				39548A681CA63C740003E3B5 /* iphonesimulator */,
-				39548A6A1CA63C740003E3B5 /* macosx */,
-				39548A6C1CA63C740003E3B5 /* watchos */,
-				39548A6E1CA63C740003E3B5 /* watchsimulator */,
-			);
-			path = CocoaPods;
-			sourceTree = "<group>";
-		};
-		39548A621CA63C740003E3B5 /* appletvos */ = {
-			isa = PBXGroup;
-			children = (
-				39548A631CA63C740003E3B5 /* module.modulemap */,
-			);
-			path = appletvos;
-			sourceTree = "<group>";
-		};
-		39548A641CA63C740003E3B5 /* appletvsimulator */ = {
-			isa = PBXGroup;
-			children = (
-				39548A651CA63C740003E3B5 /* module.modulemap */,
-			);
-			path = appletvsimulator;
-			sourceTree = "<group>";
-		};
-		39548A661CA63C740003E3B5 /* iphoneos */ = {
-			isa = PBXGroup;
-			children = (
-				39548A671CA63C740003E3B5 /* module.modulemap */,
-			);
-			path = iphoneos;
-			sourceTree = "<group>";
-		};
-		39548A681CA63C740003E3B5 /* iphonesimulator */ = {
-			isa = PBXGroup;
-			children = (
-				39548A691CA63C740003E3B5 /* module.modulemap */,
-			);
-			path = iphonesimulator;
-			sourceTree = "<group>";
-		};
-		39548A6A1CA63C740003E3B5 /* macosx */ = {
-			isa = PBXGroup;
-			children = (
-				39548A6B1CA63C740003E3B5 /* module.modulemap */,
-			);
-			path = macosx;
-			sourceTree = "<group>";
-		};
-		39548A6C1CA63C740003E3B5 /* watchos */ = {
-			isa = PBXGroup;
-			children = (
-				39548A6D1CA63C740003E3B5 /* module.modulemap */,
-			);
-			path = watchos;
-			sourceTree = "<group>";
-		};
-		39548A6E1CA63C740003E3B5 /* watchsimulator */ = {
-			isa = PBXGroup;
-			children = (
-				39548A6F1CA63C740003E3B5 /* module.modulemap */,
-			);
-			path = watchsimulator;
-			sourceTree = "<group>";
-		};
 		3D67B3E41DB2469200A4F4C6 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -439,7 +357,6 @@
 		EE247AD51C3F04ED00AE3E12 /* SQLite */ = {
 			isa = PBXGroup;
 			children = (
-				EE91808B1C46E34A0038162A /* usr/include/sqlite3.h */,
 				EE247AD61C3F04ED00AE3E12 /* SQLite.h */,
 				EE247AF71C3F06E900AE3E12 /* Foundation.swift */,
 				EE247AF81C3F06E900AE3E12 /* Helpers.swift */,
@@ -525,7 +442,6 @@
 		EE247B8A1C3F81D000AE3E12 /* Metadata */ = {
 			isa = PBXGroup;
 			children = (
-				39548A611CA63C740003E3B5 /* CocoaPods */,
 				EE247B771C3F40D700AE3E12 /* README.md */,
 				EE247B8B1C3F820300AE3E12 /* CONTRIBUTING.md */,
 				EE247B931C3F826100AE3E12 /* SQLite.swift.podspec */,
@@ -566,7 +482,6 @@
 			files = (
 				03A65E781C6BB2EA0062603F /* fts3_tokenizer.h in Headers */,
 				03A65E751C6BB2DF0062603F /* SQLite-Bridging.h in Headers */,
-				03A65E711C6BB2CD0062603F /* usr/include/sqlite3.h in Headers */,
 				03A65E721C6BB2D30062603F /* SQLite.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -575,7 +490,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D67B3FA1DB2470600A4F4C6 /* usr/include/sqlite3.h in Headers */,
 				3D67B3FB1DB2470600A4F4C6 /* SQLite-Bridging.h in Headers */,
 				3D67B3FC1DB2471B00A4F4C6 /* SQLite.h in Headers */,
 				3D67B3FD1DB2472D00A4F4C6 /* fts3_tokenizer.h in Headers */,
@@ -588,7 +502,6 @@
 			files = (
 				EE91808E1C46E5230038162A /* SQLite-Bridging.h in Headers */,
 				EE247B051C3F06E900AE3E12 /* fts3_tokenizer.h in Headers */,
-				EE91808C1C46E34A0038162A /* usr/include/sqlite3.h in Headers */,
 				EE247AD71C3F04ED00AE3E12 /* SQLite.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -597,7 +510,6 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE9180901C46E8980038162A /* usr/include/sqlite3.h in Headers */,
 				EE247B671C3F3FEC00AE3E12 /* fts3_tokenizer.h in Headers */,
 				EE247B621C3F3FDB00AE3E12 /* SQLite.h in Headers */,
 				EE91808F1C46E76D0038162A /* SQLite-Bridging.h in Headers */,
@@ -744,12 +656,15 @@
 				TargetAttributes = {
 					03A65E591C6BB0F50062603F = {
 						CreatedOnToolsVersion = 7.2;
+						LastSwiftMigration = 0900;
 					};
 					03A65E621C6BB0F60062603F = {
 						CreatedOnToolsVersion = 7.2;
+						LastSwiftMigration = 0900;
 					};
 					A121AC441CA35C79005A31D1 = {
 						CreatedOnToolsVersion = 7.3;
+						LastSwiftMigration = 0900;
 					};
 					EE247AD21C3F04ED00AE3E12 = {
 						CreatedOnToolsVersion = 7.2;
@@ -761,11 +676,11 @@
 					};
 					EE247B3B1C3F3ED000AE3E12 = {
 						CreatedOnToolsVersion = 7.2;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 					};
 					EE247B441C3F3ED000AE3E12 = {
 						CreatedOnToolsVersion = 7.2;
-						LastSwiftMigration = 0800;
+						LastSwiftMigration = 0900;
 					};
 				};
 			};
@@ -1073,7 +988,8 @@
 				SKIP_INSTALL = YES;
 				"SWIFT_INCLUDE_PATHS[sdk=appletvos*]" = "$(SRCROOT)/CocoaPods/appletvos";
 				"SWIFT_INCLUDE_PATHS[sdk=appletvsimulator*]" = "$(SRCROOT)/CocoaPods/appletvsimulator";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TVOS_DEPLOYMENT_TARGET = 9.1;
 			};
 			name = Debug;
@@ -1096,7 +1012,8 @@
 				SKIP_INSTALL = YES;
 				"SWIFT_INCLUDE_PATHS[sdk=appletvos*]" = "$(SRCROOT)/CocoaPods/appletvos";
 				"SWIFT_INCLUDE_PATHS[sdk=appletvsimulator*]" = "$(SRCROOT)/CocoaPods/appletvsimulator";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TVOS_DEPLOYMENT_TARGET = 9.1;
 			};
 			name = Release;
@@ -1109,7 +1026,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TVOS_DEPLOYMENT_TARGET = 9.1;
 			};
 			name = Debug;
@@ -1122,7 +1040,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TVOS_DEPLOYMENT_TARGET = 9.1;
 			};
 			name = Release;
@@ -1146,7 +1065,8 @@
 				SKIP_INSTALL = YES;
 				"SWIFT_INCLUDE_PATHS[sdk=watchos*]" = "$(SRCROOT)/CocoaPods/watchos";
 				"SWIFT_INCLUDE_PATHS[sdk=watchsimulator*]" = "$(SRCROOT)/CocoaPods/watchsimulator";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 2.2;
 			};
@@ -1171,7 +1091,8 @@
 				SKIP_INSTALL = YES;
 				"SWIFT_INCLUDE_PATHS[sdk=watchos*]" = "$(SRCROOT)/CocoaPods/watchos";
 				"SWIFT_INCLUDE_PATHS[sdk=watchsimulator*]" = "$(SRCROOT)/CocoaPods/watchsimulator";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 2.2;
 			};
@@ -1389,7 +1310,8 @@
 				"SWIFT_INCLUDE_PATHS[sdk=macosx*]" = "$(SRCROOT)/CocoaPods/macosx";
 				"SWIFT_INCLUDE_PATHS[sdk=macosx10.11]" = "$(SRCROOT)/CocoaPods/macosx-10.11";
 				"SWIFT_INCLUDE_PATHS[sdk=macosx10.12]" = "$(SRCROOT)/CocoaPods/macosx-10.12";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -1416,7 +1338,8 @@
 				"SWIFT_INCLUDE_PATHS[sdk=macosx*]" = "$(SRCROOT)/CocoaPods/macosx";
 				"SWIFT_INCLUDE_PATHS[sdk=macosx10.11]" = "$(SRCROOT)/CocoaPods/macosx-10.11";
 				"SWIFT_INCLUDE_PATHS[sdk=macosx10.12]" = "$(SRCROOT)/CocoaPods/macosx-10.12";
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
@@ -1431,7 +1354,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -1446,7 +1370,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
