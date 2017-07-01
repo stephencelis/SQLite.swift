@@ -494,8 +494,9 @@ extension QueryType {
             return nil
         }
 
-        return " ".join(clauses.join.map { type, query, condition in
-            " ".join([
+        return " ".join(clauses.join.map { arg in
+            let (type, query, condition) = arg
+            return " ".join([
                 Expression<Void>(literal: "\(type.rawValue) JOIN"),
                 query.tableName(alias: true),
                 Expression<Void>(literal: "ON"),
