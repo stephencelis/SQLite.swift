@@ -1062,6 +1062,18 @@ public struct Row {
         return valueAtIndex(idx)
     }
 
+    /// Checks if the row has a value for the given column.
+    ///
+    /// - Parameter column: An expression representing a column selected in a Query.
+    ///
+    /// - Returns: True if the row has a value for the given column.
+    public func hasColumn<V: Value>(_ column: Expression<V>) -> Bool {
+        return hasColumn(Expression<V?>(column))
+    }
+    public func hasColumn<V: Value>(_ column: Expression<V?>) -> Bool {
+        return (columnNames[column.template] != nil)
+    }
+
     // FIXME: rdar://problem/18673897 // subscript<T>…
 
     public subscript(column: Expression<Blob>) -> Blob {
