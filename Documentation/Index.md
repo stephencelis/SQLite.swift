@@ -251,7 +251,7 @@ On OS X, you can use your app’s **Application Support** directory:
 ``` swift
 var path = NSSearchPathForDirectoriesInDomains(
     .applicationSupportDirectory, .userDomainMask, true
-).first! + Bundle.main.bundleIdentifier!
+).first! + "/" + Bundle.main.bundleIdentifier!
 
 // create parent directory iff it doesn’t exist
 try FileManager.default.createDirectoryAtPath(
