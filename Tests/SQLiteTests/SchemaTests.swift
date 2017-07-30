@@ -727,25 +727,25 @@ class SchemaTests : XCTestCase {
 
         XCTAssertEqual(
             "CREATE UNIQUE INDEX \"index_table_on_int64\" ON \"table\" (\"int64\")",
-            table.createIndex([int64], unique: true)
+            table.createIndex(int64, unique: true)
         )
         XCTAssertEqual(
             "CREATE INDEX IF NOT EXISTS \"index_table_on_int64\" ON \"table\" (\"int64\")",
-            table.createIndex([int64], ifNotExists: true)
+            table.createIndex(int64, ifNotExists: true)
         )
         XCTAssertEqual(
             "CREATE UNIQUE INDEX IF NOT EXISTS \"index_table_on_int64\" ON \"table\" (\"int64\")",
-            table.createIndex([int64], unique: true, ifNotExists: true)
+            table.createIndex(int64, unique: true, ifNotExists: true)
         )
         XCTAssertEqual(
             "CREATE UNIQUE INDEX IF NOT EXISTS \"main\".\"index_table_on_int64\" ON \"table\" (\"int64\")",
-            qualifiedTable.createIndex([int64], unique: true, ifNotExists: true)
+            qualifiedTable.createIndex(int64, unique: true, ifNotExists: true)
         )
     }
 
     func test_dropIndex_compilesCreateIndexExpression() {
         XCTAssertEqual("DROP INDEX \"index_table_on_int64\"", table.dropIndex(int64))
-        XCTAssertEqual("DROP INDEX IF EXISTS \"index_table_on_int64\"", table.dropIndex([int64], ifExists: true))
+        XCTAssertEqual("DROP INDEX IF EXISTS \"index_table_on_int64\"", table.dropIndex(int64, ifExists: true))
     }
 
     func test_create_onView_compilesCreateViewExpression() {
