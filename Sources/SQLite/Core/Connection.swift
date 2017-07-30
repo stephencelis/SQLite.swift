@@ -328,7 +328,7 @@ public final class Connection {
     ///     must throw to roll the transaction back.
     ///
     /// - Throws: `Result.Error`, and rethrows.
-    public func transaction(_ mode: TransactionMode = .deferred, block: @escaping () throws -> Void) throws {
+    public func transaction(_ mode: TransactionMode = .deferred, block: () throws -> Void) throws {
         try transaction("BEGIN \(mode.rawValue) TRANSACTION", block, "COMMIT TRANSACTION", or: "ROLLBACK TRANSACTION")
     }
 
@@ -348,14 +348,14 @@ public final class Connection {
     ///     The block must throw to roll the savepoint back.
     ///
     /// - Throws: `SQLite.Result.Error`, and rethrows.
-    public func savepoint(_ name: String = UUID().uuidString, block: @escaping () throws -> Void) throws {
+    public func savepoint(_ name: String = UUID().uuidString, block: () throws -> Void) throws {
         let name = name.quote("'")
         let savepoint = "SAVEPOINT \(name)"
 
         try transaction(savepoint, block, "RELEASE \(savepoint)", or: "ROLLBACK TO \(savepoint)")
     }
 
-    fileprivate func transaction(_ begin: String, _ block: @escaping () throws -> Void, _ commit: String, or rollback: String) throws {
+    fileprivate func transaction(_ begin: String, _ block: () throws -> Void, _ commit: String, or rollback: String) throws {
         return try sync {
             try self.run(begin)
             do {
@@ -626,11 +626,11 @@ public final class Connection {
 
     // MARK: - Error Handling
 
-    func sync<T>(_ block: @escaping () throws -> T) rethrows -> T {
+    func sync<T>(_ block: () throws -> T) rethrows -> T {
         var success: T?
         var failure: Error?
 
-        let box: () -> Void = {
+        func execute(_ block: () throws -> T, success: inout T?, failure: inout Error?) {
             do {
                 success = try block()
             } catch {
@@ -639,9 +639,11 @@ public final class Connection {
         }
 
         if DispatchQueue.getSpecific(key: Connection.queueKey) == queueContext {
-            box()
+            execute(block, success: &success, failure: &failure)
         } else {
-            queue.sync(execute: box) // FIXME: rdar://problem/21389236
+            queue.sync(execute: {
+                execute(block, success: &success, failure: &failure)
+            }) // FIXME: rdar://problem/21389236
         }
 
         if let failure = failure {
