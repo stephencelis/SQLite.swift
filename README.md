@@ -97,7 +97,7 @@ for row in try db.prepare("SELECT id, email FROM users") {
     // id: Optional(3), email: Optional("cathy@icloud.com")
 }
 
-db.scalar("SELECT count(*) FROM users") // 2
+try db.scalar("SELECT count(*) FROM users") // 2
 ```
 
 [Read the documentation][See Documentation] or explore more,
