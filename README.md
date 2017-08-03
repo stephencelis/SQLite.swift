@@ -74,7 +74,7 @@ try db.run(alice.update(email <- email.replace("mac.com", with: "me.com")))
 try db.run(alice.delete())
 // DELETE FROM "users" WHERE ("id" = 1)
 
-db.scalar(users.count) // 0
+try db.scalar(users.count) // 0
 // SELECT count(*) FROM "users"
 ```
 
