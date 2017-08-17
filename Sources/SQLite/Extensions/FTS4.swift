@@ -152,8 +152,11 @@ extension Connection {
             guard let (token, range) = next(string) else { return nil }
 
             let view = string.utf8
-            offset.pointee += Int32(string.substring(to: range.lowerBound).utf8.count)
-            length.pointee = Int32(view.distance(from: range.lowerBound.samePosition(in: view), to: range.upperBound.samePosition(in: view)))
+            offset.pointee += Int32(string[..<range.lowerBound].utf8.count)
+            
+            let utf8LowerBound = range.lowerBound.samePosition(in: view)!
+            let utf8UpperBound = range.upperBound.samePosition(in: view)!
+            length.pointee = Int32(view.distance(from: utf8LowerBound, to: utf8UpperBound))
             return token
         })
     }
