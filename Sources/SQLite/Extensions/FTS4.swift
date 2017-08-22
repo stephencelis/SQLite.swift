@@ -151,13 +151,18 @@ extension Connection {
 
             guard let (token, range) = next(string) else { return nil }
 
-            let view = string.utf8
-            offset.pointee += Int32(string.substring(to: range.lowerBound).utf8.count)
-            length.pointee = Int32(view.distance(from: range.lowerBound.samePosition(in: view), to: range.upperBound.samePosition(in: view)))
-            return token
+            let view:String.UTF8View = string.utf8
+
+            if let from = range.lowerBound.samePosition(in: view),
+               let to = range.upperBound.samePosition(in: view) {
+                offset.pointee += Int32(string[string.startIndex..<range.lowerBound].utf8.count)
+                length.pointee = Int32(view.distance(from: from, to: to))
+                return token
+            } else {
+                return nil
+            }
         })
     }
-
 }
 
 /// Configuration options shared between the [FTS4](https://www.sqlite.org/fts3.html) and
