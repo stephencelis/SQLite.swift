@@ -28,7 +28,7 @@ import Dispatch
 import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#else
+#elseif SWIFT_PACKAGE || COCOAPODS
 import CSQLite
 #endif
 
@@ -38,12 +38,12 @@ public final class Connection {
     /// The location of a SQLite database.
     public enum Location {
 
-        /// An in-memory database (equivalent to `.URI(":memory:")`).
+        /// An in-memory database (equivalent to `.uri(":memory:")`).
         ///
         /// See: <https://www.sqlite.org/inmemorydb.html#sharedmemdb>
         case inMemory
 
-        /// A temporary, file-backed database (equivalent to `.URI("")`).
+        /// A temporary, file-backed database (equivalent to `.uri("")`).
         ///
         /// See: <https://www.sqlite.org/inmemorydb.html#temp_db>
         case temporary
@@ -93,7 +93,7 @@ public final class Connection {
     ///   - location: The location of the database. Creates a new database if it
     ///     doesn’t already exist (unless in read-only mode).
     ///
-    ///     Default: `.InMemory`.
+    ///     Default: `.inMemory`.
     ///
     ///   - readonly: Whether or not to open the database in a read-only state.
     ///
@@ -321,7 +321,7 @@ public final class Connection {
     ///
     ///   - mode: The mode in which a transaction acquires a lock.
     ///
-    ///     Default: `.Deferred`
+    ///     Default: `.deferred`
     ///
     ///   - block: A closure to run SQL statements within the transaction.
     ///     The transaction will be committed when the block returns. The block
@@ -579,7 +579,7 @@ public final class Connection {
             } else if result == nil {
                 sqlite3_result_null(context)
             } else {
-                fatalError("unsupported result type: \(result)")
+                fatalError("unsupported result type: \(String(describing: result))")
             }
         }
         var flags = SQLITE_UTF8

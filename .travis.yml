@@ -1,9 +1,10 @@
 language: objective-c
 rvm: 2.2
-osx_image: xcode8.2
+osx_image: xcode8.3
 env:
   global:
     - IOS_SIMULATOR="iPhone 6s"
+    - IOS_VERSION="10.3.1"
 matrix:
   include:
     - env: BUILD_SCHEME="SQLite iOS"

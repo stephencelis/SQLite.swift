@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "SQLite.swift"
-  s.version          = "0.11.2"
+  s.version          = "0.11.3"
   s.summary          = "A type-safe, Swift-language layer over SQLite3 for iOS and OS X."
 
   s.description      = <<-DESC
@@ -15,10 +15,10 @@ Pod::Spec.new do |s|
   s.social_media_url = 'https://twitter.com/stephencelis'
 
   s.module_name      = 'SQLite'
-  s.ios.deployment_target = "8.0"
-  s.tvos.deployment_target = "9.0"
-  s.osx.deployment_target = "10.9"
-  s.watchos.deployment_target = "2.0"
+  s.ios.deployment_target = "9.0"
+  s.tvos.deployment_target = "9.1"
+  s.osx.deployment_target = "10.10"
+  s.watchos.deployment_target = "2.2"
   s.default_subspec  = 'standard'
   s.pod_target_xcconfig = {
     'SWIFT_VERSION' => '3.0',

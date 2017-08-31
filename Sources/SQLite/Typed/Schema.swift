@@ -36,14 +36,15 @@ extension Table {
 
     // MARK: - CREATE TABLE
 
-    public func create(temporary: Bool = false, ifNotExists: Bool = false, block: (TableBuilder) -> Void) -> String {
+    public func create(temporary: Bool = false, ifNotExists: Bool = false, withoutRowid: Bool = false, block: (TableBuilder) -> Void) -> String {
         let builder = TableBuilder()
 
         block(builder)
 
         let clauses: [Expressible?] = [
-            create(Table.identifier, tableName(), temporary ? .Temporary : nil, ifNotExists),
-            "".wrap(builder.definitions) as Expression<Void>
+            create(Table.identifier, tableName(), temporary ? .temporary : nil, ifNotExists),
+            "".wrap(builder.definitions) as Expression<Void>,
+            withoutRowid ? Expression<Void>(literal: "WITHOUT ROWID") : nil
         ]
 
         return " ".join(clauses.flatMap { $0 }).asSQL()
@@ -51,7 +52,7 @@ extension Table {
 
     public func create(_ query: QueryType, temporary: Bool = false, ifNotExists: Bool = false) -> String {
         let clauses: [Expressible?] = [
-            create(Table.identifier, tableName(), temporary ? .Temporary : nil, ifNotExists),
+            create(Table.identifier, tableName(), temporary ? .temporary : nil, ifNotExists),
             Expression<Void>(literal: "AS"),
             query
         ]
@@ -132,7 +133,7 @@ extension Table {
 
     public func createIndex(_ columns: [Expressible], unique: Bool = false, ifNotExists: Bool = false) -> String {
         let clauses: [Expressible?] = [
-            create("INDEX", indexName(columns), unique ? .Unique : nil, ifNotExists),
+            create("INDEX", indexName(columns), unique ? .unique : nil, ifNotExists),
             Expression<Void>(literal: "ON"),
             tableName(qualified: false),
             "".wrap(columns) as Expression<Void>
@@ -175,7 +176,7 @@ extension View {
 
     public func create(_ query: QueryType, temporary: Bool = false, ifNotExists: Bool = false) -> String {
         let clauses: [Expressible?] = [
-            create(View.identifier, tableName(), temporary ? .Temporary : nil, ifNotExists),
+            create(View.identifier, tableName(), temporary ? .temporary : nil, ifNotExists),
             Expression<Void>(literal: "AS"),
             query
         ]
@@ -512,8 +513,8 @@ private func reference(_ primary: (QueryType, Expressible)) -> Expressible {
 
 private enum Modifier : String {
 
-    case Unique = "UNIQUE"
+    case unique = "UNIQUE"
 
-    case Temporary = "TEMPORARY"
+    case temporary = "TEMPORARY"
 
 }
