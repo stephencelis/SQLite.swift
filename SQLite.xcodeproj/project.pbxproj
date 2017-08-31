@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		01CC448D1F57FCA100E96BD1 /* MADBUpgrade.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CC44861F57FCA100E96BD1 /* MADBUpgrade.swift */; };
+		01CC448E1F57FCA100E96BD1 /* MAObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CC44871F57FCA100E96BD1 /* MAObject.swift */; };
+		01CC448F1F57FCA100E96BD1 /* MAObjectSchema.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CC44881F57FCA100E96BD1 /* MAObjectSchema.swift */; };
+		01CC44901F57FCA100E96BD1 /* MAOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CC44891F57FCA100E96BD1 /* MAOperation.swift */; };
+		01CC44911F57FCA100E96BD1 /* MAProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CC448A1F57FCA100E96BD1 /* MAProperty.swift */; };
+		01CC44921F57FCA100E96BD1 /* MASchemaCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CC448B1F57FCA100E96BD1 /* MASchemaCache.swift */; };
+		01CC44931F57FCA100E96BD1 /* SerialDispatch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 01CC448C1F57FCA100E96BD1 /* SerialDispatch.swift */; };
 		03A65E641C6BB0F60062603F /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03A65E5A1C6BB0F50062603F /* SQLite.framework */; };
 		03A65E711C6BB2CD0062603F /* usr/include/sqlite3.h in Headers */ = {isa = PBXBuildFile; fileRef = EE91808B1C46E34A0038162A /* usr/include/sqlite3.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		03A65E721C6BB2D30062603F /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -197,6 +204,13 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		01CC44861F57FCA100E96BD1 /* MADBUpgrade.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MADBUpgrade.swift; sourceTree = "<group>"; };
+		01CC44871F57FCA100E96BD1 /* MAObject.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAObject.swift; sourceTree = "<group>"; };
+		01CC44881F57FCA100E96BD1 /* MAObjectSchema.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAObjectSchema.swift; sourceTree = "<group>"; };
+		01CC44891F57FCA100E96BD1 /* MAOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAOperation.swift; sourceTree = "<group>"; };
+		01CC448A1F57FCA100E96BD1 /* MAProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MAProperty.swift; sourceTree = "<group>"; };
+		01CC448B1F57FCA100E96BD1 /* MASchemaCache.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MASchemaCache.swift; sourceTree = "<group>"; };
+		01CC448C1F57FCA100E96BD1 /* SerialDispatch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SerialDispatch.swift; sourceTree = "<group>"; };
 		03A65E5A1C6BB0F50062603F /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		03A65E631C6BB0F60062603F /* SQLiteTests tvOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQLiteTests tvOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		03A65E961C6BB3210062603F /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
@@ -331,6 +345,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		01CC44851F57FCA100E96BD1 /* ORM */ = {
+			isa = PBXGroup;
+			children = (
+				01CC44861F57FCA100E96BD1 /* MADBUpgrade.swift */,
+				01CC44871F57FCA100E96BD1 /* MAObject.swift */,
+				01CC44881F57FCA100E96BD1 /* MAObjectSchema.swift */,
+				01CC44891F57FCA100E96BD1 /* MAOperation.swift */,
+				01CC448A1F57FCA100E96BD1 /* MAProperty.swift */,
+				01CC448B1F57FCA100E96BD1 /* MASchemaCache.swift */,
+				01CC448C1F57FCA100E96BD1 /* SerialDispatch.swift */,
+			);
+			path = ORM;
+			sourceTree = "<group>";
+		};
 		39548A611CA63C740003E3B5 /* CocoaPods */ = {
 			isa = PBXGroup;
 			children = (
@@ -439,6 +467,7 @@
 		EE247AD51C3F04ED00AE3E12 /* SQLite */ = {
 			isa = PBXGroup;
 			children = (
+				01CC44851F57FCA100E96BD1 /* ORM */,
 				EE91808B1C46E34A0038162A /* usr/include/sqlite3.h */,
 				EE247AD61C3F04ED00AE3E12 /* SQLite.h */,
 				EE247AF71C3F06E900AE3E12 /* Foundation.swift */,
@@ -937,17 +966,24 @@
 				EE247B031C3F06E900AE3E12 /* Blob.swift in Sources */,
 				EE247B0B1C3F06E900AE3E12 /* Foundation.swift in Sources */,
 				EE247B041C3F06E900AE3E12 /* Connection.swift in Sources */,
+				01CC44921F57FCA100E96BD1 /* MASchemaCache.swift in Sources */,
+				01CC44931F57FCA100E96BD1 /* SerialDispatch.swift in Sources */,
 				EE247B111C3F06E900AE3E12 /* Expression.swift in Sources */,
 				EE247B0C1C3F06E900AE3E12 /* Helpers.swift in Sources */,
 				EE247B0E1C3F06E900AE3E12 /* Collation.swift in Sources */,
+				01CC448E1F57FCA100E96BD1 /* MAObject.swift in Sources */,
 				EE247B151C3F06E900AE3E12 /* Setter.swift in Sources */,
+				01CC448F1F57FCA100E96BD1 /* MAObjectSchema.swift in Sources */,
 				EE247B101C3F06E900AE3E12 /* CustomFunctions.swift in Sources */,
+				01CC448D1F57FCA100E96BD1 /* MADBUpgrade.swift in Sources */,
 				EE247B091C3F06E900AE3E12 /* FTS4.swift in Sources */,
 				EE247B081C3F06E900AE3E12 /* Value.swift in Sources */,
+				01CC44911F57FCA100E96BD1 /* MAProperty.swift in Sources */,
 				EE247B121C3F06E900AE3E12 /* Operators.swift in Sources */,
 				EE247B141C3F06E900AE3E12 /* Schema.swift in Sources */,
 				EE247B131C3F06E900AE3E12 /* Query.swift in Sources */,
 				EE247B061C3F06E900AE3E12 /* SQLite-Bridging.m in Sources */,
+				01CC44901F57FCA100E96BD1 /* MAOperation.swift in Sources */,
 				EE247B071C3F06E900AE3E12 /* Statement.swift in Sources */,
 				EE247B0D1C3F06E900AE3E12 /* AggregateFunctions.swift in Sources */,
 				19A1717B10CC941ACB5533D6 /* FTS5.swift in Sources */,
