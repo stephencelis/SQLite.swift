@@ -361,5 +361,25 @@ class QueryIntegrationTests : SQLiteTestCase {
         let changes = try! db.run(users.delete())
         XCTAssertEqual(0, changes)
     }
-
+    
+    func test_union() throws {
+        let expectedIDs = [
+            try db.run(users.insert(email <- "alice@example.com")),
+            try db.run(users.insert(email <- "sally@example.com"))
+        ]
+        
+        let query1 = users.filter(email == "alice@example.com")
+        let query2 = users.filter(email == "sally@example.com")
+        
+        let actualIDs = try db.prepare(query1.union(query2)).map { $0[id] }
+        XCTAssertEqual(expectedIDs, actualIDs)
+        
+        let query3 = users.select(users[*], Expression<Int>(literal: "1 AS weight")).filter(email == "sally@example.com")
+        let query4 = users.select(users[*], Expression<Int>(literal: "2 AS weight")).filter(email == "alice@example.com")
+        
+        print(query3.union(query4).order(Expression<Int>(literal: "weight")).asSQL())
+        
+        let orderedIDs = try db.prepare(query3.union(query4).order(Expression<Int>(literal: "weight"), email)).map { $0[id] }
+        XCTAssertEqual(Array(expectedIDs.reversed()), orderedIDs)
+    }
 }
