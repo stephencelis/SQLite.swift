@@ -180,6 +180,27 @@ extension QueryType {
         return query
     }
 
+    // MARK: UNION
+    
+    /// Adds a `UNION` clause to the query.
+    ///
+    ///     let users = Table("users")
+    ///     let email = Expression<String>("email")
+    ///
+    ///     users.filter(email == "alice@example.com").union(users.filter(email == "sally@example.com"))
+    ///     // SELECT * FROM "users" WHERE email = 'alice@example.com' UNION SELECT * FROM "users" WHERE email = 'sally@example.com'
+    ///
+    /// - Parameters:
+    ///
+    ///   - table: A query representing the other table.
+    ///
+    /// - Returns: A query with the given `UNION` clause applied.
+    public func union(_ table: QueryType) -> Self {
+        var query = self
+        query.clauses.union.append(table)
+        return query
+    }
+    
     // MARK: JOIN
 
     /// Adds a `JOIN` clause to the query.
@@ -565,6 +586,19 @@ extension QueryType {
             Expression<Void>(literal: "OFFSET \(offset)")
         ])
     }
+    
+    fileprivate var unionClause: Expressible? {
+        guard !clauses.union.isEmpty else {
+            return nil
+        }
+        
+        return " ".join(clauses.union.map { query in
+            " ".join([
+                Expression<Void>(literal: "UNION"),
+                query
+            ])
+        })
+    }
 
     // MARK: -
 
@@ -779,6 +813,7 @@ extension QueryType {
             joinClause,
             whereClause,
             groupByClause,
+            unionClause,
             orderClause,
             limitOffsetClause
         ]
@@ -1154,6 +1189,8 @@ public struct QueryClauses {
     var order = [Expressible]()
 
     var limit: (length: Int, offset: Int?)?
+    
+    var union = [QueryType]()
 
     fileprivate init(_ name: String, alias: String?, database: String?) {
         self.from = (name, alias, database)
