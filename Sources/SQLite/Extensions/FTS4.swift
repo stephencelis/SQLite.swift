@@ -153,14 +153,9 @@ extension Connection {
 
             let view:String.UTF8View = string.utf8
 
-            if let from = range.lowerBound.samePosition(in: view),
-               let to = range.upperBound.samePosition(in: view) {
-                offset.pointee += Int32(string[string.startIndex..<range.lowerBound].utf8.count)
-                length.pointee = Int32(view.distance(from: from, to: to))
-                return token
-            } else {
-                return nil
-            }
+            offset.pointee += Int32(string[string.startIndex..<range.lowerBound].utf8.count)
+            length.pointee = Int32(view.distance(from: range.lowerBound.samePosition(in: view), to: range.upperBound.samePosition(in: view)))
+            return token
         })
     }
 }
