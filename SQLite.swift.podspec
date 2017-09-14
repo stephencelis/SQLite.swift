@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "SQLite.swift"
-  s.version          = "0.11.3"
+  s.version          = "0.11.4"
   s.summary          = "A type-safe, Swift-language layer over SQLite3 for iOS and OS X."
 
   s.description      = <<-DESC
@@ -21,26 +21,35 @@ Pod::Spec.new do |s|
   s.watchos.deployment_target = "2.2"
   s.default_subspec  = 'standard'
   s.pod_target_xcconfig = {
-    'SWIFT_VERSION' => '3.0',
+    'SWIFT_VERSION' => '4.0',
   }
 
   s.subspec 'standard' do |ss|
     ss.source_files = 'Sources/{SQLite,SQLiteObjc}/**/*.{c,h,m,swift}'
     ss.exclude_files = 'Sources/**/Cipher.swift'
     ss.private_header_files = 'Sources/SQLiteObjc/*.h'
-
     ss.library = 'sqlite3'
+
+    ss.test_spec 'tests' do |test_spec|
+      test_spec.resources = 'Tests/SQLiteTests/fixtures/*'
+      test_spec.source_files = 'Tests/SQLiteTests/*.swift'
+    end
   end
 
   s.subspec 'standalone' do |ss|
     ss.source_files = 'Sources/{SQLite,SQLiteObjc}/**/*.{c,h,m,swift}'
     ss.exclude_files = 'Sources/**/Cipher.swift'
     ss.private_header_files = 'Sources/SQLiteObjc/*.h'
+
     ss.xcconfig = {
       'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_STANDALONE'
     }
+    ss.dependency 'sqlite3'
 
-    ss.dependency 'sqlite3', '>= 3.14.0'
+    ss.test_spec 'tests' do |test_spec|
+      test_spec.resources = 'Tests/SQLiteTests/fixtures/*'
+      test_spec.source_files = 'Tests/SQLiteTests/*.swift'
+    end
   end
 
   s.subspec 'SQLCipher' do |ss|
@@ -50,7 +59,11 @@ Pod::Spec.new do |s|
       'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_SQLCIPHER',
       'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1'
     }
-
     ss.dependency 'SQLCipher', '>= 3.4.0'
+
+    ss.test_spec 'tests' do |test_spec|
+      test_spec.resources = 'Tests/SQLiteTests/fixtures/*'
+      test_spec.source_files = 'Tests/SQLiteTests/*.swift'
+    end
   end
 end
