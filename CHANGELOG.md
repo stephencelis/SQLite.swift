@@ -1,6 +1,7 @@
 0.11.4 (xx-09-2017), [diff][diff-0.11.4]
 ========================================
 
+* Make Row.get throw instead of crash ([#649][])
 * Fix create/drop index functions ([#666][])
 * Set deployment target to 8.0 (#624, #671, #717)
 * Added support for the union query clause ([#723][])
@@ -55,6 +56,7 @@
 [#561]: https://github.com/stephencelis/SQLite.swift/issues/561
 [#571]: https://github.com/stephencelis/SQLite.swift/issues/571
 [#615]: https://github.com/stephencelis/SQLite.swift/pull/615
+[#649]: https://github.com/stephencelis/SQLite.swift/pull/649
 [#657]: https://github.com/stephencelis/SQLite.swift/issues/657
 [#666]: https://github.com/stephencelis/SQLite.swift/pull/666
 [#668]: https://github.com/stephencelis/SQLite.swift/pull/668
