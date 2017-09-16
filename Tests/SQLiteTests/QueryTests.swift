@@ -348,6 +348,22 @@ class QueryIntegrationTests : SQLiteTestCase {
         }
     }
 
+    func test_select_optional() {
+        for _ in try! db.prepare(users) {
+            // FIXME
+        }
+
+        let managerId = Expression<Int64?>("manager_id")
+        let managers = users.alias("managers")
+
+        let alice = try! db.run(users.insert(email <- "alice@example.com"))
+        _ = try! db.run(users.insert(email <- "betsy@example.com", managerId <- alice))
+
+        for user in try! db.prepare(users.join(managers, on: managers[id] == users[managerId])) {
+            _ = user[users[managerId]]
+        }
+    }
+
     func test_scalar() {
         XCTAssertEqual(0, try! db.scalar(users.count))
         XCTAssertEqual(false, try! db.scalar(users.exists))

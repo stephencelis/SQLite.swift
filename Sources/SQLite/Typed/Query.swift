@@ -726,47 +726,11 @@ extension QueryType {
         return Expression(".".join([tableName(), column]).expression)
     }
 
-    // FIXME: rdar://problem/18673897 // subscript<T>…
-
-    public subscript(column: Expression<Blob>) -> Expression<Blob> {
-        return namespace(column)
-    }
-    public subscript(column: Expression<Blob?>) -> Expression<Blob?> {
+    public subscript<T>(column: Expression<T>) -> Expression<T> {
         return namespace(column)
     }
 
-    public subscript(column: Expression<Bool>) -> Expression<Bool> {
-        return namespace(column)
-    }
-    public subscript(column: Expression<Bool?>) -> Expression<Bool?> {
-        return namespace(column)
-    }
-
-    public subscript(column: Expression<Double>) -> Expression<Double> {
-        return namespace(column)
-    }
-    public subscript(column: Expression<Double?>) -> Expression<Double?> {
-        return namespace(column)
-    }
-
-    public subscript(column: Expression<Int>) -> Expression<Int> {
-        return namespace(column)
-    }
-    public subscript(column: Expression<Int?>) -> Expression<Int?> {
-        return namespace(column)
-    }
-
-    public subscript(column: Expression<Int64>) -> Expression<Int64> {
-        return namespace(column)
-    }
-    public subscript(column: Expression<Int64?>) -> Expression<Int64?> {
-        return namespace(column)
-    }
-
-    public subscript(column: Expression<String>) -> Expression<String> {
-        return namespace(column)
-    }
-    public subscript(column: Expression<String?>) -> Expression<String?> {
+    public subscript<T>(column: Expression<T?>) -> Expression<T?> {
         return namespace(column)
     }
 
@@ -1102,50 +1066,13 @@ public struct Row {
         return valueAtIndex(idx)
     }
 
-    // FIXME: rdar://problem/18673897 // subscript<T>…
-
-    public subscript(column: Expression<Blob>) -> Blob {
-        return get(column)
-    }
-    public subscript(column: Expression<Blob?>) -> Blob? {
+    public subscript<T : Value>(column: Expression<T>) -> T {
         return get(column)
     }
 
-    public subscript(column: Expression<Bool>) -> Bool {
+    public subscript<T : Value>(column: Expression<T?>) -> T? {
         return get(column)
     }
-    public subscript(column: Expression<Bool?>) -> Bool? {
-        return get(column)
-    }
-
-    public subscript(column: Expression<Double>) -> Double {
-        return get(column)
-    }
-    public subscript(column: Expression<Double?>) -> Double? {
-        return get(column)
-    }
-
-    public subscript(column: Expression<Int>) -> Int {
-        return get(column)
-    }
-    public subscript(column: Expression<Int?>) -> Int? {
-        return get(column)
-    }
-
-    public subscript(column: Expression<Int64>) -> Int64 {
-        return get(column)
-    }
-    public subscript(column: Expression<Int64?>) -> Int64? {
-        return get(column)
-    }
-
-    public subscript(column: Expression<String>) -> String {
-        return get(column)
-    }
-    public subscript(column: Expression<String?>) -> String? {
-        return get(column)
-    }
-
 }
 
 /// Determines the join operator for a query’s `JOIN` clause.
