@@ -333,6 +333,16 @@ class QueryIntegrationTests : SQLiteTestCase {
             _ = user[users[managerId]]
         }
     }
+    
+    func test_prepareCursor() {
+        let names = ["a", "b", "c"]
+        try! InsertUsers(names)
+        
+        let emailColumn = Expression<String>("email")
+        let emails = try! db.prepareCursor(users).map { $0[emailColumn] }
+        
+        XCTAssertEqual(names.map({ "\($0)@example.com" }), emails.sorted())
+    }
 
     func test_scalar() {
         XCTAssertEqual(0, try! db.scalar(users.count))
