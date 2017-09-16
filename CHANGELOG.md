@@ -1,3 +1,12 @@
+0.11.4 (xx-09-2017), [diff][diff-0.11.4]
+========================================
+
+* Fix create/drop index functions ([#666][])
+* Set deployment target to 8.0 (#624, #671, #717)
+* Added support for the union query clause ([#723][])
+* Add support for ORDER and LIMIT on UPDATE and DELETE ([#722][])
+* Swift 4 support [(#668][])
+
 0.11.3 (30-03-2017), [diff][diff-0.11.3]
 ========================================
 
@@ -33,6 +42,7 @@
 [diff-0.11.1]: https://github.com/stephencelis/SQLite.swift/compare/0.11.0...0.11.1
 [diff-0.11.2]: https://github.com/stephencelis/SQLite.swift/compare/0.11.1...0.11.2
 [diff-0.11.3]: https://github.com/stephencelis/SQLite.swift/compare/0.11.2...0.11.3
+[diff-0.11.4]: https://github.com/stephencelis/SQLite.swift/compare/0.11.3...0.11.4
 
 [#481]: https://github.com/stephencelis/SQLit1e.swift/pull/481
 [#532]: https://github.com/stephencelis/SQLit1e.swift/issues/532
@@ -45,3 +55,7 @@
 [#561]: https://github.com/stephencelis/SQLite.swift/issues/561
 [#571]: https://github.com/stephencelis/SQLite.swift/issues/571
 [#615]: https://github.com/stephencelis/SQLite.swift/pull/615
+[#666]: https://github.com/stephencelis/SQLite.swift/pull/666
+[#668]: https://github.com/stephencelis/SQLite.swift/pull/668
+[#722]: https://github.com/stephencelis/SQLite.swift/pull/722
+[#723]: https://github.com/stephencelis/SQLite.swift/pull/723
