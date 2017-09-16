@@ -929,7 +929,7 @@ extension Connection {
                                 continue column
                             }
                         }
-                        fatalError("no such table: \(namespace)")
+                        throw QueryError.noSuchTable(name: namespace)
                     }
                     for q in queries {
                         try expandGlob(query.clauses.join.count > 0)(q)
@@ -1041,13 +1041,14 @@ public struct Row {
     /// - Parameter column: An expression representing a column selected in a Query.
     ///
     /// - Returns: The value for the given column.
-    public func get<V: Value>(_ column: Expression<V>) -> V {
-        return get(Expression<V?>(column))!
+    public func get<V: Value>(_ column: Expression<V>) throws -> V {
+        return try get(Expression<V?>(column))!
     }
-    public func get<V: Value>(_ column: Expression<V?>) -> V? {
+
+    public func get<V: Value>(_ column: Expression<V?>) throws -> V? {
         func valueAtIndex(_ idx: Int) -> V? {
             guard let value = values[idx] as? V.Datatype else { return nil }
-            return (V.fromDatatypeValue(value) as? V)!
+            return V.fromDatatypeValue(value) as? V
         }
 
         guard let idx = columnNames[column.template] else {
@@ -1055,11 +1056,11 @@ public struct Row {
 
             switch similar.count {
             case 0:
-                fatalError("no such column '\(column.template)' in columns: \(columnNames.keys.sorted())")
+                throw QueryError.noSuchColumn(name: column.template, columns: columnNames.keys.sorted())
             case 1:
                 return valueAtIndex(columnNames[similar[0]]!)
             default:
-                fatalError("ambiguous column '\(column.template)' (please disambiguate: \(similar))")
+                throw QueryError.ambiguousColumn(name: column.template, similar: similar)
             }
         }
 
@@ -1067,11 +1068,11 @@ public struct Row {
     }
 
     public subscript<T : Value>(column: Expression<T>) -> T {
-        return get(column)
+        return try! get(column)
     }
 
     public subscript<T : Value>(column: Expression<T?>) -> T? {
-        return get(column)
+        return try! get(column)
     }
 }
 

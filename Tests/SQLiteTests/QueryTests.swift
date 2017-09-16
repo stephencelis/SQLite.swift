@@ -412,4 +412,18 @@ class QueryIntegrationTests : SQLiteTestCase {
         let orderedIDs = try db.prepare(query3.union(query4).order(Expression<Int>(literal: "weight"), email)).map { $0[id] }
         XCTAssertEqual(Array(expectedIDs.reversed()), orderedIDs)
     }
+
+    func test_no_such_column() throws {
+        let doesNotExist = Expression<String>("doesNotExist")
+        try! InsertUser("alice")
+        let row = try! db.pluck(users.filter(email == "alice@example.com"))!
+
+        XCTAssertThrowsError(try row.get(doesNotExist)) { error in
+            if case QueryError.noSuchColumn(let name, _) = error {
+                XCTAssertEqual("\"doesNotExist\"", name)
+            } else {
+                XCTFail("unexpected error: \(error)")
+            }
+        }
+    }
 }
