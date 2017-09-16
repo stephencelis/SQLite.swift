@@ -1021,6 +1021,17 @@ extension Connection {
 
 }
 
+public enum SQLiteErrorType {
+    case unexpectedNullValue
+    case noSuchColumn
+    case ambiguousColumn
+}
+
+public struct SQLiteError: Error {
+    let type: SQLiteErrorType
+    let message: String
+}
+
 public struct Row {
 
     fileprivate let columnNames: [String: Int]
@@ -1037,13 +1048,18 @@ public struct Row {
     /// - Parameter column: An expression representing a column selected in a Query.
     ///
     /// - Returns: The value for the given column.
-    public func get<V: Value>(_ column: Expression<V>) -> V {
-        return get(Expression<V?>(column))!
+    public func get<V: Value>(_ column: Expression<V>) throws -> V {
+        if let value = try get(Expression<V?>(column)) {
+            return value
+        } else {
+            throw SQLiteError(type: .unexpectedNullValue, message: "Unexpected NULL value in column \(column.template)")
+        }
     }
-    public func get<V: Value>(_ column: Expression<V?>) -> V? {
+    
+    public func get<V: Value>(_ column: Expression<V?>) throws -> V? {
         func valueAtIndex(_ idx: Int) -> V? {
             guard let value = values[idx] as? V.Datatype else { return nil }
-            return (V.fromDatatypeValue(value) as? V)!
+            return V.fromDatatypeValue(value) as? V
         }
 
         guard let idx = columnNames[column.template] else {
@@ -1051,11 +1067,11 @@ public struct Row {
 
             switch similar.count {
             case 0:
-                fatalError("no such column '\(column.template)' in columns: \(columnNames.keys.sorted())")
+                throw SQLiteError(type: .noSuchColumn, message: "No such column '\(column.template)' in columns: \(columnNames.keys.sorted())")
             case 1:
                 return valueAtIndex(columnNames[similar[0]]!)
             default:
-                fatalError("ambiguous column '\(column.template)' (please disambiguate: \(similar))")
+                throw SQLiteError(type: .ambiguousColumn, message: "Ambiguous column '\(column.template)' (please disambiguate: \(similar))")
             }
         }
 
@@ -1065,45 +1081,45 @@ public struct Row {
     // FIXME: rdar://problem/18673897 // subscript<T>…
 
     public subscript(column: Expression<Blob>) -> Blob {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<Blob?>) -> Blob? {
-        return get(column)
+        return try! get(column)
     }
 
     public subscript(column: Expression<Bool>) -> Bool {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<Bool?>) -> Bool? {
-        return get(column)
+        return try! get(column)
     }
 
     public subscript(column: Expression<Double>) -> Double {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<Double?>) -> Double? {
-        return get(column)
+        return try! get(column)
     }
 
     public subscript(column: Expression<Int>) -> Int {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<Int?>) -> Int? {
-        return get(column)
+        return try! get(column)
     }
 
     public subscript(column: Expression<Int64>) -> Int64 {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<Int64?>) -> Int64? {
-        return get(column)
+        return try! get(column)
     }
 
     public subscript(column: Expression<String>) -> String {
-        return get(column)
+        return try! get(column)
     }
     public subscript(column: Expression<String?>) -> String? {
-        return get(column)
+        return try! get(column)
     }
 
 }
