@@ -5,7 +5,7 @@
 * Set deployment target to 8.0 (#624, #671, #717)
 * Added support for the union query clause ([#723][])
 * Add support for ORDER and LIMIT on UPDATE and DELETE ([#722][])
-* Swift 4 support [(#668][])
+* Swift 4 support ([#668][])
 
 0.11.3 (30-03-2017), [diff][diff-0.11.3]
 ========================================
