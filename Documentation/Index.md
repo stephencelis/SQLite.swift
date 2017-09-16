@@ -1578,7 +1578,7 @@ We can log SQL using the database’s `trace` function.
 
 ``` swift
 #if DEBUG
-    db.trace(print)
+    db.trace { print($0) }
 #endif
 ```
 

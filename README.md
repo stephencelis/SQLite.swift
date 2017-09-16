@@ -97,7 +97,7 @@ for row in try db.prepare("SELECT id, email FROM users") {
     // id: Optional(3), email: Optional("cathy@icloud.com")
 }
 
-db.scalar("SELECT count(*) FROM users") // 2
+try db.scalar("SELECT count(*) FROM users") // 2
 ```
 
 [Read the documentation][See Documentation] or explore more,
@@ -109,9 +109,7 @@ For a more comprehensive example, see [this article](http://masteringswift.blogs
 
 ## Installation
 
-> _Note:_ SQLite.swift requires Swift 3 (and [Xcode][] 8) or greater. If you absolutely
-> need compatibility with Swift 2.3 you can use the [swift-2.3][] branch or older
-> released versions. New development will happen exclusively on the master/Swift 3 branch.
+> _Note:_ SQLite.swift requires Swift 3 (and [Xcode][] 8). Use the [swift-4][] branch for Xcode 9 Beta.
 
 ### Carthage
 
@@ -266,4 +264,4 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
  - [SwiftSQLite](https://github.com/chrismsimpson/SwiftSQLite)
 
 [FMDB]: https://github.com/ccgus/fmdb
-[swift-2.3]: https://github.com/stephencelis/SQLite.swift/tree/swift-2.3
+[swift-4]: https://github.com/stephencelis/SQLite.swift/tree/swift-4
