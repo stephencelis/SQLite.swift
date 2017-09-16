@@ -683,7 +683,9 @@ extension QueryType {
             tableName(),
             Expression<Void>(literal: "SET"),
             ", ".join(values.map { " = ".join([$0.column, $0.value]) }),
-            whereClause
+            whereClause,
+            orderClause,
+            limitOffsetClause
         ]
 
         return Update(" ".join(clauses.flatMap { $0 }).expression)
@@ -695,7 +697,9 @@ extension QueryType {
         let clauses: [Expressible?] = [
             Expression<Void>(literal: "DELETE FROM"),
             tableName(),
-            whereClause
+            whereClause,
+            orderClause,
+            limitOffsetClause
         ]
 
         return Delete(" ".join(clauses.flatMap { $0 }).expression)

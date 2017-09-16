@@ -245,10 +245,24 @@ class QueryTests : XCTestCase {
         )
     }
 
+    func test_update_compilesUpdateLimitOrderExpression() {
+        AssertSQL(
+            "UPDATE \"users\" SET \"age\" = 30 ORDER BY \"id\" LIMIT 1",
+            users.order(id).limit(1).update(age <- 30)
+        )
+    }
+
     func test_delete_compilesDeleteExpression() {
         AssertSQL(
             "DELETE FROM \"users\" WHERE (\"id\" = 1)",
             users.filter(id == 1).delete()
+        )
+    }
+
+    func test_delete_compilesDeleteLimitOrderExpression() {
+        AssertSQL(
+            "DELETE FROM \"users\" ORDER BY \"id\" LIMIT 1",
+            users.order(id).limit(1).delete()
         )
     }
 
