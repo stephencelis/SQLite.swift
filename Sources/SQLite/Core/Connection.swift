@@ -626,29 +626,12 @@ public final class Connection {
 
     // MARK: - Error Handling
 
-    func sync<T>(_ block: @escaping () throws -> T) rethrows -> T {
-        var success: T?
-        var failure: Error?
-
-        let box: () -> Void = {
-            do {
-                success = try block()
-            } catch {
-                failure = error
-            }
-        }
-
+    func sync<T>(_ block: () throws -> T) rethrows -> T {
         if DispatchQueue.getSpecific(key: Connection.queueKey) == queueContext {
-            box()
+            return try block()
         } else {
-            queue.sync(execute: box) // FIXME: rdar://problem/21389236
+            return try queue.sync(execute: block)
         }
-
-        if let failure = failure {
-            try { () -> Void in throw failure }()
-        }
-
-        return success!
     }
 
     @discardableResult func check(_ resultCode: Int32, statement: Statement? = nil) throws -> Int32 {
