@@ -1031,7 +1031,7 @@ public struct Row {
 
     fileprivate let values: [Binding?]
 
-    fileprivate init(_ columnNames: [String: Int], _ values: [Binding?]) {
+    internal init(_ columnNames: [String: Int], _ values: [Binding?]) {
         self.columnNames = columnNames
         self.values = values
     }
@@ -1042,7 +1042,11 @@ public struct Row {
     ///
     /// - Returns: The value for the given column.
     public func get<V: Value>(_ column: Expression<V>) throws -> V {
-        return try get(Expression<V?>(column))!
+        if let value = try get(Expression<V?>(column)) {
+            return value
+        } else {
+            throw QueryError.unexpectedNullValue(name: column.template)
+        }
     }
 
     public func get<V: Value>(_ column: Expression<V?>) throws -> V? {
