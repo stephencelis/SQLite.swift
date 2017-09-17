@@ -79,7 +79,7 @@ class RowTests : XCTestCase {
         XCTAssertThrowsError(try row.get(Expression<Int>("foo"))) { error in
             if case QueryError.ambiguousColumn(let name, let columns) = error {
                 XCTAssertEqual("\"foo\"", name)
-                XCTAssertEqual(["table1.\"foo\"", "table2.\"foo\""], columns)
+                XCTAssertEqual(["table1.\"foo\"", "table2.\"foo\""], columns.sorted())
             } else {
                 XCTFail("unexpected error: \(error)")
             }
