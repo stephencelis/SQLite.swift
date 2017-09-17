@@ -1,5 +1,5 @@
 import XCTest
-import SQLite
+@testable import SQLite
 
 class QueryTests : XCTestCase {
 
@@ -333,10 +333,6 @@ class QueryIntegrationTests : SQLiteTestCase {
     // MARK: -
 
     func test_select() {
-        for _ in try! db.prepare(users) {
-            // FIXME
-        }
-
         let managerId = Expression<Int64>("manager_id")
         let managers = users.alias("managers")
 
@@ -349,10 +345,6 @@ class QueryIntegrationTests : SQLiteTestCase {
     }
 
     func test_select_optional() {
-        for _ in try! db.prepare(users) {
-            // FIXME
-        }
-
         let managerId = Expression<Int64?>("manager_id")
         let managers = users.alias("managers")
 

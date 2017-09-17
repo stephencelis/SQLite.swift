@@ -1,5 +1,5 @@
 import XCTest
-import SQLite
+@testable import SQLite
 
 class SQLiteTestCase : XCTestCase {
 
