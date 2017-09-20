@@ -894,58 +894,89 @@ public struct Delete : ExpressionType {
 
 }
 
+public struct RowCursor {
+    let statement: Statement
+    let columnNames: [String: Int]
+    
+    public func next() throws -> Row? {
+        return try statement.rowCursorNext().flatMap { Row(columnNames, $0) }
+    }
+    
+    public func map<T>(_ transform: (Row) throws -> T) throws -> [T] {
+        var elements = [T]()
+        while true {
+            if let row = try next() {
+                elements.append(try transform(row))
+            } else {
+                break
+            }
+        }
+        
+        return elements
+    }
+}
+
 extension Connection {
+    
+    public func prepareCursor(_ query: QueryType) throws -> RowCursor {
+        let expression = query.expression
+        let statement = try prepare(expression.template, expression.bindings)
+        return RowCursor(statement: statement, columnNames: try columnNamesForQuery(query))
+    }
 
     public func prepare(_ query: QueryType) throws -> AnySequence<Row> {
         let expression = query.expression
         let statement = try prepare(expression.template, expression.bindings)
 
-        let columnNames: [String: Int] = try {
-            var (columnNames, idx) = ([String: Int](), 0)
-            column: for each in query.clauses.select.columns {
-                var names = each.expression.template.characters.split { $0 == "." }.map(String.init)
-                let column = names.removeLast()
-                let namespace = names.joined(separator: ".")
-
-                func expandGlob(_ namespace: Bool) -> ((QueryType) throws -> Void) {
-                    return { (query: QueryType) throws -> (Void) in
-                        var q = type(of: query).init(query.clauses.from.name, database: query.clauses.from.database)
-                        q.clauses.select = query.clauses.select
-                        let e = q.expression
-                        var names = try self.prepare(e.template, e.bindings).columnNames.map { $0.quote() }
-                        if namespace { names = names.map { "\(query.tableName().expression.template).\($0)" } }
-                        for name in names { columnNames[name] = idx; idx += 1 }
-                    }
-                }
-
-                if column == "*" {
-                    var select = query
-                    select.clauses.select = (false, [Expression<Void>(literal: "*") as Expressible])
-                    let queries = [select] + query.clauses.join.map { $0.query }
-                    if !namespace.isEmpty {
-                        for q in queries {
-                            if q.tableName().expression.template == namespace {
-                                try expandGlob(true)(q)
-                                continue column
-                            }
-                        }
-                        throw QueryError.noSuchTable(name: namespace)
-                    }
-                    for q in queries {
-                        try expandGlob(query.clauses.join.count > 0)(q)
-                    }
-                    continue
-                }
-
-                columnNames[each.expression.template] = idx
-                idx += 1
-            }
-            return columnNames
-        }()
+        let columnNames = try columnNamesForQuery(query)
 
         return AnySequence {
             AnyIterator { statement.next().map { Row(columnNames, $0) } }
         }
+    }
+    
+    private func columnNamesForQuery(_ query: QueryType) throws -> [String: Int] {
+        var (columnNames, idx) = ([String: Int](), 0)
+        column: for each in query.clauses.select.columns {
+            var names = each.expression.template.characters.split { $0 == "." }.map(String.init)
+            let column = names.removeLast()
+            let namespace = names.joined(separator: ".")
+            
+            func expandGlob(_ namespace: Bool) -> ((QueryType) throws -> Void) {
+                return { (query: QueryType) throws -> (Void) in
+                    var q = type(of: query).init(query.clauses.from.name, database: query.clauses.from.database)
+                    q.clauses.select = query.clauses.select
+                    let e = q.expression
+                    var names = try self.prepare(e.template, e.bindings).columnNames.map { $0.quote() }
+                    if namespace { names = names.map { "\(query.tableName().expression.template).\($0)" } }
+                    for name in names { columnNames[name] = idx; idx += 1 }
+                }
+            }
+            
+            if column == "*" {
+                var select = query
+                select.clauses.select = (false, [Expression<Void>(literal: "*") as Expressible])
+                let queries = [select] + query.clauses.join.map { $0.query }
+                if !namespace.isEmpty {
+                    for q in queries {
+                        if q.tableName().expression.template == namespace {
+                            try expandGlob(true)(q)
+                            continue column
+                        }
+                        throw QueryError.noSuchTable(name: namespace)
+                    }
+                    throw QueryError.noSuchTable(name: namespace)
+                }
+                for q in queries {
+                    try expandGlob(query.clauses.join.count > 0)(q)
+                }
+                continue
+            }
+            
+            columnNames[each.expression.template] = idx
+            idx += 1
+        }
+        return columnNames
     }
 
     public func scalar<V : Value>(_ query: ScalarQuery<V>) throws -> V {
@@ -971,7 +1002,7 @@ extension Connection {
     }
 
     public func pluck(_ query: QueryType) throws -> Row? {
-        return try prepare(query.limit(1, query.clauses.limit?.offset)).makeIterator().next()
+        return try prepareCursor(query.limit(1, query.clauses.limit?.offset)).next()
     }
 
     /// Runs an `Insert` query.
