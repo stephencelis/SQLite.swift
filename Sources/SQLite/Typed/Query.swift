@@ -965,7 +965,7 @@ extension Connection {
                         }
                         throw QueryError.noSuchTable(name: namespace)
                     }
-                    fatalError("no such table: \(namespace)")
+                    throw QueryError.noSuchTable(name: namespace)
                 }
                 for q in queries {
                     try expandGlob(query.clauses.join.count > 0)(q)
