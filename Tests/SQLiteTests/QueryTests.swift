@@ -238,10 +238,52 @@ class QueryTests : XCTestCase {
         )
     }
 
+    func test_insert_encodable() throws {
+        let emails = Table("emails")
+        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
+        let insert = try emails.insert(value)
+        AssertSQL(
+            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\") VALUES (1, '2', 1, 3.0, 4.0)",
+            insert
+        )
+    }
+
+    func test_insert_encodable_with_nested_encodable() throws {
+        let emails = Table("emails")
+        let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
+        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: "optional", sub: value1)
+        let insert = try emails.insert(value)
+        AssertSQL(
+            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"optional\", \"sub\") VALUES (1, '2', 1, 3.0, 4.0, 'optional', x'7b22626f6f6c223a747275652c22737472696e67223a2232222c22666c6f6174223a332c22696e74223a312c22646f75626c65223a347d')",
+            insert
+        )
+    }
+
     func test_update_compilesUpdateExpression() {
         AssertSQL(
             "UPDATE \"users\" SET \"age\" = 30, \"admin\" = 1 WHERE (\"id\" = 1)",
             users.filter(id == 1).update(age <- 30, admin <- true)
+        )
+    }
+
+    func test_update_encodable() throws {
+        let emails = Table("emails")
+        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
+        let update = try emails.update(value)
+        AssertSQL(
+            "UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0",
+            update
+        )
+    }
+
+    func test_update_encodable_with_nested_encodable() throws {
+        let emails = Table("emails")
+        let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
+        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: value1)
+        let update = try emails.update(value)
+        AssertSQL(
+            "UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0, \"sub\" = x'7b22626f6f6c223a747275652c22737472696e67223a2232222c22666c6f6174223a332c22696e74223a312c22646f75626c65223a347d'",
+            update
         )
     }
 
@@ -332,6 +374,41 @@ class QueryIntegrationTests : SQLiteTestCase {
         for user in try! db.prepare(users.join(managers, on: managers[id] == users[managerId])) {
             _ = user[users[managerId]]
         }
+    }
+
+    func test_select_codable() throws {
+        let table = Table("codable")
+        try db.run(table.create { builder in
+            builder.column(Expression<Int>("int"))
+            builder.column(Expression<String>("string"))
+            builder.column(Expression<Bool>("bool"))
+            builder.column(Expression<Double>("float"))
+            builder.column(Expression<Double>("double"))
+            builder.column(Expression<String?>("optional"))
+            builder.column(Expression<Data>("sub"))
+        })
+
+        let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
+        let value = TestCodable(int: 5, string: "6", bool: true, float: 7, double: 8, optional: "optional", sub: value1)
+
+        try db.run(table.insert(value))
+
+        let rows = try db.prepare(table)
+        let values: [TestCodable] = try rows.map({ try $0.decode() })
+        XCTAssertEqual(values.count, 1)
+        XCTAssertEqual(values[0].int, 5)
+        XCTAssertEqual(values[0].string, "6")
+        XCTAssertEqual(values[0].bool, true)
+        XCTAssertEqual(values[0].float, 7)
+        XCTAssertEqual(values[0].double, 8)
+        XCTAssertEqual(values[0].optional, "optional")
+        XCTAssertEqual(values[0].sub?.int, 1)
+        XCTAssertEqual(values[0].sub?.string, "2")
+        XCTAssertEqual(values[0].sub?.bool, true)
+        XCTAssertEqual(values[0].sub?.float, 3)
+        XCTAssertEqual(values[0].sub?.double, 4)
+        XCTAssertNil(values[0].sub?.optional)
+        XCTAssertNil(values[0].sub?.sub)
     }
 
     func test_scalar() {
