@@ -22,6 +22,8 @@
 // THE SOFTWARE.
 //
 
+import Foundation
+
 public protocol QueryType : Expressible {
 
     var clauses: QueryClauses { get set }
@@ -652,8 +654,7 @@ extension QueryType {
     ///
     /// - Returns: An `INSERT` statement fort the encodable object
     public func insert(_ encodable: Encodable, userInfo: [CodingUserInfoKey:Any] = [:], otherSetters: [Setter] = []) throws -> Insert {
-        let encoder = SQLiteEncoder()
-        encoder.userInfo = userInfo
+        let encoder = SQLiteEncoder(userInfo: userInfo)
         try encodable.encode(to: encoder)
         return self.insert(encoder.setters + otherSetters)
     }
@@ -691,8 +692,7 @@ extension QueryType {
     ///
     /// - Returns: An `UPDATE` statement fort the encodable object
     public func update(_ encodable: Encodable, userInfo: [CodingUserInfoKey:Any] = [:], otherSetters: [Setter] = []) throws -> Update {
-        let encoder = SQLiteEncoder()
-        encoder.userInfo = userInfo
+        let encoder = SQLiteEncoder(userInfo: userInfo)
         try encodable.encode(to: encoder)
         return self.update(encoder.setters + otherSetters)
     }
@@ -1117,13 +1117,15 @@ public struct Row {
     /// any sort of object relationships. If you want to support relationships between objects you will
     /// have to provide your own Decodable implementations that decodes the correct columns.
     ///
+    /// - Parameter: userInfo
+    ///
     /// - Returns: a decoded object from this row
-    public func decode<V: Decodable>() throws -> V {
-        return try V(from: self.decoder)
+    public func decode<V: Decodable>(userInfo: [CodingUserInfoKey: Any] = [:]) throws -> V {
+        return try V(from: self.decoder(userInfo: userInfo))
     }
 
-    public var decoder: Decoder {
-        return SQLiteDecoder(row: self)
+    public func decoder(userInfo: [CodingUserInfoKey: Any] = [:]) -> Decoder {
+        return SQLiteDecoder(row: self, userInfo: userInfo)
     }
 
     // FIXME: rdar://problem/18673897 // subscript<T>…
@@ -1330,7 +1332,11 @@ fileprivate class SQLiteEncoder: Encoder {
 
     fileprivate var setters: [SQLite.Setter] = []
     let codingPath: [CodingKey] = []
-    var userInfo: [CodingUserInfoKey:Any] = [:]
+    let userInfo: [CodingUserInfoKey: Any]
+
+    init(userInfo: [CodingUserInfoKey: Any]) {
+        self.userInfo = userInfo
+    }
 
     func singleValueContainer() -> SingleValueEncodingContainer {
         fatalError("not supported")
@@ -1457,10 +1463,11 @@ class SQLiteDecoder : Decoder {
 
     let row: Row
     let codingPath: [CodingKey] = []
-    var userInfo: [CodingUserInfoKey : Any] = [:]
+    let userInfo: [CodingUserInfoKey: Any]
 
-    init(row: Row) {
+    init(row: Row, userInfo: [CodingUserInfoKey: Any]) {
         self.row = row
+        self.userInfo = userInfo
     }
 
     func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key : CodingKey {
