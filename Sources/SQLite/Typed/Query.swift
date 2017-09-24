@@ -894,35 +894,19 @@ public struct Delete : ExpressionType {
 
 }
 
-public struct RowCursor {
+
+public struct RowCursor: FailableIterator {
+    public typealias Element = Row
     let statement: Statement
     let columnNames: [String: Int]
-    
-    public func next() throws -> Row? {
-        return try statement.rowCursorNext().flatMap { Row(columnNames, $0) }
-    }
-    
-    public func map<T>(_ transform: (Row) throws -> T) throws -> [T] {
-        var elements = [T]()
-        while true {
-            if let row = try next() {
-                elements.append(try transform(row))
-            } else {
-                break
-            }
-        }
-        
-        return elements
+
+    public func failableNext() throws -> Row? {
+        return try statement.failableNext().flatMap { Row(columnNames, $0) }
     }
 }
 
+
 extension Connection {
-    
-    public func prepareCursor(_ query: QueryType) throws -> RowCursor {
-        let expression = query.expression
-        let statement = try prepare(expression.template, expression.bindings)
-        return RowCursor(statement: statement, columnNames: try columnNamesForQuery(query))
-    }
 
     public func prepare(_ query: QueryType) throws -> AnySequence<Row> {
         let expression = query.expression
@@ -935,6 +919,12 @@ extension Connection {
         }
     }
     
+    public func prepareRowCursor(_ query: QueryType) throws -> RowCursor {
+        let expression = query.expression
+        let statement = try prepare(expression.template, expression.bindings)
+        return RowCursor(statement: statement, columnNames: try columnNamesForQuery(query))
+    }
+
     private func columnNamesForQuery(_ query: QueryType) throws -> [String: Int] {
         var (columnNames, idx) = ([String: Int](), 0)
         column: for each in query.clauses.select.columns {
@@ -1002,7 +992,7 @@ extension Connection {
     }
 
     public func pluck(_ query: QueryType) throws -> Row? {
-        return try prepareCursor(query.limit(1, query.clauses.limit?.offset)).next()
+        return try prepareRowCursor(query.limit(1, query.clauses.limit?.offset)).failableNext()
     }
 
     /// Runs an `Insert` query.

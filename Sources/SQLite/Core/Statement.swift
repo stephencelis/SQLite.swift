@@ -191,14 +191,6 @@ public final class Statement {
 
 }
 
-extension Statement {
-    
-    func rowCursorNext() throws -> [Binding?]? {
-        return try step() ? Array(row) : nil
-    }
-    
-}
-
 extension Statement : Sequence {
 
     public func makeIterator() -> Statement {
@@ -208,12 +200,38 @@ extension Statement : Sequence {
 
 }
 
-extension Statement : IteratorProtocol {
+public protocol FailableIterator : IteratorProtocol {
+    func failableNext() throws -> Self.Element?
+}
 
-    public func next() -> [Binding?]? {
-        return try! step() ? Array(row) : nil
+extension FailableIterator {
+    public func next() -> Element? {
+        return try! failableNext()
     }
 
+    public func map<T>(_ transform: (Element) throws -> T) throws -> [T] {
+        var elements = [T]()
+        while let row = try failableNext() {
+            elements.append(try transform(row))
+        }
+        return elements
+    }
+}
+
+extension Array {
+    public init<I: FailableIterator>(_ failableIterator: I) throws where I.Element == Element {
+        self.init()
+        while let row = try failableIterator.failableNext() {
+            append(row)
+        }
+    }
+}
+
+extension Statement : FailableIterator {
+    public typealias Element = [Binding?]
+    public func failableNext() throws -> [Binding?]? {
+        return try step() ? Array(row) : nil
+    }
 }
 
 extension Statement : CustomStringConvertible {
