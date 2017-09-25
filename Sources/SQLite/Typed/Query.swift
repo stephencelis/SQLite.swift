@@ -903,8 +903,15 @@ public struct RowIterator: FailableIterator {
     public func failableNext() throws -> Row? {
         return try statement.failableNext().flatMap { Row(columnNames, $0) }
     }
-}
 
+    public func map<T>(_ transform: (Element) throws -> T) throws -> [T] {
+        var elements = [T]()
+        while let row = try failableNext() {
+            elements.append(try transform(row))
+        }
+        return elements
+    }
+}
 
 extension Connection {
 

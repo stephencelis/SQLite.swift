@@ -208,14 +208,6 @@ extension FailableIterator {
     public func next() -> Element? {
         return try! failableNext()
     }
-
-    public func map<T>(_ transform: (Element) throws -> T) throws -> [T] {
-        var elements = [T]()
-        while let row = try failableNext() {
-            elements.append(try transform(row))
-        }
-        return elements
-    }
 }
 
 extension Array {

@@ -354,6 +354,15 @@ class QueryIntegrationTests : SQLiteTestCase {
         XCTAssertEqual(names.map({ "\($0)@example.com" }), emails.sorted())
     }
 
+    func test_ambiguousMap() {
+        let names = ["a", "b", "c"]
+        try! InsertUsers(names)
+
+        let emails = try! db.prepare("select email from users", []).map { $0[0] as! String  }
+
+        XCTAssertEqual(names.map({ "\($0)@example.com" }), emails.sorted())
+    }
+
     func test_select_optional() {
         let managerId = Expression<Int64?>("manager_id")
         let managers = users.alias("managers")
