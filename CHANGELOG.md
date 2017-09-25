@@ -1,7 +1,7 @@
 0.11.4 (xx-09-2017), [diff][diff-0.11.4]
 ========================================
 
-* Add cursor type for more safety ([#647](), [#726][])
+* Add `RowIterator` for more safety ([#647][], [#726][])
 * Make Row.get throw instead of crash ([#649][])
 * Fix create/drop index functions ([#666][])
 * Set deployment target to 8.0 (#624, #671, #717)

@@ -344,12 +344,12 @@ class QueryIntegrationTests : SQLiteTestCase {
         }
     }
 
-    func test_prepareRowCursor() {
+    func test_prepareRowIterator() {
         let names = ["a", "b", "c"]
         try! InsertUsers(names)
 
         let emailColumn = Expression<String>("email")
-        let emails = try! db.prepareRowCursor(users).map { $0[emailColumn] }
+        let emails = try! db.prepareRowIterator(users).map { $0[emailColumn] }
 
         XCTAssertEqual(names.map({ "\($0)@example.com" }), emails.sorted())
     }

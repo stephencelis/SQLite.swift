@@ -895,7 +895,7 @@ public struct Delete : ExpressionType {
 }
 
 
-public struct RowCursor: FailableIterator {
+public struct RowIterator: FailableIterator {
     public typealias Element = Row
     let statement: Statement
     let columnNames: [String: Int]
@@ -919,10 +919,11 @@ extension Connection {
         }
     }
     
-    public func prepareRowCursor(_ query: QueryType) throws -> RowCursor {
+
+    public func prepareRowIterator(_ query: QueryType) throws -> RowIterator {
         let expression = query.expression
         let statement = try prepare(expression.template, expression.bindings)
-        return RowCursor(statement: statement, columnNames: try columnNamesForQuery(query))
+        return RowIterator(statement: statement, columnNames: try columnNamesForQuery(query))
     }
 
     private func columnNamesForQuery(_ query: QueryType) throws -> [String: Int] {
@@ -992,7 +993,7 @@ extension Connection {
     }
 
     public func pluck(_ query: QueryType) throws -> Row? {
-        return try prepareRowCursor(query.limit(1, query.clauses.limit?.offset)).failableNext()
+        return try prepareRowIterator(query.limit(1, query.clauses.limit?.offset)).failableNext()
     }
 
     /// Runs an `Insert` query.
