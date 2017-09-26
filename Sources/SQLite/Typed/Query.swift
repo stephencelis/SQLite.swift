@@ -1254,7 +1254,8 @@ fileprivate class SQLiteEncoder: Encoder {
             }
             else {
                 let encoded = try JSONEncoder().encode(value)
-                self.encoder.setters.append(Expression(key.stringValue) <- encoded)
+                let string = String(data: encoded, encoding: .utf8)
+                self.encoder.setters.append(Expression(key.stringValue) <- string)
             }
         }
 
@@ -1408,11 +1409,15 @@ class SQLiteDecoder : Decoder {
         }
 
         func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T: Swift.Decodable {
-            guard let data = try self.row.get(Expression<Data?>(key.stringValue)) else {
+            if type == Data.self {
+                let data = try self.row.get(Expression<Data>(key.stringValue))
+                return data as! T
+            }
+            guard let JSONString = try self.row.get(Expression<String?>(key.stringValue)) else {
                 throw DecodingError(description: "an unsupported type was found")
             }
-            if type == Data.self {
-                return data as! T
+            guard let data = JSONString.data(using: .utf8) else {
+                throw DecodingError(description: "invalid utf8 data found")
             }
             return try JSONDecoder().decode(type, from: data)
         }

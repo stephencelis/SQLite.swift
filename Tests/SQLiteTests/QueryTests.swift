@@ -253,8 +253,10 @@ class QueryTests : XCTestCase {
         let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: "optional", sub: value1)
         let insert = try emails.insert(value)
+        let encodedJSON = try JSONEncoder().encode(value1)
+        let encodedJSONString = String(data: encodedJSON, encoding: .utf8)!
         AssertSQL(
-            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"optional\", \"sub\") VALUES (1, '2', 1, 3.0, 4.0, 'optional', x'7b22626f6f6c223a747275652c22737472696e67223a2232222c22666c6f6174223a332c22696e74223a312c22646f75626c65223a347d')",
+            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"optional\", \"sub\") VALUES (1, '2', 1, 3.0, 4.0, 'optional', '\(encodedJSONString)')",
             insert
         )
     }
@@ -288,8 +290,10 @@ class QueryTests : XCTestCase {
         let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: value1)
         let update = try emails.update(value)
+        let encodedJSON = try JSONEncoder().encode(value1)
+        let encodedJSONString = String(data: encodedJSON, encoding: .utf8)!
         AssertSQL(
-            "UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0, \"sub\" = x'7b22626f6f6c223a747275652c22737472696e67223a2232222c22666c6f6174223a332c22696e74223a312c22646f75626c65223a347d'",
+            "UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0, \"sub\" = '\(encodedJSONString)'",
             update
         )
     }
