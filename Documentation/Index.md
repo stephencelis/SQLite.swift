@@ -172,16 +172,16 @@ It is the recommended approach for using SQLite.swift in OSX CLI applications.
 
  1. Add the following to your `Package.swift` file:
 
-  ``` swift
+  ```swift
   dependencies: [
-    .Package(url: "https://github.com/stephencelis/SQLite.swift.git", majorVersion: 0, minor: 11)
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.11.4")
   ]
   ```
 
  2. Build your project:
 
   ``` sh
-  $ swift build -Xlinker -lsqlite3
+  $ swift build
   ```
 
 [Swift Package Manager]: https://swift.org/package-manager
