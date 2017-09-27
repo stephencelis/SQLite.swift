@@ -86,10 +86,6 @@ extension Row {
 
 /// Generates a list of settings for an Encodable object
 fileprivate class SQLiteEncoder: Encoder {
-    struct EncodingError: Error, CustomStringConvertible {
-        let description: String
-    }
-
     class SQLiteKeyedEncodingContainer<MyKey: CodingKey>: KeyedEncodingContainerProtocol {
         typealias Key = MyKey
 
@@ -144,39 +140,39 @@ fileprivate class SQLiteEncoder: Encoder {
         }
 
         func encode(_ value: Int8, forKey key: Key) throws {
-            throw EncodingError(description: "encoding an Int8 is not supported")
+            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: self.codingPath, debugDescription: "encoding an Int8 is not supported"))
         }
 
         func encode(_ value: Int16, forKey key: Key) throws {
-            throw EncodingError(description: "encoding an Int16 is not supported")
+            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: self.codingPath, debugDescription: "encoding an Int16 is not supported"))
         }
 
         func encode(_ value: Int32, forKey key: Key) throws {
-            throw EncodingError(description: "encoding an Int32 is not supported")
+            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: self.codingPath, debugDescription: "encoding an Int32 is not supported"))
         }
 
         func encode(_ value: Int64, forKey key: Key) throws {
-            throw EncodingError(description: "encoding an Int64 is not supported")
+            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: self.codingPath, debugDescription: "encoding an Int64 is not supported"))
         }
 
         func encode(_ value: UInt, forKey key: Key) throws {
-            throw EncodingError(description: "encoding an UInt is not supported")
+            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: self.codingPath, debugDescription: "encoding an UInt is not supported"))
         }
 
         func encode(_ value: UInt8, forKey key: Key) throws {
-            throw EncodingError(description: "encoding an UInt8 is not supported")
+            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: self.codingPath, debugDescription: "encoding an UInt8 is not supported"))
         }
 
         func encode(_ value: UInt16, forKey key: Key) throws {
-            throw EncodingError(description: "encoding an UInt16 is not supported")
+            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: self.codingPath, debugDescription: "encoding an UInt16 is not supported"))
         }
 
         func encode(_ value: UInt32, forKey key: Key) throws {
-            throw EncodingError(description: "encoding an UInt32 is not supported")
+            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: self.codingPath, debugDescription: "encoding an UInt32 is not supported"))
         }
 
         func encode(_ value: UInt64, forKey key: Key) throws {
-            throw EncodingError(description: "encoding an UInt64 is not supported")
+            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: self.codingPath, debugDescription: "encoding an UInt64 is not supported"))
         }
 
         func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key) -> KeyedEncodingContainer<NestedKey> where NestedKey : CodingKey {
@@ -210,10 +206,6 @@ fileprivate class SQLiteEncoder: Encoder {
 }
 
 fileprivate class SQLiteDecoder : Decoder {
-    struct DecodingError : Error, CustomStringConvertible {
-        let description: String
-    }
-
     class SQLiteKeyedDecodingContainer<MyKey: CodingKey> : KeyedDecodingContainerProtocol {
         typealias Key = MyKey
 
@@ -245,39 +237,40 @@ fileprivate class SQLiteDecoder : Decoder {
         }
 
         func decode(_ type: Int8.Type, forKey key: Key) throws -> Int8 {
-            throw DecodingError(description: "decoding an Int8 is not supported")
+            throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding an Int8 is not supported"))
         }
 
         func decode(_ type: Int16.Type, forKey key: Key) throws -> Int16 {
-            throw DecodingError(description: "decoding an Int16 is not supported")
+            throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding an Int16 is not supported"))
         }
 
         func decode(_ type: Int32.Type, forKey key: Key) throws -> Int32 {
-            throw DecodingError(description: "decoding an Int32 is not supported")
+            throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding an Int32 is not supported"))
         }
 
         func decode(_ type: Int64.Type, forKey key: Key) throws -> Int64 {
-            throw DecodingError(description: "decoding an Int64 is not supported")
+            throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding an UInt64 is not supported"))
         }
 
         func decode(_ type: UInt.Type, forKey key: Key) throws -> UInt {
-            throw DecodingError(description: "decoding an UInt is not supported")
+            throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding an UInt is not supported"))
+
         }
 
         func decode(_ type: UInt8.Type, forKey key: Key) throws -> UInt8 {
-            throw DecodingError(description: "decoding an UInt8 is not supported")
+            throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding an UInt8 is not supported"))
         }
 
         func decode(_ type: UInt16.Type, forKey key: Key) throws -> UInt16 {
-            throw DecodingError(description: "decoding an UInt16 is not supported")
+            throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding an UInt16 is not supported"))
         }
 
         func decode(_ type: UInt32.Type, forKey key: Key) throws -> UInt32 {
-            throw DecodingError(description: "decoding an UInt32 is not supported")
+            throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding an UInt32 is not supported"))
         }
 
         func decode(_ type: UInt64.Type, forKey key: Key) throws -> UInt64 {
-            throw DecodingError(description: "decoding an UInt64 is not supported")
+            throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding an UInt64 is not supported"))
         }
 
         func decode(_ type: Float.Type, forKey key: Key) throws -> Float {
@@ -298,28 +291,28 @@ fileprivate class SQLiteDecoder : Decoder {
                 return data as! T
             }
             guard let JSONString = try self.row.get(Expression<String?>(key.stringValue)) else {
-                throw DecodingError(description: "an unsupported type was found")
+                throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "an unsupported type was found"))
             }
             guard let data = JSONString.data(using: .utf8) else {
-                throw DecodingError(description: "invalid utf8 data found")
+                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "invalid utf8 data found"))
             }
             return try JSONDecoder().decode(type, from: data)
         }
 
         func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: Key) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
-            throw DecodingError(description: "decoding nested containers is not supported")
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding nested containers is not supported"))
         }
 
         func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
-            throw DecodingError(description: "decoding unkeyed containers is not supported")
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding unkeyed containers is not supported"))
         }
 
         func superDecoder() throws -> Swift.Decoder {
-            throw DecodingError(description: "decoding super encoders is not supported")
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding super encoders containers is not supported"))
         }
 
         func superDecoder(forKey key: Key) throws -> Swift.Decoder {
-            throw DecodingError(description: "decoding super encoders is not supported")
+            throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding super decoders is not supported"))
         }
     }
 
@@ -337,11 +330,11 @@ fileprivate class SQLiteDecoder : Decoder {
     }
 
     func unkeyedContainer() throws -> UnkeyedDecodingContainer {
-        throw DecodingError(description: "decoding an unkeyed container is not supported by the SQLiteDecoder")
+        throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding an unkeyed container is not supported"))
     }
 
     func singleValueContainer() throws -> SingleValueDecodingContainer {
-        throw DecodingError(description: "decoding a single value is not supported by the SQLiteDecoder")
+        throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding a single value container is not supported"))
     }
 }
 

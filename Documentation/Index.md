@@ -73,7 +73,6 @@
 
 [Carthage][] is a simple, decentralized dependency manager for Cocoa. To
 install SQLite.swift with Carthage:
-## Custom Types
  1. Make sure Carthage is [installed][Carthage Installation].
 
  2. Update your Cartfile to include the following:
