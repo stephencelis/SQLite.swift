@@ -1,11 +1,15 @@
 import XCTest
+import Foundation
+import Dispatch
 @testable import SQLite
 
 #if SQLITE_SWIFT_STANDALONE
 import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif SWIFT_PACKAGE
+#elseif os(Linux)
+import CSQLite
+#else
 import SQLite3
 #endif
 
@@ -336,7 +340,7 @@ class ConnectionTests : SQLiteTestCase {
         let stmt = try! db.prepare("SELECT *, sleep(?) FROM users", 0.1)
         try! stmt.run()
 
-        let deadline = DispatchTime.now() + Double(Int64(10 * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC)
+        let deadline = DispatchTime.now() + 0.01
         _ = DispatchQueue(label: "queue", qos: .background).asyncAfter(deadline: deadline, execute: db.interrupt)
         AssertThrows(try stmt.run())
     }

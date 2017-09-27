@@ -1,6 +1,7 @@
 0.11.4 (xx-09-2017), [diff][diff-0.11.4]
 ========================================
 
+* Preliminary Linux support ([#315][], [#681][])
 * Add `RowIterator` for more safety ([#647][], [#726][])
 * Make Row.get throw instead of crash ([#649][])
 * Fix create/drop index functions ([#666][])
@@ -46,6 +47,7 @@
 [diff-0.11.3]: https://github.com/stephencelis/SQLite.swift/compare/0.11.2...0.11.3
 [diff-0.11.4]: https://github.com/stephencelis/SQLite.swift/compare/0.11.3...0.11.4
 
+[#315]: https://github.com/stephencelis/SQLit1e.swift/issues/315
 [#481]: https://github.com/stephencelis/SQLit1e.swift/pull/481
 [#532]: https://github.com/stephencelis/SQLit1e.swift/issues/532
 [#541]: https://github.com/stephencelis/SQLit1e.swift/issues/541
@@ -62,6 +64,7 @@
 [#657]: https://github.com/stephencelis/SQLite.swift/issues/657
 [#666]: https://github.com/stephencelis/SQLite.swift/pull/666
 [#668]: https://github.com/stephencelis/SQLite.swift/pull/668
+[#681]: https://github.com/stephencelis/SQLite.swift/issues/681
 [#722]: https://github.com/stephencelis/SQLite.swift/pull/722
 [#723]: https://github.com/stephencelis/SQLite.swift/pull/723
 [#726]: https://github.com/stephencelis/SQLite.swift/pull/726

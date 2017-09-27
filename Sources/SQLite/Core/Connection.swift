@@ -22,13 +22,15 @@
 // THE SOFTWARE.
 //
 
-import Foundation.NSUUID
+import Foundation
 import Dispatch
 #if SQLITE_SWIFT_STANDALONE
 import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif SWIFT_PACKAGE
+#elseif os(Linux)
+import CSQLite
+#else
 import SQLite3
 #endif
 
@@ -413,7 +415,7 @@ public final class Connection {
     ///
     ///       db.trace { SQL in print(SQL) }
     public func trace(_ callback: ((String) -> Void)?) {
-        #if SQLITE_SWIFT_SQLCIPHER
+        #if SQLITE_SWIFT_SQLCIPHER || os(Linux)
             trace_v1(callback)
         #else
             if #available(iOS 10.0, OSX 10.12, tvOS 10.0, watchOS 3.0, *) {
@@ -583,9 +585,11 @@ public final class Connection {
             }
         }
         var flags = SQLITE_UTF8
+        #if !os(Linux)
         if deterministic {
             flags |= SQLITE_DETERMINISTIC
         }
+        #endif
         sqlite3_create_function_v2(handle, function, Int32(argc), flags, unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { context, argc, value in
             let function = unsafeBitCast(sqlite3_user_data(context), to: Function.self)
             function(context, argc, value)
@@ -702,7 +706,7 @@ extension Result : CustomStringConvertible {
     }
 }
 
-#if !SQLITE_SWIFT_SQLCIPHER
+#if !SQLITE_SWIFT_SQLCIPHER && !os(Linux)
 @available(iOS 10.0, OSX 10.12, tvOS 10.0, watchOS 3.0, *)
 extension Connection {
     fileprivate func trace_v2(_ callback: ((String) -> Void)?) {

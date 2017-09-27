@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-import Foundation.NSData
+import Foundation
 
 
 extension ExpressionType where UnderlyingType : Number {
