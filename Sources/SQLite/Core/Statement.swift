@@ -200,10 +200,33 @@ extension Statement : Sequence {
 
 }
 
+public enum ResultOrError<ResultType> {
+	case success(ResultType)
+	case error(Error)
+	
+	public func map<T>(_ transform: (ResultType) throws -> T) rethrows -> ResultOrError<T> {
+		switch self {
+		case let .success(result): return try .success(transform(result))
+		case let .error(error): return .error(error)
+		}
+	}
+	
+	public func unwrapOrThrow() throws -> ResultType {
+		switch self {
+		case let .success(result): return result
+		case let .error(error): throw error
+		}
+	}
+}
+
 extension Statement : IteratorProtocol {
 
-    public func next() -> [Binding?]? {
-        return try! step() ? Array(row) : nil
+    public func next() -> ResultOrError<[Binding?]>? {
+		do {
+			return try step() ? .success(Array(row)) : nil
+		} catch {
+			return .error(error)
+		}
     }
 
 }

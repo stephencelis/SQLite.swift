@@ -892,7 +892,7 @@ public struct Delete : ExpressionType {
 
 extension Connection {
 
-    public func prepare(_ query: QueryType) throws -> AnySequence<Row> {
+    public func prepare(_ query: QueryType) throws -> AnySequence<ResultOrError<Row>> {
         let expression = query.expression
         let statement = try prepare(expression.template, expression.bindings)
 
@@ -940,7 +940,7 @@ extension Connection {
         }()
 
         return AnySequence {
-            AnyIterator { statement.next().map { Row(columnNames, $0) } }
+			AnyIterator { statement.next().map { $0.map { Row(columnNames, $0) } } }
         }
     }
 
@@ -967,7 +967,7 @@ extension Connection {
     }
 
     public func pluck(_ query: QueryType) throws -> Row? {
-        return try prepare(query.limit(1, query.clauses.limit?.offset)).makeIterator().next()
+        return try prepare(query.limit(1, query.clauses.limit?.offset)).makeIterator().next()?.unwrapOrThrow()
     }
 
     /// Runs an `Insert` query.
