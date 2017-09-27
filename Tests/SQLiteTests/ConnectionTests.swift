@@ -5,7 +5,7 @@ import XCTest
 import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif SWIFT_PACKAGE || COCOAPODS
+#elseif SWIFT_PACKAGE
 import SQLite3
 #endif
 
