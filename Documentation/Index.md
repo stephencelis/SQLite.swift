@@ -50,6 +50,7 @@
     - [Date-Time Values](#date-time-values)
     - [Binary Data](#binary-data)
     - [Custom Type Caveats](#custom-type-caveats)
+  - [Codable Types](#codable-types)
   - [Other Operators](#other-operators)
   - [Core SQLite Functions](#core-sqlite-functions)
   - [Aggregate SQLite Functions](#aggregate-sqlite-functions)
@@ -72,7 +73,7 @@
 
 [Carthage][] is a simple, decentralized dependency manager for Cocoa. To
 install SQLite.swift with Carthage:
-
+## Custom Types
  1. Make sure Carthage is [installed][Carthage Installation].
 
  2. Update your Cartfile to include the following:
@@ -1296,6 +1297,93 @@ extension Row {
 }
 ```
 
+## Codable Types
+
+Codable types were introduced as a part of Swift 4 to allow serializing and deserializing types. SQLite.swift
+supports the insertion, updating, and retrieval of basic Codable types.
+
+### Inserting Codable Types
+
+Queries have a method to allow inserting an Encodable type.
+
+``` swift
+try db.run(users.insert(user))
+
+```
+
+There are two other parameters also available to this method:
+
+- `userInfo` is a dictionary that is passed to the encoder and made available to encodable types to allow customizing their behavior.
+- `otherSetters` allows you to specify additional setters on top of those that are generated from the encodable types themselves.
+
+### Updating Codable Types
+
+Queries have a method to allow updating an Encodable type.
+
+``` swift
+try db.run(users.update(user))
+
+```
+
+There are two other parameters also available to this method:
+
+- `userInfo` is a dictionary that is passed to the encoder and made available to encodable types to allow customizing their behavior.
+- `otherSetters` allows you to specify additional setters on top of those that are generated from the encodable types themselves.
+
+### Retrieving Codable Types
+
+Rows have a method to decode a Decodable type.
+
+``` swift
+let loadedUsers: [User] = try db.prepare(users).map { row in
+    return try row.decode()
+}
+```
+
+You can also create a decoder to use manually yourself. This can be useful for example if you are using
+the [Facade pattern](https://en.wikipedia.org/wiki/Facade_pattern) to hide subclasses behind a super class.
+For example, you may want to encode an Image type that can be multiple different formats such as PNGImage, JPGImage,
+or HEIFIamge. You will need to determine the correct subclass before you know which type to decode.
+
+``` swift
+enum ImageCodingKeys: String, CodingKey {
+    case kind
+}
+
+enum ImageKind: Int, Codable {
+    case png, jpg, heif
+}
+
+let loadedImages: [Image] = try db.prepare(images).map { row in
+    let decoder = row.decoder()
+    let container = try decoder.container(keyedBy: ImageCodingKeys.self)
+    switch try container.decode(ImageKind.self, forKey: .kind) {
+    case .png:
+        return try PNGImage(from: decoder)
+    case .jpg:
+        return try JPGImage(from: decoder)
+    case .heif:
+        return try HEIFImage(from: decoder)
+    }
+}
+```
+
+Both of the above methods also have the following optional parameter:
+
+- `userInfo` is a dictionary that is passed to the decoder and made available to decodable types to allow customizing their behavior.
+
+### Restrictions
+
+There are a few restrictions on using Codable types:
+
+- The encodable and decodable objects can only use the following types:
+    - Int, Bool, Float, Double, String
+    - Nested Codable types that will be encoded as JSON to a single column
+- These methods will not handle object relationships for you. You must write your own Codable and Decodable
+implementations if you wish to support this.
+- The Codable types may not try to access nested containers or nested unkeyed containers
+- The Codable types may not access single value containers or unkeyed containers
+- The Codable types may not access super decoders or encoders
 
 ## Other Operators
 
