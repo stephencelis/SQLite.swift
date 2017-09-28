@@ -518,4 +518,16 @@ class QueryIntegrationTests : SQLiteTestCase {
             }
         }
     }
+
+    func test_catchConstraintError() {
+        try! db.run(users.insert(email <- "alice@example.com"))
+        do {
+            try db.run(users.insert(email <- "alice@example.com"))
+            XCTFail("expected error")
+        } catch let Result.error(_, code, _) where code == SQLITE_CONSTRAINT {
+            // expected
+        } catch let error {
+            XCTFail("unexpected error: \(error)")
+        }
+    }
 }

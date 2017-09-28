@@ -650,6 +650,20 @@ follow similar patterns.
 > // INSERT INTO "timestamps" DEFAULT VALUES
 > ```
 
+### Handling specific SQLite errors
+
+You can pattern match on the error to selectively catch SQLite errors:
+
+```swift
+do {
+    try db.run(users.insert(email <- "alice@mac.com"))
+    try db.run(users.insert(email <- "alice@mac.com"))
+} catch let Result.error(_, code, _) where code == SQLITE_CONSTRAINT {
+    print("constraint failed")
+} catch let error {
+    print("insertion failed: \(error)")
+}
+```
 
 ### Setters
 
