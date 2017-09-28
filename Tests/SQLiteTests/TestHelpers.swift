@@ -2,15 +2,13 @@ import XCTest
 @testable import SQLite
 
 class SQLiteTestCase : XCTestCase {
-
-    var trace = [String: Int]()
-
-    let db = try! Connection()
-
+    private var trace:[String: Int]!
     let users = Table("users")
+    let db = try! Connection()
 
     override func setUp() {
         super.setUp()
+        trace = [String:Int]()
 
         db.trace { SQL in
             print(SQL)
