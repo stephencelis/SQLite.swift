@@ -1,6 +1,7 @@
 0.11.4 (xx-09-2017), [diff][diff-0.11.4]
 ========================================
 
+* Collate .nocase strictly enforces NOT NULL even when using Optional ([#697][])
 * Fix transactions not being rolled back when committing fails ([#426][])
 * Add possibility to have expression on right hand side of like ([#591][])
 * Added Date and Time functions ([#142][])
@@ -72,6 +73,7 @@
 [#666]: https://github.com/stephencelis/SQLite.swift/pull/666
 [#668]: https://github.com/stephencelis/SQLite.swift/pull/668
 [#681]: https://github.com/stephencelis/SQLite.swift/issues/681
+[#697]: https://github.com/stephencelis/SQLite.swift/issues/697
 [#722]: https://github.com/stephencelis/SQLite.swift/pull/722
 [#723]: https://github.com/stephencelis/SQLite.swift/pull/723
 [#733]: https://github.com/stephencelis/SQLite.swift/pull/733

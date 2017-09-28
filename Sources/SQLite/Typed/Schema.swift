@@ -300,27 +300,27 @@ public final class TableBuilder {
     }
 
     public func column<V : Value>(_ name: Expression<V?>, unique: Bool = false, check: Expression<Bool>? = nil, defaultValue: Expression<V>? = nil, collate: Collation) where V.Datatype == String {
-        column(name, V.declaredDatatype, nil, false, unique, check, defaultValue, nil, collate)
+        column(name, V.declaredDatatype, nil, true, unique, check, defaultValue, nil, collate)
     }
 
     public func column<V : Value>(_ name: Expression<V?>, unique: Bool = false, check: Expression<Bool>? = nil, defaultValue: Expression<V?>, collate: Collation) where V.Datatype == String {
-        column(name, V.declaredDatatype, nil, false, unique, check, defaultValue, nil, collate)
+        column(name, V.declaredDatatype, nil, true, unique, check, defaultValue, nil, collate)
     }
 
     public func column<V : Value>(_ name: Expression<V?>, unique: Bool = false, check: Expression<Bool>? = nil, defaultValue: V, collate: Collation) where V.Datatype == String {
-        column(name, V.declaredDatatype, nil, false, unique, check, defaultValue, nil, collate)
+        column(name, V.declaredDatatype, nil, true, unique, check, defaultValue, nil, collate)
     }
 
     public func column<V : Value>(_ name: Expression<V?>, unique: Bool = false, check: Expression<Bool?>, defaultValue: Expression<V>? = nil, collate: Collation) where V.Datatype == String {
-        column(name, V.declaredDatatype, nil, false, unique, check, defaultValue, nil, collate)
+        column(name, V.declaredDatatype, nil, true, unique, check, defaultValue, nil, collate)
     }
 
     public func column<V : Value>(_ name: Expression<V?>, unique: Bool = false, check: Expression<Bool?>, defaultValue: Expression<V?>, collate: Collation) where V.Datatype == String {
-        column(name, V.declaredDatatype, nil, false, unique, check, defaultValue, nil, collate)
+        column(name, V.declaredDatatype, nil, true, unique, check, defaultValue, nil, collate)
     }
 
     public func column<V : Value>(_ name: Expression<V?>, unique: Bool = false, check: Expression<Bool?>, defaultValue: V, collate: Collation) where V.Datatype == String {
-        column(name, V.declaredDatatype, nil, false, unique, check, defaultValue, nil, collate)
+        column(name, V.declaredDatatype, nil, true, unique, check, defaultValue, nil, collate)
     }
 
     fileprivate func column(_ name: Expressible, _ datatype: String, _ primaryKey: PrimaryKey?, _ null: Bool, _ unique: Bool, _ check: Expressible?, _ defaultValue: Expressible?, _ references: (QueryType, Expressible)?, _ collate: Collation?) {
