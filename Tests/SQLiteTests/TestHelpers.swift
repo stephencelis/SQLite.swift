@@ -13,21 +13,22 @@ class SQLiteTestCase : XCTestCase {
 
         db.trace { SQL in
             print(SQL)
-            self.trace[SQL] = (self.trace[SQL] ?? 0) + 1
+            self.trace[SQL, default: 0] += 1
         }
     }
 
     func CreateUsersTable() {
-        try! db.execute(
-            "CREATE TABLE \"users\" (" +
-                "id INTEGER PRIMARY KEY, " +
-                "email TEXT NOT NULL UNIQUE, " +
-                "age INTEGER, " +
-                "salary REAL, " +
-                "admin BOOLEAN NOT NULL DEFAULT 0 CHECK (admin IN (0, 1)), " +
-                "manager_id INTEGER, " +
-                "FOREIGN KEY(manager_id) REFERENCES users(id)" +
-            ")"
+        try! db.execute("""
+            CREATE TABLE users (
+                id INTEGER PRIMARY KEY, 
+                email TEXT NOT NULL UNIQUE, 
+                age INTEGER, 
+                salary REAL,
+                admin BOOLEAN NOT NULL DEFAULT 0 CHECK (admin IN (0, 1)),
+                manager_id INTEGER,
+                FOREIGN KEY(manager_id) REFERENCES users(id)
+            )
+            """
         )
     }
 
