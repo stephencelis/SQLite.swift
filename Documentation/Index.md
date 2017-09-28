@@ -288,8 +288,8 @@ let db = try Connection(path, readonly: true)
 
 > _Note:_ Signed applications cannot modify their bundle resources. If you
 > bundle a database file with your app for the purpose of bootstrapping, copy
-> it to a writable location _before_ establishing a connection (see [Read-
-> Write Databases](#read-write-databases), above, for typical, writable
+> it to a writable location _before_ establishing a connection (see
+> [Read-Write Databases](#read-write-databases), above, for typical, writable
 > locations).
 >
 > See these two Stack Overflow questions for more information about iOS apps
@@ -515,8 +515,8 @@ several parameters that map to various column constraints and clauses.
 
   - `defaultValue` adds a `DEFAULT` clause to a column definition and _only_
     accepts a value (or expression) matching the column’s type. This value is
-    used if none is explicitly provided during [an `INSERT`](#inserting-
-    rows).
+    used if none is explicitly provided during
+    [an `INSERT`](#inserting-rows).
 
     ```swift
     t.column(name, defaultValue: "Anonymous")
@@ -587,8 +587,8 @@ using the following functions.
   - `check` adds a `CHECK` constraint to the table in the form of a boolean
     expression (`Expression<Bool>`). Boolean expressions can be easily built
     using [filter operators and functions](#filter-operators-and-functions).
-    (See also the `check` parameter under [Column Constraints](#column-
-    constraints).)
+    (See also the `check` parameter under
+    [Column Constraints](#column-constraints).)
 
     ```swift
     t.check(balance >= 0)
@@ -812,8 +812,8 @@ The `join` function takes a [query](#queries) object (for the table being
 joined on), a join condition (`on`), and is prefixed with an optional join
 type (default: `.inner`). Join conditions can be built using [filter
 operators and functions](#filter-operators-and-functions), generally require
-[namespacing](#column-namespacing), and sometimes require [aliasing](#table-
-aliasing).
+[namespacing](#column-namespacing), and sometimes require
+[aliasing](#table-aliasing).
 
 
 ##### Column Namespacing
@@ -1361,14 +1361,14 @@ system [SQLiteMigrationManager.swift][].
 SQLite.swift supports serializing and deserializing any custom type as long
 as it conforms to the `Value` protocol.
 
-> ```swift
-> protocol Value {
->     typealias Datatype: Binding
->     class var declaredDatatype: String { get }
->     class func fromDatatypeValue(datatypeValue: Datatype) -> Self
->     var datatypeValue: Datatype { get }
-> }
-> ```
+```swift
+protocol Value {
+    typealias Datatype: Binding
+    class var declaredDatatype: String { get }
+    class func fromDatatypeValue(datatypeValue: Datatype) -> Self
+    var datatypeValue: Datatype { get }
+}
+```
 
 The `Datatype` must be one of the basic Swift types that values are bridged
 through before serialization and deserialization (see [Building Type-Safe SQL
@@ -1385,64 +1385,19 @@ typed expressions can be.
 ### Date-Time Values
 
 In SQLite, `DATETIME` columns can be treated as strings or numbers, so we can
-transparently bridge `Date` objects through Swift’s `String` or `Int` types.
+transparently bridge `Date` objects through Swift’s `String` types.
 
-To serialize `Date` objects as `TEXT` values (in ISO 8601), we’ll use
-`String`.
-
-```swift
-extension Date: Value {
-    class var declaredDatatype: String {
-        return String.declaredDatatype
-    }
-    class func fromDatatypeValue(stringValue: String) -> Date {
-        return SQLDateFormatter.dateFromString(stringValue)!
-    }
-    var datatypeValue: String {
-        return SQLDateFormatter.stringFromDate(self)
-    }
-}
-
-let SQLDateFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-    formatter.locale = Locale(localeIdentifier: "en_US_POSIX")
-    formatter.timeZone = TimeZone(forSecondsFromGMT: 0)
-    return formatter
-}()
-```
-
-We can also treat them as `INTEGER` values using `Int`.
-
-```swift
-extension Date: Value {
-    class var declaredDatatype: String {
-        return Int.declaredDatatype
-    }
-    class func fromDatatypeValue(intValue: Int) -> Self {
-        return self(timeIntervalSince1970: TimeInterval(intValue))
-    }
-    var datatypeValue: Int {
-        return Int(timeIntervalSince1970)
-    }
-}
-```
-
-> _Note:_ SQLite’s `CURRENT_DATE`, `CURRENT_TIME`, and `CURRENT_TIMESTAMP`
-> helpers return `TEXT` values. Because of this (and the fact that Unix time
-> is far less human-readable when we’re faced with the raw data), we
-> recommend using the `TEXT` extension.
-
-Once defined, we can use these types directly in SQLite statements.
+We can use these types directly in SQLite statements.
 
 ```swift
 let published_at = Expression<Date>("published_at")
 
 let published = posts.filter(published_at <= Date())
-// extension where Datatype == String:
-//     SELECT * FROM "posts" WHERE "published_at" <= '2014-11-18 12:45:30'
-// extension where Datatype == Int:
-//     SELECT * FROM "posts" WHERE "published_at" <= 1416314730
+// SELECT * FROM "posts" WHERE "published_at" <= '2014-11-18T12:45:30.000'
+
+let startDate = Date(timeIntervalSince1970: 0)
+let published = posts.filter(startDate...Date() ~= published_at)
+// SELECT * FROM "posts" WHERE "published_at" BETWEEN '1970-01-01T00:00:00.000' AND '2014-11-18T12:45:30.000'
 ```
 
 
@@ -1469,7 +1424,7 @@ extension UIImage: Value {
 > information on encoding and decoding custom types.
 
 
-[Archives and Serializations Programming Guide]: https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/Archiving/Archiving.html#//apple_ref/doc/uid/10000047i
+[Archives and Serializations Programming Guide]: https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/Archiving/Archiving.html
 
 ### Custom Type Caveats
 
@@ -1707,7 +1662,7 @@ let typeConformsTo: (Expression<String>, Expression<String>) -> Expression<Bool>
 
 > _Note:_ The optional `deterministic` parameter is an optimization that
 > causes the function to be created with
-> [`SQLITE_DETERMINISTIC`](https://www.sqlite.org/c3ref/create_function.html).
+> [`SQLITE_DETERMINISTIC`](https://www.sqlite.org/c3ref/c_deterministic.html).
 
 Note `typeConformsTo`’s signature:
 
@@ -1733,8 +1688,8 @@ let images = attachments.filter(typeConformsTo(UTI, kUTTypeImage))
 // SELECT * FROM "attachments" WHERE "typeConformsTo"("UTI", 'public.image')
 ```
 
-> _Note:_ The return type of a function must be [a core SQL type](#building-
-> type-safe-sql) or [conform to `Value`](#custom-types).
+> _Note:_ The return type of a function must be
+> [a core SQL type](#building-type-safe-sql) or [conform to `Value`](#custom-types).
 
 We can create loosely-typed functions by handling an array of raw arguments,
 instead.
@@ -1754,7 +1709,7 @@ let stmt = try db.prepare("SELECT * FROM attachments WHERE typeConformsTo(UTI, ?
 for row in stmt.bind(kUTTypeImage) { /* ... */ }
 ```
 
-[UTTypeConformsTo]: https://developer.apple.com/library/ios/documentation/MobileCoreServices/Reference/UTTypeRef/index.html#//apple_ref/c/func/UTTypeConformsTo
+[UTTypeConformsTo]: https://developer.apple.com/documentation/coreservices/1444079-uttypeconformsto
 
 ## Custom Collations
 
@@ -1858,29 +1813,30 @@ let replies = emails.filter(emails.match("subject:\"Re:\"*))
 
 ## Executing Arbitrary SQL
 
-Though we recommend you stick with SQLite.swift’s [type-safe system
-](#building-type-safe-sql) whenever possible, it is possible to simply and
-safely prepare and execute raw SQL statements via a `Database` connection
+Though we recommend you stick with SQLite.swift’s
+[type-safe system](#building-type-safe-sql) whenever possible, it is possible
+to simply and safely prepare and execute raw SQL statements via a `Database` connection
 using the following functions.
 
   - `execute` runs an arbitrary number of SQL statements as a convenience.
 
     ```swift
-    try db.execute(
-        "BEGIN TRANSACTION;" +
-        "CREATE TABLE users (" +
-            "id INTEGER PRIMARY KEY NOT NULL," +
-            "email TEXT UNIQUE NOT NULL," +
-            "name TEXT" +
-        ");" +
-        "CREATE TABLE posts (" +
-            "id INTEGER PRIMARY KEY NOT NULL," +
-            "title TEXT NOT NULL," +
-            "body TEXT NOT NULL," +
-            "published_at DATETIME" +
-        ");" +
-        "PRAGMA user_version = 1;" +
-        "COMMIT TRANSACTION;"
+    try db.execute("""
+        BEGIN TRANSACTION;
+        CREATE TABLE users (
+            id INTEGER PRIMARY KEY NOT NULL,
+            email TEXT UNIQUE NOT NULL,
+            name TEXT
+        );
+        CREATE TABLE posts (
+            id INTEGER PRIMARY KEY NOT NULL,
+            title TEXT NOT NULL,
+            body TEXT NOT NULL,
+            published_at DATETIME
+        );
+        PRAGMA user_version = 1;
+        COMMIT TRANSACTION;
+        """
     )
     ```
 
