@@ -156,14 +156,21 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_transaction_rollsBackTransactionsIfCommitsFail() {
+        let sqliteVersion = String(describing: try! db.scalar("SELECT sqlite_version()")!)
+                .split(separator: ".").flatMap { Int($0) }
+        // PRAGMA defer_foreign_keys only supported in SQLite >= 3.8.0
+        guard sqliteVersion[0] == 3 && sqliteVersion[1] >= 8 else {
+            NSLog("skipping test for SQLite version \(sqliteVersion)")
+            return
+        }
         // This test case needs to emulate an environment where the individual statements succeed, but committing the
         // transaction fails. Using deferred foreign keys is one option to achieve this.
         try! db.execute("PRAGMA foreign_keys = ON;")
+        try! db.execute("PRAGMA defer_foreign_keys = ON;")
         let stmt = try! db.prepare("INSERT INTO users (email, manager_id) VALUES (?, ?)", "alice@example.com", 100)
 
         do {
             try db.transaction {
-                try db.execute("PRAGMA defer_foreign_keys = ON;")
                 try stmt.run()
             }
             XCTFail("expected error")
