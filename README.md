@@ -26,7 +26,10 @@ syntax _and_ intent.
  - [Well-documented][See Documentation]
  - Extensively tested
  - SQLCipher support via CocoaPods
- - Active support at [StackOverflow](http://stackoverflow.com/questions/tagged/sqlite.swift), and [Gitter Chat Room](https://gitter.im/stephencelis/SQLite.swift) (_experimental_)
+ - Active support at
+   [StackOverflow](http://stackoverflow.com/questions/tagged/sqlite.swift),
+   and [Gitter Chat Room](https://gitter.im/stephencelis/SQLite.swift)
+   (_experimental_)
 
 [Full-text search]: Documentation/Index.md#full-text-search
 [See Documentation]: Documentation/Index.md#sqliteswift-documentation
@@ -34,7 +37,7 @@ syntax _and_ intent.
 
 ## Usage
 
-``` swift
+```swift
 import SQLite
 
 let db = try Connection("path/to/db.sqlite3")
@@ -81,7 +84,7 @@ try db.scalar(users.count) // 0
 SQLite.swift also works as a lightweight, Swift-friendly wrapper over the C
 API.
 
-``` swift
+```swift
 let stmt = try db.prepare("INSERT INTO users (email) VALUES (?)")
 for email in ["betty@icloud.com", "cathy@icloud.com"] {
     try stmt.run(email)
@@ -105,7 +108,13 @@ interactively, from the Xcode project’s playground.
 
 ![SQLite.playground Screen Shot](Documentation/Resources/playground@2x.png)
 
-For a more comprehensive example, see [this article](http://masteringswift.blogspot.com/2015/09/create-data-access-layer-with.html) and the [companion repository](https://github.com/hoffmanjon/SQLiteDataAccessLayer2/tree/master).
+For a more comprehensive example, see
+[this article][Create a Data Access Layer with SQLite.swift and Swift 2]
+and the [companion repository][SQLiteDataAccessLayer2].
+
+
+[Create a Data Access Layer with SQLite.swift and Swift 2]: http://masteringswift.blogspot.com/2015/09/create-data-access-layer-with.html
+[SQLiteDataAccessLayer2]: https://github.com/hoffmanjon/SQLiteDataAccessLayer2/tree/master
 
 ## Installation
 
@@ -120,11 +129,12 @@ install SQLite.swift with Carthage:
 
  2. Update your Cartfile to include the following:
 
-    ```
+    ```ruby
     github "stephencelis/SQLite.swift" ~> 0.11.4
     ```
 
- 3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
+ 3. Run `carthage update` and
+    [add the appropriate framework][Carthage Usage].
 
 
 [Carthage]: https://github.com/Carthage/Carthage
@@ -137,9 +147,10 @@ install SQLite.swift with Carthage:
 [CocoaPods][] is a dependency manager for Cocoa projects. To install
 SQLite.swift with CocoaPods:
 
- 1. Make sure CocoaPods is [installed][CocoaPods Installation]. (SQLite.swift requires version 1.0.0 or greater.)
+ 1. Make sure CocoaPods is [installed][CocoaPods Installation]. (SQLite.swift
+    requires version 1.0.0 or greater.)
 
-    ``` sh
+    ```sh
     # Using the default Ruby install will require you to use sudo when
     # installing and updating gems.
     [sudo] gem install cocoapods
@@ -147,7 +158,7 @@ SQLite.swift with CocoaPods:
 
  2. Update your Podfile to include the following:
 
-    ``` ruby
+    ```ruby
     use_frameworks!
 
     target 'YourAppTargetName' do
@@ -162,7 +173,8 @@ SQLite.swift with CocoaPods:
 
 ### Swift Package Manager
 
-The [Swift Package Manager][] is a tool for managing the distribution of Swift code.
+The [Swift Package Manager][] is a tool for managing the distribution of
+Swift code.
 
 1. Add the following to your `Package.swift` file:
 
@@ -174,7 +186,7 @@ The [Swift Package Manager][] is a tool for managing the distribution of Swift c
 
 2. Build your project:
 
-  ``` sh
+  ```sh
   $ swift build
   ```
 
@@ -196,9 +208,11 @@ To install SQLite.swift as an Xcode sub-project:
 
  4. **Add**.
 
-Some additional steps are required to install the application on an actual device:
+Some additional steps are required to install the application on an actual
+device:
 
- 5. In the **General** tab, click the **+** button under **Embedded Binaries**.
+ 5. In the **General** tab, click the **+** button under **Embedded
+    Binaries**.
 
  6. Select the appropriate **SQLite.framework** for your platform.
 
@@ -243,7 +257,8 @@ file](./LICENSE.txt) for more information.
 
 These projects enhance or use SQLite.swift:
 
- - [SQLiteMigrationManager.swift](https://github.com/garriguv/SQLiteMigrationManager.swift) (inspired by [FMDBMigrationManager](https://github.com/layerhq/FMDBMigrationManager))
+ - [SQLiteMigrationManager.swift][] (inspired by
+   [FMDBMigrationManager][])
 
 
 ## Alternatives
@@ -257,5 +272,7 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
  - [SwiftData](https://github.com/ryanfowler/SwiftData)
  - [SwiftSQLite](https://github.com/chrismsimpson/SwiftSQLite)
 
-[FMDB]: https://github.com/ccgus/fmdb
 [swift-4]: https://github.com/stephencelis/SQLite.swift/tree/swift-4
+[SQLiteMigrationManager.swift]: https://github.com/garriguv/SQLiteMigrationManager.swift
+[FMDB]: https://github.com/ccgus/fmdb
+[FMDBMigrationManager]: https://github.com/layerhq/FMDBMigrationManager
