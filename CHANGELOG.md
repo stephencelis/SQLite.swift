@@ -1,6 +1,7 @@
 0.11.4 (xx-09-2017), [diff][diff-0.11.4]
 ========================================
 
+* Fix transactions not being rolled back when committing fails ([#426][])
 * Add possibility to have expression on right hand side of like ([#591][])
 * Added Date and Time functions ([#142][])
 * Add Swift4 Coding support ([#733][])
@@ -52,6 +53,7 @@
 
 [#142]: https://github.com/stephencelis/SQLit1e.swift/issues/142
 [#315]: https://github.com/stephencelis/SQLit1e.swift/issues/315
+[#426]: https://github.com/stephencelis/SQLit1e.swift/pull/426
 [#481]: https://github.com/stephencelis/SQLit1e.swift/pull/481
 [#532]: https://github.com/stephencelis/SQLit1e.swift/issues/532
 [#541]: https://github.com/stephencelis/SQLit1e.swift/issues/541
