@@ -113,3 +113,23 @@ let table = Table("table")
 let qualifiedTable = Table("table", database: "main")
 let virtualTable = VirtualTable("virtual_table")
 let _view = View("view") // avoid Mac XCTestCase collision
+
+class TestCodable: Codable {
+    let int: Int
+    let string: String
+    let bool: Bool
+    let float: Float
+    let double: Double
+    let optional: String?
+    let sub: TestCodable?
+
+    init(int: Int, string: String, bool: Bool, float: Float, double: Double, optional: String?, sub: TestCodable?) {
+        self.int = int
+        self.string = string
+        self.bool = bool
+        self.float = float
+        self.double = double
+        self.optional = optional
+        self.sub = sub
+    }
+}

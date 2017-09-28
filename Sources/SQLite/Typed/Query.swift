@@ -22,6 +22,8 @@
 // THE SOFTWARE.
 //
 
+import Foundation
+
 public protocol QueryType : Expressible {
 
     var clauses: QueryClauses { get set }
@@ -1056,13 +1058,20 @@ extension Connection {
 
 public struct Row {
 
-    fileprivate let columnNames: [String: Int]
+    let columnNames: [String: Int]
 
     fileprivate let values: [Binding?]
 
     internal init(_ columnNames: [String: Int], _ values: [Binding?]) {
         self.columnNames = columnNames
         self.values = values
+    }
+
+    func hasValue(for column: String) -> Bool {
+        guard let idx = columnNames[column.quote()] else {
+            return false
+        }
+        return values[idx] != nil
     }
 
     /// Returns a row’s value for the given column.
@@ -1163,3 +1172,4 @@ public struct QueryClauses {
     }
 
 }
+
