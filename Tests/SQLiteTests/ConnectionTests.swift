@@ -159,14 +159,18 @@ class ConnectionTests : SQLiteTestCase {
         // This test case needs to emulate an environment where the individual statements succeed, but committing the
         // transaction fails. Using deferred foreign keys is one option to achieve this.
         try! db.execute("PRAGMA foreign_keys = ON;")
-        try! db.execute("PRAGMA defer_foreign_keys = ON;")
         let stmt = try! db.prepare("INSERT INTO users (email, manager_id) VALUES (?, ?)", "alice@example.com", 100)
 
         do {
             try db.transaction {
+                try db.execute("PRAGMA defer_foreign_keys = ON;")
                 try stmt.run()
             }
-        } catch {
+            XCTFail("expected error")
+        } catch let Result.error(_, code, _) {
+            XCTAssertEqual(SQLITE_CONSTRAINT, code)
+        } catch let error {
+            XCTFail("unexpected error: \(error)")
         }
 
         AssertSQL("BEGIN DEFERRED TRANSACTION")
