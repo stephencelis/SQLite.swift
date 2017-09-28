@@ -1,6 +1,7 @@
 0.11.4 (xx-09-2017), [diff][diff-0.11.4]
 ========================================
 
+* Add possibility to have expression on right hand side of like ([#591][])
 * Added Date and Time functions ([#142][])
 * Add Swift4 Coding support ([#733][])
 * Preliminary Linux support ([#315][], [#681][])
@@ -61,6 +62,7 @@
 [#560]: https://github.com/stephencelis/SQLite.swift/pull/560
 [#561]: https://github.com/stephencelis/SQLite.swift/issues/561
 [#571]: https://github.com/stephencelis/SQLite.swift/issues/571
+[#591]: https://github.com/stephencelis/SQLite.swift/pull/591
 [#615]: https://github.com/stephencelis/SQLite.swift/pull/615
 [#647]: https://github.com/stephencelis/SQLite.swift/pull/647
 [#649]: https://github.com/stephencelis/SQLite.swift/pull/649
