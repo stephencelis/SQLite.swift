@@ -1527,7 +1527,10 @@ the insertion, updating, and retrieval of basic Codable types.
 Queries have a method to allow inserting an Encodable type.
 
 ```swift
-try db.run(users.insert(user))
+struct User: Codable {
+    let name: String
+}
+try db.run(users.insert(User(name: "test")))
 
 ```
 
