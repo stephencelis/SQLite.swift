@@ -650,20 +650,25 @@ follow similar patterns.
 > // INSERT INTO "timestamps" DEFAULT VALUES
 > ```
 
-### Handling specific SQLite errors
+### Handling SQLite errors
 
-You can pattern match on the error to selectively catch SQLite errors:
+You can pattern match on the error to selectively catch SQLite errors. For example, to
+specifically handle constraint errors ([SQLITE_CONSTRAINT](https://sqlite.org/rescode.html#constraint)):
 
 ```swift
 do {
     try db.run(users.insert(email <- "alice@mac.com"))
     try db.run(users.insert(email <- "alice@mac.com"))
-} catch let Result.error(_, code, _) where code == SQLITE_CONSTRAINT {
-    print("constraint failed")
+} catch let Result.error(message, code, statement) where code == SQLITE_CONSTRAINT {
+    print("constraint failed: \(message), in \(statement)")
 } catch let error {
     print("insertion failed: \(error)")
 }
 ```
+
+The `Result.error` type contains the English-language text that describes the error (`message`),
+the error `code` (see [SQLite result code list](https://sqlite.org/rescode.html#primary_result_code_list)
+for details) and a optional reference to the `statement` which produced the error.
 
 ### Setters
 

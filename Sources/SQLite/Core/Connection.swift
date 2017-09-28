@@ -681,6 +681,13 @@ public enum Result : Error {
 
     fileprivate static let successCodes: Set = [SQLITE_OK, SQLITE_ROW, SQLITE_DONE]
 
+    /// Represents a SQLite specific [error code](https://sqlite.org/rescode.html)
+    ///
+    /// - message: English-language text that describes the error
+    ///
+    /// - code: SQLite [error code](https://sqlite.org/rescode.html#primary_result_code_list)
+    ///
+    /// - statement: the statement which produced the error
     case error(message: String, code: Int32, statement: Statement?)
 
     init?(errorCode: Int32, connection: Connection, statement: Statement? = nil) {
