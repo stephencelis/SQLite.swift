@@ -2,6 +2,7 @@
 ========================================
 
 * Added Date and Time functions ([#142][])
+* Add Swift4 Coding support ([#733][])
 * Preliminary Linux support ([#315][], [#681][])
 * Add `RowIterator` for more safety ([#647][], [#726][])
 * Make Row.get throw instead of crash ([#649][])
@@ -69,4 +70,5 @@
 [#681]: https://github.com/stephencelis/SQLite.swift/issues/681
 [#722]: https://github.com/stephencelis/SQLite.swift/pull/722
 [#723]: https://github.com/stephencelis/SQLite.swift/pull/723
+[#733]: https://github.com/stephencelis/SQLite.swift/pull/733
 [#726]: https://github.com/stephencelis/SQLite.swift/pull/726
