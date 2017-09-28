@@ -3,11 +3,12 @@ import XCTest
 
 class SQLiteTestCase : XCTestCase {
     private var trace:[String: Int]!
+    var db:Connection!
     let users = Table("users")
-    let db = try! Connection()
 
     override func setUp() {
         super.setUp()
+        db = try! Connection()
         trace = [String:Int]()
 
         db.trace { SQL in
