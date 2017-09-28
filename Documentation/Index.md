@@ -54,6 +54,7 @@
   - [Other Operators](#other-operators)
   - [Core SQLite Functions](#core-sqlite-functions)
   - [Aggregate SQLite Functions](#aggregate-sqlite-functions)
+  - [Date and Time Functions](#date-and-time-functions)
   - [Custom SQL Functions](#custom-sql-functions)
   - [Custom Collations](#custom-collations)
   - [Full-text Search](#full-text-search)
@@ -1430,6 +1431,18 @@ Many of SQLite’s [core functions](https://www.sqlite.org/lang_corefunc.html) h
 
 Most of SQLite’s [aggregate functions](https://www.sqlite.org/lang_aggfunc.html) have been surfaced in and type-audited for SQLite.swift.
 
+## Date and Time functions
+
+SQLite's [date and time](https://www.sqlite.org/lang_datefunc.html) are available:
+
+```swift
+DateFunctions.date("now")
+// date('now')
+Date().date
+// date('2007-01-09T09:41:00.000')
+Expression<Date>("date").date
+// date("date")
+```
 
 ## Custom SQL Functions
 

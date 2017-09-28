@@ -1,6 +1,7 @@
 0.11.4 (xx-09-2017), [diff][diff-0.11.4]
 ========================================
 
+* Added Date and Time functions ([#142][])
 * Preliminary Linux support ([#315][], [#681][])
 * Add `RowIterator` for more safety ([#647][], [#726][])
 * Make Row.get throw instead of crash ([#649][])
@@ -47,6 +48,7 @@
 [diff-0.11.3]: https://github.com/stephencelis/SQLite.swift/compare/0.11.2...0.11.3
 [diff-0.11.4]: https://github.com/stephencelis/SQLite.swift/compare/0.11.3...0.11.4
 
+[#142]: https://github.com/stephencelis/SQLit1e.swift/issues/142
 [#315]: https://github.com/stephencelis/SQLit1e.swift/issues/315
 [#481]: https://github.com/stephencelis/SQLit1e.swift/pull/481
 [#532]: https://github.com/stephencelis/SQLit1e.swift/issues/532
