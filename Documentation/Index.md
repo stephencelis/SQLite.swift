@@ -1516,9 +1516,11 @@ extension Row {
 
 ## Codable Types
 
-Codable types were introduced as a part of Swift 4 to allow serializing and
-deserializing types. SQLite.swift supports the insertion, updating, and
-retrieval of basic Codable types.
+[Codable types][Encoding and Decoding Custom Types] were introduced as a part
+of Swift 4 to  allow serializing and deserializing types. SQLite.swift supports
+the insertion, updating, and retrieval of basic Codable types.
+
+[Encoding and Decoding Custom Types]: https://developer.apple.com/documentation/foundation/archives_and_serialization/encoding_and_decoding_custom_types
 
 ### Inserting Codable Types
 
