@@ -155,6 +155,33 @@ class ConnectionTests : SQLiteTestCase {
         AssertSQL("ROLLBACK TRANSACTION", 0)
     }
 
+    func test_transaction_rollsBackTransactionsIfCommitsFail() {
+        // This test case needs to emulate an environment where the individual statements succeed, but committing the
+        // transactuin fails. Using deferred foreign keys is one option to achieve this.
+        try! db.execute("PRAGMA foreign_keys = ON;")
+        try! db.execute("PRAGMA defer_foreign_keys = ON;")
+        let stmt = try! db.prepare("INSERT INTO users (email, manager_id) VALUES (?, ?)", "alice@example.com", 100)
+
+        do {
+            try db.transaction {
+                try stmt.run()
+            }
+        } catch {
+        }
+
+        AssertSQL("BEGIN DEFERRED TRANSACTION")
+        AssertSQL("INSERT INTO users (email, manager_id) VALUES ('alice@example.com', 100)")
+        AssertSQL("COMMIT TRANSACTION")
+        AssertSQL("ROLLBACK TRANSACTION")
+
+        // Run another transaction to ensure that a subsequent transaction does not fail with an "cannot start a
+        // transaction within a transaction" error.
+        let stmt2 = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
+        try! db.transaction {
+            try stmt2.run()
+        }
+    }
+
     func test_transaction_beginsAndRollsTransactionsBack() {
         let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
