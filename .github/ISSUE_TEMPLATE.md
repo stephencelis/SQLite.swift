@@ -1,11 +1,11 @@
-> Issues are used to track bugs and feature requests. 
+> Issues are used to track bugs and feature requests.
 > Need  help or have a general question? Ask on Stack Overflow (tag sqlite.swift).
 
 ## Build Information
 
 - Include the SQLite.swift version, commit or branch experiencing the issue.
 - Mention Xcode and OS X versions affected.
-- How do do you integrate SQLite.swift in your project? 
+- How do do you integrate SQLite.swift in your project?
     - manual
     - CocoaPods
     - Carthage
