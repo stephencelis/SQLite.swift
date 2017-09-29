@@ -50,7 +50,6 @@
   - [Custom Types](#custom-types)
     - [Date-Time Values](#date-time-values)
     - [Binary Data](#binary-data)
-    - [Custom Type Caveats](#custom-type-caveats)
   - [Codable Types](#codable-types)
   - [Other Operators](#other-operators)
   - [Core SQLite Functions](#core-sqlite-functions)
@@ -1410,9 +1409,6 @@ through before serialization and deserialization (see [Building Type-Safe SQL
 > directly map SQLite types to Swift types. **Do _not_** conform custom types
 > to the `Binding` protocol.
 
-Once extended, the type can be used [_almost_](#custom-type-caveats) wherever
-typed expressions can be.
-
 
 ### Date-Time Values
 
@@ -1457,49 +1453,6 @@ extension UIImage: Value {
 
 
 [Archives and Serializations Programming Guide]: https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/Archiving/Archiving.html
-
-### Custom Type Caveats
-
-Swift does _not_ currently support generic subscripting, which means we
-cannot, by default, subscript Expressions with custom types to:
-
- 1. **Namespace expressions**. Use the `namespace` function, instead:
-
-    ```swift
-    let avatar = Expression<UIImage?>("avatar")
-    users[avatar]           // fails to compile
-    users.namespace(avatar) // "users"."avatar"
-    ```
-
- 2. **Access column data**. Use the `get` function, instead:
-
-    ```swift
-    let user = users.first!
-    user[avatar]            // fails to compile
-    user.get(avatar)        // UIImage?
-    ```
-
-We can, of course, write extensions, but they’re rather wordy.
-
-```swift
-extension Query {
-    subscript(column: Expression<UIImage>) -> Expression<UIImage> {
-        return namespace(column)
-    }
-    subscript(column: Expression<UIImage?>) -> Expression<UIImage?> {
-        return namespace(column)
-    }
-}
-
-extension Row {
-    subscript(column: Expression<UIImage>) -> UIImage {
-        return get(column)
-    }
-    subscript(column: Expression<UIImage?>) -> UIImage? {
-        return get(column)
-    }
-}
-```
 
 ## Codable Types
 
