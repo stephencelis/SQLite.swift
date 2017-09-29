@@ -260,6 +260,21 @@ class OperatorsTests : XCTestCase {
         AssertSQL("\"doubleOptional\" >= 1.2 AND \"doubleOptional\" < 4.5", 1.2..<4.5 ~= doubleOptional)
     }
 
+    func test_patternMatchingOperator_withComparablePartialRangeThrough_buildsBooleanExpression() {
+        AssertSQL("\"double\" <= 4.5", ...4.5 ~= double)
+        AssertSQL("\"doubleOptional\" <= 4.5", ...4.5 ~= doubleOptional)
+    }
+
+    func test_patternMatchingOperator_withComparablePartialRangeUpTo_buildsBooleanExpression() {
+        AssertSQL("\"double\" < 4.5", ..<4.5 ~= double)
+        AssertSQL("\"doubleOptional\" < 4.5", ..<4.5 ~= doubleOptional)
+    }
+
+    func test_patternMatchingOperator_withComparablePartialRangeFrom_buildsBooleanExpression() {
+        AssertSQL("\"double\" >= 4.5", 4.5... ~= double)
+        AssertSQL("\"doubleOptional\" >= 4.5", 4.5... ~= doubleOptional)
+    }
+
     func test_patternMatchingOperator_withomparableClosedRangeString_buildsBetweenBooleanExpression() {
         AssertSQL("\"string\" BETWEEN 'a' AND 'b'", "a"..."b" ~= string)
         AssertSQL("\"stringOptional\" BETWEEN 'a' AND 'b'", "a"..."b" ~= stringOptional)
