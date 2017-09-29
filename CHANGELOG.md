@@ -52,12 +52,12 @@
 [diff-0.11.3]: https://github.com/stephencelis/SQLite.swift/compare/0.11.2...0.11.3
 [diff-0.11.4]: https://github.com/stephencelis/SQLite.swift/compare/0.11.3...0.11.4
 
-[#142]: https://github.com/stephencelis/SQLit1e.swift/issues/142
-[#315]: https://github.com/stephencelis/SQLit1e.swift/issues/315
-[#426]: https://github.com/stephencelis/SQLit1e.swift/pull/426
-[#481]: https://github.com/stephencelis/SQLit1e.swift/pull/481
-[#532]: https://github.com/stephencelis/SQLit1e.swift/issues/532
-[#541]: https://github.com/stephencelis/SQLit1e.swift/issues/541
+[#142]: https://github.com/stephencelis/SQLite.swift/issues/142
+[#315]: https://github.com/stephencelis/SQLite.swift/issues/315
+[#426]: https://github.com/stephencelis/SQLite.swift/pull/426
+[#481]: https://github.com/stephencelis/SQLite.swift/pull/481
+[#532]: https://github.com/stephencelis/SQLite.swift/issues/532
+[#541]: https://github.com/stephencelis/SQLite.swift/issues/541
 [#546]: https://github.com/stephencelis/SQLite.swift/issues/546
 [#548]: https://github.com/stephencelis/SQLite.swift/pull/548
 [#553]: https://github.com/stephencelis/SQLite.swift/pull/553
