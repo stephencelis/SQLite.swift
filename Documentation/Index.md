@@ -20,6 +20,7 @@
     - [Column Constraints](#column-constraints)
     - [Table Constraints](#table-constraints)
   - [Inserting Rows](#inserting-rows)
+    - [Handling SQLite errors](#handling-sqlite-errors)
     - [Setters](#setters)
   - [Selecting Rows](#selecting-rows)
     - [Iterating and Accessing Values](#iterating-and-accessing-values)
