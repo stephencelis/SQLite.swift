@@ -382,6 +382,30 @@ class ConnectionTests : SQLiteTestCase {
         _ = DispatchQueue(label: "queue", qos: .background).asyncAfter(deadline: deadline, execute: db.interrupt)
         AssertThrows(try stmt.run())
     }
+    
+    func test_concurrent_access_single_connection() {
+        let conn = try! Connection("\(NSTemporaryDirectory())/SQLite.swift Connection Tests.sqlite")
+        try! conn.execute("DROP TABLE IF EXISTS test; CREATE TABLE test(value);")
+        try! conn.run("INSERT INTO test(value) VALUES(?)", 0)
+        
+        let q = dispatch_queue_create("Readers", DISPATCH_QUEUE_CONCURRENT);
+        
+        var reads = [0, 0, 0, 0, 0]
+        var finished = false
+        for index in 0..<5 {
+            dispatch_async(q) {
+                while !finished {
+                    _ = try! conn.prepare("SELECT value FROM test")
+                    reads[index] += 1
+                }
+            }
+        }
+        
+        while !finished {
+            sleep(1)
+            finished = reads.reduce(true) { $0 && ($1 > 500) }
+        }
+    } 
 
 }
 
