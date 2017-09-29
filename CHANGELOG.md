@@ -1,4 +1,4 @@
-0.11.4 (xx-09-2017), [diff][diff-0.11.4]
+0.11.4 (30-09-2017), [diff][diff-0.11.4]
 ========================================
 
 * Collate .nocase strictly enforces NOT NULL even when using Optional ([#697][])
