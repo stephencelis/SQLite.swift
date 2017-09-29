@@ -757,6 +757,18 @@ for user in try db.prepare(users) {
 promise to the compiler that they’ll never be `NULL`), while `Expression<T?>`
 values remain wrapped.
 
+⚠ Column subscripts on `Row` will force try and abort execution in error cases
+If you want to handle this yourself, use `Row.get(_ column: Expression<V>)`:
+
+```swift
+for user in try db.prepare(users) {
+    do {
+        print("name: \(try user.get(name))")
+    } catch {
+        // handle
+    }
+}
+```
 
 ### Plucking Rows
 
