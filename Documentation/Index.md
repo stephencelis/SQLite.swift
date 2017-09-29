@@ -756,7 +756,7 @@ for user in try db.prepare(users) {
 promise to the compiler that they’ll never be `NULL`), while `Expression<T?>`
 values remain wrapped.
 
-⚠ Column subscripts on `Row` will force try and abort execution in error cases
+⚠ Column subscripts on `Row` will force try and abort execution in error cases.
 If you want to handle this yourself, use `Row.get(_ column: Expression<V>)`:
 
 ```swift
@@ -1464,10 +1464,10 @@ the insertion, updating, and retrieval of basic Codable types.
 
 ### Inserting Codable Types
 
-Queries have a method to allow inserting an Encodable type.
+Queries have a method to allow inserting an [Encodable][] type.
 
 ```swift
-struct User: Codable {
+struct User: Encodable {
     let name: String
 }
 try db.run(users.insert(User(name: "test")))
@@ -1481,6 +1481,8 @@ There are two other parameters also available to this method:
 
 - `otherSetters` allows you to specify additional setters on top of those
   that are generated from the encodable types themselves.
+
+[Encodable]: https://developer.apple.com/documentation/swift/encodable
 
 ### Updating Codable Types
 
@@ -1504,7 +1506,7 @@ There are two other parameters also available to this method:
 
 ### Retrieving Codable Types
 
-Rows have a method to decode a Decodable type.
+Rows have a method to decode a [Decodable][] type.
 
 ```swift
 let loadedUsers: [User] = try db.prepare(users).map { row in
@@ -1547,6 +1549,8 @@ Both of the above methods also have the following optional parameter:
 
 - `userInfo` is a dictionary that is passed to the decoder and made available
   to decodable types to allow customizing their behavior.
+
+[Decodable]: https://developer.apple.com/documentation/swift/decodable
 
 ### Restrictions
 
