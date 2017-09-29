@@ -18,12 +18,13 @@ syntax _and_ intent.
  - [Full-text search][] support
  - [Well-documented][See Documentation]
  - Extensively tested
- - SQLCipher support via CocoaPods
+ - [SQLCipher][] support via CocoaPods
  - Active support at
    [StackOverflow](http://stackoverflow.com/questions/tagged/sqlite.swift),
    and [Gitter Chat Room](https://gitter.im/stephencelis/SQLite.swift)
    (_experimental_)
 
+[SQLCipher]: https://www.zetetic.net/sqlcipher/
 [Full-text search]: Documentation/Index.md#full-text-search
 [See Documentation]: Documentation/Index.md#sqliteswift-documentation
 
