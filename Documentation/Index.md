@@ -1521,9 +1521,12 @@ There are two other parameters also available to this method:
 Queries have a method to allow updating an Encodable type.
 
 ```swift
-try db.run(users.update(user))
+try db.run(users.filter(id == userId).update(user))
 
 ```
+
+> ⚠ Unless filtered, using the update method on an instance of a Codable
+> type updates all table rows.
 
 There are two other parameters also available to this method:
 
