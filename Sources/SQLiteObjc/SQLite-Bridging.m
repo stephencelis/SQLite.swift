@@ -112,14 +112,14 @@ static const sqlite3_tokenizer_module __SQLiteTokenizerModule = {
     __SQLiteTokenizerNext
 };
 
-int _SQLiteRegisterTokenizer(SQLiteHandle * db, const char * moduleName, const char * submoduleName, _SQLiteTokenizerNextCallback callback) {
+int _SQLiteRegisterTokenizer(sqlite3 *db, const char * moduleName, const char * submoduleName, _SQLiteTokenizerNextCallback callback) {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         __SQLiteTokenizerMap = [NSMutableDictionary new];
     });
 
     sqlite3_stmt * stmt;
-    int status = sqlite3_prepare_v2((sqlite3 *)db, "SELECT fts3_tokenizer(?, ?)", -1, &stmt, 0);
+    int status = sqlite3_prepare_v2(db, "SELECT fts3_tokenizer(?, ?)", -1, &stmt, 0);
     if (status != SQLITE_OK ){
         return status;
     }

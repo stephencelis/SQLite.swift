@@ -26,8 +26,10 @@
 import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif SWIFT_PACKAGE || COCOAPODS
+#elseif os(Linux)
 import CSQLite
+#else
+import SQLite3
 #endif
 
 public typealias Star = (Expression<Binding>?, Expression<Binding>?) -> Expression<Void>

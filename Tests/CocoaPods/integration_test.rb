@@ -1,7 +1,8 @@
 #!/usr/bin/env ruby
 
+require 'cocoapods'
+require 'cocoapods/validator'
 require 'minitest/autorun'
-require_relative 'test_running_validator'
 
 class IntegrationTest < Minitest::Test
 
@@ -12,9 +13,7 @@ class IntegrationTest < Minitest::Test
   private
 
   def validator
-    @validator ||= TestRunningValidator.new(podspec, []).tap do |validator|
-        validator.test_files = Dir["#{project_test_dir}/**/*.swift"]
-        validator.test_resources = Dir["#{project_test_dir}/fixtures"]
+    @validator ||= CustomValidator.new(podspec, ['https://github.com/CocoaPods/Specs.git']).tap do |validator|
         validator.config.verbose = true
         validator.no_clean = true
         validator.use_frameworks = true
@@ -27,9 +26,6 @@ class IntegrationTest < Minitest::Test
         else
           validator.only_subspec = subspec
         end
-        if ENV['IOS_SIMULATOR']
-          validator.ios_simulator = ENV['IOS_SIMULATOR']
-        end
     end
   end
 
@@ -37,7 +33,11 @@ class IntegrationTest < Minitest::Test
     File.expand_path(File.dirname(__FILE__) + '/../../SQLite.swift.podspec')
   end
 
-  def project_test_dir
-    File.expand_path(File.dirname(__FILE__) + '/../SQLiteTests')
+
+  class CustomValidator < Pod::Validator
+    def test_pod
+      # https://github.com/CocoaPods/CocoaPods/issues/7009
+      super unless consumer.platform_name == :watchos
+    end
   end
 end

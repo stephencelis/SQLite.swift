@@ -1,12 +1,16 @@
 import XCTest
+import Foundation
+import Dispatch
 @testable import SQLite
 
 #if SQLITE_SWIFT_STANDALONE
 import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif SWIFT_PACKAGE || COCOAPODS
+#elseif os(Linux)
 import CSQLite
+#else
+import SQLite3
 #endif
 
 class ConnectionTests : SQLiteTestCase {
@@ -151,6 +155,44 @@ class ConnectionTests : SQLiteTestCase {
         AssertSQL("ROLLBACK TRANSACTION", 0)
     }
 
+    func test_transaction_rollsBackTransactionsIfCommitsFail() {
+        let sqliteVersion = String(describing: try! db.scalar("SELECT sqlite_version()")!)
+                .split(separator: ".").flatMap { Int($0) }
+        // PRAGMA defer_foreign_keys only supported in SQLite >= 3.8.0
+        guard sqliteVersion[0] == 3 && sqliteVersion[1] >= 8 else {
+            NSLog("skipping test for SQLite version \(sqliteVersion)")
+            return
+        }
+        // This test case needs to emulate an environment where the individual statements succeed, but committing the
+        // transaction fails. Using deferred foreign keys is one option to achieve this.
+        try! db.execute("PRAGMA foreign_keys = ON;")
+        try! db.execute("PRAGMA defer_foreign_keys = ON;")
+        let stmt = try! db.prepare("INSERT INTO users (email, manager_id) VALUES (?, ?)", "alice@example.com", 100)
+
+        do {
+            try db.transaction {
+                try stmt.run()
+            }
+            XCTFail("expected error")
+        } catch let Result.error(_, code, _) {
+            XCTAssertEqual(SQLITE_CONSTRAINT, code)
+        } catch let error {
+            XCTFail("unexpected error: \(error)")
+        }
+
+        AssertSQL("BEGIN DEFERRED TRANSACTION")
+        AssertSQL("INSERT INTO users (email, manager_id) VALUES ('alice@example.com', 100)")
+        AssertSQL("COMMIT TRANSACTION")
+        AssertSQL("ROLLBACK TRANSACTION")
+
+        // Run another transaction to ensure that a subsequent transaction does not fail with an "cannot start a
+        // transaction within a transaction" error.
+        let stmt2 = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
+        try! db.transaction {
+            try stmt2.run()
+        }
+    }
+
     func test_transaction_beginsAndRollsTransactionsBack() {
         let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
@@ -169,7 +211,7 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_savepoint_beginsAndCommitsSavepoints() {
-        let db = self.db
+        let db:Connection = self.db
 
         try! db.savepoint("1") {
             try db.savepoint("2") {
@@ -187,7 +229,7 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_savepoint_beginsAndRollsSavepointsBack() {
-        let db = self.db
+        let db:Connection = self.db
         let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
         do {
@@ -336,11 +378,32 @@ class ConnectionTests : SQLiteTestCase {
         let stmt = try! db.prepare("SELECT *, sleep(?) FROM users", 0.1)
         try! stmt.run()
 
-        let deadline = DispatchTime.now() + Double(Int64(10 * NSEC_PER_MSEC)) / Double(NSEC_PER_SEC)
+        let deadline = DispatchTime.now() + 0.01
         _ = DispatchQueue(label: "queue", qos: .background).asyncAfter(deadline: deadline, execute: db.interrupt)
         AssertThrows(try stmt.run())
     }
 
+    func test_concurrent_access_single_connection() {
+        let conn = try! Connection("\(NSTemporaryDirectory())/\(UUID().uuidString)")
+        try! conn.execute("DROP TABLE IF EXISTS test; CREATE TABLE test(value);")
+        try! conn.run("INSERT INTO test(value) VALUES(?)", 0)
+        let queue = DispatchQueue(label: "Readers", attributes: [.concurrent])
+        let nReaders = 5
+        var reads = Array(repeating: 0, count: nReaders)
+        var finished = false
+        for index in 0..<nReaders {
+            queue.async {
+                while !finished {
+                    _ = try! conn.scalar("SELECT value FROM test")
+                    reads[index] += 1
+                }
+            }
+        }
+        while !finished {
+            sleep(1)
+            finished = reads.reduce(true) { $0 && ($1 > 500) }
+        }
+    }
 }
 
 

@@ -255,7 +255,27 @@ class OperatorsTests : XCTestCase {
         AssertSQL("\"doubleOptional\" BETWEEN 1.2 AND 4.5", 1.2...4.5 ~= doubleOptional)
     }
 
-    func test_patternMatchingOperator_withomparableClosedRangeString_buildsBetweenBooleanExpression() {
+    func test_patternMatchingOperator_withComparableRange_buildsBooleanExpression() {
+        AssertSQL("\"double\" >= 1.2 AND \"double\" < 4.5", 1.2..<4.5 ~= double)
+        AssertSQL("\"doubleOptional\" >= 1.2 AND \"doubleOptional\" < 4.5", 1.2..<4.5 ~= doubleOptional)
+    }
+
+    func test_patternMatchingOperator_withComparablePartialRangeThrough_buildsBooleanExpression() {
+        AssertSQL("\"double\" <= 4.5", ...4.5 ~= double)
+        AssertSQL("\"doubleOptional\" <= 4.5", ...4.5 ~= doubleOptional)
+    }
+
+    func test_patternMatchingOperator_withComparablePartialRangeUpTo_buildsBooleanExpression() {
+        AssertSQL("\"double\" < 4.5", ..<4.5 ~= double)
+        AssertSQL("\"doubleOptional\" < 4.5", ..<4.5 ~= doubleOptional)
+    }
+
+    func test_patternMatchingOperator_withComparablePartialRangeFrom_buildsBooleanExpression() {
+        AssertSQL("\"double\" >= 4.5", 4.5... ~= double)
+        AssertSQL("\"doubleOptional\" >= 4.5", 4.5... ~= doubleOptional)
+    }
+
+    func test_patternMatchingOperator_withComparableClosedRangeString_buildsBetweenBooleanExpression() {
         AssertSQL("\"string\" BETWEEN 'a' AND 'b'", "a"..."b" ~= string)
         AssertSQL("\"stringOptional\" BETWEEN 'a' AND 'b'", "a"..."b" ~= stringOptional)
     }
@@ -291,6 +311,32 @@ class OperatorsTests : XCTestCase {
         let n = Expression<Int>(value: 1)
         AssertSQL("(((1 = 1) AND (1 = 1)) OR (1 = 1))", (n == n && n == n) || n == n)
         AssertSQL("((1 = 1) AND ((1 = 1) OR (1 = 1)))", n == n && (n == n || n == n))
+    }
+
+    func test_dateExpressionLessGreater() {
+        let begin = Date(timeIntervalSince1970: 0)
+        AssertSQL("(\"date\" < '1970-01-01T00:00:00.000')", date < begin)
+        AssertSQL("(\"date\" > '1970-01-01T00:00:00.000')", date > begin)
+        AssertSQL("(\"date\" >= '1970-01-01T00:00:00.000')", date >= begin)
+        AssertSQL("(\"date\" <= '1970-01-01T00:00:00.000')", date <= begin)
+    }
+
+    func test_dateExpressionRange() {
+        let begin = Date(timeIntervalSince1970: 0)
+        let end = Date(timeIntervalSince1970: 5000)
+        AssertSQL(
+            "\"date\" >= '1970-01-01T00:00:00.000' AND \"date\" < '1970-01-01T01:23:20.000'",
+            (begin..<end) ~= date
+        )
+    }
+
+    func test_dateExpressionClosedRange() {
+        let begin = Date(timeIntervalSince1970: 0)
+        let end = Date(timeIntervalSince1970: 5000)
+        AssertSQL(
+            "\"date\" BETWEEN '1970-01-01T00:00:00.000' AND '1970-01-01T01:23:20.000'",
+            (begin...end) ~= date
+        )
     }
 
 }
