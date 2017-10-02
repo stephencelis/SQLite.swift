@@ -1519,7 +1519,7 @@ for example if you are using the
 [Facade pattern](https://en.wikipedia.org/wiki/Facade_pattern) to hide
 subclasses behind a super class. For example, you may want to encode an Image
 type that can be multiple different formats such as PNGImage, JPGImage, or
-HEIFIamge. You will need to determine the correct subclass before you know
+HEIFImage. You will need to determine the correct subclass before you know
 which type to decode.
 
 ```swift
