@@ -142,7 +142,7 @@ install SQLite.swift with Carthage:
 SQLite.swift with CocoaPods:
 
  1. Make sure CocoaPods is [installed][CocoaPods Installation]. (SQLite.swift
-    requires version 1.0.0 or greater.)
+    requires version 1.4.0 or greater.)
 
     ```sh
     # Using the default Ruby install will require you to use sudo when
