@@ -26,8 +26,10 @@
 import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif SWIFT_PACKAGE || COCOAPODS
+#elseif os(Linux)
 import CSQLite
+#else
+import SQLite3
 #endif
 
 /// A single SQL statement.
@@ -201,34 +203,64 @@ extension Statement : Sequence {
 }
 
 public enum ResultOrError<ResultType> {
-	case success(ResultType)
-	case error(Error)
-	
-	public func map<T>(_ transform: (ResultType) throws -> T) rethrows -> ResultOrError<T> {
-		switch self {
-		case let .success(result): return try .success(transform(result))
-		case let .error(error): return .error(error)
-		}
-	}
-	
-	public func unwrapOrThrow() throws -> ResultType {
-		switch self {
-		case let .success(result): return result
-		case let .error(error): throw error
-		}
-	}
+    case success(ResultType)
+    case error(Error)
+    
+    public func map<T>(_ transform: (ResultType) throws -> T) rethrows -> ResultOrError<T> {
+        switch self {
+        case let .success(result): return try .success(transform(result))
+        case let .error(error): return .error(error)
+        }
+    }
+    
+    public func unwrapOrThrow() throws -> ResultType {
+        switch self {
+        case let .success(result): return result
+        case let .error(error): throw error
+        }
+    }
 }
 
-extension Statement : IteratorProtocol {
+public protocol FailableIterator : IteratorProtocol where Element == ResultOrError<WrappedElement> {
+    associatedtype WrappedElement
+    
+    func failableNext() throws -> WrappedElement?
+}
 
-    public func next() -> ResultOrError<[Binding?]>? {
-		do {
-			return try step() ? .success(Array(row)) : nil
-		} catch {
-			return .error(error)
-		}
+extension FailableIterator {
+    public func next() -> ResultOrError<WrappedElement>? {
+        do {
+            guard let nextRow = try failableNext()
+                else { return nil }
+            return .success(nextRow)
+        } catch {
+            return .error(error)
+        }
     }
+}
 
+/*
+extension FailableIterator {
+    public func next() -> Element? {
+        return try! failableNext()
+    }
+}
+ */
+
+extension Array {
+    public init<I: FailableIterator>(_ failableIterator: I) throws where I.WrappedElement == Element {
+        self.init()
+        while let row = try failableIterator.failableNext() {
+            append(row)
+        }
+    }
+}
+
+extension Statement : FailableIterator {
+    public typealias WrappedElement = [Binding?]
+    public func failableNext() throws -> [Binding?]? {
+        return try step() ? Array(row) : nil
+    }
 }
 
 extension Statement : CustomStringConvertible {

@@ -73,11 +73,11 @@ public protocol Expressible {
 extension Expressible {
 
     // naïve compiler for statements that can’t be bound, e.g., CREATE TABLE
-    // FIXME: use @testable and make internal
+    // FIXME: make internal (0.12.0)
     public func asSQL() -> String {
         let expressed = expression
         var idx = 0
-        return expressed.template.characters.reduce("") { template, character in
+        return expressed.template.reduce("") { template, character in
             let transcoded: String
             
             if character == "?" {

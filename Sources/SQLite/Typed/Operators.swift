@@ -474,11 +474,44 @@ public func <=<V : Value>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> wher
     return infix(lhs, rhs)
 }
 
-public func ~=<V : Value>(lhs: ClosedRange<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Binding & Comparable {
-    return Expression("\(rhs.template) BETWEEN ? AND ?", rhs.bindings + [lhs.lowerBound as? Binding, lhs.upperBound as? Binding])
+public func ~=<V : Value>(lhs: ClosedRange<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable & Value {
+    return Expression("\(rhs.template) BETWEEN ? AND ?", rhs.bindings + [lhs.lowerBound.datatypeValue, lhs.upperBound.datatypeValue])
 }
-public func ~=<V : Value>(lhs: ClosedRange<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Binding & Comparable {
-    return Expression("\(rhs.template) BETWEEN ? AND ?", rhs.bindings + [lhs.lowerBound as? Binding, lhs.upperBound as? Binding])
+
+public func ~=<V : Value>(lhs: ClosedRange<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable & Value {
+    return Expression("\(rhs.template) BETWEEN ? AND ?", rhs.bindings + [lhs.lowerBound.datatypeValue, lhs.upperBound.datatypeValue])
+}
+
+public func ~=<V : Value>(lhs: Range<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable & Value {
+    return Expression("\(rhs.template) >= ? AND \(rhs.template) < ?", rhs.bindings + [lhs.lowerBound.datatypeValue] + rhs.bindings + [lhs.upperBound.datatypeValue])
+}
+
+public func ~=<V : Value>(lhs: Range<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable & Value {
+    return Expression("\(rhs.template) >= ? AND \(rhs.template) < ?", rhs.bindings + [lhs.lowerBound.datatypeValue] + rhs.bindings + [lhs.upperBound.datatypeValue])
+}
+
+public func ~=<V : Value>(lhs: PartialRangeThrough<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable & Value {
+    return Expression("\(rhs.template) <= ?", rhs.bindings + [lhs.upperBound.datatypeValue])
+}
+
+public func ~=<V : Value>(lhs: PartialRangeThrough<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable & Value {
+    return Expression("\(rhs.template) <= ?", rhs.bindings + [lhs.upperBound.datatypeValue])
+}
+
+public func ~=<V : Value>(lhs: PartialRangeUpTo<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable & Value {
+    return Expression("\(rhs.template) < ?", rhs.bindings + [lhs.upperBound.datatypeValue])
+}
+
+public func ~=<V : Value>(lhs: PartialRangeUpTo<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable & Value {
+    return Expression("\(rhs.template) < ?", rhs.bindings + [lhs.upperBound.datatypeValue])
+}
+
+public func ~=<V : Value>(lhs: PartialRangeFrom<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable & Value {
+    return Expression("\(rhs.template) >= ?", rhs.bindings + [lhs.lowerBound.datatypeValue])
+}
+
+public func ~=<V : Value>(lhs: PartialRangeFrom<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable & Value {
+    return Expression("\(rhs.template) >= ?", rhs.bindings + [lhs.lowerBound.datatypeValue])
 }
 
 // MARK: -

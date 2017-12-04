@@ -1,34 +1,34 @@
 import XCTest
-import SQLite
+@testable import SQLite
 
 class SQLiteTestCase : XCTestCase {
-
-    var trace = [String: Int]()
-
-    let db = try! Connection()
-
+    private var trace:[String: Int]!
+    var db:Connection!
     let users = Table("users")
 
     override func setUp() {
         super.setUp()
+        db = try! Connection()
+        trace = [String:Int]()
 
         db.trace { SQL in
             print(SQL)
-            self.trace[SQL] = (self.trace[SQL] ?? 0) + 1
+            self.trace[SQL, default: 0] += 1
         }
     }
 
     func CreateUsersTable() {
-        try! db.execute(
-            "CREATE TABLE \"users\" (" +
-                "id INTEGER PRIMARY KEY, " +
-                "email TEXT NOT NULL UNIQUE, " +
-                "age INTEGER, " +
-                "salary REAL, " +
-                "admin BOOLEAN NOT NULL DEFAULT 0 CHECK (admin IN (0, 1)), " +
-                "manager_id INTEGER, " +
-                "FOREIGN KEY(manager_id) REFERENCES users(id)" +
-            ")"
+        try! db.execute("""
+            CREATE TABLE users (
+                id INTEGER PRIMARY KEY,
+                email TEXT NOT NULL UNIQUE,
+                age INTEGER,
+                salary REAL,
+                admin BOOLEAN NOT NULL DEFAULT 0 CHECK (admin IN (0, 1)),
+                manager_id INTEGER,
+                FOREIGN KEY(manager_id) REFERENCES users(id)
+            )
+            """
         )
     }
 
@@ -69,7 +69,7 @@ class SQLiteTestCase : XCTestCase {
 
     func async(expect description: String = "async", timeout: Double = 5, block: (@escaping () -> Void) -> Void) {
         let expectation = self.expectation(description: description)
-        block(expectation.fulfill)
+        block({ expectation.fulfill() })
         waitForExpectations(timeout: timeout, handler: nil)
     }
 
@@ -113,3 +113,23 @@ let table = Table("table")
 let qualifiedTable = Table("table", database: "main")
 let virtualTable = VirtualTable("virtual_table")
 let _view = View("view") // avoid Mac XCTestCase collision
+
+class TestCodable: Codable {
+    let int: Int
+    let string: String
+    let bool: Bool
+    let float: Float
+    let double: Double
+    let optional: String?
+    let sub: TestCodable?
+
+    init(int: Int, string: String, bool: Bool, float: Float, double: Double, optional: String?, sub: TestCodable?) {
+        self.int = int
+        self.string = string
+        self.bool = bool
+        self.float = float
+        self.double = double
+        self.optional = optional
+        self.sub = sub
+    }
+}
