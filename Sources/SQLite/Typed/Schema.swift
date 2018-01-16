@@ -126,16 +126,20 @@ extension Table {
     }
 
     // MARK: - CREATE INDEX
-
-    public func createIndex(_ columns: Expressible..., unique: Bool = false, ifNotExists: Bool = false) -> String {
+    
+    public func createIndex(_ columns: [Expressible], unique: Bool = false, ifNotExists: Bool = false) -> String {
         let clauses: [Expressible?] = [
             create("INDEX", indexName(columns), unique ? .unique : nil, ifNotExists),
             Expression<Void>(literal: "ON"),
             tableName(qualified: false),
             "".wrap(columns) as Expression<Void>
         ]
-
+        
         return " ".join(clauses.flatMap { $0 }).asSQL()
+    }
+
+    public func createIndex(_ columns: Expressible..., unique: Bool = false, ifNotExists: Bool = false) -> String {
+        return createIndex(columns, unique: unique, ifNotExists: ifNotExists)
     }
 
     // MARK: - DROP INDEX
