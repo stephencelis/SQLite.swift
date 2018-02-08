@@ -20,4 +20,8 @@ DerivedData
 *.xcuserstate
 
 # Carthage
-Carthage
+/Carthage/
+
+# Swift Package Manager
+.build
+Packages/
