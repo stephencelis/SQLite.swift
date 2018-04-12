@@ -157,7 +157,7 @@ class ConnectionTests : SQLiteTestCase {
 
     func test_transaction_rollsBackTransactionsIfCommitsFail() {
         let sqliteVersion = String(describing: try! db.scalar("SELECT sqlite_version()")!)
-                .split(separator: ".").flatMap { Int($0) }
+            .split(separator: ".").compactMap { Int($0) }
         // PRAGMA defer_foreign_keys only supported in SQLite >= 3.8.0
         guard sqliteVersion[0] == 3 && sqliteVersion[1] >= 8 else {
             NSLog("skipping test for SQLite version \(sqliteVersion)")

@@ -217,7 +217,7 @@ fileprivate class SQLiteDecoder : Decoder {
         }
 
         var allKeys: [Key] {
-            return self.row.columnNames.keys.flatMap({Key(stringValue: $0)})
+            return self.row.columnNames.keys.compactMap({Key(stringValue: $0)})
         }
 
         func contains(_ key: Key) -> Bool {

@@ -637,7 +637,7 @@ extension ExpressionType where UnderlyingType == String? {
 
 }
 
-extension Collection where Iterator.Element : Value, IndexDistance == Int {
+extension Collection where Iterator.Element : Value {
 
     /// Builds a copy of the expression prepended with an `IN` check against the
     /// collection.
