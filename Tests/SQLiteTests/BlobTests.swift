@@ -16,7 +16,7 @@ class BlobTests : XCTestCase {
 
     func test_init_unsafeRawPointer() {
         let pointer = UnsafeMutablePointer<UInt8>.allocate(capacity: 3)
-        pointer.initialize(to: 42, count: 3)
+        pointer.initialize(repeating: 42, count: 3)
         let blob = Blob(bytes: pointer, length: 3)
         XCTAssertEqual(blob.bytes, [42, 42, 42])
     }

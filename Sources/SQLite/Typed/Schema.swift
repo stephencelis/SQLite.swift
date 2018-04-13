@@ -47,7 +47,7 @@ extension Table {
             withoutRowid ? Expression<Void>(literal: "WITHOUT ROWID") : nil
         ]
 
-        return " ".join(clauses.flatMap { $0 }).asSQL()
+        return " ".join(clauses.compactMap { $0 }).asSQL()
     }
 
     public func create(_ query: QueryType, temporary: Bool = false, ifNotExists: Bool = false) -> String {
@@ -57,7 +57,7 @@ extension Table {
             query
         ]
 
-        return " ".join(clauses.flatMap { $0 }).asSQL()
+        return " ".join(clauses.compactMap { $0 }).asSQL()
     }
 
     // MARK: - ALTER TABLE … ADD COLUMN
@@ -135,7 +135,7 @@ extension Table {
             "".wrap(columns) as Expression<Void>
         ]
 
-        return " ".join(clauses.flatMap { $0 }).asSQL()
+        return " ".join(clauses.compactMap { $0 }).asSQL()
     }
 
     // MARK: - DROP INDEX
@@ -174,7 +174,7 @@ extension View {
             query
         ]
 
-        return " ".join(clauses.flatMap { $0 }).asSQL()
+        return " ".join(clauses.compactMap { $0 }).asSQL()
     }
 
     // MARK: - DROP VIEW
@@ -196,7 +196,7 @@ extension VirtualTable {
             using
         ]
 
-        return " ".join(clauses.flatMap { $0 }).asSQL()
+        return " ".join(clauses.compactMap { $0 }).asSQL()
     }
 
     // MARK: - ALTER TABLE … RENAME TO
@@ -405,7 +405,7 @@ public final class TableBuilder {
             delete.map { Expression<Void>(literal: "ON DELETE \($0.rawValue)") }
         ]
 
-        definitions.append(" ".join(clauses.flatMap { $0 }))
+        definitions.append(" ".join(clauses.compactMap { $0 }))
     }
 
 }
@@ -456,7 +456,7 @@ private extension QueryType {
             name
         ]
 
-        return " ".join(clauses.flatMap { $0 })
+        return " ".join(clauses.compactMap { $0 })
     }
 
     func rename(to: Self) -> String {
@@ -475,7 +475,7 @@ private extension QueryType {
             name
         ]
 
-        return " ".join(clauses.flatMap { $0 }).asSQL()
+        return " ".join(clauses.compactMap { $0 }).asSQL()
     }
 
 }
@@ -493,7 +493,7 @@ private func definition(_ column: Expressible, _ datatype: String, _ primaryKey:
         collate.map { " ".join([Expression<Void>(literal: "COLLATE"), $0]) }
     ]
 
-    return " ".join(clauses.flatMap { $0 })
+    return " ".join(clauses.compactMap { $0 })
 }
 
 private func reference(_ primary: (QueryType, Expressible)) -> Expressible {
