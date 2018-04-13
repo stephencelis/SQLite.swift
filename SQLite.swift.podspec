@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "SQLite.swift"
-  s.version          = "0.11.4"
+  s.version          = "0.11.5"
   s.summary          = "A type-safe, Swift-language layer over SQLite3 for iOS and OS X."
 
   s.description      = <<-DESC
@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.watchos.deployment_target = "2.2"
   s.default_subspec  = 'standard'
   s.pod_target_xcconfig = {
-    'SWIFT_VERSION' => '4.0',
+    'SWIFT_VERSION' => '4.1',
   }
 
   s.subspec 'standard' do |ss|
