@@ -73,7 +73,7 @@ extension String {
     }
 
     func infix<T>(_ lhs: Expressible, _ rhs: Expressible, wrap: Bool = true) -> Expression<T> {
-        return infix([lhs, rhs])
+        return infix([lhs, rhs], wrap: wrap)
     }
     
     func infix<T>(_ terms: [Expressible], wrap: Bool = true) -> Expression<T> {
