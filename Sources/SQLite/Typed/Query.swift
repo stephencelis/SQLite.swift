@@ -1080,7 +1080,7 @@ public struct Row {
         for key in columnNames.keys {
             let index = columnNames[key]!
             let value = values[index] as AnyObject
-            rowDictionary[key] = value
+            rowDictionary[key.trimmingCharacters(in: .punctuationCharacters)] = value
         }
         return rowDictionary
     }
