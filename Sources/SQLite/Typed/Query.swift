@@ -1074,6 +1074,17 @@ public struct Row {
         return values[idx] != nil
     }
 
+    /// - Returns: Row as a dictionary with keys being database column names.
+    public var dictionary: Dictionary<String, AnyObject> {
+        var rowDictionary = Dictionary<String, AnyObject>()
+        for key in columnNames.keys {
+            let index = columnNames[key]!
+            let value = values[index] as AnyObject
+            rowDictionary[key] = value
+        }
+        return rowDictionary
+    }
+    
     /// Returns a row’s value for the given column.
     ///
     /// - Parameter column: An expression representing a column selected in a Query.
