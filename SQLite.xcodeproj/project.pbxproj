@@ -108,6 +108,9 @@
 		49EB68C51F7B3CB400D89D40 /* Coding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EB68C31F7B3CB400D89D40 /* Coding.swift */; };
 		49EB68C61F7B3CB400D89D40 /* Coding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EB68C31F7B3CB400D89D40 /* Coding.swift */; };
 		49EB68C71F7B3CB400D89D40 /* Coding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EB68C31F7B3CB400D89D40 /* Coding.swift */; };
+		D4DB368C20C09CFB00D5A58E /* SelectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DB368A20C09C9B00D5A58E /* SelectTests.swift */; };
+		D4DB368D20C09CFC00D5A58E /* SelectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DB368A20C09C9B00D5A58E /* SelectTests.swift */; };
+		D4DB368E20C09CFD00D5A58E /* SelectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DB368A20C09C9B00D5A58E /* SelectTests.swift */; };
 		EE247AD71C3F04ED00AE3E12 /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE247ADE1C3F04ED00AE3E12 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE247AD31C3F04ED00AE3E12 /* SQLite.framework */; };
 		EE247B031C3F06E900AE3E12 /* Blob.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEE1C3F06E900AE3E12 /* Blob.swift */; };
@@ -228,6 +231,7 @@
 		3D67B3E51DB2469200A4F4C6 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS3.0.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		49EB68C31F7B3CB400D89D40 /* Coding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coding.swift; sourceTree = "<group>"; };
 		A121AC451CA35C79005A31D1 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4DB368A20C09C9B00D5A58E /* SelectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTests.swift; sourceTree = "<group>"; };
 		EE247AD31C3F04ED00AE3E12 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE247AD61C3F04ED00AE3E12 /* SQLite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQLite.h; sourceTree = "<group>"; };
 		EE247AD81C3F04ED00AE3E12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -418,6 +422,7 @@
 				19A17B93B48B5560E6E51791 /* Fixtures.swift */,
 				19A175C1F9CB3BBAB8FCEC7B /* RowTests.swift */,
 				19A1729B75C33F9A0B9A89C1 /* DateAndTimeFunctionTests.swift */,
+				D4DB368A20C09C9B00D5A58E /* SelectTests.swift */,
 			);
 			name = SQLiteTests;
 			path = Tests/SQLiteTests;
@@ -847,6 +852,7 @@
 				19A17F60B685636D1F83C2DD /* Fixtures.swift in Sources */,
 				19A1785195182AF8731A8BDA /* RowTests.swift in Sources */,
 				19A1769C1F3A7542BECF50FF /* DateAndTimeFunctionTests.swift in Sources */,
+				D4DB368E20C09CFD00D5A58E /* SelectTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -935,6 +941,7 @@
 				19A17408007B182F884E3A53 /* Fixtures.swift in Sources */,
 				19A1720B67ED13E6150C6A3D /* RowTests.swift in Sources */,
 				19A17C80076860CF7751A056 /* DateAndTimeFunctionTests.swift in Sources */,
+				D4DB368C20C09CFB00D5A58E /* SelectTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -993,6 +1000,7 @@
 				19A1709C3E7A406E62293B2A /* Fixtures.swift in Sources */,
 				19A171967CC511C4F6F773C9 /* RowTests.swift in Sources */,
 				19A172EB202970561E5C4245 /* DateAndTimeFunctionTests.swift in Sources */,
+				D4DB368D20C09CFC00D5A58E /* SelectTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
