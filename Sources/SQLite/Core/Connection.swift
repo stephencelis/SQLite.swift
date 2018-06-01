@@ -151,27 +151,53 @@ public final class Connection {
     ///
     ///     Default: `.inMemory`.
     ///
+    ///   - flags: sqlite3_open_v2 option flags.
+    ///
+    /// - Returns: A new database connection.
+    public init(_ location: Location = .inMemory, flags: [Flag]) throws {
+        var flags = flags
+        let firstFlag = flags.remove(at: 0)
+        let sqlite3Flags = flags.reduce(firstFlag.rawValue) { $0 | $1.rawValue }
+        
+        try check(sqlite3_open_v2(location.description, &_handle, sqlite3Flags, nil))
+        queue.setSpecific(key: Connection.queueKey, value: queueContext)
+    }
+    
+    /// Initializes a new SQLite connection.
+    ///
+    /// - Parameters:
+    ///
+    ///   - location: The location of the database. Creates a new database if it
+    ///     doesn’t already exist (unless in read-only mode).
+    ///
+    ///     Default: `.inMemory`.
+    ///
     ///   - readonly: Whether or not to open the database in a read-only state.
     ///
     ///     Default: `false`.
     ///
     /// - Returns: A new database connection.
-
-    public init(_ location: Location = .inMemory, readonly: Bool = false, flags: [Flag]? = nil) throws {
-        let sqlite3Flags: Int32
-        if var flags = flags, !flags.isEmpty {
-            let firstFlag = flags.remove(at: 0)
-            sqlite3Flags = flags.reduce(firstFlag.rawValue) { $0 | $1.rawValue }
-        } else if readonly {
-            sqlite3Flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX
-        } else {
-            sqlite3Flags = SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_FULLMUTEX
-        }
-        
-        try check(sqlite3_open_v2(location.description, &_handle, sqlite3Flags, nil))
-        queue.setSpecific(key: Connection.queueKey, value: queueContext)
+    public convenience init(_ location: Location = .inMemory, readonly: Bool = false) throws {
+        let flags: [Flag] = readonly ? [.readonly, .nomutex] : [.create, .readwrite, .fullmutex]
+        try self.init(location, flags: flags)
     }
-
+    
+    /// Initializes a new connection to a database.
+    ///
+    /// - Parameters:
+    ///
+    ///   - filename: The location of the database. Creates a new database if
+    ///     it doesn’t already exist (unless in read-only mode).
+    ///
+    ///   - flags: sqlite3_open_v2 option flags.
+    ///
+    /// - Throws: `Result.Error` iff a connection cannot be established.
+    ///
+    /// - Returns: A new database connection.
+    public convenience init(_ filename: String, flags: [Flag]) throws {
+        try self.init(.uri(filename), flags: flags)
+    }
+    
     /// Initializes a new connection to a database.
     ///
     /// - Parameters:
@@ -186,8 +212,9 @@ public final class Connection {
     /// - Throws: `Result.Error` iff a connection cannot be established.
     ///
     /// - Returns: A new database connection.
-    public convenience init(_ filename: String, readonly: Bool = false, flags: [Flag]? = nil) throws {
-        try self.init(.uri(filename), readonly: readonly, flags: flags)
+    public convenience init(_ filename: String, readonly: Bool = false) throws {
+        let flags: [Flag] = readonly ? [.readonly, .nomutex] : [.create, .readwrite, .fullmutex]
+        try self.init(.uri(filename), flags: flags)
     }
 
     deinit {
