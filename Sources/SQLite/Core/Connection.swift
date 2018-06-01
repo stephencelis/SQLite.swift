@@ -83,11 +83,65 @@ public final class Connection {
             }
         }
     }
+    
+    /// A sqlite3_open_v2 open flag.
+    public enum Flag {
+        
+        /// SQLITE_OPEN_READONLY
+        case readonly
+        
+        /// SQLITE_OPEN_READWRITE
+        case readwrite
+        
+        /// SQLITE_OPEN_CREATE
+        case create
+        
+        /// SQLITE_OPEN_URI
+        case uri
+        
+        /// SQLITE_OPEN_MEMORY
+        case memory
+        
+        /// SQLITE_OPEN_NOMUTEX
+        case nomutex
+        
+        /// SQLITE_OPEN_FULLMUTEX
+        case fullmutex
+        
+        /// SQLITE_OPEN_SHAREDCACHE
+        case sharedcache
+        
+        /// SQLITE_OPEN_PRIVATECACHE
+        case privatecache
+        
+        var rawValue: Int32 {
+            switch self {
+            case .readonly:
+                return SQLITE_OPEN_READONLY
+            case .readwrite:
+                return  SQLITE_OPEN_READWRITE
+            case .create:
+                return SQLITE_OPEN_CREATE
+            case .uri:
+                return SQLITE_OPEN_URI
+            case .memory:
+                return SQLITE_OPEN_MEMORY
+            case .nomutex:
+                return SQLITE_OPEN_NOMUTEX
+            case .fullmutex:
+                return SQLITE_OPEN_FULLMUTEX
+            case .sharedcache:
+                return SQLITE_OPEN_SHAREDCACHE
+            case .privatecache:
+                return SQLITE_OPEN_PRIVATECACHE
+            }
+        }
+    }
 
     public var handle: OpaquePointer { return _handle! }
 
     fileprivate var _handle: OpaquePointer? = nil
-
+    
     /// Initializes a new SQLite connection.
     ///
     /// - Parameters:
@@ -102,10 +156,20 @@ public final class Connection {
     ///     Default: `false`.
     ///
     /// - Returns: A new database connection.
-    public init(_ location: Location = .InMemory, readonly: Bool = false) throws {
-        let flags = readonly ? (SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX) : (SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_FULLMUTEX)
-        try check(sqlite3_open_v2(location.description, &_handle, flags, nil))
-        dispatch_queue_set_specific(queue, Connection.queueKey, queueContext, nil)
+
+    public init(_ location: Location = .inMemory, readonly: Bool = false, flags: [Flag]? = nil) throws {
+        let sqlite3Flags: Int32
+        if var flags = flags, !flags.isEmpty {
+            let firstFlag = flags.remove(at: 0)
+            sqlite3Flags = flags.reduce(firstFlag.rawValue) { $0 | $1.rawValue }
+        } else if readonly {
+            sqlite3Flags = SQLITE_OPEN_READONLY | SQLITE_OPEN_NOMUTEX
+        } else {
+            sqlite3Flags = SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE | SQLITE_OPEN_FULLMUTEX
+        }
+        
+        try check(sqlite3_open_v2(location.description, &_handle, sqlite3Flags, nil))
+        queue.setSpecific(key: Connection.queueKey, value: queueContext)
     }
 
     /// Initializes a new connection to a database.
@@ -122,8 +186,8 @@ public final class Connection {
     /// - Throws: `Result.Error` iff a connection cannot be established.
     ///
     /// - Returns: A new database connection.
-    public convenience init(_ filename: String, readonly: Bool = false) throws {
-        try self.init(.uri(filename), readonly: readonly)
+    public convenience init(_ filename: String, readonly: Bool = false, flags: [Flag]? = nil) throws {
+        try self.init(.uri(filename), readonly: readonly, flags: flags)
     }
 
     deinit {

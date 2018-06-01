@@ -45,6 +45,11 @@ class ConnectionTests : SQLiteTestCase {
         let db = try! Connection("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3")
         XCTAssertEqual("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3", db.description)
     }
+    
+    func test_init_withOpenFlags_returnsURIConnection() {
+        let db = try! Connection("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3", flags: [.sharedcache, .create, .readwrite])
+        XCTAssertEqual("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3", db.description)
+    }
 
     func test_readonly_returnsFalseOnReadWriteConnections() {
         XCTAssertFalse(db.readonly)
