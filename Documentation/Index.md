@@ -1854,8 +1854,8 @@ using the following functions.
     ```swift
     let stmt = try db.prepare("SELECT id, email FROM users")
     for row in stmt {
-        for (index, name) in stmt.columnNames.enumerate() {
-            print ("\(name)=\(row[index]!)")
+        for (index, name) in stmt.columnNames.enumerated() {
+            print ("\(name):\(row[index]!)")
             // id: Optional(1), email: Optional("alice@mac.com")
         }
     }
