@@ -132,8 +132,12 @@ fileprivate class SQLiteEncoder: Encoder {
             if let data = value as? Data {
                 self.encoder.setters.append(Expression(key.stringValue) <- data)
             }
+            else if let date = value as? Date {
+                self.encoder.setters.append(Expression(key.stringValue) <- date.datatypeValue)
+            }
             else {
-                let encoded = try JSONEncoder().encode(value)
+                let encoder = JSONEncoder()
+                let encoded = try encoder.encode(value)
                 let string = String(data: encoded, encoding: .utf8)
                 self.encoder.setters.append(Expression(key.stringValue) <- string)
             }
@@ -254,7 +258,6 @@ fileprivate class SQLiteDecoder : Decoder {
 
         func decode(_ type: UInt.Type, forKey key: Key) throws -> UInt {
             throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding an UInt is not supported"))
-
         }
 
         func decode(_ type: UInt8.Type, forKey key: Key) throws -> UInt8 {
@@ -289,6 +292,10 @@ fileprivate class SQLiteDecoder : Decoder {
             if type == Data.self {
                 let data = try self.row.get(Expression<Data>(key.stringValue))
                 return data as! T
+            }
+            else if type == Date.self {
+                let date = try self.row.get(Expression<Date>(key.stringValue))
+                return date as! T
             }
             guard let JSONString = try self.row.get(Expression<String?>(key.stringValue)) else {
                 throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "an unsupported type was found"))
