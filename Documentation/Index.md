@@ -542,11 +542,11 @@ several parameters that map to various column constraints and clauses.
     // "name" TEXT COLLATE "RTRIM"
     ```
 
-  - `references` adds a `REFERENCES` clause to `Expression<Int64>` (and
-    `Expression<Int64?>`) column definitions and accepts a table
-    (`SchemaType`) or namespaced column expression. (See the `foreignKey`
-    function under [Table Constraints](#table-constraints) for non-integer
-    foreign key support.)
+  - `references` adds a `REFERENCES` clause to `Expression<Int64>`, 
+    `Expression<Int64?>`, `Expression<String?>` and `Expression<String?>` 
+    column definitions and accepts a table (`SchemaType`) or namespaced 
+    column expression. (See the `foreignKey` function under 
+    [Table Constraints](#table-constraints) for non-integer foreign key support.)
 
     ```swift
     t.column(user_id, references: users, id)
