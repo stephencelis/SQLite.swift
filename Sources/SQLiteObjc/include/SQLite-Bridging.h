@@ -24,10 +24,10 @@
 
 @import Foundation;
 
-#import "sqlite3.h"
+struct sqlite3;
 
 NS_ASSUME_NONNULL_BEGIN
 typedef NSString * _Nullable (^_SQLiteTokenizerNextCallback)(const char *input, int *inputOffset, int *inputLength);
-int _SQLiteRegisterTokenizer(sqlite3 *db, const char *module, const char *tokenizer, _Nullable _SQLiteTokenizerNextCallback callback);
+int _SQLiteRegisterTokenizer(struct sqlite3 *db, const char *module, const char *tokenizer, _Nullable _SQLiteTokenizerNextCallback callback);
 NS_ASSUME_NONNULL_END
 
