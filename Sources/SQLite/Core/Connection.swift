@@ -357,11 +357,6 @@ public final class Connection {
         try transaction(savepoint, block, "RELEASE \(savepoint)", or: "ROLLBACK TO \(savepoint)")
     }
 	
-	fileprivate struct ErrorDuringRollback: Error {
-		let originalError: Error
-		let rollbackError: Error
-	}
-
     fileprivate func transaction(_ begin: String, _ block: () throws -> Void, _ commit: String, or rollback: String) throws {
         return try sync {
             try self.run(begin)
@@ -369,11 +364,7 @@ public final class Connection {
 				try block()
                 try self.run(commit)
             } catch {
-				do {
-					try self.run(rollback)
-				} catch let rollbackError {
-					throw ErrorDuringRollback(originalError: error, rollbackError: rollbackError)
-				}
+				_ = try? self.run(rollback)
                 throw error
             }
         }
