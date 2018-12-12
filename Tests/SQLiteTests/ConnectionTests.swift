@@ -157,7 +157,7 @@ class ConnectionTests : SQLiteTestCase {
 
     func test_transaction_rollsBackTransactionsIfCommitsFail() {
         let sqliteVersion = String(describing: try! db.scalar("SELECT sqlite_version()")!)
-                .split(separator: ".").flatMap { Int($0) }
+            .split(separator: ".").compactMap { Int($0) }
         // PRAGMA defer_foreign_keys only supported in SQLite >= 3.8.0
         guard sqliteVersion[0] == 3 && sqliteVersion[1] >= 8 else {
             NSLog("skipping test for SQLite version \(sqliteVersion)")
@@ -384,6 +384,9 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_concurrent_access_single_connection() {
+        // test can fail on iOS/tvOS 9.x: SQLite compile-time differences?
+        guard #available(iOS 10.0, OSX 10.10, tvOS 10.0, watchOS 2.2, *) else  { return }
+
         let conn = try! Connection("\(NSTemporaryDirectory())/\(UUID().uuidString)")
         try! conn.execute("DROP TABLE IF EXISTS test; CREATE TABLE test(value);")
         try! conn.run("INSERT INTO test(value) VALUES(?)", 0)

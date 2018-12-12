@@ -67,8 +67,8 @@
 
 ## Installation
 
-> _Note:_ SQLite.swift requires Swift 4 (and
-> [Xcode 9](https://developer.apple.com/xcode/downloads/)) or greater.
+> _Note:_ SQLite.swift requires Swift 4.1 (and
+> [Xcode 9.3](https://developer.apple.com/xcode/downloads/)) or greater.
 
 
 ### Carthage
@@ -80,7 +80,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.11.4
+    github "stephencelis/SQLite.swift" ~> 0.11.5
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -110,7 +110,7 @@ install SQLite.swift with Carthage:
     use_frameworks!
 
     target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.11.4'
+        pod 'SQLite.swift', '~> 0.11.5'
     end
     ```
 
@@ -124,7 +124,7 @@ with the OS you can require the `standalone` subspec:
 
 ```ruby
 target 'YourAppTargetName' do
-  pod 'SQLite.swift/standalone', '~> 0.11.4'
+  pod 'SQLite.swift/standalone', '~> 0.11.5'
 end
 ```
 
@@ -134,7 +134,7 @@ dependency to sqlite3 or one of its subspecs:
 
 ```ruby
 target 'YourAppTargetName' do
-  pod 'SQLite.swift/standalone', '~> 0.11.4'
+  pod 'SQLite.swift/standalone', '~> 0.11.5'
   pod 'sqlite3/fts5', '= 3.15.0'  # SQLite 3.15.0 with FTS5 enabled
 end
 ```
@@ -148,7 +148,7 @@ If you want to use [SQLCipher][] with SQLite.swift you can require the
 
 ```ruby
 target 'YourAppTargetName' do
-  pod 'SQLite.swift/SQLCipher', '~> 0.11.4'
+  pod 'SQLite.swift/SQLCipher', '~> 0.11.5'
 end
 ```
 
@@ -181,7 +181,7 @@ applications.
 
   ```swift
   dependencies: [
-    .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.11.4")
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.11.5")
   ]
   ```
 
@@ -718,7 +718,7 @@ try db.transaction {
 | `<<=`    | `Int -> Int`       |
 | `>>=`    | `Int -> Int`       |
 | `&=`     | `Int -> Int`       |
-| `||=`    | `Int -> Int`       |
+| `\|\|=`  | `Int -> Int`       |
 | `^=`     | `Int -> Int`       |
 | `+=`     | `String -> String` |
 
@@ -954,7 +954,7 @@ equate or compare different types will prevent compilation.
 | `<=`  | `Comparable -> Bool`             | `<=`           |
 | `~=`  | `(Interval, Comparable) -> Bool` | `BETWEEN`      |
 | `&&`  | `Bool -> Bool`                   | `AND`          |
-| `||`  | `Bool -> Bool`                   | `OR`           |
+| `\|\|`| `Bool -> Bool`                   | `OR`           |
 
 > *When comparing against `nil`, SQLite.swift will use `IS` and `IS NOT`
 > accordingly.
@@ -1586,8 +1586,8 @@ arithmetic, bitwise operations, and concatenation.
 | `<<`  | `Int -> Int`                     | `<<`     |
 | `>>`  | `Int -> Int`                     | `>>`     |
 | `&`   | `Int -> Int`                     | `&`      |
-| `|`   | `Int -> Int`                     | `|`      |
-| `+`   | `String -> String`               | `||`     |
+| `\|`  | `Int -> Int`                     | `\|`     |
+| `+`   | `String -> String`               | `\|\|`   |
 
 > _Note:_ SQLite.swift also defines a bitwise XOR operator, `^`, which
 > expands the expression `lhs ^ rhs` to `~(lhs & rhs) & (lhs | rhs)`.
@@ -1854,8 +1854,8 @@ using the following functions.
     ```swift
     let stmt = try db.prepare("SELECT id, email FROM users")
     for row in stmt {
-        for (index, name) in stmt.columnNames.enumerate() {
-            print ("\(name)=\(row[index]!)")
+        for (index, name) in stmt.columnNames.enumerated() {
+            print ("\(name):\(row[index]!)")
             // id: Optional(1), email: Optional("alice@mac.com")
         }
     }
