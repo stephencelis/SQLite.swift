@@ -1,3 +1,8 @@
+0.11.6 (xxx), [diff][diff-0.11.6]
+========================================
+
+* Swift 4.2, SQLCipher 4.x ([#866][])
+
 0.11.5 (04-14-2018), [diff][diff-0.11.5]
 ========================================
 
@@ -57,6 +62,7 @@
 [diff-0.11.3]: https://github.com/stephencelis/SQLite.swift/compare/0.11.2...0.11.3
 [diff-0.11.4]: https://github.com/stephencelis/SQLite.swift/compare/0.11.3...0.11.4
 [diff-0.11.5]: https://github.com/stephencelis/SQLite.swift/compare/0.11.4...0.11.5
+[diff-0.11.6]: https://github.com/stephencelis/SQLite.swift/compare/0.11.5...0.11.6
 
 [#142]: https://github.com/stephencelis/SQLite.swift/issues/142
 [#315]: https://github.com/stephencelis/SQLite.swift/issues/315
@@ -88,3 +94,4 @@
 [#733]: https://github.com/stephencelis/SQLite.swift/pull/733
 [#726]: https://github.com/stephencelis/SQLite.swift/pull/726
 [#797]: https://github.com/stephencelis/SQLite.swift/pull/797
+[#866]: https://github.com/stephencelis/SQLite.swift/pull/866

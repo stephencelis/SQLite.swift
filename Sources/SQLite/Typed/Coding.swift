@@ -184,7 +184,7 @@ fileprivate class SQLiteEncoder: Encoder {
         }
     }
 
-    fileprivate var setters: [SQLite.Setter] = []
+    fileprivate var setters: [Setter] = []
     let codingPath: [CodingKey] = []
     let userInfo: [CodingUserInfoKey: Any]
 
