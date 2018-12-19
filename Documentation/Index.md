@@ -718,7 +718,7 @@ try db.transaction {
 | `<<=`    | `Int -> Int`       |
 | `>>=`    | `Int -> Int`       |
 | `&=`     | `Int -> Int`       |
-| `||=`    | `Int -> Int`       |
+| `\|\|=`  | `Int -> Int`       |
 | `^=`     | `Int -> Int`       |
 | `+=`     | `String -> String` |
 
@@ -954,7 +954,7 @@ equate or compare different types will prevent compilation.
 | `<=`  | `Comparable -> Bool`             | `<=`           |
 | `~=`  | `(Interval, Comparable) -> Bool` | `BETWEEN`      |
 | `&&`  | `Bool -> Bool`                   | `AND`          |
-| `||`  | `Bool -> Bool`                   | `OR`           |
+| `\|\|`| `Bool -> Bool`                   | `OR`           |
 
 > *When comparing against `nil`, SQLite.swift will use `IS` and `IS NOT`
 > accordingly.
@@ -1586,8 +1586,8 @@ arithmetic, bitwise operations, and concatenation.
 | `<<`  | `Int -> Int`                     | `<<`     |
 | `>>`  | `Int -> Int`                     | `>>`     |
 | `&`   | `Int -> Int`                     | `&`      |
-| `|`   | `Int -> Int`                     | `|`      |
-| `+`   | `String -> String`               | `||`     |
+| `\|`  | `Int -> Int`                     | `\|`     |
+| `+`   | `String -> String`               | `\|\|`   |
 
 > _Note:_ SQLite.swift also defines a bitwise XOR operator, `^`, which
 > expands the expression `lhs ^ rhs` to `~(lhs & rhs) & (lhs | rhs)`.
@@ -1854,8 +1854,8 @@ using the following functions.
     ```swift
     let stmt = try db.prepare("SELECT id, email FROM users")
     for row in stmt {
-        for (index, name) in stmt.columnNames.enumerate() {
-            print ("\(name)=\(row[index]!)")
+        for (index, name) in stmt.columnNames.enumerated() {
+            print ("\(name):\(row[index]!)")
             // id: Optional(1), email: Optional("alice@mac.com")
         }
     }
