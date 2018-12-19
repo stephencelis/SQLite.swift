@@ -42,7 +42,7 @@ class IntegrationTest < Minitest::Test
 
     def xcodebuild(action, scheme, configuration)
       require 'fourflusher'
-      command = %W(clean #{action} -workspace #{File.join(validation_dir, 'App.xcworkspace')} -scheme #{scheme} -configuration #{configuration})
+      command = %W(#{action} -workspace #{File.join(validation_dir, 'App.xcworkspace')} -scheme #{scheme} -configuration #{configuration})
       case consumer.platform_name
       when :osx, :macos
         command += %w(CODE_SIGN_IDENTITY=)
