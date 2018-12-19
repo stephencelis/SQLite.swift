@@ -6,6 +6,11 @@ import SQLCipher
 /// @see [sqlcipher api](https://www.zetetic.net/sqlcipher/sqlcipher-api/)
 extension Connection {
 
+    /// - Returns: the SQLCipher version
+    public var cipherVersion: String? {
+        return (try? scalar("PRAGMA cipher_version")) as? String
+    }
+
     /// Specify the key for an encrypted database.  This routine should be
     /// called right after sqlite3_open().
     ///
