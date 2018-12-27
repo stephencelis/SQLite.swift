@@ -100,15 +100,6 @@ func AssertSQL(_ expression1: @autoclosure () -> String, _ expression2: @autoclo
     XCTAssertEqual(expression1(), expression2().asSQL(), file: file, line: line)
 }
 
-func AssertThrows<T>(_ expression: @autoclosure () throws -> T, file: StaticString = #file, line: UInt = #line) {
-    do {
-        _ = try expression()
-        XCTFail("expression expected to throw", file: file, line: line)
-    } catch {
-        XCTAssert(true, file: file, line: line)
-    }
-}
-
 let table = Table("table")
 let qualifiedTable = Table("table", database: "main")
 let virtualTable = VirtualTable("virtual_table")
