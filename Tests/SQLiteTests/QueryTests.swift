@@ -464,6 +464,15 @@ class QueryIntegrationTests : SQLiteTestCase {
         XCTAssertNil(values[0].sub?.optional)
         XCTAssertNil(values[0].sub?.sub)
     }
+    
+    func test_select_exact_columns_from_join() {
+        
+        CreateNotesTable()
+        let userId = Expression<Int64>("user_id")
+        
+        let query = users.join(notes, on: notes[userId] == users[id]).select(notes[*])
+        let _ = try! db.prepare(query)
+    }
 
     func test_scalar() {
         XCTAssertEqual(0, try! db.scalar(users.count))

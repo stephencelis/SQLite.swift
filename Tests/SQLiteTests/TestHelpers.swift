@@ -5,6 +5,7 @@ class SQLiteTestCase : XCTestCase {
     private var trace:[String: Int]!
     var db:Connection!
     let users = Table("users")
+    let notes = Table("notes")
 
     override func setUp() {
         super.setUp()
@@ -27,6 +28,19 @@ class SQLiteTestCase : XCTestCase {
                 admin BOOLEAN NOT NULL DEFAULT 0 CHECK (admin IN (0, 1)),
                 manager_id INTEGER,
                 FOREIGN KEY(manager_id) REFERENCES users(id)
+            )
+            """
+        )
+    }
+    
+    func CreateNotesTable() {
+        try! db.execute("""
+            CREATE TABLE notes (
+                id INTEGER PRIMARY KEY,
+                text TEXT NOT NULL,
+                date TEXT NOT NULL,
+                user_id INTEGER,
+                FOREIGN KEY(user_id) REFERENCES users(id)
             )
             """
         )
