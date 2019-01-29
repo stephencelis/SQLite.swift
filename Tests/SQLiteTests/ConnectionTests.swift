@@ -369,18 +369,23 @@ class ConnectionTests : SQLiteTestCase {
     }
 
     func test_interrupt_interruptsLongRunningQuery() {
-        try! InsertUsers("abcdefghijklmnopqrstuvwxyz".map { String($0) })
+        let semaphore = DispatchSemaphore(value: 0)
         db.createFunction("sleep") { args in
-            usleep(UInt32((args[0] as? Double ?? Double(args[0] as? Int64 ?? 1)) * 1_000_000))
+            DispatchQueue.global(qos: .background).async {
+                self.db.interrupt()
+                semaphore.signal()
+            }
+            semaphore.wait()
             return nil
         }
-
-        let stmt = try! db.prepare("SELECT *, sleep(?) FROM users", 0.1)
-        try! stmt.run()
-
-        let deadline = DispatchTime.now() + 0.01
-        _ = DispatchQueue(label: "queue", qos: .background).asyncAfter(deadline: deadline, execute: db.interrupt)
-        AssertThrows(try stmt.run())
+        let stmt = try! db.prepare("SELECT sleep()")
+        XCTAssertThrowsError(try stmt.run()) { error in
+            if case Result.error(_, let code, _) = error {
+                XCTAssertEqual(code, SQLITE_INTERRUPT)
+            } else {
+                XCTFail("unexpected error: \(error)")
+            }
+        }
     }
 
     func test_concurrent_access_single_connection() {
@@ -391,21 +396,17 @@ class ConnectionTests : SQLiteTestCase {
         try! conn.execute("DROP TABLE IF EXISTS test; CREATE TABLE test(value);")
         try! conn.run("INSERT INTO test(value) VALUES(?)", 0)
         let queue = DispatchQueue(label: "Readers", attributes: [.concurrent])
+
         let nReaders = 5
-        var reads = Array(repeating: 0, count: nReaders)
-        var finished = false
+        let semaphores =  Array(repeating: DispatchSemaphore(value: 100), count: nReaders)
         for index in 0..<nReaders {
             queue.async {
-                while !finished {
+                while semaphores[index].signal() == 0 {
                     _ = try! conn.scalar("SELECT value FROM test")
-                    reads[index] += 1
                 }
             }
         }
-        while !finished {
-            sleep(1)
-            finished = reads.reduce(true) { $0 && ($1 > 500) }
-        }
+        semaphores.forEach { $0.wait() }
     }
 }
 
