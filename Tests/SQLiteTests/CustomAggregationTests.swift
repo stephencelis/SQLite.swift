@@ -122,13 +122,18 @@ class CustomAggregationTests : SQLiteTestCase {
             let _ = db.createAggregation("myReduceSUMX", initialValue: initial, reduce: reduce, result: { $0.value })
             // end this scope to ensure that the initial value is retained
             // by the createAggregation call.
+        }();
+        {
+            XCTAssertEqual(TestObject.inits, 1)
+            let result = try! db.prepare("SELECT myReduceSUMX(age) AS s FROM users")
+            let i = result.columnNames.index(of: "s")!
+            for row in result {
+                let value = row[i] as? Int64
+                XCTAssertEqual(1083, value)
+            }
         }()
-        let result = try! db.prepare("SELECT myReduceSUMX(age) AS s FROM users")
-        let i = result.columnNames.index(of: "s")!
-        for row in result {
-            let value = row[i] as? Int64
-            XCTAssertEqual(1083, value)
-        }
+        XCTAssertEqual(TestObject.inits, 4)
+        XCTAssertEqual(TestObject.deinits, 3) // the initial value is still retained by the aggregate's state block, so deinits is one less than inits
     }
 }
 
@@ -136,10 +141,15 @@ class CustomAggregationTests : SQLiteTestCase {
 /// can be reference types and are properly memory managed when
 /// crossing the Swift<->C boundary multiple times.
 class TestObject {
+    static var inits = 0
+    static var deinits = 0
+    
     var value: Int64
     init(value: Int64) {
         self.value = value
+        TestObject.inits += 1
     }
     deinit {
+        TestObject.deinits += 1
     }
 }
