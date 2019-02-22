@@ -626,7 +626,15 @@ public final class Connection {
     ///   - state: A block of code to run to produce a fresh state variable for
     ///     each aggregation group. The block should return an
     ///     UnsafeMutablePointer to the fresh state variable.
-    public func createAggregation<T>(_ aggregate: String, argumentCount: UInt? = nil, deterministic: Bool = false, step: @escaping ([Binding?], UnsafeMutablePointer<T>) -> (), final: @escaping (UnsafeMutablePointer<T>) -> Binding?, state: @escaping () -> UnsafeMutablePointer<T>) {
+    public func createAggregation<T>(
+        _ aggregate: String,
+        argumentCount: UInt? = nil,
+        deterministic: Bool = false,
+        step: @escaping ([Binding?], UnsafeMutablePointer<T>) -> (),
+        final: @escaping (UnsafeMutablePointer<T>) -> Binding?,
+        state: @escaping () -> UnsafeMutablePointer<T>) {
+        
+        
         let argc = argumentCount.map { Int($0) } ?? -1
         let box : Aggregate = { (stepFlag: Int, context: OpaquePointer?, argc: Int32, argv: UnsafeMutablePointer<OpaquePointer?>?) in
             let ptr = sqlite3_aggregate_context(context, 64)! // needs to be at least as large as uintptr_t; better way to do this?
@@ -690,17 +698,17 @@ public final class Connection {
             { context, argc, value in
                 let function = unsafeBitCast(sqlite3_user_data(context), to: Aggregate.self)
                 function(1, context, argc, value)
-            },
+        },
             { context in
                 let function = unsafeBitCast(sqlite3_user_data(context), to: Aggregate.self)
                 function(0, context, 0, nil)
-            },
+        },
             nil
         )
         if aggregations[aggregate] == nil { self.aggregations[aggregate] = [:] }
         aggregations[aggregate]?[argc] = box
     }
-    
+
     fileprivate typealias Aggregate = @convention(block) (Int, OpaquePointer?, Int32, UnsafeMutablePointer<OpaquePointer?>?) -> Void
     fileprivate typealias Function = @convention(block) (OpaquePointer?, Int32, UnsafeMutablePointer<OpaquePointer?>?) -> Void
     fileprivate var functions = [String: [Int: Function]]()
