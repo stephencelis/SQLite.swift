@@ -81,6 +81,9 @@
 		19A17FB80B94E882050AA908 /* FoundationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1794CC4D7827E997E32A7 /* FoundationTests.swift */; };
 		19A17FDA323BAFDEC627E76F /* fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 19A17E2695737FAB5D6086E3 /* fixtures */; };
 		19A17FF4A10B44D3937C8CAC /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1710E73A46D5AC721CDA9 /* Errors.swift */; };
+		3717F908221F5D8800B9BD3D /* CustomAggregationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3717F907221F5D7C00B9BD3D /* CustomAggregationTests.swift */; };
+		3717F909221F5D8900B9BD3D /* CustomAggregationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3717F907221F5D7C00B9BD3D /* CustomAggregationTests.swift */; };
+		3717F90A221F5D8900B9BD3D /* CustomAggregationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3717F907221F5D7C00B9BD3D /* CustomAggregationTests.swift */; };
 		3D67B3E61DB2469200A4F4C6 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D67B3E51DB2469200A4F4C6 /* libsqlite3.tbd */; };
 		3D67B3E71DB246BA00A4F4C6 /* Blob.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEE1C3F06E900AE3E12 /* Blob.swift */; };
 		3D67B3E81DB246BA00A4F4C6 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEF1C3F06E900AE3E12 /* Connection.swift */; };
@@ -225,6 +228,7 @@
 		19A17B93B48B5560E6E51791 /* Fixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
 		19A17BA55DABB480F9020C8A /* DateAndTimeFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateAndTimeFunctions.swift; sourceTree = "<group>"; };
 		19A17E2695737FAB5D6086E3 /* fixtures */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; path = fixtures; sourceTree = "<group>"; };
+		3717F907221F5D7C00B9BD3D /* CustomAggregationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAggregationTests.swift; sourceTree = "<group>"; };
 		3D67B3E51DB2469200A4F4C6 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS3.0.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		49EB68C31F7B3CB400D89D40 /* Coding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coding.swift; sourceTree = "<group>"; };
 		A121AC451CA35C79005A31D1 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -401,6 +405,7 @@
 				EE247B1D1C3F137700AE3E12 /* ConnectionTests.swift */,
 				EE247B1E1C3F137700AE3E12 /* CoreFunctionsTests.swift */,
 				EE247B1F1C3F137700AE3E12 /* CustomFunctionsTests.swift */,
+				3717F907221F5D7C00B9BD3D /* CustomAggregationTests.swift */,
 				EE247B201C3F137700AE3E12 /* ExpressionTests.swift */,
 				EE247B211C3F137700AE3E12 /* FTS4Tests.swift */,
 				EE247B2A1C3F141E00AE3E12 /* OperatorsTests.swift */,
@@ -834,6 +839,7 @@
 				03A65E921C6BB3030062603F /* SetterTests.swift in Sources */,
 				03A65E891C6BB3030062603F /* ConnectionTests.swift in Sources */,
 				03A65E8A1C6BB3030062603F /* CoreFunctionsTests.swift in Sources */,
+				3717F90A221F5D8900B9BD3D /* CustomAggregationTests.swift in Sources */,
 				03A65E931C6BB3030062603F /* StatementTests.swift in Sources */,
 				03A65E911C6BB3030062603F /* SchemaTests.swift in Sources */,
 				03A65E8D1C6BB3030062603F /* FTS4Tests.swift in Sources */,
@@ -922,6 +928,7 @@
 				EE247B271C3F137700AE3E12 /* CustomFunctionsTests.swift in Sources */,
 				EE247B341C3F142E00AE3E12 /* StatementTests.swift in Sources */,
 				EE247B301C3F141E00AE3E12 /* RTreeTests.swift in Sources */,
+				3717F908221F5D8800B9BD3D /* CustomAggregationTests.swift in Sources */,
 				EE247B231C3F137700AE3E12 /* BlobTests.swift in Sources */,
 				EE247B351C3F142E00AE3E12 /* ValueTests.swift in Sources */,
 				EE247B2F1C3F141E00AE3E12 /* QueryTests.swift in Sources */,
@@ -980,6 +987,7 @@
 				EE247B5F1C3F3FC700AE3E12 /* StatementTests.swift in Sources */,
 				EE247B5C1C3F3FC700AE3E12 /* RTreeTests.swift in Sources */,
 				EE247B571C3F3FC700AE3E12 /* CustomFunctionsTests.swift in Sources */,
+				3717F909221F5D8900B9BD3D /* CustomAggregationTests.swift in Sources */,
 				EE247B601C3F3FC700AE3E12 /* ValueTests.swift in Sources */,
 				EE247B551C3F3FC700AE3E12 /* ConnectionTests.swift in Sources */,
 				EE247B611C3F3FC700AE3E12 /* TestHelpers.swift in Sources */,
