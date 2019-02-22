@@ -97,6 +97,21 @@ class CustomAggregationTests : SQLiteTestCase {
         XCTAssertTrue(values.elementsEqual([3028, 3055]))
     }
     
+    func testCustomStringAgg() {
+        let initial = String(repeating: " ", count: 64)
+        let reduce : (String, [Binding?]) -> String = { (last, bindings) in
+            let v = (bindings[0] as? String) ?? ""
+            return last + v
+        }
+        let _ = db.createAggregation("myReduceSUM3", initialValue: initial, reduce: reduce, result: { $0 })
+        let result = try! db.prepare("SELECT myReduceSUM3(email) AS s FROM users")
+        let i = result.columnNames.index(of: "s")!
+        for row in result {
+            let value = row[i] as? String
+            XCTAssertEqual("\(initial)Alice@example.comBob@example.comEve@example.com", value)
+        }
+    }
+    
     func testCustomObjectSum() {
         {
             let initial = TestObject(value: 1000)
