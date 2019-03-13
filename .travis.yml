@@ -1,5 +1,4 @@
 language: objective-c
-rvm: 2.3
 # https://docs.travis-ci.com/user/reference/osx
 osx_image: xcode10.1
 env:
