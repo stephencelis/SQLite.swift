@@ -48,7 +48,7 @@ extension ExpressionType where UnderlyingType : Value {
     /// - Returns: A copy of the expression wrapped with the `count` aggregate
     ///   function.
     public var count: Expression<Int> {
-        return wrap(self)
+        return "count".wrap(self)
     }
 
 }
@@ -79,7 +79,7 @@ extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wr
     /// - Returns: A copy of the expression wrapped with the `count` aggregate
     ///   function.
     public var count: Expression<Int> {
-        return wrap(self)
+        return "count".wrap(self)
     }
 
 }
@@ -96,7 +96,7 @@ extension ExpressionType where UnderlyingType : Value, UnderlyingType.Datatype :
     /// - Returns: A copy of the expression wrapped with the `max` aggregate
     ///   function.
     public var max: Expression<UnderlyingType?> {
-        return wrap(self)
+        return "max".wrap(self)
     }
 
     /// Builds a copy of the expression wrapped with the `min` aggregate
@@ -109,7 +109,7 @@ extension ExpressionType where UnderlyingType : Value, UnderlyingType.Datatype :
     /// - Returns: A copy of the expression wrapped with the `min` aggregate
     ///   function.
     public var min: Expression<UnderlyingType?> {
-        return wrap(self)
+        return "min".wrap(self)
     }
 
 }
@@ -126,7 +126,7 @@ extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wr
     /// - Returns: A copy of the expression wrapped with the `max` aggregate
     ///   function.
     public var max: Expression<UnderlyingType> {
-        return wrap(self)
+        return "max".wrap(self)
     }
 
     /// Builds a copy of the expression wrapped with the `min` aggregate
@@ -139,7 +139,7 @@ extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wr
     /// - Returns: A copy of the expression wrapped with the `min` aggregate
     ///   function.
     public var min: Expression<UnderlyingType> {
-        return wrap(self)
+        return "min".wrap(self)
     }
 
 }
@@ -169,7 +169,7 @@ extension ExpressionType where UnderlyingType : Value, UnderlyingType.Datatype :
     /// - Returns: A copy of the expression wrapped with the `min` aggregate
     ///   function.
     public var sum: Expression<UnderlyingType?> {
-        return wrap(self)
+        return "sum".wrap(self)
     }
 
     /// Builds a copy of the expression wrapped with the `total` aggregate
@@ -182,7 +182,7 @@ extension ExpressionType where UnderlyingType : Value, UnderlyingType.Datatype :
     /// - Returns: A copy of the expression wrapped with the `min` aggregate
     ///   function.
     public var total: Expression<Double> {
-        return wrap(self)
+        return "total".wrap(self)
     }
 
 }
@@ -212,7 +212,7 @@ extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wr
     /// - Returns: A copy of the expression wrapped with the `min` aggregate
     ///   function.
     public var sum: Expression<UnderlyingType> {
-        return wrap(self)
+        return "sum".wrap(self)
     }
 
     /// Builds a copy of the expression wrapped with the `total` aggregate
@@ -225,7 +225,7 @@ extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wr
     /// - Returns: A copy of the expression wrapped with the `min` aggregate
     ///   function.
     public var total: Expression<Double> {
-        return wrap(self)
+        return "total".wrap(self)
     }
 
 }
@@ -233,7 +233,7 @@ extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wr
 extension ExpressionType where UnderlyingType == Int {
 
     static func count(_ star: Star) -> Expression<UnderlyingType> {
-        return wrap(star(nil, nil))
+        return "count".wrap(star(nil, nil))
     }
 
 }

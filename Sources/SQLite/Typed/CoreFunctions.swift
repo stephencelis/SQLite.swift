@@ -68,9 +68,9 @@ extension ExpressionType where UnderlyingType == Double {
     /// - Returns: A copy of the expression wrapped with the `round` function.
     public func round(_ precision: Int? = nil) -> Expression<UnderlyingType> {
         guard let precision = precision else {
-            return wrap([self])
+            return "round".wrap([self])
         }
-        return wrap([self, Int(precision)])
+        return "round".wrap([self, Int(precision)])
     }
 
 }
@@ -88,9 +88,9 @@ extension ExpressionType where UnderlyingType == Double? {
     /// - Returns: A copy of the expression wrapped with the `round` function.
     public func round(_ precision: Int? = nil) -> Expression<UnderlyingType> {
         guard let precision = precision else {
-            return wrap(self)
+            return "round".wrap(self)
         }
-        return wrap([self, Int(precision)])
+        return "round".wrap([self, Int(precision)])
     }
 
 }
@@ -143,7 +143,7 @@ extension ExpressionType where UnderlyingType == Data {
     ///
     /// - Returns: A copy of the expression wrapped with the `length` function.
     public var length: Expression<Int> {
-        return wrap(self)
+        return "length".wrap(self)
     }
 
 }
@@ -158,7 +158,7 @@ extension ExpressionType where UnderlyingType == Data? {
     ///
     /// - Returns: A copy of the expression wrapped with the `length` function.
     public var length: Expression<Int?> {
-        return wrap(self)
+        return "length".wrap(self)
     }
 
 }
@@ -173,7 +173,7 @@ extension ExpressionType where UnderlyingType == String {
     ///
     /// - Returns: A copy of the expression wrapped with the `length` function.
     public var length: Expression<Int> {
-        return wrap(self)
+        return "length".wrap(self)
     }
 
     /// Builds a copy of the expression wrapped with the `lower` function.
@@ -317,9 +317,9 @@ extension ExpressionType where UnderlyingType == String {
     /// - Returns: A copy of the expression wrapped with the `ltrim` function.
     public func ltrim(_ characters: Set<Character>? = nil) -> Expression<UnderlyingType> {
         guard let characters = characters else {
-            return wrap(self)
+            return "ltrim".wrap(self)
         }
-        return wrap([self, String(characters)])
+        return "ltrim".wrap([self, String(characters)])
     }
 
     /// Builds a copy of the expression wrapped with the `rtrim` function.
@@ -335,9 +335,9 @@ extension ExpressionType where UnderlyingType == String {
     /// - Returns: A copy of the expression wrapped with the `rtrim` function.
     public func rtrim(_ characters: Set<Character>? = nil) -> Expression<UnderlyingType> {
         guard let characters = characters else {
-            return wrap(self)
+            return "rtrim".wrap(self)
         }
-        return wrap([self, String(characters)])
+        return "rtrim".wrap([self, String(characters)])
     }
 
     /// Builds a copy of the expression wrapped with the `trim` function.
@@ -353,9 +353,9 @@ extension ExpressionType where UnderlyingType == String {
     /// - Returns: A copy of the expression wrapped with the `trim` function.
     public func trim(_ characters: Set<Character>? = nil) -> Expression<UnderlyingType> {
         guard let characters = characters else {
-            return wrap([self])
+            return "trim".wrap([self])
         }
-        return wrap([self, String(characters)])
+        return "trim".wrap([self, String(characters)])
     }
 
     /// Builds a copy of the expression wrapped with the `replace` function.
@@ -398,7 +398,7 @@ extension ExpressionType where UnderlyingType == String? {
     ///
     /// - Returns: A copy of the expression wrapped with the `length` function.
     public var length: Expression<Int?> {
-        return wrap(self)
+        return "length".wrap(self)
     }
 
     /// Builds a copy of the expression wrapped with the `lower` function.
@@ -542,9 +542,9 @@ extension ExpressionType where UnderlyingType == String? {
     /// - Returns: A copy of the expression wrapped with the `ltrim` function.
     public func ltrim(_ characters: Set<Character>? = nil) -> Expression<UnderlyingType> {
         guard let characters = characters else {
-            return wrap(self)
+            return "ltrim".wrap(self)
         }
-        return wrap([self, String(characters)])
+        return "ltrim".wrap([self, String(characters)])
     }
 
     /// Builds a copy of the expression wrapped with the `rtrim` function.
@@ -560,9 +560,9 @@ extension ExpressionType where UnderlyingType == String? {
     /// - Returns: A copy of the expression wrapped with the `rtrim` function.
     public func rtrim(_ characters: Set<Character>? = nil) -> Expression<UnderlyingType> {
         guard let characters = characters else {
-            return wrap(self)
+            return "rtrim".wrap(self)
         }
-        return wrap([self, String(characters)])
+        return "rtrim".wrap([self, String(characters)])
     }
 
     /// Builds a copy of the expression wrapped with the `trim` function.
@@ -578,9 +578,9 @@ extension ExpressionType where UnderlyingType == String? {
     /// - Returns: A copy of the expression wrapped with the `trim` function.
     public func trim(_ characters: Set<Character>? = nil) -> Expression<UnderlyingType> {
         guard let characters = characters else {
-            return wrap(self)
+            return "trim".wrap(self)
         }
-        return wrap([self, String(characters)])
+        return "trim".wrap([self, String(characters)])
     }
 
     /// Builds a copy of the expression wrapped with the `replace` function.
