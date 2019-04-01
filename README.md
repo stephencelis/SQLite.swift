@@ -282,6 +282,9 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
 [CartagheBadge]: https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat
 [CarthageLink]: https://github.com/Carthage/Carthage
 
+[AccioBadge]: https://img.shields.io/badge/Accio-supported-57C5FA.svg?style=flat
+[AccioLink]: https://github.com/JamitLabs/Accio
+
 [GitterBadge]: https://badges.gitter.im/stephencelis/SQLite.swift.svg
 [GitterLink]: https://gitter.im/stephencelis/SQLite.swift
 
