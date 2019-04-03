@@ -1,6 +1,6 @@
 # SQLite.swift
 
-[![Build Status][TravisBadge]][TravisLink] [![CocoaPods Version][CocoaPodsVersionBadge]][CocoaPodsVersionLink] [![Swift4 compatible][Swift4Badge]][Swift4Link] [![Platform][PlatformBadge]][PlatformLink] [![Carthage compatible][CartagheBadge]][CarthageLink] [![Join the chat at https://gitter.im/stephencelis/SQLite.swift][GitterBadge]][GitterLink]
+[![Build Status][TravisBadge]][TravisLink] [![CocoaPods Version][CocoaPodsVersionBadge]][CocoaPodsVersionLink] [![Swift5 compatible][Swift5Badge]][Swift5Link] [![Platform][PlatformBadge]][PlatformLink] [![Carthage compatible][CartagheBadge]][CarthageLink] [![Join the chat at https://gitter.im/stephencelis/SQLite.swift][GitterBadge]][GitterLink]
 
 A type-safe, [Swift][]-language layer over [SQLite3][].
 
@@ -112,7 +112,7 @@ and the [companion repository][SQLiteDataAccessLayer2].
 
 ## Installation
 
-> _Note:_ SQLite.swift requires Swift 4.1 (and [Xcode][] 9.3).
+> _Note:_ SQLite.swift requires Swift 5 (and [Xcode][] 10.2).
 
 ### Carthage
 
@@ -124,7 +124,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.11.5
+    github "stephencelis/SQLite.swift" ~> 0.11.6
     ```
 
  3. Run `carthage update` and
@@ -156,7 +156,7 @@ SQLite.swift with CocoaPods:
     use_frameworks!
 
     target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.11.5'
+        pod 'SQLite.swift', '~> 0.11.6'
     end
     ```
 
@@ -174,7 +174,7 @@ Swift code.
 
   ```swift
   dependencies: [
-      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.11.5")
+      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.11.6")
   ]
   ```
 
