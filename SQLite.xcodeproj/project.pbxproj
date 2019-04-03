@@ -278,7 +278,7 @@
 		EE247B921C3F822600AE3E12 /* playground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playground@2x.png"; sourceTree = "<group>"; };
 		EE247B931C3F826100AE3E12 /* SQLite.swift.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = SQLite.swift.podspec; sourceTree = "<group>"; };
 		EE91808D1C46E5230038162A /* SQLite-Bridging.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "SQLite-Bridging.h"; path = "../../SQLiteObjc/include/SQLite-Bridging.h"; sourceTree = "<group>"; };
-		EE9180911C46E9D30038162A /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
+		EE9180911C46E9D30038162A /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		EE9180931C46EA210038162A /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
