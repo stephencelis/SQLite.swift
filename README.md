@@ -135,6 +135,33 @@ install SQLite.swift with Carthage:
 [Carthage Installation]: https://github.com/Carthage/Carthage#installing-carthage
 [Carthage Usage]: https://github.com/Carthage/Carthage#adding-frameworks-to-an-application
 
+### Accio
+
+[Accio][] is a SwiftPM based dependency manager with improvement over Carthage. To install SQLite.swift with Accio:
+
+1. Make sure Accio is [installed][Accio Installation].
+
+2. Update your Package.swift file to include the following:
+
+    ```swift
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", .upToNextMajor(from: "0.11.5")),
+    ```
+
+3. Add `SQLite` to your App targets dependencies like so:
+
+    ```swift
+    .target(
+        name: "App",
+        dependencies: [
+            "SQLite",
+        ]
+    ),
+    ```
+
+4. Run `accio update`.
+
+[Accio]: https://github.com/JamitLabs/Accio
+[Accio Installation]: https://github.com/JamitLabs/Accio#installation
 
 ### CocoaPods
 
