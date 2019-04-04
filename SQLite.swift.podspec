@@ -21,7 +21,7 @@ Pod::Spec.new do |s|
   s.watchos.deployment_target = "2.2"
   s.default_subspec  = 'standard'
   s.pod_target_xcconfig = {
-    'SWIFT_VERSION' => '5',
+    'SWIFT_VERSION' => '4.2',
   }
 
   s.subspec 'standard' do |ss|
