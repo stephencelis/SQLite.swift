@@ -95,6 +95,40 @@ extension String {
     func wrap<T>(_ expressions: [Expressible]) -> Expression<T> {
         return wrap(", ".join(expressions))
     }
+    
+    private func trimName(_ function: String) -> String {
+        return function.components(separatedBy: "(").first ?? function
+    }
+    
+    func infix<T>(_ lhs: Expressible, _ rhs: Expressible, wrap: Bool = true, function: String = #function) -> Expression<T> {
+        return trimName(function).infix(lhs, rhs, wrap: wrap)
+    }
+    
+    func wrap<T>(_ expression: Expressible, function: String = #function) -> Expression<T> {
+        return trimName(function).wrap(expression)
+    }
+    
+    func wrap<T>(_ expressions: [Expressible], function: String = #function) -> Expression<T> {
+        return trimName(function).wrap(", ".join(expressions))
+    }
+
+}
+
+func infix<T>(_ lhs: Expressible, _ rhs: Expressible, wrap: Bool = true, function: String = #function) -> Expression<T> {
+    var funcStr = function
+    if let range = funcStr.range(of: "(_:_:)") {
+        funcStr.removeSubrange(range)
+    }
+    
+    return funcStr.infix(lhs, rhs, wrap: wrap)
+}
+
+func wrap<T>(_ expression: Expressible, function: String = #function) -> Expression<T> {
+    return function.wrap(expression)
+}
+
+func wrap<T>(_ expressions: [Expressible], function: String = #function) -> Expression<T> {
+    return function.wrap(", ".join(expressions))
 
 }
 
