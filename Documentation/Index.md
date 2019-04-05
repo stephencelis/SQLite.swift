@@ -68,7 +68,7 @@
 ## Installation
 
 > _Note:_ SQLite.swift requires Swift 4.2 (and
-> [Xcode 9.3](https://developer.apple.com/xcode/downloads/)) or greater.
+> [Xcode 10](https://developer.apple.com/xcode/downloads/)) or greater.
 
 
 ### Carthage

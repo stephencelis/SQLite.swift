@@ -112,7 +112,7 @@ and the [companion repository][SQLiteDataAccessLayer2].
 
 ## Installation
 
-> _Note:_ SQLite.swift requires Swift 4.2 (and [Xcode][] 9.3).
+> _Note:_ SQLite.swift requires Swift 4.2 (and [Xcode][] 10).
 
 ### Carthage
 
