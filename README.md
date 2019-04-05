@@ -285,7 +285,7 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
 [GitterBadge]: https://badges.gitter.im/stephencelis/SQLite.swift.svg
 [GitterLink]: https://gitter.im/stephencelis/SQLite.swift
 
-[Swift4Badge]: https://img.shields.io/badge/swift-4.1-orange.svg?style=flat
+[Swift4Badge]: https://img.shields.io/badge/swift-4.2-orange.svg?style=flat
 [Swift4Link]: https://developer.apple.com/swift/
 
 [SQLiteMigrationManager.swift]: https://github.com/garriguv/SQLiteMigrationManager.swift
