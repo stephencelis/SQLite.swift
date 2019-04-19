@@ -112,7 +112,7 @@ and the [companion repository][SQLiteDataAccessLayer2].
 
 ## Installation
 
-> _Note:_ SQLite.swift requires Swift 4.2 (and [Xcode][] 10.2).
+> _Note:_ SQLite.swift requires Swift 5 (and [Xcode][] 10.2).
 
 ### Carthage
 
@@ -124,7 +124,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.11.6
+    github "stephencelis/SQLite.swift" ~> 0.12
     ```
 
  3. Run `carthage update` and
@@ -156,7 +156,7 @@ SQLite.swift with CocoaPods:
     use_frameworks!
 
     target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.11.6'
+        pod 'SQLite.swift', '~> 0.12'
     end
     ```
 
@@ -174,7 +174,7 @@ Swift code.
 
   ```swift
   dependencies: [
-      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.11.6")
+      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.12")
   ]
   ```
 
@@ -285,7 +285,7 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
 [GitterBadge]: https://badges.gitter.im/stephencelis/SQLite.swift.svg
 [GitterLink]: https://gitter.im/stephencelis/SQLite.swift
 
-[Swift4Badge]: https://img.shields.io/badge/swift-4.2-orange.svg?style=flat
+[Swift4Badge]: https://img.shields.io/badge/swift-5-orange.svg?style=flat
 [Swift4Link]: https://developer.apple.com/swift/
 
 [SQLiteMigrationManager.swift]: https://github.com/garriguv/SQLiteMigrationManager.swift
