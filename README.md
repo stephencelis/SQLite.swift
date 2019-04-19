@@ -1,6 +1,6 @@
 # SQLite.swift
 
-[![Build Status][TravisBadge]][TravisLink] [![CocoaPods Version][CocoaPodsVersionBadge]][CocoaPodsVersionLink] [![Swift4 compatible][Swift4Badge]][Swift4Link] [![Platform][PlatformBadge]][PlatformLink] [![Carthage compatible][CartagheBadge]][CarthageLink] [![Join the chat at https://gitter.im/stephencelis/SQLite.swift][GitterBadge]][GitterLink]
+[![Build Status][TravisBadge]][TravisLink] [![CocoaPods Version][CocoaPodsVersionBadge]][CocoaPodsVersionLink] [![Swift4 compatible][Swift4Badge]][Swift4Link] [![Platform][PlatformBadge]][PlatformLink] [![Carthage compatible][CartagheBadge]][CarthageLink] [![Accio supported][AccioBadge]][AccioLink] [![Join the chat at https://gitter.im/stephencelis/SQLite.swift][GitterBadge]][GitterLink]
 
 A type-safe, [Swift][]-language layer over [SQLite3][].
 
@@ -135,6 +135,33 @@ install SQLite.swift with Carthage:
 [Carthage Installation]: https://github.com/Carthage/Carthage#installing-carthage
 [Carthage Usage]: https://github.com/Carthage/Carthage#adding-frameworks-to-an-application
 
+### Accio
+
+[Accio][] is a SwiftPM based dependency manager with improvement over Carthage. To install SQLite.swift with Accio:
+
+1. Make sure Accio is [installed][Accio Installation].
+
+2. Update your Package.swift file to include the following:
+
+    ```swift
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", .upToNextMajor(from: "0.11.5")),
+    ```
+
+3. Add `SQLite` to your App targets dependencies like so:
+
+    ```swift
+    .target(
+        name: "App",
+        dependencies: [
+            "SQLite",
+        ]
+    ),
+    ```
+
+4. Run `accio update`.
+
+[Accio]: https://github.com/JamitLabs/Accio
+[Accio Installation]: https://github.com/JamitLabs/Accio#installation
 
 ### CocoaPods
 
@@ -281,6 +308,9 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
 
 [CartagheBadge]: https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat
 [CarthageLink]: https://github.com/Carthage/Carthage
+
+[AccioBadge]: https://img.shields.io/badge/Accio-supported-0A7CF5.svg?style=flat
+[AccioLink]: https://github.com/JamitLabs/Accio
 
 [GitterBadge]: https://badges.gitter.im/stephencelis/SQLite.swift.svg
 [GitterLink]: https://gitter.im/stephencelis/SQLite.swift
