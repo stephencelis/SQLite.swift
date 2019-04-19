@@ -3,7 +3,7 @@ XCPRETTY := $(shell command -v xcpretty)
 test: install repo_update
 	@set -e; \
 	for test in *_test.rb; do \
-		bundle exec ./$$test | $(XCPRETTY) -C; \
+		bundle exec ./$$test | $(XCPRETTY) -c; \
 	done
 
 repo_update:
