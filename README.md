@@ -112,7 +112,7 @@ and the [companion repository][SQLiteDataAccessLayer2].
 
 ## Installation
 
-> _Note:_ SQLite.swift requires Swift 5 (and [Xcode][] 10.2).
+> _Note:_ Version 0.12 requires Swift 5 (and [Xcode][] 10.2). \nVersion 0.11.6 requires Swift 4.2 (and [Xcode][] 10.1).
 
 ### Carthage
 
@@ -142,7 +142,7 @@ install SQLite.swift with Carthage:
 SQLite.swift with CocoaPods:
 
  1. Make sure CocoaPods is [installed][CocoaPods Installation]. (SQLite.swift
-    requires version 1.0.0 or greater.)
+    requires version 1.6.1 or greater.)
 
     ```sh
     # Using the default Ruby install will require you to use sudo when
@@ -285,8 +285,8 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
 [GitterBadge]: https://badges.gitter.im/stephencelis/SQLite.swift.svg
 [GitterLink]: https://gitter.im/stephencelis/SQLite.swift
 
-[Swift4Badge]: https://img.shields.io/badge/swift-5-orange.svg?style=flat
-[Swift4Link]: https://developer.apple.com/swift/
+[Swift5Badge]: https://img.shields.io/badge/swift-5-orange.svg?style=flat
+[Swift5Link]: https://developer.apple.com/swift/
 
 [SQLiteMigrationManager.swift]: https://github.com/garriguv/SQLiteMigrationManager.swift
 [FMDB]: https://github.com/ccgus/fmdb
