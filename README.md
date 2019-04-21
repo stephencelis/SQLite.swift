@@ -1,6 +1,6 @@
 # SQLite.swift
 
-[![Build Status][TravisBadge]][TravisLink] [![CocoaPods Version][CocoaPodsVersionBadge]][CocoaPodsVersionLink] [![Swift4 compatible][Swift4Badge]][Swift4Link] [![Platform][PlatformBadge]][PlatformLink] [![Carthage compatible][CartagheBadge]][CarthageLink] [![Join the chat at https://gitter.im/stephencelis/SQLite.swift][GitterBadge]][GitterLink]
+[![Build Status][TravisBadge]][TravisLink] [![CocoaPods Version][CocoaPodsVersionBadge]][CocoaPodsVersionLink] [![Swift5 compatible][Swift5Badge]][Swift5Link] [![Platform][PlatformBadge]][PlatformLink] [![Carthage compatible][CartagheBadge]][CarthageLink] [![Join the chat at https://gitter.im/stephencelis/SQLite.swift][GitterBadge]][GitterLink]
 
 A type-safe, [Swift][]-language layer over [SQLite3][].
 
@@ -112,7 +112,7 @@ and the [companion repository][SQLiteDataAccessLayer2].
 
 ## Installation
 
-> _Note:_ Version 0.12 requires Swift 5 (and [Xcode][] 10.2). \nVersion 0.11.6 requires Swift 4.2 (and [Xcode][] 10.1).
+> _Note:_ Version 0.12 requires Swift 5 (and [Xcode](https://developer.apple.com/xcode/downloads/)) 10.2) or greater. Version 0.11.6 requires Swift 4.2 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.1 or greater).
 
 ### Carthage
 
