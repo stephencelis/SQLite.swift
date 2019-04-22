@@ -9,7 +9,7 @@ let package = Package(
         .target(name: "SQLiteObjc"),
         .testTarget(name: "SQLiteTests", dependencies: ["SQLite"], path: "Tests/SQLiteTests")
     ],
-    swiftLanguageVersions: [.version("5"), .v4_2, .v4]
+    swiftLanguageVersions: [4, 5]
 )
 
 #if os(Linux)
