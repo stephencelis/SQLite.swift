@@ -258,7 +258,7 @@ let path = NSSearchPathForDirectoriesInDomains(
 let db = try Connection("\(path)/db.sqlite3")
 ```
 
-On OS X, you can use your app’s **Application Support** directory:
+On macOS, you can use your app’s **Application Support** directory:
 
 ```swift
 var path = NSSearchPathForDirectoriesInDomains(
