@@ -45,7 +45,7 @@ class ConnectionTests : SQLiteTestCase {
         let db = try! Connection("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3")
         XCTAssertEqual("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3", db.description)
     }
-
+    
     func test_readonly_returnsFalseOnReadWriteConnections() {
         XCTAssertFalse(db.readonly)
     }
