@@ -7,6 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		02A43A9822738CF100FEC494 /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A43A9722738CF100FEC494 /* Backup.swift */; };
+		02A43A9922738CF100FEC494 /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A43A9722738CF100FEC494 /* Backup.swift */; };
+		02A43A9A22738CF100FEC494 /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A43A9722738CF100FEC494 /* Backup.swift */; };
+		02A43A9B22738CF100FEC494 /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A43A9722738CF100FEC494 /* Backup.swift */; };
+		02A43A9D22738E2900FEC494 /* BackupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A43A9C22738E2900FEC494 /* BackupTests.swift */; };
+		02A43A9E22738E2900FEC494 /* BackupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A43A9C22738E2900FEC494 /* BackupTests.swift */; };
+		02A43A9F22738E2900FEC494 /* BackupTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 02A43A9C22738E2900FEC494 /* BackupTests.swift */; };
 		03A65E641C6BB0F60062603F /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 03A65E5A1C6BB0F50062603F /* SQLite.framework */; };
 		03A65E721C6BB2D30062603F /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		03A65E731C6BB2D80062603F /* Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AF71C3F06E900AE3E12 /* Foundation.swift */; };
@@ -211,6 +218,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		02A43A9722738CF100FEC494 /* Backup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Backup.swift; sourceTree = "<group>"; };
+		02A43A9C22738E2900FEC494 /* BackupTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BackupTests.swift; sourceTree = "<group>"; };
 		03A65E5A1C6BB0F50062603F /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		03A65E631C6BB0F60062603F /* SQLiteTests tvOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQLiteTests tvOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		03A65E961C6BB3210062603F /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
@@ -398,6 +407,7 @@
 				19A17E2695737FAB5D6086E3 /* fixtures */,
 				EE247B1A1C3F137700AE3E12 /* AggregateFunctionsTests.swift */,
 				EE247B1B1C3F137700AE3E12 /* BlobTests.swift */,
+				02A43A9C22738E2900FEC494 /* BackupTests.swift */,
 				EE247B1D1C3F137700AE3E12 /* ConnectionTests.swift */,
 				EE247B1E1C3F137700AE3E12 /* CoreFunctionsTests.swift */,
 				EE247B1F1C3F137700AE3E12 /* CustomFunctionsTests.swift */,
@@ -434,6 +444,7 @@
 				EE247AF21C3F06E900AE3E12 /* Statement.swift */,
 				EE247AF31C3F06E900AE3E12 /* Value.swift */,
 				19A1710E73A46D5AC721CDA9 /* Errors.swift */,
+				02A43A9722738CF100FEC494 /* Backup.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -817,6 +828,7 @@
 				03A65E7E1C6BB2FB0062603F /* AggregateFunctions.swift in Sources */,
 				19A17EC0D68BA8C03288ADF7 /* FTS5.swift in Sources */,
 				19A179E76EA6207669B60C1B /* Cipher.swift in Sources */,
+				02A43A9A22738CF100FEC494 /* Backup.swift in Sources */,
 				19A17FF4A10B44D3937C8CAC /* Errors.swift in Sources */,
 				19A1737286A74F3CF7412906 /* DateAndTimeFunctions.swift in Sources */,
 			);
@@ -839,6 +851,7 @@
 				03A65E911C6BB3030062603F /* SchemaTests.swift in Sources */,
 				03A65E8D1C6BB3030062603F /* FTS4Tests.swift in Sources */,
 				03A65E8C1C6BB3030062603F /* ExpressionTests.swift in Sources */,
+				02A43A9F22738E2900FEC494 /* BackupTests.swift in Sources */,
 				03A65E8E1C6BB3030062603F /* OperatorsTests.swift in Sources */,
 				03A65E951C6BB3030062603F /* TestHelpers.swift in Sources */,
 				19A17254FBA7894891F7297B /* FTS5Tests.swift in Sources */,
@@ -875,6 +888,7 @@
 				3D67B3E71DB246BA00A4F4C6 /* Blob.swift in Sources */,
 				3D67B3E81DB246BA00A4F4C6 /* Connection.swift in Sources */,
 				19A179CCF9671E345E5A9811 /* Cipher.swift in Sources */,
+				02A43A9B22738CF100FEC494 /* Backup.swift in Sources */,
 				19A17DC282E36C4F41AA440B /* Errors.swift in Sources */,
 				19A173668D948AD4DF1F5352 /* DateAndTimeFunctions.swift in Sources */,
 			);
@@ -905,6 +919,7 @@
 				EE247B0D1C3F06E900AE3E12 /* AggregateFunctions.swift in Sources */,
 				19A1717B10CC941ACB5533D6 /* FTS5.swift in Sources */,
 				19A171F12AB8B07F2FD7201A /* Cipher.swift in Sources */,
+				02A43A9822738CF100FEC494 /* Backup.swift in Sources */,
 				19A1792C0520D4E83C2EB075 /* Errors.swift in Sources */,
 				19A17E29278A12BC4F542506 /* DateAndTimeFunctions.swift in Sources */,
 			);
@@ -927,6 +942,7 @@
 				EE247B351C3F142E00AE3E12 /* ValueTests.swift in Sources */,
 				EE247B2F1C3F141E00AE3E12 /* QueryTests.swift in Sources */,
 				EE247B221C3F137700AE3E12 /* AggregateFunctionsTests.swift in Sources */,
+				02A43A9D22738E2900FEC494 /* BackupTests.swift in Sources */,
 				EE247B2E1C3F141E00AE3E12 /* OperatorsTests.swift in Sources */,
 				EE247B251C3F137700AE3E12 /* ConnectionTests.swift in Sources */,
 				19A171E6FA242F72A308C594 /* FTS5Tests.swift in Sources */,
@@ -963,6 +979,7 @@
 				EE247B6D1C3F3FEC00AE3E12 /* AggregateFunctions.swift in Sources */,
 				19A1750CEE9B05267995CF3D /* FTS5.swift in Sources */,
 				19A17835FD5886FDC5A3228F /* Cipher.swift in Sources */,
+				02A43A9922738CF100FEC494 /* Backup.swift in Sources */,
 				19A17490543609FCED53CACC /* Errors.swift in Sources */,
 				19A17152E32A9585831E3FE0 /* DateAndTimeFunctions.swift in Sources */,
 			);
@@ -985,6 +1002,7 @@
 				EE247B551C3F3FC700AE3E12 /* ConnectionTests.swift in Sources */,
 				EE247B611C3F3FC700AE3E12 /* TestHelpers.swift in Sources */,
 				EE247B581C3F3FC700AE3E12 /* ExpressionTests.swift in Sources */,
+				02A43A9E22738E2900FEC494 /* BackupTests.swift in Sources */,
 				EE247B5E1C3F3FC700AE3E12 /* SetterTests.swift in Sources */,
 				EE247B5B1C3F3FC700AE3E12 /* QueryTests.swift in Sources */,
 				19A174D78559CD30679BCCCB /* FTS5Tests.swift in Sources */,
