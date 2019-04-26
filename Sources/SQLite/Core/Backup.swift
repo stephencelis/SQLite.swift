@@ -129,9 +129,9 @@ public final class Backup {
         self.sourceConnection = sourceConnection
         
         self.handle = sqlite3_backup_init(targetConnection.handle,
-                                          targetName.name.withCString { $0 },
+                                          targetName.name,
                                           sourceConnection.handle,
-                                          sourceName.name.withCString { $0 })
+                                          sourceName.name)
         
         if self.handle == nil, let error = Result(errorCode: sqlite3_errcode(targetConnection.handle), connection: targetConnection) {
             throw error
