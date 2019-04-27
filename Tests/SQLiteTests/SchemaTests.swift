@@ -545,6 +545,10 @@ class SchemaTests : XCTestCase {
             "CREATE TABLE \"table\" (PRIMARY KEY (\"int64\", \"string\", \"double\"))",
             table.create { t in t.primaryKey(int64, string, double) }
         )
+        XCTAssertEqual(
+            "CREATE TABLE \"table\" (PRIMARY KEY (\"int64\", \"string\", \"double\", \"date\"))",
+            table.create { t in t.primaryKey(int64, string, double, date) }
+        )
     }
 
     func test_unique_compilesUniqueExpression() {
