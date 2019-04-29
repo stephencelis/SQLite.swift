@@ -107,13 +107,13 @@ public final class Backup {
     ///
     ///   - targetConnection: The connection to the database to save backup into.
     ///
-    ///   - targetConnection: The name of the database to save backup into.
+    ///   - targetName: The name of the database to save backup into.
     ///
     ///     Default: `.main`.
     ///
     ///   - sourceConnection: The connection to the database to backup.
     ///
-    ///   - targetConnection: The name of the database to backup.
+    ///   - sourceName: The name of the database to backup.
     /// 
     ///     Default: `.main`.
     ///
