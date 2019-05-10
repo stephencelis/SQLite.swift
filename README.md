@@ -184,7 +184,10 @@ Swift code.
   $ swift build
   ```
 
+**Note:** If you generate an Xcode project from Swift Package Manager, you will have to manually change the "Enable Modules (C and Objective-C)" build setting to "Yes" in order to build.  See [this issue][SR-7531]. 
+
 [Swift Package Manager]: https://swift.org/package-manager
+[SR-7531]: https://bugs.swift.org/browse/SR-7531
 
 ### Manual
 
