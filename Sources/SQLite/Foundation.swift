@@ -35,9 +35,15 @@ extension Data : Value {
     }
 
     public var datatypeValue: Blob {
+        #if swift(>=5.0)
         return withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> Blob in
             return Blob(bytes: pointer.baseAddress!, length: count)
         }
+        #else
+        return withUnsafeBytes { (pointer: UnsafePointer<UInt8>) -> Blob in
+            return Blob(bytes: pointer, length: count)
+        }
+        #endif
     }
 
 }
