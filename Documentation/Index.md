@@ -1209,7 +1209,7 @@ We can build an `ALTER TABLE … RENAME TO` statement by calling the `rename`
 function on a `Table` or `VirtualTable`.
 
 ```swift
-try db.run(users.rename(Table("users_old"))
+try db.run(users.rename(Table("users_old")))
 // ALTER TABLE "users" RENAME TO "users_old"
 ```
 
