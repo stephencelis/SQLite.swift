@@ -3,7 +3,7 @@ import SQLite
 
 class FoundationTests : XCTestCase {
     func testDataFromBlob() {
-        let data = Data(bytes: [1, 2, 3])
+        let data = Data([1, 2, 3])
         let blob = data.datatypeValue
         XCTAssertEqual([1, 2, 3], blob.bytes)
     }
@@ -11,6 +11,6 @@ class FoundationTests : XCTestCase {
     func testBlobToData() {
         let blob = Blob(bytes: [1, 2, 3])
         let data = Data.fromDatatypeValue(blob)
-        XCTAssertEqual(Data(bytes: [1, 2, 3]), data)
+        XCTAssertEqual(Data([1, 2, 3]), data)
     }
 }
