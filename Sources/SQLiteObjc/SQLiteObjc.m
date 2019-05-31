@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-#import "SQLite-Bridging.h"
+#import "SQLiteObjc.h"
 #import "fts3_tokenizer.h"
 
 #pragma mark - FTS
