@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = "SQLite.swift"
-  s.version          = "0.11.5"
-  s.summary          = "A type-safe, Swift-language layer over SQLite3 for iOS and OS X."
+  s.version          = "0.12.2"
+  s.summary          = "A type-safe, Swift-language layer over SQLite3 for iOS and macOS."
 
   s.description      = <<-DESC
     SQLite.swift provides compile-time confidence in SQL statement syntax and
@@ -15,14 +15,19 @@ Pod::Spec.new do |s|
   s.social_media_url = 'https://twitter.com/stephencelis'
 
   s.module_name      = 'SQLite'
-  s.ios.deployment_target = "8.0"
-  s.tvos.deployment_target = "9.1"
-  s.osx.deployment_target = "10.10"
-  s.watchos.deployment_target = "2.2"
   s.default_subspec  = 'standard'
-  s.pod_target_xcconfig = {
-    'SWIFT_VERSION' => '4.1',
-  }
+  s.swift_versions = ['4.2', '5']
+  
+  
+  ios_deployment_target = '8.0'
+  tvos_deployment_target = '9.1'
+  osx_deployment_target = '10.10'
+  watchos_deployment_target = '2.2'
+  
+  s.ios.deployment_target = ios_deployment_target
+  s.tvos.deployment_target = tvos_deployment_target
+  s.osx.deployment_target = osx_deployment_target
+  s.watchos.deployment_target = watchos_deployment_target
 
   s.subspec 'standard' do |ss|
     ss.source_files = 'Sources/{SQLite,SQLiteObjc}/**/*.{c,h,m,swift}'
@@ -33,6 +38,9 @@ Pod::Spec.new do |s|
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/fixtures/*'
       test_spec.source_files = 'Tests/SQLiteTests/*.swift'
+      test_spec.ios.deployment_target = ios_deployment_target
+      test_spec.tvos.deployment_target = tvos_deployment_target
+      test_spec.osx.deployment_target = osx_deployment_target
     end
   end
 
@@ -49,6 +57,9 @@ Pod::Spec.new do |s|
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/fixtures/*'
       test_spec.source_files = 'Tests/SQLiteTests/*.swift'
+      test_spec.ios.deployment_target = ios_deployment_target
+      test_spec.tvos.deployment_target = tvos_deployment_target
+      test_spec.osx.deployment_target = osx_deployment_target
     end
   end
 
@@ -64,6 +75,9 @@ Pod::Spec.new do |s|
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/fixtures/*'
       test_spec.source_files = 'Tests/SQLiteTests/*.swift'
+      test_spec.ios.deployment_target = ios_deployment_target
+      test_spec.tvos.deployment_target = tvos_deployment_target
+      test_spec.osx.deployment_target = osx_deployment_target
     end
   end
 end

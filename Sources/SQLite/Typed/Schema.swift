@@ -341,6 +341,10 @@ public final class TableBuilder {
         primaryKey([compositeA, b, c])
     }
 
+    public func primaryKey<T : Value, U : Value, V : Value, W : Value>(_ compositeA: Expression<T>, _ b: Expression<U>, _ c: Expression<V>, _ d: Expression<W>) {
+        primaryKey([compositeA, b, c, d])
+    }
+
     fileprivate func primaryKey(_ composite: [Expressible]) {
         definitions.append("PRIMARY KEY".prefix(composite))
     }

@@ -23,8 +23,7 @@
 //
 
 @import Foundation;
-
-struct sqlite3;
+@import SQLite3;
 
 NS_ASSUME_NONNULL_BEGIN
 typedef NSString * _Nullable (^_SQLiteTokenizerNextCallback)(const char *input, int *inputOffset, int *inputLength);
