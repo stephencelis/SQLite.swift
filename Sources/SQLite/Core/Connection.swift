@@ -587,7 +587,7 @@ public final class Connection {
         var flags = SQLITE_UTF8
         #if !os(Linux)
         if deterministic {
-            flags |= SQLITE_DETERMINISTIC
+            flags |= sqlite3.SQLITE_DETERMINISTIC
         }
         #endif
         sqlite3_create_function_v2(handle, function, Int32(argc), flags, unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { context, argc, value in
