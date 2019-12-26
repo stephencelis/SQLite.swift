@@ -1,13 +1,4 @@
-//
-//  File.swift
-//  
-//
-//  Created by 游宗諭 on 2019/12/26.
-//
-
 import Foundation
-
-
 
 #if swift(>=5.1)
 /// A type that Expression a property marked with an attribute.
@@ -21,10 +12,10 @@ import Foundation
 	
 	public var wrappedValue: Value
 	///Creates a publisher with the provided initial value.
-	init(wrappedValue: Value, _ key: String) {
-		projectedValue =  Expression<Value>(key)
+	public init(wrappedValue: Value, _ key: String, bindings: [Binding?] = []) {
+		projectedValue =  Expression<Value>(key, bindings)
 		self.wrappedValue = wrappedValue
 	}
-	internal var setter:Setter { projectedValue <- wrappedValue }
+	public var setter:Setter { projectedValue <- wrappedValue }
 }
 #endif
