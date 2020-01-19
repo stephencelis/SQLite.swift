@@ -50,7 +50,8 @@ Pod::Spec.new do |s|
     ss.private_header_files = 'Sources/SQLiteObjc/*.h'
 
     ss.xcconfig = {
-      'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_STANDALONE'
+      'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_STANDALONE',
+      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_SWIFT_STANDALONE=1'
     }
     ss.dependency 'sqlite3'
 
