@@ -357,11 +357,11 @@ public final class TableBuilder {
         definitions.append("UNIQUE".prefix(columns))
     }
 
-    public func check(_ condition: Expression<Bool>) {
-        check(Expression<Bool?>(condition))
+    public func check(_ condition: Expression<Bool?>) {
+        check(Expression<Bool>(condition))
     }
 
-    public func check(_ condition: Expression<Bool?>) {
+    public func check(_ condition: Expression<Bool>) {
         definitions.append("CHECK".prefix(condition))
     }
 

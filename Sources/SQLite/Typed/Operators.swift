@@ -354,26 +354,26 @@ public prefix func ~<V : Value>(rhs: Expression<V?>) -> Expression<V?> where V.D
 public func ==<V : Value>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Equatable {
     return Operator.eq.infix(lhs, rhs)
 }
-public func ==<V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Equatable {
+public func ==<V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Equatable {
     return Operator.eq.infix(lhs, rhs)
 }
-public func ==<V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> where V.Datatype : Equatable {
+public func ==<V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Equatable {
     return Operator.eq.infix(lhs, rhs)
 }
-public func ==<V : Value>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Equatable {
+public func ==<V : Value>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Equatable {
     return Operator.eq.infix(lhs, rhs)
 }
 public func ==<V : Value>(lhs: Expression<V>, rhs: V) -> Expression<Bool> where V.Datatype : Equatable {
     return Operator.eq.infix(lhs, rhs)
 }
-public func ==<V : Value>(lhs: Expression<V?>, rhs: V?) -> Expression<Bool?> where V.Datatype : Equatable {
+public func ==<V : Value>(lhs: Expression<V?>, rhs: V?) -> Expression<Bool> where V.Datatype : Equatable {
     guard let rhs = rhs else { return "IS".infix(lhs, Expression<V?>(value: nil)) }
     return Operator.eq.infix(lhs, rhs)
 }
 public func ==<V : Value>(lhs: V, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Equatable {
     return Operator.eq.infix(lhs, rhs)
 }
-public func ==<V : Value>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Equatable {
+public func ==<V : Value>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Equatable {
     guard let lhs = lhs else { return "IS".infix(Expression<V?>(value: nil), rhs) }
     return Operator.eq.infix(lhs, rhs)
 }
@@ -381,26 +381,26 @@ public func ==<V : Value>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> whe
 public func !=<V : Value>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Equatable {
     return Operator.neq.infix(lhs, rhs)
 }
-public func !=<V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Equatable {
+public func !=<V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Equatable {
     return Operator.neq.infix(lhs, rhs)
 }
-public func !=<V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> where V.Datatype : Equatable {
+public func !=<V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Equatable {
     return Operator.neq.infix(lhs, rhs)
 }
-public func !=<V : Value>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Equatable {
+public func !=<V : Value>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Equatable {
     return Operator.neq.infix(lhs, rhs)
 }
 public func !=<V : Value>(lhs: Expression<V>, rhs: V) -> Expression<Bool> where V.Datatype : Equatable {
     return Operator.neq.infix(lhs, rhs)
 }
-public func !=<V : Value>(lhs: Expression<V?>, rhs: V?) -> Expression<Bool?> where V.Datatype : Equatable {
+public func !=<V : Value>(lhs: Expression<V?>, rhs: V?) -> Expression<Bool> where V.Datatype : Equatable {
     guard let rhs = rhs else { return "IS NOT".infix(lhs, Expression<V?>(value: nil)) }
     return Operator.neq.infix(lhs, rhs)
 }
 public func !=<V : Value>(lhs: V, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Equatable {
     return Operator.neq.infix(lhs, rhs)
 }
-public func !=<V : Value>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Equatable {
+public func !=<V : Value>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Equatable {
     guard let lhs = lhs else { return "IS NOT".infix(Expression<V?>(value: nil), rhs) }
     return Operator.neq.infix(lhs, rhs)
 }
@@ -408,100 +408,100 @@ public func !=<V : Value>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> whe
 public func ><V : Value>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gt.infix(lhs, rhs)
 }
-public func ><V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func ><V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gt.infix(lhs, rhs)
 }
-public func ><V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func ><V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gt.infix(lhs, rhs)
 }
-public func ><V : Value>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func ><V : Value>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gt.infix(lhs, rhs)
 }
 public func ><V : Value>(lhs: Expression<V>, rhs: V) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gt.infix(lhs, rhs)
 }
-public func ><V : Value>(lhs: Expression<V?>, rhs: V) -> Expression<Bool?> where V.Datatype : Comparable {
+public func ><V : Value>(lhs: Expression<V?>, rhs: V) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gt.infix(lhs, rhs)
 }
 public func ><V : Value>(lhs: V, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gt.infix(lhs, rhs)
 }
-public func ><V : Value>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func ><V : Value>(lhs: V, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gt.infix(lhs, rhs)
 }
 
 public func >=<V : Value>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gte.infix(lhs, rhs)
 }
-public func >=<V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func >=<V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gte.infix(lhs, rhs)
 }
-public func >=<V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func >=<V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gte.infix(lhs, rhs)
 }
-public func >=<V : Value>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func >=<V : Value>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gte.infix(lhs, rhs)
 }
 public func >=<V : Value>(lhs: Expression<V>, rhs: V) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gte.infix(lhs, rhs)
 }
-public func >=<V : Value>(lhs: Expression<V?>, rhs: V) -> Expression<Bool?> where V.Datatype : Comparable {
+public func >=<V : Value>(lhs: Expression<V?>, rhs: V) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gte.infix(lhs, rhs)
 }
 public func >=<V : Value>(lhs: V, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gte.infix(lhs, rhs)
 }
-public func >=<V : Value>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func >=<V : Value>(lhs: V, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gte.infix(lhs, rhs)
 }
 
 public func <<V : Value>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lt.infix(lhs, rhs)
 }
-public func <<V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func <<V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lt.infix(lhs, rhs)
 }
-public func <<V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func <<V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lt.infix(lhs, rhs)
 }
-public func <<V : Value>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func <<V : Value>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lt.infix(lhs, rhs)
 }
 public func <<V : Value>(lhs: Expression<V>, rhs: V) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lt.infix(lhs, rhs)
 }
-public func <<V : Value>(lhs: Expression<V?>, rhs: V) -> Expression<Bool?> where V.Datatype : Comparable {
+public func <<V : Value>(lhs: Expression<V?>, rhs: V) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lt.infix(lhs, rhs)
 }
 public func <<V : Value>(lhs: V, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lt.infix(lhs, rhs)
 }
-public func <<V : Value>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func <<V : Value>(lhs: V, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lt.infix(lhs, rhs)
 }
 
 public func <=<V : Value>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lte.infix(lhs, rhs)
 }
-public func <=<V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func <=<V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lte.infix(lhs, rhs)
 }
-public func <=<V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func <=<V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lte.infix(lhs, rhs)
 }
-public func <=<V : Value>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func <=<V : Value>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lte.infix(lhs, rhs)
 }
 public func <=<V : Value>(lhs: Expression<V>, rhs: V) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lte.infix(lhs, rhs)
 }
-public func <=<V : Value>(lhs: Expression<V?>, rhs: V) -> Expression<Bool?> where V.Datatype : Comparable {
+public func <=<V : Value>(lhs: Expression<V?>, rhs: V) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lte.infix(lhs, rhs)
 }
 public func <=<V : Value>(lhs: V, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lte.infix(lhs, rhs)
 }
-public func <=<V : Value>(lhs: V, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable {
+public func <=<V : Value>(lhs: V, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.lte.infix(lhs, rhs)
 }
 
@@ -509,7 +509,7 @@ public func ~=<V : Value>(lhs: ClosedRange<V>, rhs: Expression<V>) -> Expression
     return Expression("\(rhs.template) BETWEEN ? AND ?", rhs.bindings + [lhs.lowerBound.datatypeValue, lhs.upperBound.datatypeValue])
 }
 
-public func ~=<V : Value>(lhs: ClosedRange<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable & Value {
+public func ~=<V : Value>(lhs: ClosedRange<V>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable & Value {
     return Expression("\(rhs.template) BETWEEN ? AND ?", rhs.bindings + [lhs.lowerBound.datatypeValue, lhs.upperBound.datatypeValue])
 }
 
@@ -517,7 +517,7 @@ public func ~=<V : Value>(lhs: Range<V>, rhs: Expression<V>) -> Expression<Bool>
     return Expression("\(rhs.template) >= ? AND \(rhs.template) < ?", rhs.bindings + [lhs.lowerBound.datatypeValue] + rhs.bindings + [lhs.upperBound.datatypeValue])
 }
 
-public func ~=<V : Value>(lhs: Range<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable & Value {
+public func ~=<V : Value>(lhs: Range<V>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable & Value {
     return Expression("\(rhs.template) >= ? AND \(rhs.template) < ?", rhs.bindings + [lhs.lowerBound.datatypeValue] + rhs.bindings + [lhs.upperBound.datatypeValue])
 }
 
@@ -525,7 +525,7 @@ public func ~=<V : Value>(lhs: PartialRangeThrough<V>, rhs: Expression<V>) -> Ex
     return Expression("\(rhs.template) <= ?", rhs.bindings + [lhs.upperBound.datatypeValue])
 }
 
-public func ~=<V : Value>(lhs: PartialRangeThrough<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable & Value {
+public func ~=<V : Value>(lhs: PartialRangeThrough<V>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable & Value {
     return Expression("\(rhs.template) <= ?", rhs.bindings + [lhs.upperBound.datatypeValue])
 }
 
@@ -533,7 +533,7 @@ public func ~=<V : Value>(lhs: PartialRangeUpTo<V>, rhs: Expression<V>) -> Expre
     return Expression("\(rhs.template) < ?", rhs.bindings + [lhs.upperBound.datatypeValue])
 }
 
-public func ~=<V : Value>(lhs: PartialRangeUpTo<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable & Value {
+public func ~=<V : Value>(lhs: PartialRangeUpTo<V>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable & Value {
     return Expression("\(rhs.template) < ?", rhs.bindings + [lhs.upperBound.datatypeValue])
 }
 
@@ -541,7 +541,7 @@ public func ~=<V : Value>(lhs: PartialRangeFrom<V>, rhs: Expression<V>) -> Expre
     return Expression("\(rhs.template) >= ?", rhs.bindings + [lhs.lowerBound.datatypeValue])
 }
 
-public func ~=<V : Value>(lhs: PartialRangeFrom<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Comparable & Value {
+public func ~=<V : Value>(lhs: PartialRangeFrom<V>, rhs: Expression<V?>) -> Expression<Bool> where V.Datatype : Comparable & Value {
     return Expression("\(rhs.template) >= ?", rhs.bindings + [lhs.lowerBound.datatypeValue])
 }
 
@@ -550,56 +550,23 @@ public func ~=<V : Value>(lhs: PartialRangeFrom<V>, rhs: Expression<V?>) -> Expr
 public func &&(lhs: Expression<Bool>, rhs: Expression<Bool>) -> Expression<Bool> {
     return Operator.and.infix(lhs, rhs)
 }
-public func &&(lhs: Expression<Bool>, rhs: Expression<Bool?>) -> Expression<Bool?> {
-    return Operator.and.infix(lhs, rhs)
-}
-public func &&(lhs: Expression<Bool?>, rhs: Expression<Bool>) -> Expression<Bool?> {
-    return Operator.and.infix(lhs, rhs)
-}
-public func &&(lhs: Expression<Bool?>, rhs: Expression<Bool?>) -> Expression<Bool?> {
-    return Operator.and.infix(lhs, rhs)
-}
 public func &&(lhs: Expression<Bool>, rhs: Bool) -> Expression<Bool> {
     return Operator.and.infix(lhs, rhs)
 }
-public func &&(lhs: Expression<Bool?>, rhs: Bool) -> Expression<Bool?> {
-    return Operator.and.infix(lhs, rhs)
-}
 public func &&(lhs: Bool, rhs: Expression<Bool>) -> Expression<Bool> {
-    return Operator.and.infix(lhs, rhs)
-}
-public func &&(lhs: Bool, rhs: Expression<Bool?>) -> Expression<Bool?> {
     return Operator.and.infix(lhs, rhs)
 }
 
 public func ||(lhs: Expression<Bool>, rhs: Expression<Bool>) -> Expression<Bool> {
     return Operator.or.infix(lhs, rhs)
 }
-public func ||(lhs: Expression<Bool>, rhs: Expression<Bool?>) -> Expression<Bool?> {
-    return Operator.or.infix(lhs, rhs)
-}
-public func ||(lhs: Expression<Bool?>, rhs: Expression<Bool>) -> Expression<Bool?> {
-    return Operator.or.infix(lhs, rhs)
-}
-public func ||(lhs: Expression<Bool?>, rhs: Expression<Bool?>) -> Expression<Bool?> {
-    return Operator.or.infix(lhs, rhs)
-}
 public func ||(lhs: Expression<Bool>, rhs: Bool) -> Expression<Bool> {
-    return Operator.or.infix(lhs, rhs)
-}
-public func ||(lhs: Expression<Bool?>, rhs: Bool) -> Expression<Bool?> {
     return Operator.or.infix(lhs, rhs)
 }
 public func ||(lhs: Bool, rhs: Expression<Bool>) -> Expression<Bool> {
     return Operator.or.infix(lhs, rhs)
 }
-public func ||(lhs: Bool, rhs: Expression<Bool?>) -> Expression<Bool?> {
-    return Operator.or.infix(lhs, rhs)
-}
 
 public prefix func !(rhs: Expression<Bool>) -> Expression<Bool> {
-    return Operator.not.wrap(rhs)
-}
-public prefix func !(rhs: Expression<Bool?>) -> Expression<Bool?> {
     return Operator.not.wrap(rhs)
 }

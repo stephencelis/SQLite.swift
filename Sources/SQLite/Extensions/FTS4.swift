@@ -63,7 +63,7 @@ extension VirtualTable {
         return "MATCH".infix(tableName(), pattern)
     }
 
-    public func match(_ pattern: Expression<String?>) -> Expression<Bool?> {
+    public func match(_ pattern: Expression<String?>) -> Expression<Bool> {
         return "MATCH".infix(tableName(), pattern)
     }
 

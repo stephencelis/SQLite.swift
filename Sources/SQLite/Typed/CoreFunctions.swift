@@ -475,7 +475,7 @@ extension ExpressionType where UnderlyingType == String? {
     ///
     /// - Returns: A copy of the expression appended with a `LIKE` query against
     ///   the given pattern.
-    public func like(_ pattern: String, escape character: Character? = nil) -> Expression<Bool?> {
+    public func like(_ pattern: String, escape character: Character? = nil) -> Expression<Bool> {
         guard let character = character else {
             return Function.like.infix(self, pattern)
         }
@@ -499,7 +499,7 @@ extension ExpressionType where UnderlyingType == String? {
     ///
     /// - Returns: A copy of the expression appended with a `LIKE` query against
     ///   the given pattern.
-    public func like(_ pattern: Expression<String>, escape character: Character? = nil) -> Expression<Bool?> {
+    public func like(_ pattern: Expression<String>, escape character: Character? = nil) -> Expression<Bool> {
         guard let character = character else {
             return Function.like.infix(self, pattern)
         }
@@ -518,7 +518,7 @@ extension ExpressionType where UnderlyingType == String? {
     ///
     /// - Returns: A copy of the expression appended with a `GLOB` query against
     ///   the given pattern.
-    public func glob(_ pattern: String) -> Expression<Bool?> {
+    public func glob(_ pattern: String) -> Expression<Bool> {
         return Function.glob.infix(self, pattern)
     }
 
@@ -544,7 +544,7 @@ extension ExpressionType where UnderlyingType == String? {
     ///
     /// - Returns: A copy of the expression appended with a `REGEXP` query
     ///   against the given pattern.
-    public func regexp(_ pattern: String) -> Expression<Bool?> {
+    public func regexp(_ pattern: String) -> Expression<Bool> {
         return Function.regexp.infix(self, pattern)
     }
 
@@ -700,7 +700,7 @@ extension Collection where Iterator.Element : Value {
     ///
     /// - Returns: A copy of the expression prepended with an `IN` check against
     ///   the collection.
-    public func contains(_ expression: Expression<Iterator.Element?>) -> Expression<Bool?> {
+    public func contains(_ expression: Expression<Iterator.Element?>) -> Expression<Bool> {
         let templates = [String](repeating: "?", count: count).joined(separator: ", ")
         return Function.in.infix(expression, Expression<Void>("(\(templates))", map { $0.datatypeValue }))
     }

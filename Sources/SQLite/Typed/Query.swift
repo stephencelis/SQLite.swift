@@ -222,8 +222,8 @@ extension QueryType {
     ///   - condition: A boolean expression describing the join condition.
     ///
     /// - Returns: A query with the given `JOIN` clause applied.
-    public func join(_ table: QueryType, on condition: Expression<Bool>) -> Self {
-        return join(table, on: Expression<Bool?>(condition))
+    public func join(_ table: QueryType, on condition: Expression<Bool?>) -> Self {
+        return join(table, on: Expression<Bool>(condition))
     }
 
     /// Adds a `JOIN` clause to the query.
@@ -243,7 +243,7 @@ extension QueryType {
     ///   - condition: A boolean expression describing the join condition.
     ///
     /// - Returns: A query with the given `JOIN` clause applied.
-    public func join(_ table: QueryType, on condition: Expression<Bool?>) -> Self {
+    public func join(_ table: QueryType, on condition: Expression<Bool>) -> Self {
         return join(.inner, table, on: condition)
     }
 
@@ -266,8 +266,8 @@ extension QueryType {
     ///   - condition: A boolean expression describing the join condition.
     ///
     /// - Returns: A query with the given `JOIN` clause applied.
-    public func join(_ type: JoinType, _ table: QueryType, on condition: Expression<Bool>) -> Self {
-        return join(type, table, on: Expression<Bool?>(condition))
+    public func join(_ type: JoinType, _ table: QueryType, on condition: Expression<Bool?>) -> Self {
+        return join(type, table, on: Expression<Bool>(condition))
     }
 
     /// Adds a `JOIN` clause to the query.
@@ -289,7 +289,7 @@ extension QueryType {
     ///   - condition: A boolean expression describing the join condition.
     ///
     /// - Returns: A query with the given `JOIN` clause applied.
-    public func join(_ type: JoinType, _ table: QueryType, on condition: Expression<Bool?>) -> Self {
+    public func join(_ type: JoinType, _ table: QueryType, on condition: Expression<Bool>) -> Self {
         var query = self
         query.clauses.join.append((type: type, query: table, condition: table.clauses.filters.map { condition && $0 } ?? condition as Expressible))
         return query
@@ -308,8 +308,8 @@ extension QueryType {
     /// - Parameter condition: A boolean expression to filter on.
     ///
     /// - Returns: A query with the given `WHERE` clause applied.
-    public func filter(_ predicate: Expression<Bool>) -> Self {
-        return filter(Expression<Bool?>(predicate))
+    public func filter(_ predicate: Expression<Bool?>) -> Self {
+        return filter(Expression<Bool>(predicate))
     }
 
     /// Adds a condition to the query’s `WHERE` clause.
@@ -323,7 +323,7 @@ extension QueryType {
     /// - Parameter condition: A boolean expression to filter on.
     ///
     /// - Returns: A query with the given `WHERE` clause applied.
-    public func filter(_ predicate: Expression<Bool?>) -> Self {
+    public func filter(_ predicate: Expression<Bool>) -> Self {
         var query = self
         query.clauses.filters = query.clauses.filters.map { $0 && predicate } ?? predicate
         return query
@@ -331,13 +331,13 @@ extension QueryType {
 
     /// Adds a condition to the query’s `WHERE` clause.
     /// This is an alias for `filter(predicate)`
-    public func `where`(_ predicate: Expression<Bool>) -> Self {
-        return `where`(Expression<Bool?>(predicate))
+    public func `where`(_ predicate: Expression<Bool?>) -> Self {
+        return `where`(Expression<Bool>(predicate))
     }
 
     /// Adds a condition to the query’s `WHERE` clause.
     /// This is an alias for `filter(predicate)`
-    public func `where`(_ predicate: Expression<Bool?>) -> Self {
+    public func `where`(_ predicate: Expression<Bool>) -> Self {
         return filter(predicate)
     }
 
@@ -396,8 +396,8 @@ extension QueryType {
     ///   - having: A condition determining which groups are returned.
     ///
     /// - Returns: A query with the given `GROUP BY`–`HAVING` clause applied.
-    public func group(_ by: [Expressible], having: Expression<Bool>) -> Self {
-        return group(by, Expression<Bool?>(having))
+    public func group(_ by: [Expressible], having: Expression<Bool?>) -> Self {
+        return group(by, Expression<Bool>(having))
     }
 
     /// Sets a `GROUP BY`-`HAVING` clause on the query.
@@ -409,11 +409,11 @@ extension QueryType {
     ///   - having: A condition determining which groups are returned.
     ///
     /// - Returns: A query with the given `GROUP BY`–`HAVING` clause applied.
-    public func group(_ by: [Expressible], having: Expression<Bool?>) -> Self {
+    public func group(_ by: [Expressible], having: Expression<Bool>) -> Self {
         return group(by, having)
     }
 
-    fileprivate func group(_ by: [Expressible], _ having: Expression<Bool?>?) -> Self {
+    fileprivate func group(_ by: [Expressible], _ having: Expression<Bool>?) -> Self {
         var query = self
         query.clauses.group = (by, having)
         return query
@@ -1157,9 +1157,9 @@ public struct QueryClauses {
 
     var join = [(type: JoinType, query: QueryType, condition: Expressible)]()
 
-    var filters: Expression<Bool?>?
+    var filters: Expression<Bool>?
 
-    var group: (by: [Expressible], having: Expression<Bool?>?)?
+    var group: (by: [Expressible], having: Expression<Bool>?)?
 
     var order = [Expressible]()
 

@@ -282,29 +282,18 @@ class OperatorsTests : XCTestCase {
 
     func test_doubleAndOperator_withBooleanExpressions_buildsCompoundExpression() {
         AssertSQL("(\"bool\" AND \"bool\")", bool && bool)
-        AssertSQL("(\"bool\" AND \"boolOptional\")", bool && boolOptional)
-        AssertSQL("(\"boolOptional\" AND \"bool\")", boolOptional && bool)
-        AssertSQL("(\"boolOptional\" AND \"boolOptional\")", boolOptional && boolOptional)
         AssertSQL("(\"bool\" AND 1)", bool && true)
-        AssertSQL("(\"boolOptional\" AND 1)", boolOptional && true)
         AssertSQL("(1 AND \"bool\")", true && bool)
-        AssertSQL("(1 AND \"boolOptional\")", true && boolOptional)
     }
 
     func test_doubleOrOperator_withBooleanExpressions_buildsCompoundExpression() {
         AssertSQL("(\"bool\" OR \"bool\")", bool || bool)
-        AssertSQL("(\"bool\" OR \"boolOptional\")", bool || boolOptional)
-        AssertSQL("(\"boolOptional\" OR \"bool\")", boolOptional || bool)
-        AssertSQL("(\"boolOptional\" OR \"boolOptional\")", boolOptional || boolOptional)
         AssertSQL("(\"bool\" OR 1)", bool || true)
-        AssertSQL("(\"boolOptional\" OR 1)", boolOptional || true)
         AssertSQL("(1 OR \"bool\")", true || bool)
-        AssertSQL("(1 OR \"boolOptional\")", true || boolOptional)
     }
 
     func test_unaryNotOperator_withBooleanExpressions_buildsNotExpression() {
         AssertSQL("NOT (\"bool\")", !bool)
-        AssertSQL("NOT (\"boolOptional\")", !boolOptional)
     }
 
     func test_precedencePreserved() {
