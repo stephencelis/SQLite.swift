@@ -94,6 +94,15 @@ class QueryTests : XCTestCase {
         )
     }
 
+
+    func test_join_compilesJoinClause_withNamespaces() {
+        let query = users.join(posts, on: posts[userId] == users[id]).select(posts[*], users[*])
+        AssertSQL(
+            "SELECT \"posts\".*, \"users\".* FROM \"users\" INNER JOIN \"posts\" ON (\"posts\".\"user_id\" = \"users\".\"id\")",
+            query
+        )
+    }
+
     func test_filter_compilesWhereClause() {
         AssertSQL("SELECT * FROM \"users\" WHERE (\"admin\" = 1)", users.filter(admin == true))
     }
@@ -513,6 +522,34 @@ class QueryIntegrationTests : SQLiteTestCase {
         let orderedIDs = try db.prepare(query3.union(query4).order(Expression<Int>(literal: "weight"), email)).map { $0[id] }
         XCTAssertEqual(Array(expectedIDs.reversed()), orderedIDs)
     }
+
+    func test_joinClause_withNamespaces() throws {
+        let posts = Table("posts")
+        let userId = Expression<Int64>("userId")
+        let postId = Expression<Int64>("id")
+        let title = Expression<String>("title")
+        let content = Expression<String>("content")
+        try db.run(posts.create { builder in
+            builder.column(postId)
+            builder.column(userId)
+            builder.column(title)
+            builder.column(content)
+            builder.primaryKey(postId)
+        })
+        let alice = try db.run(users.insert(email <- "alice@example.com"))
+        let sally = try db.run(users.insert(email <- "sally@example.com"))
+        let postAlice = try db.run(posts.insert(userId <- alice, postId <- 1, title <- "title1", content <- "content1"))
+        let postSally = try db.run(posts.insert(userId <- sally, postId <- 2, title <- "title2", content <- "content2"))
+
+        let query = users
+            .join(posts, on: posts[userId] == users[id])
+            .select(posts[*], users[*])
+            .order(userId)
+
+        let ids = try db.prepare(query).map { $0[posts[id]] }
+        XCTAssertEqual([postAlice, postSally], ids)
+    }
+
 
     func test_no_such_column() throws {
         let doesNotExist = Expression<String>("doesNotExist")
