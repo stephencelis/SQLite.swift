@@ -66,7 +66,7 @@ extension String {
         var (template, bindings) = ([String](), [Binding?]())
         for expressible in expressions {
             let expression = expressible.expression
-            template.append(expression.template)
+            template.append("\(expression.template)")
             bindings.append(contentsOf: expression.bindings)
         }
         return Expression<Void>(template.joined(separator: self), bindings)
