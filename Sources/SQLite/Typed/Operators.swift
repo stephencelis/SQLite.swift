@@ -432,6 +432,34 @@ public func !=<V : Value>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> whe
     return Operator.neq.infix(lhs, rhs)
 }
 
+public func !==<V : Value>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Equatable {
+    return "IS NOT".infix(lhs, rhs)
+}
+public func !==<V : Value>(lhs: Expression<V>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Equatable {
+    return "IS NOT".infix(lhs, rhs)
+}
+public func !==<V : Value>(lhs: Expression<V?>, rhs: Expression<V>) -> Expression<Bool?> where V.Datatype : Equatable {
+    return "IS NOT".infix(lhs, rhs)
+}
+public func !==<V : Value>(lhs: Expression<V?>, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Equatable {
+    return "IS NOT".infix(lhs, rhs)
+}
+public func !==<V : Value>(lhs: Expression<V>, rhs: V) -> Expression<Bool> where V.Datatype : Equatable {
+    return "IS NOT".infix(lhs, rhs)
+}
+public func !==<V : Value>(lhs: Expression<V?>, rhs: V?) -> Expression<Bool?> where V.Datatype : Equatable {
+    guard let rhs = rhs else { return "IS NOT".infix(lhs, Expression<V?>(value: nil)) }
+    return "IS NOT".infix(lhs, rhs)
+}
+public func !==<V : Value>(lhs: V, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Equatable {
+    return "IS NOT".infix(lhs, rhs)
+}
+public func !==<V : Value>(lhs: V?, rhs: Expression<V?>) -> Expression<Bool?> where V.Datatype : Equatable {
+    guard let lhs = lhs else { return "IS NOT".infix(Expression<V?>(value: nil), rhs) }
+    return "IS NOT".infix(lhs, rhs)
+}
+
+
 public func ><V : Value>(lhs: Expression<V>, rhs: Expression<V>) -> Expression<Bool> where V.Datatype : Comparable {
     return Operator.gt.infix(lhs, rhs)
 }

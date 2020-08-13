@@ -200,6 +200,20 @@ class OperatorsTests : XCTestCase {
        AssertSQL("(\"boolOptional\" IS NULL)", boolOptional === nil)
        AssertSQL("(NULL IS \"boolOptional\")", nil === boolOptional)
     }
+    
+    func test_isNotOperator_withEquatableExpressions_buildsBooleanExpression() {
+        AssertSQL("(\"bool\" IS NOT \"bool\")", bool !== bool)
+        AssertSQL("(\"bool\" IS NOT \"boolOptional\")", bool !== boolOptional)
+        AssertSQL("(\"boolOptional\" IS NOT \"bool\")", boolOptional !== bool)
+        AssertSQL("(\"boolOptional\" IS NOT \"boolOptional\")", boolOptional !== boolOptional)
+        AssertSQL("(\"bool\" IS NOT 1)", bool !== true)
+        AssertSQL("(\"boolOptional\" IS NOT 1)", boolOptional !== true)
+        AssertSQL("(1 IS NOT \"bool\")", true !== bool)
+        AssertSQL("(1 IS NOT \"boolOptional\")", true !== boolOptional)
+
+        AssertSQL("(\"boolOptional\" IS NOT NULL)", boolOptional !== nil)
+        AssertSQL("(NULL IS NOT \"boolOptional\")", nil !== boolOptional)
+     }
 
     func test_inequalityOperator_withEquatableExpressions_buildsBooleanExpression() {
         AssertSQL("(\"bool\" != \"bool\")", bool != bool)
