@@ -24,7 +24,7 @@
 
 @import Foundation;
 #if defined(SQLITE_SWIFT_STANDALONE)
-@import sqlite3;
+@import SQLCipher.sqlite3;
 #else
 @import SQLite3;
 #endif
