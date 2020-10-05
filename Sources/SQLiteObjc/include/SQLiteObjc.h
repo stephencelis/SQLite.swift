@@ -26,7 +26,7 @@
 #if defined(SQLITE_SWIFT_STANDALONE)
 @import sqlite3;
 #else
-@import SQLite3;
+@import SQLCipher.sqlite3;
 #endif
 
 NS_ASSUME_NONNULL_BEGIN
