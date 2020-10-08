@@ -917,6 +917,8 @@ public struct RowIterator: FailableIterator {
 
 extension Connection {
 
+    /// Return an iterator that will lazily load the query's results as they are iterated over.
+    /// - Throws: Any error that happened during the preparation. Errors thrown during the iteration are not captured and will cause a crash.
     public func prepare(_ query: QueryType) throws -> AnySequence<Row> {
         let expression = query.expression
         let statement = try prepare(expression.template, expression.bindings)
@@ -926,6 +928,24 @@ extension Connection {
         return AnySequence {
             AnyIterator { statement.next().map { Row(columnNames, $0) } }
         }
+    }
+
+    /// Load and return all the results of the query.
+    /// - Throws: Any error that happened during the preparation or the execution.
+    public func prepareAndExecute(_ query: QueryType) throws -> AnySequence<Row> {
+        let expression = query.expression
+        let statement = try prepare(expression.template, expression.bindings)
+
+        let columnNames = try columnNamesForQuery(query)
+
+        var rows = [Row]()
+        var bindings = try statement.failableNext()
+        while bindings != nil {
+            bindings.flatMap { rows.append(Row(columnNames, $0)) }
+            bindings = try statement.failableNext()
+        }
+
+        return AnySequence(rows)
     }
     
 
