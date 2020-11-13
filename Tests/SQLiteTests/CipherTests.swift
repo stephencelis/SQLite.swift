@@ -73,11 +73,17 @@ class CipherTests: XCTestCase {
     }
 
     func test_open_db_encrypted_with_sqlcipher() {
-        // $ sqlcipher SQLiteTests/fixtures/encrypted.sqlite
+        // $ sqlcipher Tests/SQLiteTests/fixtures/encrypted-[version].x.sqlite
         // sqlite> pragma key = 'sqlcipher-test';
         // sqlite> CREATE TABLE foo (bar TEXT);
         // sqlite> INSERT INTO foo (bar) VALUES ('world');
-        let encryptedFile = fixture("encrypted", withExtension: "sqlite")
+        guard let cipherVersion:String = db1.cipherVersion,
+            cipherVersion.starts(with: "3.") || cipherVersion.starts(with: "4.")
+            else { return }
+
+        let encryptedFile = cipherVersion.starts(with: "3.") ?
+            fixture("encrypted-3.x", withExtension: "sqlite") :
+            fixture("encrypted-4.x", withExtension: "sqlite")
 
         try! FileManager.default.setAttributes([FileAttributeKey.immutable : 1], ofItemAtPath: encryptedFile)
         XCTAssertFalse(FileManager.default.isWritableFile(atPath: encryptedFile))
