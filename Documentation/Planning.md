@@ -33,6 +33,3 @@ be referred to when it comes time to add the corresponding feature._
 _Features that are not actively being considered, perhaps because of no clean
 type-safe way to implement them with the current Swift, or bugs, or just
 general uncertainty._
-
- * provide a mechanism for INSERT INTO multiple values, per
-   [#168](https://github.com/stephencelis/SQLite.swift/issues/168)
