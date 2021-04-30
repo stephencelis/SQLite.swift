@@ -247,6 +247,26 @@ class QueryTests : XCTestCase {
         )
     }
 
+    func test_insert_many_compilesInsertManyExpression() {
+        AssertSQL(
+            "INSERT INTO \"users\" (\"email\", \"age\") VALUES ('alice@example.com', 30), ('geoff@example.com', 32), ('alex@example.com', 83)",
+            users.insertMany([[email <- "alice@example.com", age <- 30], [email <- "geoff@example.com", age <- 32], [email <- "alex@example.com", age <- 83]])
+        )
+    }
+    func test_insert_many_compilesInsertManyNoneExpression() {
+        AssertSQL(
+            "INSERT INTO \"users\" DEFAULT VALUES",
+            users.insertMany([])
+        )
+    }
+
+    func test_insert_many_withOnConflict_compilesInsertManyOrOnConflictExpression() {
+        AssertSQL(
+            "INSERT OR REPLACE INTO \"users\" (\"email\", \"age\") VALUES ('alice@example.com', 30), ('geoff@example.com', 32), ('alex@example.com', 83)",
+            users.insertMany(or: .replace, [[email <- "alice@example.com", age <- 30], [email <- "geoff@example.com", age <- 32], [email <- "alex@example.com", age <- 83]])
+        )
+    }
+
     func test_insert_encodable() throws {
         let emails = Table("emails")
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
@@ -266,6 +286,18 @@ class QueryTests : XCTestCase {
         let encodedJSONString = String(data: encodedJSON, encoding: .utf8)!
         AssertSQL(
             "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"optional\", \"sub\") VALUES (1, '2', 1, 3.0, 4.0, 'optional', '\(encodedJSONString)')",
+            insert
+        )
+    }
+
+    func test_insert_many_encodable() throws {
+        let emails = Table("emails")
+        let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
+        let value2 = TestCodable(int: 2, string: "3", bool: true, float: 3, double: 5, optional: nil, sub: nil)
+        let value3 = TestCodable(int: 3, string: "4", bool: true, float: 3, double: 6, optional: nil, sub: nil)
+        let insert = try emails.insertMany([value1, value2, value3])
+        AssertSQL(
+            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\") VALUES (1, '2', 1, 3.0, 4.0), (2, '3', 1, 3.0, 5.0), (3, '4', 1, 3.0, 6.0)",
             insert
         )
     }
@@ -481,6 +513,11 @@ class QueryIntegrationTests : SQLiteTestCase {
     func test_insert() {
         let id = try! db.run(users.insert(email <- "alice@example.com"))
         XCTAssertEqual(1, id)
+    }
+
+    func test_insert_many() {
+        let id = try! db.run(users.insertMany([[email <- "alice@example.com"], [email <- "geoff@example.com"]]))
+        XCTAssertEqual(2, id)
     }
 
     func test_update() {
