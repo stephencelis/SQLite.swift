@@ -20,7 +20,7 @@ matrix:
     - env: CARTHAGE_PLATFORM="tvOS"
     - env: PACKAGE_MANAGER_COMMAND="test"
 before_install:
-  - gem update bundler
+ -  gem install bundler
   - gem install xcpretty --no-document
   - brew update
   - brew outdated carthage || brew upgrade carthage
