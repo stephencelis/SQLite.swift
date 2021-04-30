@@ -663,12 +663,14 @@ extension QueryType {
     }
 
     fileprivate func insertMany(_ or: OnConflict?, _ values: [[Setter]]) -> Insert {
-        guard values.count > 0 else {
+        guard let firstInsert = values.first else {
+            // must be at least 1 object or else we don't know columns. Default to default inserts.
             return insert()
         }
-        let insertRows = values.map { rowValues in
-            rowValues.reduce((columns: [Expressible](), values: [Expressible]())) { insert, setter in
-                (insert.columns + [setter.column], insert.values + [setter.value])
+        let columns = firstInsert.map { $0.column }
+        let insertValues = values.map { rowValues in
+            rowValues.reduce([Expressible]()) { insert, setter in
+                insert + [setter.value]
             }
         }
 
@@ -677,9 +679,9 @@ extension QueryType {
             or.map { Expression<Void>(literal: "OR \($0.rawValue)") },
             Expression<Void>(literal: "INTO"),
             tableName(),
-            "".wrap(insertRows[0].columns) as Expression<Void>,
+            "".wrap(columns) as Expression<Void>,
             Expression<Void>(literal: "VALUES"),
-            ", ".join(insertRows.map(\.values).map({ "".wrap($0) as Expression<Void> })),
+            ", ".join(insertValues.map({ "".wrap($0) as Expression<Void> })),
             whereClause
         ]
         return Insert(" ".join(clauses.compactMap { $0 }).expression)
