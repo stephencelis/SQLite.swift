@@ -40,7 +40,7 @@ class IntegrationTest < Minitest::Test
       super unless consumer.platform_name == :watchos
     end
 
-    def xcodebuild(action, scheme, configuration)
+    def xcodebuild(action, scheme, configuration, _)
       require 'fourflusher'
       command = %W(#{action} -workspace #{File.join(validation_dir, 'App.xcworkspace')} -scheme #{scheme} -configuration #{configuration})
       case consumer.platform_name

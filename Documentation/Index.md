@@ -638,6 +638,18 @@ do {
 }
 ```
 
+Multiple rows can be inserted at once by similarily calling `insertMany` with an array of per-row [setters](#setters).
+
+```swift
+do {
+    let rowid = try db.run(users.insertMany([mail <- "alice@mac.com"], [email <- "geoff@mac.com"]))
+    print("inserted id: \(rowid)")
+} catch {
+    print("insertion failed: \(error)")
+}
+```
+
+
 The [`update`](#updating-rows) and [`delete`](#deleting-rows) functions
 follow similar patterns.
 
