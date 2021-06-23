@@ -19,10 +19,10 @@ Pod::Spec.new do |s|
   s.swift_versions = ['4.2', '5']
   
   
-  ios_deployment_target = '8.0'
+  ios_deployment_target = '9.0'
   tvos_deployment_target = '9.1'
   osx_deployment_target = '10.10'
-  watchos_deployment_target = '2.2'
+  watchos_deployment_target = '3.0'
   
   s.ios.deployment_target = ios_deployment_target
   s.tvos.deployment_target = tvos_deployment_target
@@ -32,7 +32,7 @@ Pod::Spec.new do |s|
   s.subspec 'standard' do |ss|
     ss.source_files = 'Sources/{SQLite,SQLiteObjc}/**/*.{c,h,m,swift}'
     ss.exclude_files = 'Sources/**/Cipher.swift'
-    ss.private_header_files = 'Sources/SQLiteObjc/*.h'
+    ss.private_header_files = 'Sources/SQLiteObjc/fts3_tokenizer.h'
     ss.library = 'sqlite3'
 
     ss.test_spec 'tests' do |test_spec|
@@ -47,7 +47,7 @@ Pod::Spec.new do |s|
   s.subspec 'standalone' do |ss|
     ss.source_files = 'Sources/{SQLite,SQLiteObjc}/**/*.{c,h,m,swift}'
     ss.exclude_files = 'Sources/**/Cipher.swift'
-    ss.private_header_files = 'Sources/SQLiteObjc/*.h'
+    ss.private_header_files = 'Sources/SQLiteObjc/fts3_tokenizer.h'
 
     ss.xcconfig = {
       'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_STANDALONE',
@@ -66,12 +66,12 @@ Pod::Spec.new do |s|
 
   s.subspec 'SQLCipher' do |ss|
     ss.source_files = 'Sources/{SQLite,SQLiteObjc}/**/*.{c,h,m,swift}'
-    ss.private_header_files = 'Sources/SQLiteObjc/*.h'
+    ss.private_header_files = 'Sources/SQLiteObjc/fts3_tokenizer.h'
     ss.xcconfig = {
       'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_SQLCIPHER',
-      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1'
+      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1 SQLITE_SWIFT_SQLCIPHER=1'
     }
-    ss.dependency 'SQLCipher', '>= 3.4.0'
+    ss.dependency 'SQLCipher', '>= 4.0.0'
 
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/fixtures/*'
