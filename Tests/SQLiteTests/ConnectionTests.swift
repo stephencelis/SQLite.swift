@@ -38,12 +38,14 @@ class ConnectionTests : SQLiteTestCase {
 
     func test_init_withURI_returnsURIConnection() {
         let db = try! Connection(.uri("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3"))
-        XCTAssertEqual("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3", db.description)
+        let url = URL(fileURLWithPath: db.description)
+        XCTAssertEqual(url.lastPathComponent, "SQLite.swift Tests.sqlite3")
     }
 
     func test_init_withString_returnsURIConnection() {
         let db = try! Connection("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3")
-        XCTAssertEqual("\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3", db.description)
+        let url = URL(fileURLWithPath: db.description)
+        XCTAssertEqual(url.lastPathComponent, "SQLite.swift Tests.sqlite3")
     }
 
     func test_readonly_returnsFalseOnReadWriteConnections() {
