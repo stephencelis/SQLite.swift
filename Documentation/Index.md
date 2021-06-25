@@ -1557,7 +1557,7 @@ Both of the above methods also have the following optional parameter:
 There are a few restrictions on using Codable types:
 
 - The encodable and decodable objects can only use the following types:
-    - Int, Bool, Float, Double, String
+    - Int, Bool, Float, Double, String, Date
     - Nested Codable types that will be encoded as JSON to a single column
 - These methods will not handle object relationships for you. You must write
   your own Codable and Decodable implementations if you wish to support this.

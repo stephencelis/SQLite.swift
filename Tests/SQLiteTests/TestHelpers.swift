@@ -26,6 +26,7 @@ class SQLiteTestCase : XCTestCase {
                 salary REAL,
                 admin BOOLEAN NOT NULL DEFAULT 0 CHECK (admin IN (0, 1)),
                 manager_id INTEGER,
+                created_at DATETIME,
                 FOREIGN KEY(manager_id) REFERENCES users(id)
             )
             """
@@ -111,15 +112,17 @@ class TestCodable: Codable {
     let bool: Bool
     let float: Float
     let double: Double
+    let date: Date
     let optional: String?
     let sub: TestCodable?
 
-    init(int: Int, string: String, bool: Bool, float: Float, double: Double, optional: String?, sub: TestCodable?) {
+    init(int: Int, string: String, bool: Bool, float: Float, double: Double, date: Date, optional: String?, sub: TestCodable?) {
         self.int = int
         self.string = string
         self.bool = bool
         self.float = float
         self.double = double
+        self.date = date
         self.optional = optional
         self.sub = sub
     }
