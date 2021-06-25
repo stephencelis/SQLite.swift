@@ -627,7 +627,34 @@ public final class Connection {
     }
     fileprivate typealias Collation = @convention(block) (UnsafeRawPointer, UnsafeRawPointer) -> Int32
     fileprivate var collations = [String: Collation]()
-
+    
+    // MARK: - Backup
+    
+    /// Prepares a new backup for current connection.
+    ///
+    /// - Parameters:
+    ///
+    ///   - databaseName: The name of the database to backup.
+    ///
+    ///     Default: `.main`
+    ///
+    ///   - targetConnection: The name of the database to save backup into.
+    ///
+    ///   - targetDatabaseName: The name of the database to save backup into.
+    ///
+    ///     Default: `.main`.
+    ///
+    /// - Returns: A new database backup.
+    
+    public func backup(databaseName: Backup.DatabaseName = .main,
+                       usingConnection targetConnection: Connection,
+                       andDatabaseName targetDatabaseName: Backup.DatabaseName = .main) throws -> Backup {
+        return try Backup(targetConnection: targetConnection,
+                          targetName: targetDatabaseName,
+                          sourceConnection: self,
+                          sourceName: databaseName)
+    }
+    
     // MARK: - Error Handling
 
     func sync<T>(_ block: () throws -> T) rethrows -> T {
