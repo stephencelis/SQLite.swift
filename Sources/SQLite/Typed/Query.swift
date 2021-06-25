@@ -922,9 +922,19 @@ extension Connection {
         let statement = try prepare(expression.template, expression.bindings)
 
         let columnNames = try columnNamesForQuery(query)
-
+        
         return AnySequence {
-            AnyIterator { statement.next().map { Row(columnNames, $0) } }
+            return AnyIterator {
+                do {
+                    if let model = try statement.failableNext() {
+                        return Row(columnNames,model)
+                    }
+                } catch {
+                    return nil
+                }
+            
+                return nil
+            }
         }
     }
     
