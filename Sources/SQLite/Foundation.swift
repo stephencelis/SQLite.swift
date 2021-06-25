@@ -68,3 +68,19 @@ public var dateFormatter: DateFormatter = {
     formatter.timeZone = TimeZone(secondsFromGMT: 0)
     return formatter
 }()
+
+extension UUID : Value {
+
+    public static var declaredDatatype: String {
+        return String.declaredDatatype
+    }
+
+    public static func fromDatatypeValue(_ stringValue: String) -> UUID {
+        return UUID(uuidString: stringValue)!
+    }
+
+    public var datatypeValue: String {
+        return self.uuidString
+    }
+
+}
