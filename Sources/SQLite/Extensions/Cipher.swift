@@ -32,6 +32,25 @@ extension Connection {
         try _key_v2(db: db, keyPointer: key.bytes, keySize: key.bytes.count)
     }
 
+    /// Same as `key(_ key: String, db: String = "main")`, running "PRAGMA cipher_migrate;"
+    /// immediately after calling `sqlite3_key_v2`, which performs the migration of
+    /// SQLCipher database created by older major version of SQLCipher, to be able to
+    /// open this database with new major version of SQLCipher
+    /// (e.g. to open database created by SQLCipher version 3.x.x with SQLCipher version 4.x.x).
+    /// As "PRAGMA cipher_migrate;" is time-consuming, it is recommended to use this function
+    /// only after failure of `key(_ key: String, db: String = "main")`, if older versions of
+    /// your app may ise older version of SQLCipher
+    /// See https://www.zetetic.net/sqlcipher/sqlcipher-api/#cipher_migrate
+    /// and https://discuss.zetetic.net/t/upgrading-to-sqlcipher-4/3283
+    /// for more details regarding SQLCipher upgrade
+    public func keyAndMigrate(_ key: String, db: String = "main") throws {
+        try _key_v2(db: db, keyPointer: key, keySize: key.utf8.count, migrate: true)
+    }
+
+    /// Same as `[`keyAndMigrate(_ key: String, db: String = "main")` accepting byte array as key
+    public func keyAndMigrate(_ key: Blob, db: String = "main") throws {
+        try _key_v2(db: db, keyPointer: key.bytes, keySize: key.bytes.count, migrate: true)
+    }
 
     /// Change the key on an open database.  If the current database is not encrypted, this routine
     /// will encrypt it.
@@ -47,8 +66,20 @@ extension Connection {
     }
 
     // MARK: - private
-    private func _key_v2(db: String, keyPointer: UnsafePointer<UInt8>, keySize: Int) throws {
+    private func _key_v2(db: String,
+                         keyPointer: UnsafePointer<UInt8>,
+                         keySize: Int,
+                         migrate: Bool = false) throws {
         try check(sqlite3_key_v2(handle, db, keyPointer, Int32(keySize)))
+        if migrate {
+            // Run "PRAGMA cipher_migrate;" immediately after `sqlite3_key_v2`
+            // per recommendation of SQLCipher authors
+            let migrateResult = try scalar("PRAGMA cipher_migrate;")
+            if (migrateResult as? String) != "0" {
+                // "0" is the result of successfull migration
+                throw Result.error(message: "Error in cipher migration, result \(migrateResult.debugDescription)", code: 1, statement: nil)
+            }
+        }
         try cipher_key_check()
     }
 
