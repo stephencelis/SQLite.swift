@@ -101,11 +101,21 @@ public final class Connection {
     ///
     ///     Default: `false`.
     ///
+    ///   - target: An optional target queue for database operations to be executed on.
+    ///     Set this to a custom serial queue if you need to schedule work that must be
+    ///     synchronized with respect to database operations.
+    ///
+    ///     **Important:** The target queue **must not** be a concurrent queue, or access
+    ///     to the returned connection is no longer guaranteed be thread-safe.
+    ///
+    /// - Throws: `Result.Error` iff a connection cannot be established.
+    ///
     /// - Returns: A new database connection.
-    public init(_ location: Location = .inMemory, readonly: Bool = false) throws {
+    public init(_ location: Location = .inMemory, readonly: Bool = false, target: DispatchQueue? = nil) throws {
+        queue = DispatchQueue(label: "SQLite.Database", target: target)
         let flags = readonly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE
         try check(sqlite3_open_v2(location.description, &_handle, flags | SQLITE_OPEN_FULLMUTEX, nil))
-        queue.setSpecific(key: Connection.queueKey, value: queueContext)
+        (target ?? queue).setSpecific(key: queueKey, value: queueContext)
     }
 
     /// Initializes a new connection to a database.
@@ -119,11 +129,18 @@ public final class Connection {
     ///
     ///     Default: `false`.
     ///
+    ///   - target: An optional target queue for database operations to be executed on.
+    ///     Set this to a custom serial queue if you need to schedule work that must be
+    ///     synchronized with respect to database operations.
+    ///
+    ///     **Important:** The target queue **must not** be a concurrent queue, or access
+    ///     to the returned connection is no longer guaranteed be thread-safe.
+    ///
     /// - Throws: `Result.Error` iff a connection cannot be established.
     ///
     /// - Returns: A new database connection.
-    public convenience init(_ filename: String, readonly: Bool = false) throws {
-        try self.init(.uri(filename), readonly: readonly)
+    public convenience init(_ filename: String, readonly: Bool = false, target: DispatchQueue? = nil) throws {
+        try self.init(.uri(filename), readonly: readonly, target: target)
     }
 
     deinit {
@@ -631,7 +648,7 @@ public final class Connection {
     // MARK: - Error Handling
 
     func sync<T>(_ block: () throws -> T) rethrows -> T {
-        if DispatchQueue.getSpecific(key: Connection.queueKey) == queueContext {
+        if DispatchQueue.getSpecific(key: queueKey) == queueContext {
             return try block()
         } else {
             return try queue.sync(execute: block)
@@ -646,9 +663,9 @@ public final class Connection {
         throw error
     }
 
-    fileprivate var queue = DispatchQueue(label: "SQLite.Database", attributes: [])
+    fileprivate var queue: DispatchQueue
 
-    fileprivate static let queueKey = DispatchSpecificKey<Int>()
+    fileprivate let queueKey = DispatchSpecificKey<Int>()
 
     fileprivate lazy var queueContext: Int = unsafeBitCast(self, to: Int.self)
 
