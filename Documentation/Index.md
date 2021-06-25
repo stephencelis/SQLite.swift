@@ -1792,12 +1792,12 @@ let config = FTS5Config()
     .column(subject)
     .column(body, [.unindexed])
 
-try db.run(emails.create(.FTS5(config))
+try db.run(emails.create(.FTS5(config)))
 // CREATE VIRTUAL TABLE "emails" USING fts5("subject", "body" UNINDEXED)
 
 // Note that FTS5 uses a different syntax to select columns, so we need to rewrite
 // the last FTS4 query above as:
-let replies = emails.filter(emails.match("subject:\"Re:\"*))
+let replies = emails.filter(emails.match("subject:\"Re:\"*"))
 // SELECT * FROM "emails" WHERE "emails" MATCH 'subject:"Re:"*'
 
 // https://www.sqlite.org/fts5.html#_changes_to_select_statements_
