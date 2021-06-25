@@ -99,7 +99,7 @@ public final class Statement {
         return self
     }
 
-    fileprivate func bind(_ value: Binding?, atIndex idx: Int) {
+    public func bind(_ value: Binding?, atIndex idx: Int) {
         if value == nil {
             sqlite3_bind_null(handle, Int32(idx))
         } else if let value = value as? Blob {
@@ -186,7 +186,7 @@ public final class Statement {
         return try connection.sync { try self.connection.check(sqlite3_step(self.handle)) == SQLITE_ROW }
     }
 
-    fileprivate func reset(clearBindings shouldClear: Bool = true) {
+    public func reset(clearBindings shouldClear: Bool = true) {
         sqlite3_reset(handle)
         if (shouldClear) { sqlite3_clear_bindings(handle) }
     }
