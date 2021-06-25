@@ -672,7 +672,32 @@ extension QueryType {
             query.expression
         ]).expression)
     }
-
+	#if swift(>=5.1)
+	func insert<V>(_ value: Expressed<V>, _ more: Expressed<V>...) -> Insert where V: Value {
+		
+		insert([value.setter] + more.map{$0.setter})
+	}
+	//
+	// MARK: INSERT
+	public func insert<V>(_ values: [Expressed<V>]) -> Insert {
+		return insert(nil, values)
+	}
+	
+	public func insert<V>(or onConflict: OnConflict, _ values: Expressed<V>...) -> Insert {
+		return insert(or: onConflict, values)
+	}
+	
+	public func insert<V>(or onConflict: OnConflict, _ values: [Expressed<V>]) -> Insert {
+		return insert(onConflict, values)
+	}
+	
+	fileprivate func insert<V>(_ or: OnConflict?, _ expresseds: [Expressed<V>]) -> Insert {
+		let values:[Setter] = expresseds.map{ expressed in
+			expressed.setter
+		}
+		return insert(or, values)
+	}
+	#endif
     // MARK: UPDATE
 
     public func update(_ values: Setter...) -> Update {
