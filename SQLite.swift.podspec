@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "SQLite.swift"
-  s.version          = "0.12.2"
+  s.version          = "0.12.2.1"
   s.summary          = "A type-safe, Swift-language layer over SQLite3 for iOS and macOS."
 
   s.description      = <<-DESC
@@ -69,7 +69,7 @@ Pod::Spec.new do |s|
     ss.private_header_files = 'Sources/SQLiteObjc/*.h'
     ss.xcconfig = {
       'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_SQLCIPHER',
-      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1'
+      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1 SQLITE_SWIFT_SQLCIPHER=1'
     }
     ss.dependency 'SQLCipher', '>= 3.4.0'
 
