@@ -184,7 +184,12 @@ applications.
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.12.0")
   ]
   ```
-
+  Add the "SQLite" to the list of the target dependencies 
+  ```swift
+  target(
+            name: ".....",
+            dependencies: ["SQLite",..]),
+   ```
  2. Build your project:
 
   ```sh
