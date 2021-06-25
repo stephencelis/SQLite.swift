@@ -45,6 +45,29 @@ extension QueryType {
         return self.insert(encoder.setters + otherSetters)
     }
 
+
+    /// Creates an `INSERT ON CONFLICT DO UPDATE` statement, aka upsert, by encoding the given object
+    /// This method converts any custom nested types to JSON data and does not handle any sort
+    /// of object relationships. If you want to support relationships between objects you will
+    /// have to provide your own Encodable implementations that encode the correct ids.
+    ///
+    /// - Parameters:
+    ///
+    ///   - encodable: An encodable object to insert
+    ///
+    ///   - userInfo: User info to be passed to encoder
+    ///
+    ///   - otherSetters: Any other setters to include in the insert
+    ///
+    ///   - onConflictOf: The column that if conflicts should trigger an update instead of insert.
+    ///
+    /// - Returns: An `INSERT` statement fort the encodable object
+    public func upsert(_ encodable: Encodable, userInfo: [CodingUserInfoKey:Any] = [:], otherSetters: [Setter] = [], onConflictOf conflicting: Expressible) throws -> Insert {
+        let encoder = SQLiteEncoder(userInfo: userInfo)
+        try encodable.encode(to: encoder)
+        return self.upsert(encoder.setters + otherSetters, onConflictOf: conflicting)
+    }
+
     /// Creates an `UPDATE` statement by encoding the given object
     /// This method converts any custom nested types to JSON data and does not handle any sort
     /// of object relationships. If you want to support relationships between objects you will

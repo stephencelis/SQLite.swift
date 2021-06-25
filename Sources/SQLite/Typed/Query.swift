@@ -672,6 +672,45 @@ extension QueryType {
             query.expression
         ]).expression)
     }
+    
+    // MARK: UPSERT
+    
+    public func upsert(_ insertValues: Setter..., onConflictOf conflicting: Expressible) -> Insert {
+        return upsert(insertValues, onConflictOf: conflicting)
+    }
+    
+    public func upsert(_ insertValues: [Setter], onConflictOf conflicting: Expressible) -> Insert {
+        let setValues = insertValues.filter { $0.column.asSQL() != conflicting.asSQL() }
+            .map { Setter(excluded: $0.column) }
+        return upsert(insertValues, onConflictOf: conflicting, set: setValues)
+    }
+    
+    public func upsert(_ insertValues: Setter..., onConflictOf conflicting: Expressible, set setValues: [Setter]) -> Insert {
+        return upsert(insertValues, onConflictOf: conflicting, set: setValues)
+    }
+    
+    public func upsert(_ insertValues: [Setter], onConflictOf conflicting: Expressible, set setValues: [Setter]) -> Insert {
+        let insert = insertValues.reduce((columns: [Expressible](), values: [Expressible]())) { insert, setter in
+            (insert.columns + [setter.column], insert.values + [setter.value])
+        }
+        
+        let clauses: [Expressible?] = [
+            Expression<Void>(literal: "INSERT"),
+            Expression<Void>(literal: "INTO"),
+            tableName(),
+            "".wrap(insert.columns) as Expression<Void>,
+            Expression<Void>(literal: "VALUES"),
+            "".wrap(insert.values) as Expression<Void>,
+            whereClause,
+            Expression<Void>(literal: "ON CONFLICT"),
+            "".wrap(conflicting) as Expression<Void>,
+            Expression<Void>(literal: "DO UPDATE SET"),
+            ", ".join(setValues.map { $0.expression })
+        ]
+        
+        return Insert(" ".join(clauses.compactMap { $0 }).expression)
+    }
+
 
     // MARK: UPDATE
 
