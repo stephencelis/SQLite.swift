@@ -955,8 +955,10 @@ equate or compare different types will prevent compilation.
 | `~=`  | `(Interval, Comparable) -> Bool` | `BETWEEN`      |
 | `&&`  | `Bool -> Bool`                   | `AND`          |
 | `\|\|`| `Bool -> Bool`                   | `OR`           |
+| `===` | `Equatable -> Bool`              | `IS`           |
+| `!==` | `Equatable -> Bool`              | `IS NOT`       |
 
-> *When comparing against `nil`, SQLite.swift will use `IS` and `IS NOT`
+> * When comparing against `nil`, SQLite.swift will use `IS` and `IS NOT`
 > accordingly.
 
 
