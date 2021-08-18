@@ -283,7 +283,7 @@ class QueryTests : XCTestCase {
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
         let insert = try emails.upsert(value, onConflictOf: string)
         AssertSQL(
-            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\") VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000') ON CONFLICT (\"string\") DO UPDATE SET \"int\" = \"excluded\".\"int\", \"bool\" = \"excluded\".\"bool\", \"float\" = \"excluded\".\"float\", \"double\" = \"excluded\".\"double\"",
+            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\") VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000') ON CONFLICT (\"string\") DO UPDATE SET \"int\" = \"excluded\".\"int\", \"bool\" = \"excluded\".\"bool\", \"float\" = \"excluded\".\"float\", \"double\" = \"excluded\".\"double\", \"date\" = \"excluded\".\"date\"",
             insert
         )
     }
