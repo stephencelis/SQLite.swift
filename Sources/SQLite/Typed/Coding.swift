@@ -155,7 +155,7 @@ fileprivate class SQLiteEncoder: Encoder {
         }
 
         func encode(_ value: Int64, forKey key: Key) throws {
-            throw EncodingError.invalidValue(value, EncodingError.Context(codingPath: self.codingPath, debugDescription: "encoding an Int64 is not supported"))
+            self.encoder.setters.append(Expression(key.stringValue) <- value)
         }
 
         func encode(_ value: UInt, forKey key: Key) throws {
@@ -252,7 +252,7 @@ fileprivate class SQLiteDecoder : Decoder {
         }
 
         func decode(_ type: Int64.Type, forKey key: Key) throws -> Int64 {
-            throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: self.codingPath, debugDescription: "decoding an UInt64 is not supported"))
+            return try self.row.get(Expression(key.stringValue))
         }
 
         func decode(_ type: UInt.Type, forKey key: Key) throws -> UInt {
