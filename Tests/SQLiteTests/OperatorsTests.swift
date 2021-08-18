@@ -318,6 +318,16 @@ class OperatorsTests : XCTestCase {
         AssertSQL("(1 AND \"bool\")", true && bool)
         AssertSQL("(1 AND \"boolOptional\")", true && boolOptional)
     }
+    
+    func test_andFunction_withBooleanExpressions_buildsCompoundExpression() {
+        AssertSQL("(\"bool\" AND \"bool\" AND \"bool\")", and([bool, bool, bool]))
+        AssertSQL("(\"bool\" AND \"bool\")", and([bool, bool]))
+        AssertSQL("(\"bool\")", and([bool]))
+        
+        AssertSQL("(\"bool\" AND \"bool\" AND \"bool\")", and(bool, bool, bool))
+        AssertSQL("(\"bool\" AND \"bool\")", and(bool, bool))
+        AssertSQL("(\"bool\")", and(bool))
+    }
 
     func test_doubleOrOperator_withBooleanExpressions_buildsCompoundExpression() {
         AssertSQL("(\"bool\" OR \"bool\")", bool || bool)
@@ -328,6 +338,16 @@ class OperatorsTests : XCTestCase {
         AssertSQL("(\"boolOptional\" OR 1)", boolOptional || true)
         AssertSQL("(1 OR \"bool\")", true || bool)
         AssertSQL("(1 OR \"boolOptional\")", true || boolOptional)
+    }
+    
+    func test_orFunction_withBooleanExpressions_buildsCompoundExpression() {
+        AssertSQL("(\"bool\" OR \"bool\" OR \"bool\")", or([bool, bool, bool]))
+        AssertSQL("(\"bool\" OR \"bool\")", or([bool, bool]))
+        AssertSQL("(\"bool\")", or([bool]))
+        
+        AssertSQL("(\"bool\" OR \"bool\" OR \"bool\")", or(bool, bool, bool))
+        AssertSQL("(\"bool\" OR \"bool\")", or(bool, bool))
+        AssertSQL("(\"bool\")", or(bool))
     }
 
     func test_unaryNotOperator_withBooleanExpressions_buildsNotExpression() {
