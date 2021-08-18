@@ -126,6 +126,27 @@ and the [companion repository][SQLiteDataAccessLayer2].
 
 > _Note:_ Version 0.11.6 and later requires Swift 5 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.2) or greater. Version 0.11.5 requires Swift 4.2 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.1) or greater.
 
+### Swift Package Manager
+
+The [Swift Package Manager][] is a tool for managing the distribution of
+Swift code.
+
+1. Add the following to your `Package.swift` file:
+
+  ```swift
+  dependencies: [
+      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.12.0")
+  ]
+  ```
+
+2. Build your project:
+
+  ```sh
+  $ swift build
+  ```
+
+[Swift Package Manager]: https://swift.org/package-manager
+
 ### Carthage
 
 [Carthage][] is a simple, decentralized dependency manager for Cocoa. To
@@ -176,27 +197,6 @@ SQLite.swift with CocoaPods:
 
 [CocoaPods]: https://cocoapods.org
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
-
-### Swift Package Manager
-
-The [Swift Package Manager][] is a tool for managing the distribution of
-Swift code.
-
-1. Add the following to your `Package.swift` file:
-
-  ```swift
-  dependencies: [
-      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.12.0")
-  ]
-  ```
-
-2. Build your project:
-
-  ```sh
-  $ swift build
-  ```
-
-[Swift Package Manager]: https://swift.org/package-manager
 
 ### Manual
 
