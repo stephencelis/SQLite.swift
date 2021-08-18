@@ -266,8 +266,8 @@ var path = NSSearchPathForDirectoriesInDomains(
 ).first! + "/" + Bundle.main.bundleIdentifier!
 
 // create parent directory iff it doesn’t exist
-try FileManager.default.createDirectoryAtPath(
-    path, withIntermediateDirectories: true, attributes: nil
+try FileManager.default.createDirectory(
+atPath: path, withIntermediateDirectories: true, attributes: nil
 )
 
 let db = try Connection("\(path)/db.sqlite3")
