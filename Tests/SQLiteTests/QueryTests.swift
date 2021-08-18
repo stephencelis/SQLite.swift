@@ -397,7 +397,7 @@ class QueryIntegrationTests : SQLiteTestCase {
     let id = Expression<Int64>("id")
     let email = Expression<String>("email")
     let age = Expression<Int>("age")
-    
+
     override func setUp() {
         super.setUp()
 
@@ -509,16 +509,16 @@ class QueryIntegrationTests : SQLiteTestCase {
         let fetchAge = { () throws -> Int? in
             return try self.db.pluck(self.users.filter(self.email == "alice@example.com")).flatMap { $0[self.age] }
         }
-        
+
         let id = try db.run(users.upsert(email <- "alice@example.com", age <- 30, onConflictOf: email))
         XCTAssertEqual(1, id)
         XCTAssertEqual(30, try fetchAge())
-        
+
         let nextId = try db.run(users.upsert(email <- "alice@example.com", age <- 42, onConflictOf: email))
         XCTAssertEqual(1, nextId)
         XCTAssertEqual(42, try fetchAge())
     }
-    
+
     func test_update() {
         let changes = try! db.run(users.update(email <- "alice@example.com"))
         XCTAssertEqual(0, changes)
@@ -528,24 +528,24 @@ class QueryIntegrationTests : SQLiteTestCase {
         let changes = try! db.run(users.delete())
         XCTAssertEqual(0, changes)
     }
-    
+
     func test_union() throws {
         let expectedIDs = [
             try db.run(users.insert(email <- "alice@example.com")),
             try db.run(users.insert(email <- "sally@example.com"))
         ]
-        
+
         let query1 = users.filter(email == "alice@example.com")
         let query2 = users.filter(email == "sally@example.com")
-        
+
         let actualIDs = try db.prepare(query1.union(query2)).map { $0[id] }
         XCTAssertEqual(expectedIDs, actualIDs)
-        
+
         let query3 = users.select(users[*], Expression<Int>(literal: "1 AS weight")).filter(email == "sally@example.com")
         let query4 = users.select(users[*], Expression<Int>(literal: "2 AS weight")).filter(email == "alice@example.com")
-        
+
         print(query3.union(query4).order(Expression<Int>(literal: "weight")).asSQL())
-        
+
         let orderedIDs = try db.prepare(query3.union(query4).order(Expression<Int>(literal: "weight"), email)).map { $0[id] }
         XCTAssertEqual(Array(expectedIDs.reversed()), orderedIDs)
     }
