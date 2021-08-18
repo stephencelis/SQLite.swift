@@ -124,7 +124,7 @@ and the [companion repository][SQLiteDataAccessLayer2].
 
 ## Installation
 
-> _Note:_ Version 0.12 requires Swift 5 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.2) or greater. Version 0.11.6 requires Swift 4.2 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.1) or greater.
+> _Note:_ Version 0.11.6 and later requires Swift 5 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.2) or greater. Version 0.11.5 requires Swift 4.2 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.1) or greater.
 
 ### Carthage
 
