@@ -11,7 +11,7 @@ test: $(CARTHAGE) Cartfile
 	$< bootstrap $(CARTHAGE_CMDLINE)
 
 Cartfile:
-	echo 'git "$(TRAVIS_BUILD_DIR)" "HEAD"' > $@
+	echo 'git "$(GITHUB_WORKSPACE)" "HEAD"' > $@
 
 clean:
 	@rm -f Cartfile Cartfile.resolved
