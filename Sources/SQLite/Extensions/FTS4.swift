@@ -194,25 +194,25 @@ open class FTSConfig {
     }
 
     /// [Tokenizers](https://www.sqlite.org/fts3.html#tokenizer)
-    open func tokenizer(_ tokenizer: Tokenizer?) -> Self {
+    @discardableResult open func tokenizer(_ tokenizer: Tokenizer?) -> Self {
         self.tokenizer = tokenizer
         return self
     }
 
     /// [The prefix= option](https://www.sqlite.org/fts3.html#section_6_6)
-    open func prefix(_ prefix: [Int]) -> Self {
+    @discardableResult open func prefix(_ prefix: [Int]) -> Self {
         self.prefixes += prefix
         return self
     }
 
     /// [The content= option](https://www.sqlite.org/fts3.html#section_6_2)
-    open func externalContent(_ schema: SchemaType) -> Self {
+    @discardableResult open func externalContent(_ schema: SchemaType) -> Self {
         self.externalContentSchema = schema
         return self
     }
 
     /// [Contentless FTS4 Tables](https://www.sqlite.org/fts3.html#section_6_2_1)
-    open func contentless() -> Self {
+    @discardableResult open func contentless() -> Self {
         self.isContentless = true
         return self
     }
@@ -308,31 +308,31 @@ open class FTS4Config : FTSConfig {
     }
 
     /// [The compress= and uncompress= options](https://www.sqlite.org/fts3.html#section_6_1)
-    open func compress(_ functionName: String) -> Self {
+    @discardableResult open func compress(_ functionName: String) -> Self {
         self.compressFunction = functionName
         return self
     }
 
     /// [The compress= and uncompress= options](https://www.sqlite.org/fts3.html#section_6_1)
-    open func uncompress(_ functionName: String) -> Self {
+    @discardableResult open func uncompress(_ functionName: String) -> Self {
         self.uncompressFunction = functionName
         return self
     }
 
     /// [The languageid= option](https://www.sqlite.org/fts3.html#section_6_3)
-    open func languageId(_ columnName: String) -> Self {
+    @discardableResult open func languageId(_ columnName: String) -> Self {
         self.languageId = columnName
         return self
     }
 
     /// [The matchinfo= option](https://www.sqlite.org/fts3.html#section_6_4)
-    open func matchInfo(_ matchInfo: MatchInfo) -> Self {
+    @discardableResult open func matchInfo(_ matchInfo: MatchInfo) -> Self {
         self.matchInfo = matchInfo
         return self
     }
 
     /// [FTS4 options](https://www.sqlite.org/fts3.html#fts4_options)
-    open func order(_ order: Order) -> Self {
+    @discardableResult open func order(_ order: Order) -> Self {
         self.order = order
         return self
     }
