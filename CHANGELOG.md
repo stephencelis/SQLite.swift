@@ -1,3 +1,11 @@
+0.12.3 (18-05-2021), [diff][diff-0.12.2]
+========================================
+
+* Swift 5.3 support.
+* Xcode 12.5 support.
+* Bumps minimum deployment versions.
+* Fixes up Package.swift to build SQLiteObjc module.
+
 0.11.6 (xxx), [diff][diff-0.11.6]
 ========================================
 
