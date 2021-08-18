@@ -1,6 +1,6 @@
 # SQLite.swift
 
-[![Build Status][TravisBadge]][TravisLink] [![CocoaPods Version][CocoaPodsVersionBadge]][CocoaPodsVersionLink] [![Swift5 compatible][Swift5Badge]][Swift5Link] [![Platform][PlatformBadge]][PlatformLink] [![Carthage compatible][CartagheBadge]][CarthageLink] [![Join the chat at https://gitter.im/stephencelis/SQLite.swift][GitterBadge]][GitterLink]
+![Build Status][GitHubActionBadge] [![CocoaPods Version][CocoaPodsVersionBadge]][CocoaPodsVersionLink] [![Swift5 compatible][Swift5Badge]][Swift5Link] [![Platform][PlatformBadge]][PlatformLink] [![Carthage compatible][CartagheBadge]][CarthageLink] [![Join the chat at https://gitter.im/stephencelis/SQLite.swift][GitterBadge]][GitterLink]
 
 A type-safe, [Swift][]-language layer over [SQLite3][].
 
@@ -283,8 +283,7 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
 [SQLite3]: http://www.sqlite.org
 [SQLite.swift]: https://github.com/stephencelis/SQLite.swift
 
-[TravisBadge]: https://img.shields.io/travis/stephencelis/SQLite.swift/master.svg?style=flat
-[TravisLink]: https://travis-ci.org/stephencelis/SQLite.swift
+[GitHubActionBadge]: https://img.shields.io/github/workflow/status/stephencelis/SQLite.swift/Build%20and%20test
 
 [CocoaPodsVersionBadge]: https://cocoapod-badges.herokuapp.com/v/SQLite.swift/badge.png
 [CocoaPodsVersionLink]: http://cocoadocs.org/docsets/SQLite.swift
