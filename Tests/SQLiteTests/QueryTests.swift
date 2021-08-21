@@ -310,12 +310,12 @@ class QueryTests : XCTestCase {
 
     func test_insert_many_encodable() throws {
         let emails = Table("emails")
-        let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
-        let value2 = TestCodable(int: 2, string: "3", bool: true, float: 3, double: 5, optional: nil, sub: nil)
-        let value3 = TestCodable(int: 3, string: "4", bool: true, float: 3, double: 6, optional: nil, sub: nil)
+        let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
+        let value2 = TestCodable(int: 2, string: "3", bool: true, float: 3, double: 5, date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
+        let value3 = TestCodable(int: 3, string: "4", bool: true, float: 3, double: 6, date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
         let insert = try emails.insertMany([value1, value2, value3])
         AssertSQL(
-            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\") VALUES (1, '2', 1, 3.0, 4.0), (2, '3', 1, 3.0, 5.0), (3, '4', 1, 3.0, 6.0)",
+            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\") VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000'), (2, '3', 1, 3.0, 5.0, '1970-01-01T00:00:00.000'), (3, '4', 1, 3.0, 6.0, '1970-01-01T00:00:00.000')",
             insert
         )
     }
