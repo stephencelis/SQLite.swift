@@ -44,6 +44,30 @@ extension QueryType {
         try encodable.encode(to: encoder)
         return self.insert(encoder.setters + otherSetters)
     }
+    
+    /// Creates an `INSERT` statement by encoding the given object
+    /// This method converts any custom nested types to JSON data and does not handle any sort
+    /// of object relationships. If you want to support relationships between objects you will
+    /// have to provide your own Encodable implementations that encode the correct ids.
+    /// The onConflict will be passed to the actual insert function to define what should happen
+    /// when an error occurs during the insert operation.
+    ///
+    /// - Parameters:
+    ///
+    ///   - onConlict: Define what happens when an insert operation fails
+    ///
+    ///   - encodable: An encodable object to insert
+    ///
+    ///   - userInfo: User info to be passed to encoder
+    ///
+    ///   - otherSetters: Any other setters to include in the insert
+    ///
+    /// - Returns: An `INSERT` statement fort the encodable object
+    public func insert(or onConflict: OnConflict, encodable: Encodable, userInfo: [CodingUserInfoKey:Any] = [:], otherSetters: [Setter] = []) throws -> Insert {
+        let encoder = SQLiteEncoder(userInfo: userInfo)
+        try encodable.encode(to: encoder)
+        return self.insert(or: onConflict, encoder.setters + otherSetters)
+    }
 
     /// Creates a batch `INSERT` statement by encoding the array of given objects
     /// This method converts any custom nested types to JSON data and does not handle any sort
