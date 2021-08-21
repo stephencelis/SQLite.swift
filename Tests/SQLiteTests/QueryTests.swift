@@ -269,23 +269,41 @@ class QueryTests : XCTestCase {
 
     func test_insert_encodable() throws {
         let emails = Table("emails")
-        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
+        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
         let insert = try emails.insert(value)
         AssertSQL(
-            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\") VALUES (1, '2', 1, 3.0, 4.0)",
+            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\") VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000')",
             insert
         )
     }
 
     func test_insert_encodable_with_nested_encodable() throws {
         let emails = Table("emails")
-        let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
-        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: "optional", sub: value1)
+        let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
+        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, date: Date(timeIntervalSince1970: 0), optional: "optional", sub: value1)
         let insert = try emails.insert(value)
         let encodedJSON = try JSONEncoder().encode(value1)
         let encodedJSONString = String(data: encodedJSON, encoding: .utf8)!
         AssertSQL(
-            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"optional\", \"sub\") VALUES (1, '2', 1, 3.0, 4.0, 'optional', '\(encodedJSONString)')",
+            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"optional\", \"sub\") VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'optional', '\(encodedJSONString)')",
+            insert
+        )
+    }
+
+    func test_upsert_withOnConflict_compilesInsertOrOnConflictExpression() {
+        AssertSQL(
+            "INSERT INTO \"users\" (\"email\", \"age\") VALUES ('alice@example.com', 30) ON CONFLICT (\"email\") DO UPDATE SET \"age\" = \"excluded\".\"age\"",
+            users.upsert(email <- "alice@example.com", age <- 30, onConflictOf: email)
+        )
+    }
+
+    func test_upsert_encodable() throws {
+        let emails = Table("emails")
+        let string = Expression<String>("string")
+        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
+        let insert = try emails.upsert(value, onConflictOf: string)
+        AssertSQL(
+            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\") VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000') ON CONFLICT (\"string\") DO UPDATE SET \"int\" = \"excluded\".\"int\", \"bool\" = \"excluded\".\"bool\", \"float\" = \"excluded\".\"float\", \"double\" = \"excluded\".\"double\", \"date\" = \"excluded\".\"date\"",
             insert
         )
     }
@@ -318,23 +336,23 @@ class QueryTests : XCTestCase {
 
     func test_update_encodable() throws {
         let emails = Table("emails")
-        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
+        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
         let update = try emails.update(value)
         AssertSQL(
-            "UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0",
+            "UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0, \"date\" = '1970-01-01T00:00:00.000'",
             update
         )
     }
 
     func test_update_encodable_with_nested_encodable() throws {
         let emails = Table("emails")
-        let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
-        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: value1)
+        let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
+        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, date: Date(timeIntervalSince1970: 0), optional: nil, sub: value1)
         let update = try emails.update(value)
         let encodedJSON = try JSONEncoder().encode(value1)
         let encodedJSONString = String(data: encodedJSON, encoding: .utf8)!
         AssertSQL(
-            "UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0, \"sub\" = '\(encodedJSONString)'",
+            "UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0, \"date\" = '1970-01-01T00:00:00.000', \"sub\" = '\(encodedJSONString)'",
             update
         )
     }
@@ -410,6 +428,7 @@ class QueryIntegrationTests : SQLiteTestCase {
 
     let id = Expression<Int64>("id")
     let email = Expression<String>("email")
+    let age = Expression<Int>("age")
 
     override func setUp() {
         super.setUp()
@@ -470,12 +489,13 @@ class QueryIntegrationTests : SQLiteTestCase {
             builder.column(Expression<Bool>("bool"))
             builder.column(Expression<Double>("float"))
             builder.column(Expression<Double>("double"))
+            builder.column(Expression<Date>("date"))
             builder.column(Expression<String?>("optional"))
             builder.column(Expression<Data>("sub"))
         })
 
-        let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, optional: nil, sub: nil)
-        let value = TestCodable(int: 5, string: "6", bool: true, float: 7, double: 8, optional: "optional", sub: value1)
+        let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
+        let value = TestCodable(int: 5, string: "6", bool: true, float: 7, double: 8, date: Date(timeIntervalSince1970: 5000), optional: "optional", sub: value1)
 
         try db.run(table.insert(value))
 
@@ -487,12 +507,14 @@ class QueryIntegrationTests : SQLiteTestCase {
         XCTAssertEqual(values[0].bool, true)
         XCTAssertEqual(values[0].float, 7)
         XCTAssertEqual(values[0].double, 8)
+        XCTAssertEqual(values[0].date, Date(timeIntervalSince1970: 5000))
         XCTAssertEqual(values[0].optional, "optional")
         XCTAssertEqual(values[0].sub?.int, 1)
         XCTAssertEqual(values[0].sub?.string, "2")
         XCTAssertEqual(values[0].sub?.bool, true)
         XCTAssertEqual(values[0].sub?.float, 3)
         XCTAssertEqual(values[0].sub?.double, 4)
+        XCTAssertEqual(values[0].sub?.date, Date(timeIntervalSince1970: 0))
         XCTAssertNil(values[0].sub?.optional)
         XCTAssertNil(values[0].sub?.sub)
     }
@@ -519,6 +541,20 @@ class QueryIntegrationTests : SQLiteTestCase {
         let id = try! db.run(users.insertMany([[email <- "alice@example.com"], [email <- "geoff@example.com"]]))
         XCTAssertEqual(2, id)
     }
+    
+    func test_upsert() throws {
+        let fetchAge = { () throws -> Int? in
+            return try self.db.pluck(self.users.filter(self.email == "alice@example.com")).flatMap { $0[self.age] }
+        }
+
+        let id = try db.run(users.upsert(email <- "alice@example.com", age <- 30, onConflictOf: email))
+        XCTAssertEqual(1, id)
+        XCTAssertEqual(30, try fetchAge())
+
+        let nextId = try db.run(users.upsert(email <- "alice@example.com", age <- 42, onConflictOf: email))
+        XCTAssertEqual(1, nextId)
+        XCTAssertEqual(42, try fetchAge())
+    }
 
     func test_update() {
         let changes = try! db.run(users.update(email <- "alice@example.com"))
@@ -529,24 +565,24 @@ class QueryIntegrationTests : SQLiteTestCase {
         let changes = try! db.run(users.delete())
         XCTAssertEqual(0, changes)
     }
-    
+
     func test_union() throws {
         let expectedIDs = [
             try db.run(users.insert(email <- "alice@example.com")),
             try db.run(users.insert(email <- "sally@example.com"))
         ]
-        
+
         let query1 = users.filter(email == "alice@example.com")
         let query2 = users.filter(email == "sally@example.com")
-        
+
         let actualIDs = try db.prepare(query1.union(query2)).map { $0[id] }
         XCTAssertEqual(expectedIDs, actualIDs)
-        
+
         let query3 = users.select(users[*], Expression<Int>(literal: "1 AS weight")).filter(email == "sally@example.com")
         let query4 = users.select(users[*], Expression<Int>(literal: "2 AS weight")).filter(email == "alice@example.com")
-        
+
         print(query3.union(query4).order(Expression<Int>(literal: "weight")).asSQL())
-        
+
         let orderedIDs = try db.prepare(query3.union(query4).order(Expression<Int>(literal: "weight"), email)).map { $0[id] }
         XCTAssertEqual(Array(expectedIDs.reversed()), orderedIDs)
     }
