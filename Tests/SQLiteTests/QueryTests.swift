@@ -247,6 +247,26 @@ class QueryTests : XCTestCase {
         )
     }
 
+    func test_insert_many_compilesInsertManyExpression() {
+        AssertSQL(
+            "INSERT INTO \"users\" (\"email\", \"age\") VALUES ('alice@example.com', 30), ('geoff@example.com', 32), ('alex@example.com', 83)",
+            users.insertMany([[email <- "alice@example.com", age <- 30], [email <- "geoff@example.com", age <- 32], [email <- "alex@example.com", age <- 83]])
+        )
+    }
+    func test_insert_many_compilesInsertManyNoneExpression() {
+        AssertSQL(
+            "INSERT INTO \"users\" DEFAULT VALUES",
+            users.insertMany([])
+        )
+    }
+
+    func test_insert_many_withOnConflict_compilesInsertManyOrOnConflictExpression() {
+        AssertSQL(
+            "INSERT OR REPLACE INTO \"users\" (\"email\", \"age\") VALUES ('alice@example.com', 30), ('geoff@example.com', 32), ('alex@example.com', 83)",
+            users.insertMany(or: .replace, [[email <- "alice@example.com", age <- 30], [email <- "geoff@example.com", age <- 32], [email <- "alex@example.com", age <- 83]])
+        )
+    }
+
     func test_insert_encodable() throws {
         let emails = Table("emails")
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
@@ -284,6 +304,18 @@ class QueryTests : XCTestCase {
         let insert = try emails.upsert(value, onConflictOf: string)
         AssertSQL(
             "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\") VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000') ON CONFLICT (\"string\") DO UPDATE SET \"int\" = \"excluded\".\"int\", \"bool\" = \"excluded\".\"bool\", \"float\" = \"excluded\".\"float\", \"double\" = \"excluded\".\"double\", \"date\" = \"excluded\".\"date\"",
+            insert
+        )
+    }
+
+    func test_insert_many_encodable() throws {
+        let emails = Table("emails")
+        let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4, date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
+        let value2 = TestCodable(int: 2, string: "3", bool: true, float: 3, double: 5, date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
+        let value3 = TestCodable(int: 3, string: "4", bool: true, float: 3, double: 6, date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
+        let insert = try emails.insertMany([value1, value2, value3])
+        AssertSQL(
+            "INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\") VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000'), (2, '3', 1, 3.0, 5.0, '1970-01-01T00:00:00.000'), (3, '4', 1, 3.0, 6.0, '1970-01-01T00:00:00.000')",
             insert
         )
     }
@@ -505,6 +537,11 @@ class QueryIntegrationTests : SQLiteTestCase {
         XCTAssertEqual(1, id)
     }
 
+    func test_insert_many() {
+        let id = try! db.run(users.insertMany([[email <- "alice@example.com"], [email <- "geoff@example.com"]]))
+        XCTAssertEqual(2, id)
+    }
+    
     func test_upsert() throws {
         let fetchAge = { () throws -> Int? in
             return try self.db.pluck(self.users.filter(self.email == "alice@example.com")).flatMap { $0[self.age] }

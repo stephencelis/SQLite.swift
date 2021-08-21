@@ -631,6 +631,18 @@ extension QueryType {
         return insert(onConflict, values)
     }
 
+    public func insertMany( _ values: [[Setter]]) -> Insert {
+        return insertMany(nil, values)
+    }
+
+    public func insertMany(or onConflict: OnConflict, _ values: [[Setter]]) -> Insert {
+        return insertMany(onConflict, values)
+    }
+
+    public func insertMany(or onConflict: OnConflict, _ values: [Setter]...) -> Insert {
+        return insertMany(onConflict, values)
+    }
+
     fileprivate func insert(_ or: OnConflict?, _ values: [Setter]) -> Insert {
         let insert = values.reduce((columns: [Expressible](), values: [Expressible]())) { insert, setter in
             (insert.columns + [setter.column], insert.values + [setter.value])
@@ -647,6 +659,31 @@ extension QueryType {
             whereClause
         ]
 
+        return Insert(" ".join(clauses.compactMap { $0 }).expression)
+    }
+
+    fileprivate func insertMany(_ or: OnConflict?, _ values: [[Setter]]) -> Insert {
+        guard let firstInsert = values.first else {
+            // must be at least 1 object or else we don't know columns. Default to default inserts.
+            return insert()
+        }
+        let columns = firstInsert.map { $0.column }
+        let insertValues = values.map { rowValues in
+            rowValues.reduce([Expressible]()) { insert, setter in
+                insert + [setter.value]
+            }
+        }
+
+        let clauses: [Expressible?] = [
+            Expression<Void>(literal: "INSERT"),
+            or.map { Expression<Void>(literal: "OR \($0.rawValue)") },
+            Expression<Void>(literal: "INTO"),
+            tableName(),
+            "".wrap(columns) as Expression<Void>,
+            Expression<Void>(literal: "VALUES"),
+            ", ".join(insertValues.map({ "".wrap($0) as Expression<Void> })),
+            whereClause
+        ]
         return Insert(" ".join(clauses.compactMap { $0 }).expression)
     }
 
@@ -1048,6 +1085,8 @@ extension Connection {
     /// - SeeAlso: `QueryType.insert(value:_:)`
     /// - SeeAlso: `QueryType.insert(values:)`
     /// - SeeAlso: `QueryType.insert(or:_:)`
+    /// - SeeAlso: `QueryType.insertMany(values:)`
+    /// - SeeAlso: `QueryType.insertMany(or:_:)`
     /// - SeeAlso: `QueryType.insert()`
     ///
     /// - Parameter query: An insert query.

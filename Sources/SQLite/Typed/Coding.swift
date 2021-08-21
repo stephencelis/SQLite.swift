@@ -38,13 +38,35 @@ extension QueryType {
     ///
     ///   - otherSetters: Any other setters to include in the insert
     ///
-    /// - Returns: An `INSERT` statement fort the encodable object
+    /// - Returns: An `INSERT` statement for the encodable object
     public func insert(_ encodable: Encodable, userInfo: [CodingUserInfoKey:Any] = [:], otherSetters: [Setter] = []) throws -> Insert {
         let encoder = SQLiteEncoder(userInfo: userInfo)
         try encodable.encode(to: encoder)
         return self.insert(encoder.setters + otherSetters)
     }
 
+    /// Creates a batch `INSERT` statement by encoding the array of given objects
+    /// This method converts any custom nested types to JSON data and does not handle any sort
+    /// of object relationships. If you want to support relationships between objects you will
+    /// have to provide your own Encodable implementations that encode the correct ids.
+    ///
+    /// - Parameters:
+    ///
+    ///   - encodables: Encodable objects to insert
+    ///
+    ///   - userInfo: User info to be passed to encoder
+    ///
+    ///   - otherSetters: Any other setters to include in the inserts, per row/object.
+    ///
+    /// - Returns: An `INSERT` statement for the encodable objects
+    public func insertMany(_ encodables: [Encodable], userInfo: [CodingUserInfoKey:Any] = [:], otherSetters: [Setter] = []) throws -> Insert {
+        let combinedSetters = try encodables.map { encodable -> [Setter] in
+            let encoder = SQLiteEncoder(userInfo: userInfo)
+            try encodable.encode(to: encoder)
+            return encoder.setters + otherSetters
+        }
+        return self.insertMany(combinedSetters)
+    }
 
     /// Creates an `INSERT ON CONFLICT DO UPDATE` statement, aka upsert, by encoding the given object
     /// This method converts any custom nested types to JSON data and does not handle any sort
