@@ -1015,13 +1015,13 @@ extension Connection {
             let column = names.removeLast()
             let namespace = names.joined(separator: ".")
 
-            func expandGlob(_ namespace: Bool) -> ((QueryType) throws -> Void) {
-                return { (query: QueryType) throws -> Void in
-                    var q = type(of: query).init(query.clauses.from.name, database: query.clauses.from.database)
-                    q.clauses.select = query.clauses.select
-                    let e = q.expression
-                    var names = try self.prepare(e.template, e.bindings).columnNames.map { $0.quote() }
-                    if namespace { names = names.map { "\(query.tableName().expression.template).\($0)" } }
+            func expandGlob(_ namespace: Bool) -> (QueryType) throws -> Void {
+                return { (queryType: QueryType) throws -> Void in
+                    var query = type(of: queryType).init(queryType.clauses.from.name, database: queryType.clauses.from.database)
+                    query.clauses.select = queryType.clauses.select
+                    let expression = query.expression
+                    var names = try self.prepare(expression.template, expression.bindings).columnNames.map { $0.quote() }
+                    if namespace { names = names.map { "\(queryType.tableName().expression.template).\($0)" } }
                     for name in names { columnNames[name] = idx; idx += 1 }
                 }
             }
@@ -1184,11 +1184,13 @@ public struct Row {
     }
 
     public subscript<T: Value>(column: Expression<T>) -> T {
-        return try! get(column)
+        // swiftlint:disable:next force_try
+        try! get(column)
     }
 
     public subscript<T: Value>(column: Expression<T?>) -> T? {
-        return try! get(column)
+        // swiftlint:disable:next force_try
+        try! get(column)
     }
 }
 

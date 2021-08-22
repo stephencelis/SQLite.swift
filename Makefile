@@ -19,7 +19,7 @@ build:
 	$(BUILD_TOOL) $(BUILD_ARGUMENTS)
 
 lint:
-	swiftlint
+	swiftlint --strict
 
 test:
 ifdef XCPRETTY

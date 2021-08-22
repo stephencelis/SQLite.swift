@@ -91,6 +91,7 @@ extension VirtualTable {
 
 }
 
+// swiftlint:disable identifier_name
 public struct Tokenizer {
 
     public static let Simple = Tokenizer("simple")

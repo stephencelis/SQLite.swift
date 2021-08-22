@@ -11,6 +11,7 @@ excluded: # paths to ignore during linting. overridden by `included`.
 identifier_name:
   excluded:
     - db
+    - in
     - to
     - by
     - or
@@ -20,13 +21,18 @@ identifier_name:
     - fn
     - a
     - b
+    - q
+    - SQLITE_TRANSIENT
+
+type_body_length:
+  warning: 260
+  error: 260
 
 line_length:
   warning: 150
   error: 150
   ignores_comments: true
 
-
 file_length:
-  warning: 700
-  error: 700
+  warning: 760
+  error: 760

@@ -473,10 +473,10 @@ public final class Connection {
                  // The T argument is one of the SQLITE_TRACE constants to indicate why the
                  // callback was invoked. The C argument is a copy of the context pointer.
                  // The P and X arguments are pointers whose meanings depend on T.
-                 (_: UInt32, C: UnsafeMutableRawPointer?, P: UnsafeMutableRawPointer?, _: UnsafeMutableRawPointer?) in
-                 if let P = P,
-                    let expandedSQL = sqlite3_expanded_sql(OpaquePointer(P)) {
-                     unsafeBitCast(C, to: Trace.self)(expandedSQL)
+                 (_: UInt32, context: UnsafeMutableRawPointer?, pointer: UnsafeMutableRawPointer?, _: UnsafeMutableRawPointer?) in
+                 if let pointer = pointer,
+                    let expandedSQL = sqlite3_expanded_sql(OpaquePointer(pointer)) {
+                     unsafeBitCast(context, to: Trace.self)(expandedSQL)
                      sqlite3_free(expandedSQL)
                  }
                  return Int32(0) // currently ignored
@@ -585,7 +585,7 @@ public final class Connection {
     ///   - block: A block of code to run when the function is called. The block
     ///     is called with an array of raw SQL values mapped to the function’s
     ///     parameters and should return a raw SQL value (or nil).
-    // swiftlint:disable:next cyclomatic_complexity
+    // swiftlint:disable:next cyclomatic_complexity function_body_length
     public func createFunction(_ function: String, argumentCount: UInt? = nil, deterministic: Bool = false,
                                _ block: @escaping (_ args: [Binding?]) -> Binding?) {
         let argc = argumentCount.map { Int($0) } ?? -1

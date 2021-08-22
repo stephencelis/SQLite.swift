@@ -115,11 +115,11 @@ func transcode(_ literal: Binding?) -> String {
     }
 }
 
-//swiftlint:disable force_cast
-func value<A: Value>(_ v: Binding) -> A {
-    A.fromDatatypeValue(v as! A.Datatype) as! A
+// swiftlint:disable force_cast
+func value<A: Value>(_ binding: Binding) -> A {
+    A.fromDatatypeValue(binding as! A.Datatype) as! A
 }
 
-func value<A: Value>(_ v: Binding?) -> A {
-    value(v!)
+func value<A: Value>(_ binding: Binding?) -> A {
+    value(binding!)
 }
