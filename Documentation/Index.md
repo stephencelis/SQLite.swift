@@ -1,9 +1,9 @@
 # SQLite.swift Documentation
 
   - [Installation](#installation)
+    - [Swift Package Manager](#swift-package-manager)
     - [Carthage](#carthage)
     - [CocoaPods](#cocoapods)
-    - [Swift Package Manager](#swift-package-manager)
     - [Manual](#manual)
   - [Getting Started](#getting-started)
     - [Connecting to a Database](#connecting-to-a-database)
@@ -71,6 +71,30 @@
 > _Note:_ SQLite.swift requires Swift 5 (and
 > [Xcode 10.2](https://developer.apple.com/xcode/downloads/)) or greater.
 
+### Swift Package Manager
+
+The [Swift Package Manager][] is a tool for managing the distribution of
+Swift code. It’s integrated with the Swift build system to automate the
+process of downloading, compiling, and linking dependencies.
+
+It is the recommended approach for using SQLite.swift in OSX CLI
+applications.
+
+ 1. Add the following to your `Package.swift` file:
+
+  ```swift
+  dependencies: [
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.12.0")
+  ]
+  ```
+
+ 2. Build your project:
+
+  ```sh
+  $ swift build
+  ```
+
+[Swift Package Manager]: https://swift.org/package-manager
 
 ### Carthage
 
@@ -168,31 +192,6 @@ try db.rekey("another secret")
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
 [sqlite3pod]: https://github.com/clemensg/sqlite3pod
 [SQLCipher]: https://www.zetetic.net/sqlcipher/
-
-### Swift Package Manager
-
-The [Swift Package Manager][] is a tool for managing the distribution of
-Swift code. It’s integrated with the Swift build system to automate the
-process of downloading, compiling, and linking dependencies.
-
-It is the recommended approach for using SQLite.swift in OSX CLI
-applications.
-
- 1. Add the following to your `Package.swift` file:
-
-  ```swift
-  dependencies: [
-    .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.12.0")
-  ]
-  ```
-
- 2. Build your project:
-
-  ```sh
-  $ swift build
-  ```
-
-[Swift Package Manager]: https://swift.org/package-manager
 
 ### Manual
 
