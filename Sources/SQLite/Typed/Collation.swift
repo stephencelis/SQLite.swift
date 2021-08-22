@@ -43,7 +43,7 @@ public enum Collation {
 
 }
 
-extension Collation : Expressible {
+extension Collation: Expressible {
 
     public var expression: Expression<Void> {
         return Expression(literal: description)
@@ -51,9 +51,9 @@ extension Collation : Expressible {
 
 }
 
-extension Collation : CustomStringConvertible {
+extension Collation: CustomStringConvertible {
 
-    public var description : String {
+    public var description: String {
         switch self {
         case .binary:
             return "BINARY"

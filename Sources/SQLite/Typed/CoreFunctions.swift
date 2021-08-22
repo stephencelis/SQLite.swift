@@ -45,21 +45,21 @@ private enum Function: String {
     case regexp = "REGEXP"
     case collate = "COLLATE"
     case ifnull
-    
+
     func infix<T>(_ lhs: Expressible, _ rhs: Expressible, wrap: Bool = true) -> Expression<T> {
         return self.rawValue.infix(lhs, rhs, wrap: wrap)
     }
-    
+
     func wrap<T>(_ expression: Expressible) -> Expression<T> {
         return self.rawValue.wrap(expression)
     }
-    
+
     func wrap<T>(_ expressions: [Expressible]) -> Expression<T> {
         return self.rawValue.wrap(", ".join(expressions))
     }
 }
 
-extension ExpressionType where UnderlyingType : Number {
+extension ExpressionType where UnderlyingType: Number {
 
     /// Builds a copy of the expression wrapped with the `abs` function.
     ///
@@ -68,13 +68,13 @@ extension ExpressionType where UnderlyingType : Number {
     ///     // abs("x")
     ///
     /// - Returns: A copy of the expression wrapped with the `abs` function.
-    public var absoluteValue : Expression<UnderlyingType> {
+    public var absoluteValue: Expression<UnderlyingType> {
         return Function.abs.wrap(self)
     }
 
 }
 
-extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.WrappedType : Number {
+extension ExpressionType where UnderlyingType: _OptionalType, UnderlyingType.WrappedType: Number {
 
     /// Builds a copy of the expression wrapped with the `abs` function.
     ///
@@ -83,7 +83,7 @@ extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wr
     ///     // abs("x")
     ///
     /// - Returns: A copy of the expression wrapped with the `abs` function.
-    public var absoluteValue : Expression<UnderlyingType> {
+    public var absoluteValue: Expression<UnderlyingType> {
         return Function.abs.wrap(self)
     }
 
@@ -129,7 +129,7 @@ extension ExpressionType where UnderlyingType == Double? {
 
 }
 
-extension ExpressionType where UnderlyingType : Value, UnderlyingType.Datatype == Int64 {
+extension ExpressionType where UnderlyingType: Value, UnderlyingType.Datatype == Int64 {
 
     /// Builds an expression representing the `random` function.
     ///
@@ -481,7 +481,7 @@ extension ExpressionType where UnderlyingType == String? {
         }
         return Expression("(\(template) LIKE ? ESCAPE ?)", bindings + [pattern, String(character)])
     }
-    
+
     /// Builds a copy of the expression appended with a `LIKE` query against the
     /// given pattern.
     ///
@@ -671,7 +671,7 @@ extension ExpressionType where UnderlyingType == String? {
 
 }
 
-extension Collection where Iterator.Element : Value {
+extension Collection where Iterator.Element: Value {
 
     /// Builds a copy of the expression prepended with an `IN` check against the
     /// collection.
@@ -708,7 +708,7 @@ extension Collection where Iterator.Element : Value {
 }
 
 extension String {
-    
+
     /// Builds a copy of the expression appended with a `LIKE` query against the
     /// given pattern.
     ///
@@ -751,7 +751,7 @@ extension String {
 ///
 /// - Returns: A copy of the given expressions wrapped with the `ifnull`
 ///   function.
-public func ??<V : Value>(optional: Expression<V?>, defaultValue: V) -> Expression<V> {
+public func ??<V: Value>(optional: Expression<V?>, defaultValue: V) -> Expression<V> {
     return Function.ifnull.wrap([optional, defaultValue])
 }
 
@@ -771,7 +771,7 @@ public func ??<V : Value>(optional: Expression<V?>, defaultValue: V) -> Expressi
 ///
 /// - Returns: A copy of the given expressions wrapped with the `ifnull`
 ///   function.
-public func ??<V : Value>(optional: Expression<V?>, defaultValue: Expression<V>) -> Expression<V> {
+public func ??<V: Value>(optional: Expression<V?>, defaultValue: Expression<V>) -> Expression<V> {
     return Function.ifnull.wrap([optional, defaultValue])
 }
 
@@ -791,6 +791,6 @@ public func ??<V : Value>(optional: Expression<V?>, defaultValue: Expression<V>)
 ///
 /// - Returns: A copy of the given expressions wrapped with the `ifnull`
 ///   function.
-public func ??<V : Value>(optional: Expression<V?>, defaultValue: Expression<V?>) -> Expression<V> {
+public func ??<V: Value>(optional: Expression<V?>, defaultValue: Expression<V?>) -> Expression<V> {
     return Function.ifnull.wrap([optional, defaultValue])
 }

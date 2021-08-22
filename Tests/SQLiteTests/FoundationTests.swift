@@ -1,7 +1,7 @@
 import XCTest
 import SQLite
 
-class FoundationTests : XCTestCase {
+class FoundationTests: XCTestCase {
     func testDataFromBlob() {
         let data = Data([1, 2, 3])
         let blob = data.datatypeValue

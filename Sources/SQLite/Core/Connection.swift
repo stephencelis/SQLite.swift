@@ -70,7 +70,7 @@ public final class Connection {
         /// A DELETE operation.
         case delete
 
-        fileprivate init(rawValue:Int32) {
+        fileprivate init(rawValue: Int32) {
             switch rawValue {
             case SQLITE_INSERT:
                 self = .insert
@@ -86,7 +86,7 @@ public final class Connection {
 
     public var handle: OpaquePointer { return _handle! }
 
-    fileprivate var _handle: OpaquePointer? = nil
+    fileprivate var _handle: OpaquePointer?
 
     /// Initializes a new SQLite connection.
     ///
@@ -252,9 +252,9 @@ public final class Connection {
     @discardableResult public func run(_ statement: String, _ bindings: [String: Binding?]) throws -> Statement {
         return try prepare(statement).run(bindings)
     }
-    
+
     // MARK: - VACUUM
-    
+
     /// Run a vacuum on the database
     ///
     /// - Throws: `Result.Error` if query execution fails.
@@ -311,7 +311,7 @@ public final class Connection {
     // MARK: - Transactions
 
     /// The mode in which a transaction acquires a lock.
-    public enum TransactionMode : String {
+    public enum TransactionMode: String {
 
         /// Defers locking the database till the first read/write executes.
         case deferred = "DEFERRED"
@@ -446,11 +446,9 @@ public final class Connection {
         let box: Trace = { (pointer: UnsafeRawPointer) in
             callback(String(cString: pointer.assumingMemoryBound(to: UInt8.self)))
         }
-        sqlite3_trace(handle,
-            {
-                (C: UnsafeMutableRawPointer?, SQL: UnsafePointer<Int8>?) in
-                    if let C = C, let SQL = SQL {
-                        unsafeBitCast(C, to: Trace.self)(SQL)
+        sqlite3_trace(handle, { (context: UnsafeMutableRawPointer?, SQL: UnsafePointer<Int8>?) in
+                    if let context = context, let SQL = SQL {
+                        unsafeBitCast(context, to: Trace.self)(SQL)
                     }
             },
             unsafeBitCast(box, to: UnsafeMutableRawPointer.self)
@@ -470,13 +468,12 @@ public final class Connection {
         let box: Trace = { (pointer: UnsafeRawPointer) in
             callback(String(cString: pointer.assumingMemoryBound(to: UInt8.self)))
         }
-        sqlite3_trace_v2(handle, UInt32(SQLITE_TRACE_STMT) /* mask */,
-             {
+        sqlite3_trace_v2(handle, UInt32(SQLITE_TRACE_STMT) /* mask */, {
                  // A trace callback is invoked with four arguments: callback(T,C,P,X).
                  // The T argument is one of the SQLITE_TRACE constants to indicate why the
                  // callback was invoked. The C argument is a copy of the context pointer.
                  // The P and X arguments are pointers whose meanings depend on T.
-                 (T: UInt32, C: UnsafeMutableRawPointer?, P: UnsafeMutableRawPointer?, X: UnsafeMutableRawPointer?) in
+                 (_: UInt32, C: UnsafeMutableRawPointer?, P: UnsafeMutableRawPointer?, _: UnsafeMutableRawPointer?) in
                  if let P = P,
                     let expandedSQL = sqlite3_expanded_sql(OpaquePointer(P)) {
                      unsafeBitCast(C, to: Trace.self)(expandedSQL)
@@ -588,7 +585,9 @@ public final class Connection {
     ///   - block: A block of code to run when the function is called. The block
     ///     is called with an array of raw SQL values mapped to the function’s
     ///     parameters and should return a raw SQL value (or nil).
-    public func createFunction(_ function: String, argumentCount: UInt? = nil, deterministic: Bool = false, _ block: @escaping (_ args: [Binding?]) -> Binding?) {
+    // swiftlint:disable:next cyclomatic_complexity
+    public func createFunction(_ function: String, argumentCount: UInt? = nil, deterministic: Bool = false,
+                               _ block: @escaping (_ args: [Binding?]) -> Binding?) {
         let argc = argumentCount.map { Int($0) } ?? -1
         let box: Function = { context, argc, argv in
             let arguments: [Binding?] = (0..<Int(argc)).map { idx in
@@ -629,7 +628,8 @@ public final class Connection {
             flags |= SQLITE_DETERMINISTIC
         }
         #endif
-        sqlite3_create_function_v2(handle, function, Int32(argc), flags, unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { context, argc, value in
+        sqlite3_create_function_v2(handle, function, Int32(argc), flags,
+                                   unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { context, argc, value in
             let function = unsafeBitCast(sqlite3_user_data(context), to: Function.self)
             function(context, argc, value)
         }, nil, nil, nil)
@@ -768,8 +768,8 @@ public final class Connection {
             return Int32(block(lstr, rstr).rawValue)
         }
         try check(sqlite3_create_collation_v2(handle, collation, SQLITE_UTF8,
-            unsafeBitCast(box, to: UnsafeMutableRawPointer.self),
-            { (callback: UnsafeMutableRawPointer?, _, lhs: UnsafeRawPointer?, _, rhs: UnsafeRawPointer?) in /* xCompare */
+            unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { (callback: UnsafeMutableRawPointer?, _,
+                                                                     lhs: UnsafeRawPointer?, _, rhs: UnsafeRawPointer?) in /* xCompare */
             if let lhs = lhs, let rhs = rhs {
                 return unsafeBitCast(callback, to: Collation.self)(lhs, rhs)
             } else {
@@ -807,7 +807,7 @@ public final class Connection {
 
 }
 
-extension Connection : CustomStringConvertible {
+extension Connection: CustomStringConvertible {
 
     public var description: String {
         return String(cString: sqlite3_db_filename(handle, nil))
@@ -815,7 +815,7 @@ extension Connection : CustomStringConvertible {
 
 }
 
-extension Connection.Location : CustomStringConvertible {
+extension Connection.Location: CustomStringConvertible {
 
     public var description: String {
         switch self {
@@ -830,7 +830,7 @@ extension Connection.Location : CustomStringConvertible {
 
 }
 
-public enum Result : Error {
+public enum Result: Error {
 
     fileprivate static let successCodes: Set = [SQLITE_OK, SQLITE_ROW, SQLITE_DONE]
 
@@ -852,7 +852,7 @@ public enum Result : Error {
 
 }
 
-extension Result : CustomStringConvertible {
+extension Result: CustomStringConvertible {
 
     public var description: String {
         switch self {

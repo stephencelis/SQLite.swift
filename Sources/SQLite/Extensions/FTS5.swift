@@ -32,8 +32,8 @@ extension Module {
 ///
 /// **Note:** this is currently only applicable when using SQLite.swift together with a FTS5-enabled version
 /// of SQLite.
-open class FTS5Config : FTSConfig {
-    public enum Detail : CustomStringConvertible {
+open class FTS5Config: FTSConfig {
+    public enum Detail: CustomStringConvertible {
         /// store rowid, column number, term offset
         case full
         /// store rowid, column number

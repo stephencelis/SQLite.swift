@@ -97,7 +97,8 @@ public struct Tokenizer {
 
     public static let Porter = Tokenizer("porter")
 
-    public static func Unicode61(removeDiacritics: Bool? = nil, tokenchars: Set<Character> = [], separators: Set<Character> = []) -> Tokenizer {
+    public static func Unicode61(removeDiacritics: Bool? = nil, tokenchars: Set<Character> = [],
+                                 separators: Set<Character> = []) -> Tokenizer {
         var arguments = [String]()
 
         if let removeDiacritics = removeDiacritics {
@@ -134,7 +135,7 @@ public struct Tokenizer {
 
 }
 
-extension Tokenizer : CustomStringConvertible {
+extension Tokenizer: CustomStringConvertible {
 
     public var description: String {
         return ([name] + arguments).joined(separator: " ")
@@ -145,13 +146,13 @@ extension Tokenizer : CustomStringConvertible {
 extension Connection {
 
     public func registerTokenizer(_ submoduleName: String, next: @escaping (String) -> (String, Range<String.Index>)?) throws {
-        try check(_SQLiteRegisterTokenizer(handle, Tokenizer.moduleName, submoduleName) { (
-                input: UnsafePointer<Int8>, offset: UnsafeMutablePointer<Int32>, length: UnsafeMutablePointer<Int32>) in
+        try check(_SQLiteRegisterTokenizer(handle, Tokenizer.moduleName, submoduleName) {
+            (input: UnsafePointer<Int8>, offset: UnsafeMutablePointer<Int32>, length: UnsafeMutablePointer<Int32>) in
             let string = String(cString: input)
 
             guard let (token, range) = next(string) else { return nil }
 
-            let view:String.UTF8View = string.utf8
+            let view: String.UTF8View = string.utf8
 
             if let from = range.lowerBound.samePosition(in: view),
                let to = range.upperBound.samePosition(in: view) {
@@ -231,7 +232,7 @@ open class FTSConfig {
         if let tokenizer = tokenizer {
             options.append("tokenize", value: Expression<Void>(literal: tokenizer.description))
         }
-        options.appendCommaSeparated("prefix", values:prefixes.sorted().map { String($0) })
+        options.appendCommaSeparated("prefix", values: prefixes.sorted().map { String($0) })
         if isContentless {
             options.append("content", value: "")
         } else if let externalContentSchema = externalContentSchema {
@@ -274,9 +275,9 @@ open class FTSConfig {
 }
 
 /// Configuration for the [FTS4](https://www.sqlite.org/fts3.html) extension.
-open class FTS4Config : FTSConfig {
+open class FTS4Config: FTSConfig {
     /// [The matchinfo= option](https://www.sqlite.org/fts3.html#section_6_4)
-    public enum MatchInfo : CustomStringConvertible {
+    public enum MatchInfo: CustomStringConvertible {
         case fts3
         public var description: String {
             return "fts3"
@@ -284,7 +285,7 @@ open class FTS4Config : FTSConfig {
     }
 
     /// [FTS4 options](https://www.sqlite.org/fts3.html#fts4_options)
-    public enum Order : CustomStringConvertible {
+    public enum Order: CustomStringConvertible {
         /// Data structures are optimized for returning results in ascending order by docid (default)
         case asc
         /// FTS4 stores its data in such a way as to optimize returning results in descending order by docid.

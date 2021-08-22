@@ -1,7 +1,6 @@
 #if SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
 
-
 /// Extension methods for [SQLCipher](https://www.zetetic.net/sqlcipher/).
 /// @see [sqlcipher api](https://www.zetetic.net/sqlcipher/sqlcipher-api/)
 extension Connection {
@@ -32,7 +31,6 @@ extension Connection {
         try _key_v2(db: db, keyPointer: key.bytes, keySize: key.bytes.count)
     }
 
-
     /// Change the key on an open database.  If the current database is not encrypted, this routine
     /// will encrypt it.
     /// To change the key on an existing encrypted database, it must first be unlocked with the
@@ -60,7 +58,7 @@ extension Connection {
     // the key provided is incorrect. To test that the database can be successfully opened with the
     // provided key, it is necessary to perform some operation on the database (i.e. read from it).
     private func cipher_key_check() throws {
-        let _ = try scalar("SELECT count(*) FROM sqlite_master;")
+        _ = try scalar("SELECT count(*) FROM sqlite_master;")
     }
 }
 #endif

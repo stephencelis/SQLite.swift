@@ -24,7 +24,7 @@
 
 import Foundation
 
-extension Data : Value {
+extension Data: Value {
 
     public static var declaredDatatype: String {
         return Blob.declaredDatatype
@@ -42,7 +42,7 @@ extension Data : Value {
 
 }
 
-extension Date : Value {
+extension Date: Value {
 
     public static var declaredDatatype: String {
         return String.declaredDatatype
@@ -69,7 +69,7 @@ public var dateFormatter: DateFormatter = {
     return formatter
 }()
 
-extension UUID : Value {
+extension UUID: Value {
 
     public static var declaredDatatype: String {
         return String.declaredDatatype

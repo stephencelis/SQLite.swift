@@ -29,13 +29,13 @@
 ///   protocol, instead.
 public protocol Binding {}
 
-public protocol Number : Binding {}
+public protocol Number: Binding {}
 
-public protocol Value : Expressible { // extensions cannot have inheritance clauses
+public protocol Value: Expressible { // extensions cannot have inheritance clauses
 
     associatedtype ValueType = Self
 
-    associatedtype Datatype : Binding
+    associatedtype Datatype: Binding
 
     static var declaredDatatype: String { get }
 
@@ -45,7 +45,7 @@ public protocol Value : Expressible { // extensions cannot have inheritance clau
 
 }
 
-extension Double : Number, Value {
+extension Double: Number, Value {
 
     public static let declaredDatatype = "REAL"
 
@@ -59,7 +59,7 @@ extension Double : Number, Value {
 
 }
 
-extension Int64 : Number, Value {
+extension Int64: Number, Value {
 
     public static let declaredDatatype = "INTEGER"
 
@@ -73,7 +73,7 @@ extension Int64 : Number, Value {
 
 }
 
-extension String : Binding, Value {
+extension String: Binding, Value {
 
     public static let declaredDatatype = "TEXT"
 
@@ -87,7 +87,7 @@ extension String : Binding, Value {
 
 }
 
-extension Blob : Binding, Value {
+extension Blob: Binding, Value {
 
     public static let declaredDatatype = "BLOB"
 
@@ -103,7 +103,7 @@ extension Blob : Binding, Value {
 
 // MARK: -
 
-extension Bool : Binding, Value {
+extension Bool: Binding, Value {
 
     public static var declaredDatatype = Int64.declaredDatatype
 
@@ -117,7 +117,7 @@ extension Bool : Binding, Value {
 
 }
 
-extension Int : Number, Value {
+extension Int: Number, Value {
 
     public static var declaredDatatype = Int64.declaredDatatype
 

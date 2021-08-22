@@ -35,7 +35,7 @@ import SQLite3
 /// A single SQL statement.
 public final class Statement {
 
-    fileprivate var handle: OpaquePointer? = nil
+    fileprivate var handle: OpaquePointer?
 
     fileprivate let connection: Connection
 
@@ -173,7 +173,6 @@ public final class Statement {
         return try bind(bindings).scalar()
     }
 
-
     /// - Parameter bindings: A dictionary of named parameters to bind to the
     ///   statement.
     ///
@@ -188,12 +187,12 @@ public final class Statement {
 
     fileprivate func reset(clearBindings shouldClear: Bool = true) {
         sqlite3_reset(handle)
-        if (shouldClear) { sqlite3_clear_bindings(handle) }
+        if shouldClear { sqlite3_clear_bindings(handle) }
     }
 
 }
 
-extension Statement : Sequence {
+extension Statement: Sequence {
 
     public func makeIterator() -> Statement {
         reset(clearBindings: false)
@@ -202,7 +201,7 @@ extension Statement : Sequence {
 
 }
 
-public protocol FailableIterator : IteratorProtocol {
+public protocol FailableIterator: IteratorProtocol {
     func failableNext() throws -> Self.Element?
 }
 
@@ -221,14 +220,14 @@ extension Array {
     }
 }
 
-extension Statement : FailableIterator {
+extension Statement: FailableIterator {
     public typealias Element = [Binding?]
     public func failableNext() throws -> [Binding?]? {
         return try step() ? Array(row) : nil
     }
 }
 
-extension Statement : CustomStringConvertible {
+extension Statement: CustomStringConvertible {
 
     public var description: String {
         return String(cString: sqlite3_sql(handle))
@@ -283,7 +282,7 @@ public struct Cursor {
 }
 
 /// Cursors provide direct access to a statement’s current row.
-extension Cursor : Sequence {
+extension Cursor: Sequence {
 
     public subscript(idx: Int) -> Binding? {
         switch sqlite3_column_type(handle, Int32(idx)) {
@@ -306,7 +305,7 @@ extension Cursor : Sequence {
         var idx = 0
         return AnyIterator {
             if idx >= self.columnCount {
-                return Optional<Binding?>.none
+                return Binding??.none
             } else {
                 idx += 1
                 return self[idx - 1]

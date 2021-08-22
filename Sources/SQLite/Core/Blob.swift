@@ -43,7 +43,7 @@ public struct Blob {
 
 }
 
-extension Blob : CustomStringConvertible {
+extension Blob: CustomStringConvertible {
 
     public var description: String {
         return "x'\(toHex())'"
@@ -51,7 +51,7 @@ extension Blob : CustomStringConvertible {
 
 }
 
-extension Blob : Equatable {
+extension Blob: Equatable {
 
 }
 

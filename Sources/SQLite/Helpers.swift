@@ -44,7 +44,7 @@ public protocol _OptionalType {
 
 }
 
-extension Optional : _OptionalType {
+extension Optional: _OptionalType {
 
     public typealias WrappedType = Wrapped
 
@@ -75,7 +75,7 @@ extension String {
     func infix<T>(_ lhs: Expressible, _ rhs: Expressible, wrap: Bool = true) -> Expression<T> {
         return infix([lhs, rhs], wrap: wrap)
     }
-    
+
     func infix<T>(_ terms: [Expressible], wrap: Bool = true) -> Expression<T> {
         let expression = Expression<T>(" \(self) ".join(terms).expression)
         guard wrap else {
@@ -115,10 +115,11 @@ func transcode(_ literal: Binding?) -> String {
     }
 }
 
+//swiftlint:disable force_cast
 func value<A: Value>(_ v: Binding) -> A {
-    return A.fromDatatypeValue(v as! A.Datatype) as! A
+    A.fromDatatypeValue(v as! A.Datatype) as! A
 }
 
 func value<A: Value>(_ v: Binding?) -> A {
-    return value(v!)
+    value(v!)
 }

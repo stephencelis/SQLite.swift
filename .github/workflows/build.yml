@@ -14,6 +14,9 @@ jobs:
         gem install xcpretty --no-document
         brew update
         brew outdated carthage || brew upgrade carthage
+        brew install swiftlint
+    - name: "Lint"
+      run: make lint
     - name: "Run tests (BUILD_SCHEME: SQLite iOS)"
       env:
         BUILD_SCHEME: SQLite iOS

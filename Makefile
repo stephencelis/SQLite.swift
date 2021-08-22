@@ -18,6 +18,9 @@ default: test
 build:
 	$(BUILD_TOOL) $(BUILD_ARGUMENTS)
 
+lint:
+	swiftlint
+
 test:
 ifdef XCPRETTY
 	@set -o pipefail && $(BUILD_TOOL) $(BUILD_ARGUMENTS) $(TEST_ACTIONS) | $(XCPRETTY) -c
