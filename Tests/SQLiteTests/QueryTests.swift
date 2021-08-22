@@ -541,10 +541,11 @@ class QueryIntegrationTests : SQLiteTestCase {
         let id = try! db.run(users.insertMany([[email <- "alice@example.com"], [email <- "geoff@example.com"]]))
         XCTAssertEqual(2, id)
     }
-    
+
     func test_upsert() throws {
+        guard db.satisfiesMinimumVersion(minor: 24) else { return }
         let fetchAge = { () throws -> Int? in
-            return try self.db.pluck(self.users.filter(self.email == "alice@example.com")).flatMap { $0[self.age] }
+            try self.db.pluck(self.users.filter(self.email == "alice@example.com")).flatMap { $0[self.age] }
         }
 
         let id = try db.run(users.upsert(email <- "alice@example.com", age <- 30, onConflictOf: email))
@@ -611,5 +612,15 @@ class QueryIntegrationTests : SQLiteTestCase {
         } catch let error {
             XCTFail("unexpected error: \(error)")
         }
+    }
+}
+
+private extension Connection {
+    func satisfiesMinimumVersion(minor: Int, patch: Int = 0) -> Bool {
+        guard let version = try? scalar("SELECT sqlite_version()") as? String else { return false }
+        let components = version.split(separator: ".", maxSplits: 3).compactMap { Int($0) }
+        guard components.count == 3 else { return false }
+
+        return components[1] >= minor && components[2] >= patch
     }
 }
