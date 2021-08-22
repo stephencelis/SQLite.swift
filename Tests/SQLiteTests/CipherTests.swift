@@ -88,6 +88,11 @@ class CipherTests: XCTestCase {
         try! FileManager.default.setAttributes([FileAttributeKey.immutable : 1], ofItemAtPath: encryptedFile)
         XCTAssertFalse(FileManager.default.isWritableFile(atPath: encryptedFile))
 
+        defer {
+            // ensure file can be cleaned up afterwards
+            try! FileManager.default.setAttributes([FileAttributeKey.immutable : 0], ofItemAtPath: encryptedFile)
+        }
+
         let conn = try! Connection(encryptedFile)
         try! conn.key("sqlcipher-test")
         XCTAssertEqual(1, try! conn.scalar("SELECT count(*) FROM foo") as? Int64)
