@@ -111,6 +111,10 @@ class ConnectionTests : SQLiteTestCase {
         try! db.run("SELECT * FROM users WHERE admin = $admin", ["$admin": 0])
         AssertSQL("SELECT * FROM users WHERE admin = 0", 4)
     }
+    
+    func test_vacuum() {
+        try! db.vacuum()
+    }
 
     func test_scalar_preparesRunsAndReturnsScalarValues() {
         XCTAssertEqual(0, try! db.scalar("SELECT count(*) FROM users WHERE admin = 0") as? Int64)
