@@ -135,7 +135,7 @@ Swift code.
 
   ```swift
   dependencies: [
-      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.12.0")
+      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.13.0")
   ]
   ```
 
@@ -157,7 +157,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.12.0
+    github "stephencelis/SQLite.swift" ~> 0.13.0
     ```
 
  3. Run `carthage update` and
@@ -189,7 +189,7 @@ SQLite.swift with CocoaPods:
     use_frameworks!
 
     target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.12.0'
+        pod 'SQLite.swift', '~> 0.13.0'
     end
     ```
 
