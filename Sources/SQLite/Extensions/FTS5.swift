@@ -24,7 +24,7 @@
 
 extension Module {
     public static func FTS5(_ config: FTS5Config) -> Module {
-        return Module(name: "fts5", arguments: config.arguments())
+        Module(name: "fts5", arguments: config.arguments())
     }
 }
 
@@ -32,8 +32,8 @@ extension Module {
 ///
 /// **Note:** this is currently only applicable when using SQLite.swift together with a FTS5-enabled version
 /// of SQLite.
-open class FTS5Config : FTSConfig {
-    public enum Detail : CustomStringConvertible {
+open class FTS5Config: FTSConfig {
+    public enum Detail: CustomStringConvertible {
         /// store rowid, column number, term offset
         case full
         /// store rowid, column number
@@ -59,13 +59,13 @@ open class FTS5Config : FTSConfig {
 
     /// [External Content Tables](https://www.sqlite.org/fts5.html#section_4_4_2)
     @discardableResult open func contentRowId(_ column: Expressible) -> Self {
-        self.contentRowId = column
+        contentRowId = column
         return self
     }
 
     /// [The Columnsize Option](https://www.sqlite.org/fts5.html#section_4_5)
     @discardableResult open func columnSize(_ size: Int) -> Self {
-        self.columnSize = size
+        columnSize = size
         return self
     }
 
@@ -86,7 +86,7 @@ open class FTS5Config : FTSConfig {
     }
 
     override func formatColumnDefinitions() -> [Expressible] {
-        return columnDefinitions.map { definition in
+        columnDefinitions.map { definition in
             if definition.options.contains(.unindexed) {
                 return " ".join([definition.0, Expression<Void>(literal: "UNINDEXED")])
             } else {

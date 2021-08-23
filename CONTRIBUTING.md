@@ -19,7 +19,7 @@ addresses everything. If it doesn’t, continue the conversation there.
 If your searches return empty, see the [bug](#bugs) or [feature
 request](#feature-requests) guidelines below.
 
-[Ask on Stack Overflow]: http://stackoverflow.com/questions/tagged/sqlite.swift
+[Ask on Stack Overflow]: https://stackoverflow.com/questions/tagged/sqlite.swift
 [Search]: https://github.com/stephencelis/SQLite.swift/search?type=Issues
 
 

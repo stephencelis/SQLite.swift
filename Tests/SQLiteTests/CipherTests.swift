@@ -77,7 +77,7 @@ class CipherTests: XCTestCase {
         // sqlite> pragma key = 'sqlcipher-test';
         // sqlite> CREATE TABLE foo (bar TEXT);
         // sqlite> INSERT INTO foo (bar) VALUES ('world');
-        guard let cipherVersion:String = db1.cipherVersion,
+        guard let cipherVersion: String = db1.cipherVersion,
             cipherVersion.starts(with: "3.") || cipherVersion.starts(with: "4.")
             else { return }
 
@@ -85,12 +85,12 @@ class CipherTests: XCTestCase {
             fixture("encrypted-3.x", withExtension: "sqlite") :
             fixture("encrypted-4.x", withExtension: "sqlite")
 
-        try! FileManager.default.setAttributes([FileAttributeKey.immutable : 1], ofItemAtPath: encryptedFile)
+        try! FileManager.default.setAttributes([FileAttributeKey.immutable: 1], ofItemAtPath: encryptedFile)
         XCTAssertFalse(FileManager.default.isWritableFile(atPath: encryptedFile))
 
         defer {
             // ensure file can be cleaned up afterwards
-            try! FileManager.default.setAttributes([FileAttributeKey.immutable : 0], ofItemAtPath: encryptedFile)
+            try! FileManager.default.setAttributes([FileAttributeKey.immutable: 0], ofItemAtPath: encryptedFile)
         }
 
         let conn = try! Connection(encryptedFile)

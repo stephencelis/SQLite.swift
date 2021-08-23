@@ -14,6 +14,13 @@ jobs:
         gem install xcpretty --no-document
         brew update
         brew outdated carthage || brew upgrade carthage
+        brew outdated swiftlint || brew upgrade swiftlint
+    - name: "Lint"
+      run: make lint
+    - name: "Run tests (PACKAGE_MANAGER_COMMAND: test)"
+      env:
+        PACKAGE_MANAGER_COMMAND: test -Xswiftc -warnings-as-errors
+      run: ./run-tests.sh
     - name: "Run tests (BUILD_SCHEME: SQLite iOS)"
       env:
         BUILD_SCHEME: SQLite iOS
@@ -53,8 +60,4 @@ jobs:
     - name: "Run tests (CARTHAGE_PLATFORM: tvOS)"
       env:
         CARTHAGE_PLATFORM: tvOS
-      run: ./run-tests.sh
-    - name: "Run tests (PACKAGE_MANAGER_COMMAND: test)"
-      env:
-        PACKAGE_MANAGER_COMMAND: test
       run: ./run-tests.sh

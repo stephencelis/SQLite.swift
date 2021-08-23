@@ -20,7 +20,7 @@ syntax _and_ intent.
  - Extensively tested
  - [SQLCipher][] support via CocoaPods
  - Active support at
-   [StackOverflow](http://stackoverflow.com/questions/tagged/sqlite.swift),
+   [StackOverflow](https://stackoverflow.com/questions/tagged/sqlite.swift),
    and [Gitter Chat Room](https://gitter.im/stephencelis/SQLite.swift)
    (_experimental_)
 
@@ -119,7 +119,7 @@ For a more comprehensive example, see
 and the [companion repository][SQLiteDataAccessLayer2].
 
 
-[Create a Data Access Layer with SQLite.swift and Swift 2]: http://masteringswift.blogspot.com/2015/09/create-data-access-layer-with.html
+[Create a Data Access Layer with SQLite.swift and Swift 2]: https://masteringswift.blogspot.com/2015/09/create-data-access-layer-with.html
 [SQLiteDataAccessLayer2]: https://github.com/hoffmanjon/SQLiteDataAccessLayer2/tree/master
 
 ## Installation
@@ -226,7 +226,7 @@ device:
 
 
 [Xcode]: https://developer.apple.com/xcode/downloads/
-[Submodule]: http://git-scm.com/book/en/Git-Tools-Submodules
+[Submodule]: https://git-scm.com/book/en/Git-Tools-Submodules
 [download]: https://github.com/stephencelis/SQLite.swift/archive/master.zip
 
 
@@ -243,7 +243,7 @@ device:
 
 [See the planning document]: /Documentation/Planning.md
 [Read the contributing guidelines]: ./CONTRIBUTING.md#contributing
-[Ask on Stack Overflow]: http://stackoverflow.com/questions/tagged/sqlite.swift
+[Ask on Stack Overflow]: https://stackoverflow.com/questions/tagged/sqlite.swift
 [Open an issue]: https://github.com/stephencelis/SQLite.swift/issues/new
 [Submit a pull request]: https://github.com/stephencelis/SQLite.swift/fork
 
@@ -280,16 +280,16 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
  - [SwiftSQLite](https://github.com/chrismsimpson/SwiftSQLite)
 
 [Swift]: https://swift.org/
-[SQLite3]: http://www.sqlite.org
+[SQLite3]: https://www.sqlite.org
 [SQLite.swift]: https://github.com/stephencelis/SQLite.swift
 
 [GitHubActionBadge]: https://img.shields.io/github/workflow/status/stephencelis/SQLite.swift/Build%20and%20test
 
 [CocoaPodsVersionBadge]: https://cocoapod-badges.herokuapp.com/v/SQLite.swift/badge.png
-[CocoaPodsVersionLink]: http://cocoadocs.org/docsets/SQLite.swift
+[CocoaPodsVersionLink]: https://cocoapods.org/pods/SQLite.swift
 
 [PlatformBadge]: https://cocoapod-badges.herokuapp.com/p/SQLite.swift/badge.png
-[PlatformLink]: http://cocoadocs.org/docsets/SQLite.swift
+[PlatformLink]: https://cocoapods.org/pods/SQLite.swift
 
 [CartagheBadge]: https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat
 [CarthageLink]: https://github.com/Carthage/Carthage

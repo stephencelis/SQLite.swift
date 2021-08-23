@@ -107,7 +107,10 @@ class FTS5Tests: XCTestCase {
 
     func test_fts5_config_all() {
         XCTAssertEqual(
-            "CREATE VIRTUAL TABLE \"virtual_table\" USING fts5(\"int\", \"string\" UNINDEXED, \"date\" UNINDEXED, tokenize=porter, prefix=\"2,4\", content=\"table\")",
+            """
+            CREATE VIRTUAL TABLE \"virtual_table\" USING fts5(\"int\", \"string\" UNINDEXED, \"date\" UNINDEXED,
+             tokenize=porter, prefix=\"2,4\", content=\"table\")
+            """.replacingOccurrences(of: "\n", with: ""),
             sql(config
                 .tokenizer(.Porter)
                 .column(int)
@@ -119,6 +122,6 @@ class FTS5Tests: XCTestCase {
     }
 
     func sql(_ config: FTS5Config) -> String {
-        return virtualTable.create(.FTS5(config))
+        virtualTable.create(.FTS5(config))
     }
 }

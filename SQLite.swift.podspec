@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
   s.name             = "SQLite.swift"
   s.version          = "0.13.0"
-  s.summary          = "A type-safe, Swift-language layer over SQLite3 for iOS and macOS."
+  s.summary          = "A type-safe, Swift-language layer over SQLite3."
 
   s.description      = <<-DESC
     SQLite.swift provides compile-time confidence in SQL statement syntax and
@@ -17,13 +17,12 @@ Pod::Spec.new do |s|
   s.module_name      = 'SQLite'
   s.default_subspec  = 'standard'
   s.swift_versions = ['5']
-  
-  
+
   ios_deployment_target = '9.0'
   tvos_deployment_target = '9.1'
   osx_deployment_target = '10.15'
   watchos_deployment_target = '3.0'
-  
+
   s.ios.deployment_target = ios_deployment_target
   s.tvos.deployment_target = tvos_deployment_target
   s.osx.deployment_target = osx_deployment_target
