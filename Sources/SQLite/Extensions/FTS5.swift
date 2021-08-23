@@ -24,7 +24,7 @@
 
 extension Module {
     public static func FTS5(_ config: FTS5Config) -> Module {
-        return Module(name: "fts5", arguments: config.arguments())
+        Module(name: "fts5", arguments: config.arguments())
     }
 }
 
@@ -86,7 +86,7 @@ open class FTS5Config: FTSConfig {
     }
 
     override func formatColumnDefinitions() -> [Expressible] {
-        return columnDefinitions.map { definition in
+        columnDefinitions.map { definition in
             if definition.options.contains(.unindexed) {
                 return " ".join([definition.0, Expression<Void>(literal: "UNINDEXED")])
             } else {

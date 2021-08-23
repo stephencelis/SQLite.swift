@@ -29,15 +29,15 @@ import SQLiteObjc
 extension Module {
 
     public static func FTS4(_ column: Expressible, _ more: Expressible...) -> Module {
-        return FTS4([column] + more)
+        FTS4([column] + more)
     }
 
     public static func FTS4(_ columns: [Expressible] = [], tokenize tokenizer: Tokenizer? = nil) -> Module {
-        return FTS4(FTS4Config().columns(columns).tokenizer(tokenizer))
+        FTS4(FTS4Config().columns(columns).tokenizer(tokenizer))
     }
 
     public static func FTS4(_ config: FTS4Config) -> Module {
-        return Module(name: "fts4", arguments: config.arguments())
+        Module(name: "fts4", arguments: config.arguments())
     }
 }
 
@@ -56,15 +56,15 @@ extension VirtualTable {
     /// - Returns: An expression appended with a `MATCH` query against the given
     ///   pattern.
     public func match(_ pattern: String) -> Expression<Bool> {
-        return "MATCH".infix(tableName(), pattern)
+        "MATCH".infix(tableName(), pattern)
     }
 
     public func match(_ pattern: Expression<String>) -> Expression<Bool> {
-        return "MATCH".infix(tableName(), pattern)
+        "MATCH".infix(tableName(), pattern)
     }
 
     public func match(_ pattern: Expression<String?>) -> Expression<Bool?> {
-        return "MATCH".infix(tableName(), pattern)
+        "MATCH".infix(tableName(), pattern)
     }
 
     /// Builds a copy of the query with a `WHERE … MATCH` clause.
@@ -78,15 +78,15 @@ extension VirtualTable {
     ///
     /// - Returns: A query with the given `WHERE … MATCH` clause applied.
     public func match(_ pattern: String) -> QueryType {
-        return filter(match(pattern))
+        filter(match(pattern))
     }
 
     public func match(_ pattern: Expression<String>) -> QueryType {
-        return filter(match(pattern))
+        filter(match(pattern))
     }
 
     public func match(_ pattern: Expression<String?>) -> QueryType {
-        return filter(match(pattern))
+        filter(match(pattern))
     }
 
 }
@@ -120,7 +120,7 @@ public struct Tokenizer {
     }
 
     public static func Custom(_ name: String) -> Tokenizer {
-        return Tokenizer(Tokenizer.moduleName.quote(), [name.quote()])
+        Tokenizer(Tokenizer.moduleName.quote(), [name.quote()])
     }
 
     public let name: String
@@ -139,7 +139,7 @@ public struct Tokenizer {
 extension Tokenizer: CustomStringConvertible {
 
     public var description: String {
-        return ([name] + arguments).joined(separator: " ")
+        ([name] + arguments).joined(separator: " ")
     }
 
 }
@@ -220,11 +220,11 @@ open class FTSConfig {
     }
 
     func formatColumnDefinitions() -> [Expressible] {
-        return columnDefinitions.map { $0.0 }
+        columnDefinitions.map { $0.0 }
     }
 
     func arguments() -> [Expressible] {
-        return options().arguments
+        options().arguments
     }
 
     func options() -> Options {
@@ -259,11 +259,11 @@ open class FTSConfig {
         }
 
         @discardableResult mutating func append(_ key: String, value: CustomStringConvertible?) -> Options {
-            return append(key, value: value?.description)
+            append(key, value: value?.description)
         }
 
         @discardableResult mutating func append(_ key: String, value: String?) -> Options {
-            return append(key, value: value.map { Expression<String>($0) })
+            append(key, value: value.map { Expression<String>($0) })
         }
 
         @discardableResult mutating func append(_ key: String, value: Expressible?) -> Options {
@@ -281,7 +281,7 @@ open class FTS4Config: FTSConfig {
     public enum MatchInfo: CustomStringConvertible {
         case fts3
         public var description: String {
-            return "fts3"
+            "fts3"
         }
     }
 

@@ -95,15 +95,15 @@ extension Expressible {
 extension ExpressionType {
 
     public var expression: Expression<Void> {
-        return Expression(template, bindings)
+        Expression(template, bindings)
     }
 
     public var asc: Expressible {
-        return " ".join([self, Expression<Void>(literal: "ASC")])
+        " ".join([self, Expression<Void>(literal: "ASC")])
     }
 
     public var desc: Expressible {
-        return " ".join([self, Expression<Void>(literal: "DESC")])
+        " ".join([self, Expression<Void>(literal: "DESC")])
     }
 
 }
@@ -119,7 +119,7 @@ extension ExpressionType where UnderlyingType: Value {
 extension ExpressionType where UnderlyingType: _OptionalType, UnderlyingType.WrappedType: Value {
 
     public static var null: Self {
-        return self.init(value: nil)
+        self.init(value: nil)
     }
 
     public init(value: UnderlyingType.WrappedType?) {
@@ -131,7 +131,7 @@ extension ExpressionType where UnderlyingType: _OptionalType, UnderlyingType.Wra
 extension Value {
 
     public var expression: Expression<Void> {
-        return Expression(value: self).expression
+        Expression(value: self).expression
     }
 
 }
@@ -139,9 +139,9 @@ extension Value {
 public let rowid = Expression<Int64>("ROWID")
 
 public func cast<T: Value, U: Value>(_ expression: Expression<T>) -> Expression<U> {
-    return Expression("CAST (\(expression.template) AS \(U.declaredDatatype))", expression.bindings)
+    Expression("CAST (\(expression.template) AS \(U.declaredDatatype))", expression.bindings)
 }
 
 public func cast<T: Value, U: Value>(_ expression: Expression<T?>) -> Expression<U?> {
-    return Expression("CAST (\(expression.template) AS \(U.declaredDatatype))", expression.bindings)
+    Expression("CAST (\(expression.template) AS \(U.declaredDatatype))", expression.bindings)
 }

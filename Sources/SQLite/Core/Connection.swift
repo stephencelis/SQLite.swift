@@ -84,7 +84,7 @@ public final class Connection {
         }
     }
 
-    public var handle: OpaquePointer { return _handle! }
+    public var handle: OpaquePointer { _handle! }
 
     fileprivate var _handle: OpaquePointer?
 
@@ -133,23 +133,23 @@ public final class Connection {
     // MARK: -
 
     /// Whether or not the database was opened in a read-only state.
-    public var readonly: Bool { return sqlite3_db_readonly(handle, nil) == 1 }
+    public var readonly: Bool { sqlite3_db_readonly(handle, nil) == 1 }
 
     /// The last rowid inserted into the database via this connection.
     public var lastInsertRowid: Int64 {
-        return sqlite3_last_insert_rowid(handle)
+        sqlite3_last_insert_rowid(handle)
     }
 
     /// The last number of changes (inserts, updates, or deletes) made to the
     /// database via this connection.
     public var changes: Int {
-        return Int(sqlite3_changes(handle))
+        Int(sqlite3_changes(handle))
     }
 
     /// The total number of changes (inserts, updates, or deletes) made to the
     /// database via this connection.
     public var totalChanges: Int {
-        return Int(sqlite3_total_changes(handle))
+        Int(sqlite3_total_changes(handle))
     }
 
     // MARK: - Execute
@@ -190,7 +190,7 @@ public final class Connection {
     ///
     /// - Returns: A prepared statement.
     public func prepare(_ statement: String, _ bindings: [Binding?]) throws -> Statement {
-        return try prepare(statement).bind(bindings)
+        try prepare(statement).bind(bindings)
     }
 
     /// Prepares a single SQL statement and binds parameters to it.
@@ -203,7 +203,7 @@ public final class Connection {
     ///
     /// - Returns: A prepared statement.
     public func prepare(_ statement: String, _ bindings: [String: Binding?]) throws -> Statement {
-        return try prepare(statement).bind(bindings)
+        try prepare(statement).bind(bindings)
     }
 
     // MARK: - Run
@@ -220,7 +220,7 @@ public final class Connection {
     ///
     /// - Returns: The statement.
     @discardableResult public func run(_ statement: String, _ bindings: Binding?...) throws -> Statement {
-        return try run(statement, bindings)
+        try run(statement, bindings)
     }
 
     /// Prepares, binds, and runs a single SQL statement.
@@ -235,7 +235,7 @@ public final class Connection {
     ///
     /// - Returns: The statement.
     @discardableResult public func run(_ statement: String, _ bindings: [Binding?]) throws -> Statement {
-        return try prepare(statement).run(bindings)
+        try prepare(statement).run(bindings)
     }
 
     /// Prepares, binds, and runs a single SQL statement.
@@ -250,7 +250,7 @@ public final class Connection {
     ///
     /// - Returns: The statement.
     @discardableResult public func run(_ statement: String, _ bindings: [String: Binding?]) throws -> Statement {
-        return try prepare(statement).run(bindings)
+        try prepare(statement).run(bindings)
     }
 
     // MARK: - VACUUM
@@ -261,7 +261,7 @@ public final class Connection {
     ///
     /// - Returns: The statement.
     @discardableResult public func vacuum() throws -> Statement {
-        return try run("VACUUM")
+        try run("VACUUM")
     }
 
     // MARK: - Scalar
@@ -277,7 +277,7 @@ public final class Connection {
     ///
     /// - Returns: The first value of the first row returned.
     public func scalar(_ statement: String, _ bindings: Binding?...) throws -> Binding? {
-        return try scalar(statement, bindings)
+        try scalar(statement, bindings)
     }
 
     /// Runs a single SQL statement (with optional parameter bindings),
@@ -291,7 +291,7 @@ public final class Connection {
     ///
     /// - Returns: The first value of the first row returned.
     public func scalar(_ statement: String, _ bindings: [Binding?]) throws -> Binding? {
-        return try prepare(statement).scalar(bindings)
+        try prepare(statement).scalar(bindings)
     }
 
     /// Runs a single SQL statement (with optional parameter bindings),
@@ -305,7 +305,7 @@ public final class Connection {
     ///
     /// - Returns: The first value of the first row returned.
     public func scalar(_ statement: String, _ bindings: [String: Binding?]) throws -> Binding? {
-        return try prepare(statement).scalar(bindings)
+        try prepare(statement).scalar(bindings)
     }
 
     // MARK: - Transactions
@@ -810,7 +810,7 @@ public final class Connection {
 extension Connection: CustomStringConvertible {
 
     public var description: String {
-        return String(cString: sqlite3_db_filename(handle, nil))
+        String(cString: sqlite3_db_filename(handle, nil))
     }
 
 }

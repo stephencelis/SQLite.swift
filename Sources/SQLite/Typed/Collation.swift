@@ -46,7 +46,7 @@ public enum Collation {
 extension Collation: Expressible {
 
     public var expression: Expression<Void> {
-        return Expression(literal: description)
+        Expression(literal: description)
     }
 
 }

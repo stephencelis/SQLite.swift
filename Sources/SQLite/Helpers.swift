@@ -35,7 +35,7 @@ import SQLite3
 public typealias Star = (Expression<Binding>?, Expression<Binding>?) -> Expression<Void>
 
 public func *(_: Expression<Binding>?, _: Expression<Binding>?) -> Expression<Void> {
-    return Expression(literal: "*")
+    Expression(literal: "*")
 }
 
 public protocol _OptionalType {
@@ -73,7 +73,7 @@ extension String {
     }
 
     func infix<T>(_ lhs: Expressible, _ rhs: Expressible, wrap: Bool = true) -> Expression<T> {
-        return infix([lhs, rhs], wrap: wrap)
+        infix([lhs, rhs], wrap: wrap)
     }
 
     func infix<T>(_ terms: [Expressible], wrap: Bool = true) -> Expression<T> {
@@ -85,19 +85,19 @@ extension String {
     }
 
     func prefix(_ expressions: Expressible) -> Expressible {
-        return "\(self) ".wrap(expressions) as Expression<Void>
+        "\(self) ".wrap(expressions) as Expression<Void>
     }
 
     func prefix(_ expressions: [Expressible]) -> Expressible {
-        return "\(self) ".wrap(expressions) as Expression<Void>
+        "\(self) ".wrap(expressions) as Expression<Void>
     }
 
     func wrap<T>(_ expression: Expressible) -> Expression<T> {
-        return Expression("\(self)(\(expression.expression.template))", expression.expression.bindings)
+        Expression("\(self)(\(expression.expression.template))", expression.expression.bindings)
     }
 
     func wrap<T>(_ expressions: [Expressible]) -> Expression<T> {
-        return wrap(", ".join(expressions))
+        wrap(", ".join(expressions))
     }
 
 }

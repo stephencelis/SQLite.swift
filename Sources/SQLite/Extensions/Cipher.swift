@@ -7,7 +7,7 @@ extension Connection {
 
     /// - Returns: the SQLCipher version
     public var cipherVersion: String? {
-        return (try? scalar("PRAGMA cipher_version")) as? String
+        (try? scalar("PRAGMA cipher_version")) as? String
     }
 
     /// Specify the key for an encrypted database.  This routine should be

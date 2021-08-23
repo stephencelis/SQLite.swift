@@ -149,11 +149,11 @@ extension Row {
     ///
     /// - Returns: a decoded object from this row
     public func decode<V: Decodable>(userInfo: [CodingUserInfoKey: Any] = [:]) throws -> V {
-        return try V(from: decoder(userInfo: userInfo))
+        try V(from: decoder(userInfo: userInfo))
     }
 
     public func decoder(userInfo: [CodingUserInfoKey: Any] = [:]) -> Decoder {
-        return SQLiteDecoder(row: self, userInfo: userInfo)
+        SQLiteDecoder(row: self, userInfo: userInfo)
     }
 }
 
@@ -285,7 +285,7 @@ private class SQLiteEncoder: Encoder {
     }
 
     func container<Key>(keyedBy type: Key.Type) -> KeyedEncodingContainer<Key> where Key: CodingKey {
-        return KeyedEncodingContainer(SQLiteKeyedEncodingContainer(encoder: self))
+        KeyedEncodingContainer(SQLiteKeyedEncodingContainer(encoder: self))
     }
 }
 
@@ -301,23 +301,23 @@ private class SQLiteDecoder: Decoder {
         }
 
         var allKeys: [Key] {
-            return row.columnNames.keys.compactMap({Key(stringValue: $0)})
+            row.columnNames.keys.compactMap({ Key(stringValue: $0) })
         }
 
         func contains(_ key: Key) -> Bool {
-            return row.hasValue(for: key.stringValue)
+            row.hasValue(for: key.stringValue)
         }
 
         func decodeNil(forKey key: Key) throws -> Bool {
-            return !contains(key)
+            !contains(key)
         }
 
         func decode(_ type: Bool.Type, forKey key: Key) throws -> Bool {
-            return try row.get(Expression(key.stringValue))
+            try row.get(Expression(key.stringValue))
         }
 
         func decode(_ type: Int.Type, forKey key: Key) throws -> Int {
-            return try row.get(Expression(key.stringValue))
+            try row.get(Expression(key.stringValue))
         }
 
         func decode(_ type: Int8.Type, forKey key: Key) throws -> Int8 {
@@ -336,7 +336,7 @@ private class SQLiteDecoder: Decoder {
         }
 
         func decode(_ type: Int64.Type, forKey key: Key) throws -> Int64 {
-            return try row.get(Expression(key.stringValue))
+            try row.get(Expression(key.stringValue))
         }
 
         func decode(_ type: UInt.Type, forKey key: Key) throws -> UInt {
@@ -366,15 +366,15 @@ private class SQLiteDecoder: Decoder {
         }
 
         func decode(_ type: Float.Type, forKey key: Key) throws -> Float {
-            return Float(try row.get(Expression<Double>(key.stringValue)))
+            Float(try row.get(Expression<Double>(key.stringValue)))
         }
 
         func decode(_ type: Double.Type, forKey key: Key) throws -> Double {
-            return try row.get(Expression(key.stringValue))
+            try row.get(Expression(key.stringValue))
         }
 
         func decode(_ type: String.Type, forKey key: Key) throws -> String {
-            return try row.get(Expression(key.stringValue))
+            try row.get(Expression(key.stringValue))
         }
 
         func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T: Swift.Decodable {
@@ -430,7 +430,7 @@ private class SQLiteDecoder: Decoder {
     }
 
     func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key: CodingKey {
-        return KeyedDecodingContainer(SQLiteKeyedDecodingContainer(row: row))
+        KeyedDecodingContainer(SQLiteKeyedDecodingContainer(row: row))
     }
 
     func unkeyedContainer() throws -> UnkeyedDecodingContainer {

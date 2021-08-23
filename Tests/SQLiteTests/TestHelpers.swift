@@ -42,10 +42,8 @@ class SQLiteTestCase: XCTestCase {
     }
 
     @discardableResult func insertUser(_ name: String, age: Int? = nil, admin: Bool = false) throws -> Statement {
-        return try db.run(
-            "INSERT INTO \"users\" (email, age, admin) values (?, ?, ?)",
-            "\(name)@example.com", age?.datatypeValue, admin.datatypeValue
-        )
+        try db.run("INSERT INTO \"users\" (email, age, admin) values (?, ?, ?)",
+                   "\(name)@example.com", age?.datatypeValue, admin.datatypeValue)
     }
 
     func assertSQL(_ SQL: String, _ executions: Int = 1, _ message: String? = nil, file: StaticString = #file, line: UInt = #line) {

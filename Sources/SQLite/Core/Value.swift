@@ -50,11 +50,11 @@ extension Double: Number, Value {
     public static let declaredDatatype = "REAL"
 
     public static func fromDatatypeValue(_ datatypeValue: Double) -> Double {
-        return datatypeValue
+        datatypeValue
     }
 
     public var datatypeValue: Double {
-        return self
+        self
     }
 
 }
@@ -64,11 +64,11 @@ extension Int64: Number, Value {
     public static let declaredDatatype = "INTEGER"
 
     public static func fromDatatypeValue(_ datatypeValue: Int64) -> Int64 {
-        return datatypeValue
+        datatypeValue
     }
 
     public var datatypeValue: Int64 {
-        return self
+        self
     }
 
 }
@@ -78,11 +78,11 @@ extension String: Binding, Value {
     public static let declaredDatatype = "TEXT"
 
     public static func fromDatatypeValue(_ datatypeValue: String) -> String {
-        return datatypeValue
+        datatypeValue
     }
 
     public var datatypeValue: String {
-        return self
+        self
     }
 
 }
@@ -92,11 +92,11 @@ extension Blob: Binding, Value {
     public static let declaredDatatype = "BLOB"
 
     public static func fromDatatypeValue(_ datatypeValue: Blob) -> Blob {
-        return datatypeValue
+        datatypeValue
     }
 
     public var datatypeValue: Blob {
-        return self
+        self
     }
 
 }
@@ -108,11 +108,11 @@ extension Bool: Binding, Value {
     public static var declaredDatatype = Int64.declaredDatatype
 
     public static func fromDatatypeValue(_ datatypeValue: Int64) -> Bool {
-        return datatypeValue != 0
+        datatypeValue != 0
     }
 
     public var datatypeValue: Int64 {
-        return self ? 1 : 0
+        self ? 1 : 0
     }
 
 }
@@ -122,11 +122,11 @@ extension Int: Number, Value {
     public static var declaredDatatype = Int64.declaredDatatype
 
     public static func fromDatatypeValue(_ datatypeValue: Int64) -> Int {
-        return Int(datatypeValue)
+        Int(datatypeValue)
     }
 
     public var datatypeValue: Int64 {
-        return Int64(self)
+        Int64(self)
     }
 
 }

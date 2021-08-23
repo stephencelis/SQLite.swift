@@ -27,7 +27,7 @@ extension SchemaType {
     // MARK: - DROP TABLE / VIEW / VIRTUAL TABLE
 
     public func drop(ifExists: Bool = false) -> String {
-        return drop("TABLE", tableName(), ifExists)
+        drop("TABLE", tableName(), ifExists)
     }
 
 }
@@ -64,63 +64,63 @@ extension Table {
     // MARK: - ALTER TABLE … ADD COLUMN
 
     public func addColumn<V: Value>(_ name: Expression<V>, check: Expression<Bool>? = nil, defaultValue: V) -> String {
-        return addColumn(definition(name, V.declaredDatatype, nil, false, false, check, defaultValue, nil, nil))
+        addColumn(definition(name, V.declaredDatatype, nil, false, false, check, defaultValue, nil, nil))
     }
 
     public func addColumn<V: Value>(_ name: Expression<V>, check: Expression<Bool?>, defaultValue: V) -> String {
-        return addColumn(definition(name, V.declaredDatatype, nil, false, false, check, defaultValue, nil, nil))
+        addColumn(definition(name, V.declaredDatatype, nil, false, false, check, defaultValue, nil, nil))
     }
 
     public func addColumn<V: Value>(_ name: Expression<V?>, check: Expression<Bool>? = nil, defaultValue: V? = nil) -> String {
-        return addColumn(definition(name, V.declaredDatatype, nil, true, false, check, defaultValue, nil, nil))
+        addColumn(definition(name, V.declaredDatatype, nil, true, false, check, defaultValue, nil, nil))
     }
 
     public func addColumn<V: Value>(_ name: Expression<V?>, check: Expression<Bool?>, defaultValue: V? = nil) -> String {
-        return addColumn(definition(name, V.declaredDatatype, nil, true, false, check, defaultValue, nil, nil))
+        addColumn(definition(name, V.declaredDatatype, nil, true, false, check, defaultValue, nil, nil))
     }
 
     public func addColumn<V: Value>(_ name: Expression<V>, unique: Bool = false, check: Expression<Bool>? = nil,
                                     references table: QueryType, _ other: Expression<V>) -> String where V.Datatype == Int64 {
-        return addColumn(definition(name, V.declaredDatatype, nil, false, unique, check, nil, (table, other), nil))
+        addColumn(definition(name, V.declaredDatatype, nil, false, unique, check, nil, (table, other), nil))
     }
 
     public func addColumn<V: Value>(_ name: Expression<V>, unique: Bool = false, check: Expression<Bool?>,
                                     references table: QueryType, _ other: Expression<V>) -> String where V.Datatype == Int64 {
-        return addColumn(definition(name, V.declaredDatatype, nil, false, unique, check, nil, (table, other), nil))
+        addColumn(definition(name, V.declaredDatatype, nil, false, unique, check, nil, (table, other), nil))
     }
 
     public func addColumn<V: Value>(_ name: Expression<V?>, unique: Bool = false, check: Expression<Bool>? = nil,
                                     references table: QueryType, _ other: Expression<V>) -> String where V.Datatype == Int64 {
-        return addColumn(definition(name, V.declaredDatatype, nil, true, unique, check, nil, (table, other), nil))
+        addColumn(definition(name, V.declaredDatatype, nil, true, unique, check, nil, (table, other), nil))
     }
 
     public func addColumn<V: Value>(_ name: Expression<V?>, unique: Bool = false, check: Expression<Bool?>,
                                     references table: QueryType, _ other: Expression<V>) -> String where V.Datatype == Int64 {
-        return addColumn(definition(name, V.declaredDatatype, nil, true, unique, check, nil, (table, other), nil))
+        addColumn(definition(name, V.declaredDatatype, nil, true, unique, check, nil, (table, other), nil))
     }
 
     public func addColumn<V: Value>(_ name: Expression<V>, check: Expression<Bool>? = nil, defaultValue: V,
                                     collate: Collation) -> String where V.Datatype == String {
-        return addColumn(definition(name, V.declaredDatatype, nil, false, false, check, defaultValue, nil, collate))
+        addColumn(definition(name, V.declaredDatatype, nil, false, false, check, defaultValue, nil, collate))
     }
 
     public func addColumn<V: Value>(_ name: Expression<V>, check: Expression<Bool?>, defaultValue: V,
                                     collate: Collation) -> String where V.Datatype == String {
-        return addColumn(definition(name, V.declaredDatatype, nil, false, false, check, defaultValue, nil, collate))
+        addColumn(definition(name, V.declaredDatatype, nil, false, false, check, defaultValue, nil, collate))
     }
 
     public func addColumn<V: Value>(_ name: Expression<V?>, check: Expression<Bool>? = nil, defaultValue: V? = nil,
                                     collate: Collation) -> String where V.Datatype == String {
-        return addColumn(definition(name, V.declaredDatatype, nil, true, false, check, defaultValue, nil, collate))
+        addColumn(definition(name, V.declaredDatatype, nil, true, false, check, defaultValue, nil, collate))
     }
 
     public func addColumn<V: Value>(_ name: Expression<V?>, check: Expression<Bool?>, defaultValue: V? = nil,
                                     collate: Collation) -> String where V.Datatype == String {
-        return addColumn(definition(name, V.declaredDatatype, nil, true, false, check, defaultValue, nil, collate))
+        addColumn(definition(name, V.declaredDatatype, nil, true, false, check, defaultValue, nil, collate))
     }
 
     fileprivate func addColumn(_ expression: Expressible) -> String {
-        return " ".join([
+        " ".join([
             Expression<Void>(literal: "ALTER TABLE"),
             tableName(),
             Expression<Void>(literal: "ADD COLUMN"),
@@ -131,7 +131,7 @@ extension Table {
     // MARK: - ALTER TABLE … RENAME TO
 
     public func rename(_ to: Table) -> String {
-        return rename(to: to)
+        rename(to: to)
     }
 
     // MARK: - CREATE INDEX
@@ -150,7 +150,7 @@ extension Table {
     // MARK: - DROP INDEX
 
     public func dropIndex(_ columns: Expressible..., ifExists: Bool = false) -> String {
-        return drop("INDEX", indexName(columns), ifExists)
+        drop("INDEX", indexName(columns), ifExists)
     }
 
     fileprivate func indexName(_ columns: [Expressible]) -> Expressible {
@@ -188,7 +188,7 @@ extension View {
     // MARK: - DROP VIEW
 
     public func drop(ifExists: Bool = false) -> String {
-        return drop("VIEW", tableName(), ifExists)
+        drop("VIEW", tableName(), ifExists)
     }
 
 }
@@ -210,7 +210,7 @@ extension VirtualTable {
     // MARK: - ALTER TABLE … RENAME TO
 
     public func rename(_ to: VirtualTable) -> String {
-        return rename(to: to)
+        rename(to: to)
     }
 
 }
@@ -495,7 +495,7 @@ public struct Module {
 extension Module: Expressible {
 
     public var expression: Expression<Void> {
-        return name.wrap(arguments)
+        name.wrap(arguments)
     }
 
 }
@@ -517,7 +517,7 @@ private extension QueryType {
     }
 
     func rename(to: Self) -> String {
-        return " ".join([
+        " ".join([
             Expression<Void>(literal: "ALTER TABLE"),
             tableName(),
             Expression<Void>(literal: "RENAME TO"),
@@ -557,7 +557,7 @@ private func definition(_ column: Expressible, _ datatype: String, _ primaryKey:
 }
 
 private func reference(_ primary: (QueryType, Expressible)) -> Expressible {
-    return " ".join([
+    " ".join([
         Expression<Void>(literal: "REFERENCES"),
         primary.0.tableName(qualified: false),
         "".wrap(primary.1) as Expression<Void>

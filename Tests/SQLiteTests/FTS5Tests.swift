@@ -122,6 +122,6 @@ class FTS5Tests: XCTestCase {
     }
 
     func sql(_ config: FTS5Config) -> String {
-        return virtualTable.create(.FTS5(config))
+        virtualTable.create(.FTS5(config))
     }
 }
