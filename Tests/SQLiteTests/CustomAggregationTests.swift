@@ -13,7 +13,7 @@ import CSQLite
 import SQLite3
 #endif
 
-class CustomAggregationTests : SQLiteTestCase {
+class CustomAggregationTests: SQLiteTestCase {
     override func setUp() {
         super.setUp()
         createUsersTable()
@@ -35,7 +35,7 @@ class CustomAggregationTests : SQLiteTestCase {
             p.deallocate()
             return v
         }
-        let _ = db.createAggregation("mySUM1", step: step, final: final) {
+        _ = db.createAggregation("mySUM1", step: step, final: final) {
             let v = UnsafeMutableBufferPointer<Int64>.allocate(capacity: 1)
             v[0] = 0
             return v.baseAddress!
@@ -60,7 +60,7 @@ class CustomAggregationTests : SQLiteTestCase {
             p.deallocate()
             return v
         }
-        let _ = db.createAggregation("mySUM2", step: step, final: final) {
+        _ = db.createAggregation("mySUM2", step: step, final: final) {
             let v = UnsafeMutableBufferPointer<Int64>.allocate(capacity: 1)
             v[0] = 0
             return v.baseAddress!
@@ -72,11 +72,11 @@ class CustomAggregationTests : SQLiteTestCase {
     }
 
     func testCustomSum() {
-        let reduce : (Int64, [Binding?]) -> Int64 = { (last, bindings) in
+        let reduce: (Int64, [Binding?]) -> Int64 = { (last, bindings) in
             let v = (bindings[0] as? Int64) ?? 0
             return last + v
         }
-        let _ = db.createAggregation("myReduceSUM1", initialValue: Int64(2000), reduce: reduce, result: { $0 })
+        _ = db.createAggregation("myReduceSUM1", initialValue: Int64(2000), reduce: reduce, result: { $0 })
         let result = try! db.prepare("SELECT myReduceSUM1(age) AS s FROM users")
         let i = result.columnNames.firstIndex(of: "s")!
         for row in result {
@@ -86,11 +86,11 @@ class CustomAggregationTests : SQLiteTestCase {
     }
 
     func testCustomSumGrouping() {
-        let reduce : (Int64, [Binding?]) -> Int64 = { (last, bindings) in
+        let reduce: (Int64, [Binding?]) -> Int64 = { (last, bindings) in
             let v = (bindings[0] as? Int64) ?? 0
             return last + v
         }
-        let _ = db.createAggregation("myReduceSUM2", initialValue: Int64(3000), reduce: reduce, result: { $0 })
+        _ = db.createAggregation("myReduceSUM2", initialValue: Int64(3000), reduce: reduce, result: { $0 })
         let result = try! db.prepare("SELECT myReduceSUM2(age) AS s FROM users GROUP BY admin ORDER BY s")
         let i = result.columnNames.firstIndex(of: "s")!
         let values = result.compactMap { $0[i] as? Int64 }
@@ -99,11 +99,11 @@ class CustomAggregationTests : SQLiteTestCase {
 
     func testCustomStringAgg() {
         let initial = String(repeating: " ", count: 64)
-        let reduce : (String, [Binding?]) -> String = { (last, bindings) in
+        let reduce: (String, [Binding?]) -> String = { (last, bindings) in
             let v = (bindings[0] as? String) ?? ""
             return last + v
         }
-        let _ = db.createAggregation("myReduceSUM3", initialValue: initial, reduce: reduce, result: { $0 })
+        _ = db.createAggregation("myReduceSUM3", initialValue: initial, reduce: reduce, result: { $0 })
         let result = try! db.prepare("SELECT myReduceSUM3(email) AS s FROM users")
         let i = result.columnNames.firstIndex(of: "s")!
         for row in result {
@@ -115,14 +115,16 @@ class CustomAggregationTests : SQLiteTestCase {
     func testCustomObjectSum() {
         {
             let initial = TestObject(value: 1000)
-            let reduce : (TestObject, [Binding?]) -> TestObject = { (last, bindings) in
+            let reduce: (TestObject, [Binding?]) -> TestObject = { (last, bindings) in
                 let v = (bindings[0] as? Int64) ?? 0
                 return TestObject(value: last.value + v)
             }
-            let _ = db.createAggregation("myReduceSUMX", initialValue: initial, reduce: reduce, result: { $0.value })
+            db.createAggregation("myReduceSUMX", initialValue: initial, reduce: reduce, result: { $0.value })
             // end this scope to ensure that the initial value is retained
             // by the createAggregation call.
+            // swiftlint:disable:next trailing_semicolon
         }();
+
         {
             XCTAssertEqual(TestObject.inits, 1)
             let result = try! db.prepare("SELECT myReduceSUMX(age) AS s FROM users")

@@ -35,6 +35,7 @@ import SQLite3
 #endif
 
 /// A connection to SQLite.
+// swiftlint:disable:next type_body_length
 public final class Connection {
 
     /// The location of a SQLite database.
@@ -585,7 +586,7 @@ public final class Connection {
     ///   - block: A block of code to run when the function is called. The block
     ///     is called with an array of raw SQL values mapped to the function’s
     ///     parameters and should return a raw SQL value (or nil).
-    // swiftlint:disable:next cyclomatic_complexity function_body_length
+    // swiftlint:disable:next cyclomatic_complexity
     public func createFunction(_ function: String, argumentCount: UInt? = nil, deterministic: Bool = false,
                                _ block: @escaping (_ args: [Binding?]) -> Binding?) {
         let argc = argumentCount.map { Int($0) } ?? -1
@@ -636,7 +637,7 @@ public final class Connection {
         if functions[function] == nil { functions[function] = [:] }
         functions[function]?[argc] = box
     }
-    
+
     /// Creates or redefines a custom SQL aggregate.
     ///
     /// - Parameters:
@@ -665,19 +666,19 @@ public final class Connection {
     ///   - state: A block of code to run to produce a fresh state variable for
     ///     each aggregation group. The block should return an
     ///     UnsafeMutablePointer to the fresh state variable.
+    // swiftlint:disable:next cyclomatic_complexity
     public func createAggregation<T>(
         _ aggregate: String,
         argumentCount: UInt? = nil,
         deterministic: Bool = false,
-        step: @escaping ([Binding?], UnsafeMutablePointer<T>) -> (),
+        step: @escaping ([Binding?], UnsafeMutablePointer<T>) -> Void,
         final: @escaping (UnsafeMutablePointer<T>) -> Binding?,
         state: @escaping () -> UnsafeMutablePointer<T>) {
-        
-        
+
         let argc = argumentCount.map { Int($0) } ?? -1
-        let box : Aggregate = { (stepFlag: Int, context: OpaquePointer?, argc: Int32, argv: UnsafeMutablePointer<OpaquePointer?>?) in
+        let box: Aggregate = { (stepFlag: Int, context: OpaquePointer?, argc: Int32, argv: UnsafeMutablePointer<OpaquePointer?>?) in
             let ptr = sqlite3_aggregate_context(context, 64)! // needs to be at least as large as uintptr_t; better way to do this?
-            let p = ptr.assumingMemoryBound(to: UnsafeMutableRawPointer.self)
+            let mutablePointer = ptr.assumingMemoryBound(to: UnsafeMutableRawPointer.self)
             if stepFlag > 0 {
                 let arguments: [Binding?] = (0..<Int(argc)).map { idx in
                     let value = argv![idx]
@@ -696,14 +697,14 @@ public final class Connection {
                         fatalError("unsupported value type: \(type)")
                     }
                 }
-                
+
                 if ptr.assumingMemoryBound(to: Int64.self).pointee == 0 {
-                    let v = state()
-                    p.pointee = UnsafeMutableRawPointer(mutating: v)
+                    let value = state()
+                    mutablePointer.pointee = UnsafeMutableRawPointer(mutating: value)
                 }
-                step(arguments, p.pointee.assumingMemoryBound(to: T.self))
+                step(arguments, mutablePointer.pointee.assumingMemoryBound(to: T.self))
             } else {
-                let result = final(p.pointee.assumingMemoryBound(to: T.self))
+                let result = final(mutablePointer.pointee.assumingMemoryBound(to: T.self))
                 if let result = result as? Blob {
                     sqlite3_result_blob(context, result.bytes, Int32(result.bytes.count), nil)
                 } else if let result = result as? Double {
@@ -719,14 +720,14 @@ public final class Connection {
                 }
             }
         }
-        
+
         var flags = SQLITE_UTF8
         #if !os(Linux)
         if deterministic {
             flags |= SQLITE_DETERMINISTIC
         }
         #endif
-        
+
         sqlite3_create_function_v2(
             handle,
             aggregate,
@@ -737,8 +738,7 @@ public final class Connection {
             { context, argc, value in
                 let function = unsafeBitCast(sqlite3_user_data(context), to: Aggregate.self)
                 function(1, context, argc, value)
-        },
-            { context in
+        }, { context in
                 let function = unsafeBitCast(sqlite3_user_data(context), to: Aggregate.self)
                 function(0, context, 0, nil)
         },

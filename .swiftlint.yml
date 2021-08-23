@@ -28,11 +28,15 @@ type_body_length:
   warning: 260
   error: 260
 
+function_body_length:
+  warning: 60
+  error: 60
+
 line_length:
   warning: 150
   error: 150
   ignores_comments: true
 
 file_length:
-  warning: 760
-  error: 760
+  warning: 900
+  error: 900
