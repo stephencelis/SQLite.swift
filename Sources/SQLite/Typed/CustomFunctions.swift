@@ -160,8 +160,8 @@ public extension Connection {
     }
 
     // MARK: -
-    
-    public func createAggregation<T: AnyObject>(
+
+    func createAggregation<T: AnyObject>(
         _ aggregate: String,
         argumentCount: UInt? = nil,
         deterministic: Bool = false,
@@ -169,14 +169,14 @@ public extension Connection {
         reduce: @escaping (T, [Binding?]) -> T,
         result: @escaping (T) -> Binding?
         ) {
-        
+
         let step: ([Binding?], UnsafeMutablePointer<UnsafeMutableRawPointer>) -> () = { (bindings, ptr) in
             let p = ptr.pointee.assumingMemoryBound(to: T.self)
             let current = Unmanaged<T>.fromOpaque(p).takeRetainedValue()
             let next = reduce(current, bindings)
             ptr.pointee = Unmanaged.passRetained(next).toOpaque()
         }
-        
+
         let final: (UnsafeMutablePointer<UnsafeMutableRawPointer>) -> Binding? = { (ptr) in
             let p = ptr.pointee.assumingMemoryBound(to: T.self)
             let obj = Unmanaged<T>.fromOpaque(p).takeRetainedValue()
@@ -184,17 +184,17 @@ public extension Connection {
             ptr.deallocate()
             return value
         }
-        
+
         let state: () -> UnsafeMutablePointer<UnsafeMutableRawPointer> = {
             let p = UnsafeMutablePointer<UnsafeMutableRawPointer>.allocate(capacity: 1)
             p.pointee = Unmanaged.passRetained(initialValue).toOpaque()
             return p
         }
-        
+
         createAggregation(aggregate, step: step, final: final, state: state)
     }
-    
-    public func createAggregation<T>(
+
+    func createAggregation<T>(
         _ aggregate: String,
         argumentCount: UInt? = nil,
         deterministic: Bool = false,
@@ -202,25 +202,25 @@ public extension Connection {
         reduce: @escaping (T, [Binding?]) -> T,
         result: @escaping (T) -> Binding?
         ) {
-        
+
         let step: ([Binding?], UnsafeMutablePointer<T>) -> () = { (bindings, p) in
             let current = p.pointee
             let next = reduce(current, bindings)
             p.pointee = next
         }
-        
+
         let final: (UnsafeMutablePointer<T>) -> Binding? = { (p) in
             let v = result(p.pointee)
             p.deallocate()
             return v
         }
-        
+
         let state: () -> UnsafeMutablePointer<T> = {
             let p = UnsafeMutablePointer<T>.allocate(capacity: 1)
             p.pointee = initialValue
             return p
         }
-        
+
         createAggregation(aggregate, step: step, final: final, state: state)
     }
 
