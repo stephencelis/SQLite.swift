@@ -35,7 +35,7 @@ class CustomAggregationTests: SQLiteTestCase {
             p.deallocate()
             return v
         }
-        _ = db.createAggregation("mySUM1", step: step, final: final) {
+        db.createAggregation("mySUM1", step: step, final: final) {
             let v = UnsafeMutableBufferPointer<Int64>.allocate(capacity: 1)
             v[0] = 0
             return v.baseAddress!
@@ -60,7 +60,7 @@ class CustomAggregationTests: SQLiteTestCase {
             p.deallocate()
             return v
         }
-        _ = db.createAggregation("mySUM2", step: step, final: final) {
+        db.createAggregation("mySUM2", step: step, final: final) {
             let v = UnsafeMutableBufferPointer<Int64>.allocate(capacity: 1)
             v[0] = 0
             return v.baseAddress!
@@ -76,7 +76,7 @@ class CustomAggregationTests: SQLiteTestCase {
             let v = (bindings[0] as? Int64) ?? 0
             return last + v
         }
-        _ = db.createAggregation("myReduceSUM1", initialValue: Int64(2000), reduce: reduce, result: { $0 })
+        db.createAggregation("myReduceSUM1", initialValue: Int64(2000), reduce: reduce, result: { $0 })
         let result = try! db.prepare("SELECT myReduceSUM1(age) AS s FROM users")
         let i = result.columnNames.firstIndex(of: "s")!
         for row in result {
@@ -90,7 +90,7 @@ class CustomAggregationTests: SQLiteTestCase {
             let v = (bindings[0] as? Int64) ?? 0
             return last + v
         }
-        _ = db.createAggregation("myReduceSUM2", initialValue: Int64(3000), reduce: reduce, result: { $0 })
+        db.createAggregation("myReduceSUM2", initialValue: Int64(3000), reduce: reduce, result: { $0 })
         let result = try! db.prepare("SELECT myReduceSUM2(age) AS s FROM users GROUP BY admin ORDER BY s")
         let i = result.columnNames.firstIndex(of: "s")!
         let values = result.compactMap { $0[i] as? Int64 }
@@ -103,7 +103,7 @@ class CustomAggregationTests: SQLiteTestCase {
             let v = (bindings[0] as? String) ?? ""
             return last + v
         }
-        _ = db.createAggregation("myReduceSUM3", initialValue: initial, reduce: reduce, result: { $0 })
+        db.createAggregation("myReduceSUM3", initialValue: initial, reduce: reduce, result: { $0 })
         let result = try! db.prepare("SELECT myReduceSUM3(email) AS s FROM users")
         let i = result.columnNames.firstIndex(of: "s")!
         for row in result {
