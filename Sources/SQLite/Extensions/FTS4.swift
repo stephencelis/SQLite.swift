@@ -184,7 +184,7 @@ open class FTSConfig {
 
     /// Adds a column definition
     @discardableResult open func column(_ column: Expressible, _ options: [ColumnOption] = []) -> Self {
-        self.columnDefinitions.append((column, options))
+        columnDefinitions.append((column, options))
         return self
     }
 
@@ -203,19 +203,19 @@ open class FTSConfig {
 
     /// [The prefix= option](https://www.sqlite.org/fts3.html#section_6_6)
     @discardableResult open func prefix(_ prefix: [Int]) -> Self {
-        self.prefixes += prefix
+        prefixes += prefix
         return self
     }
 
     /// [The content= option](https://www.sqlite.org/fts3.html#section_6_2)
     @discardableResult open func externalContent(_ schema: SchemaType) -> Self {
-        self.externalContentSchema = schema
+        externalContentSchema = schema
         return self
     }
 
     /// [Contentless FTS4 Tables](https://www.sqlite.org/fts3.html#section_6_2_1)
     @discardableResult open func contentless() -> Self {
-        self.isContentless = true
+        isContentless = true
         return self
     }
 
@@ -311,19 +311,19 @@ open class FTS4Config: FTSConfig {
 
     /// [The compress= and uncompress= options](https://www.sqlite.org/fts3.html#section_6_1)
     @discardableResult open func compress(_ functionName: String) -> Self {
-        self.compressFunction = functionName
+        compressFunction = functionName
         return self
     }
 
     /// [The compress= and uncompress= options](https://www.sqlite.org/fts3.html#section_6_1)
     @discardableResult open func uncompress(_ functionName: String) -> Self {
-        self.uncompressFunction = functionName
+        uncompressFunction = functionName
         return self
     }
 
     /// [The languageid= option](https://www.sqlite.org/fts3.html#section_6_3)
     @discardableResult open func languageId(_ columnName: String) -> Self {
-        self.languageId = columnName
+        languageId = columnName
         return self
     }
 

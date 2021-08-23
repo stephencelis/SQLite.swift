@@ -161,7 +161,7 @@ public final class Connection {
     ///
     /// - Throws: `Result.Error` if query execution fails.
     public func execute(_ SQL: String) throws {
-        _ = try sync { try self.check(sqlite3_exec(self.handle, SQL, nil, nil, nil)) }
+        _ = try sync { try check(sqlite3_exec(handle, SQL, nil, nil, nil)) }
     }
 
     // MARK: - Prepare
@@ -633,7 +633,7 @@ public final class Connection {
             let function = unsafeBitCast(sqlite3_user_data(context), to: Function.self)
             function(context, argc, value)
         }, nil, nil, nil)
-        if functions[function] == nil { self.functions[function] = [:] }
+        if functions[function] == nil { functions[function] = [:] }
         functions[function]?[argc] = box
     }
     

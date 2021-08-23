@@ -217,7 +217,7 @@ class ConnectionTests: SQLiteTestCase {
     }
 
     func test_savepoint_beginsAndCommitsSavepoints() {
-        let db: Connection = self.db
+        let db: Connection = db
 
         try! db.savepoint("1") {
             try db.savepoint("2") {
@@ -235,7 +235,7 @@ class ConnectionTests: SQLiteTestCase {
     }
 
     func test_savepoint_beginsAndRollsSavepointsBack() {
-        let db: Connection = self.db
+        let db: Connection = db
         let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
         do {
@@ -310,7 +310,7 @@ class ConnectionTests: SQLiteTestCase {
                 done()
             }
             try! db.transaction {
-                try self.insertUser("alice")
+                try insertUser("alice")
             }
             XCTAssertEqual(1, try! db.scalar("SELECT count(*) FROM users") as? Int64)
         }
@@ -321,8 +321,8 @@ class ConnectionTests: SQLiteTestCase {
             db.rollbackHook(done)
             do {
                 try db.transaction {
-                    try self.insertUser("alice")
-                    try self.insertUser("alice") // throw
+                    try insertUser("alice")
+                    try insertUser("alice") // throw
                 }
             } catch {
             }
@@ -338,7 +338,7 @@ class ConnectionTests: SQLiteTestCase {
             db.rollbackHook(done)
             do {
                 try db.transaction {
-                    try self.insertUser("alice")
+                    try insertUser("alice")
                 }
             } catch {
             }
@@ -437,7 +437,7 @@ class ResultTests: XCTestCase {
             XCTAssertEqual("not an error", message)
             XCTAssertEqual(SQLITE_MISUSE, code)
             XCTAssertNil(statement)
-            XCTAssert(self.connection === connection)
+            XCTAssert(connection === connection)
         } else {
             XCTFail("no error")
         }

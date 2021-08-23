@@ -1093,7 +1093,7 @@ extension Connection {
         let expression = query.expression
         return try sync {
             try self.run(expression.template, expression.bindings)
-            return self.lastInsertRowid
+            return lastInsertRowid
         }
     }
 
@@ -1109,7 +1109,7 @@ extension Connection {
         let expression = query.expression
         return try sync {
             try self.run(expression.template, expression.bindings)
-            return self.changes
+            return changes
         }
     }
 
@@ -1124,7 +1124,7 @@ extension Connection {
         let expression = query.expression
         return try sync {
             try self.run(expression.template, expression.bindings)
-            return self.changes
+            return changes
         }
     }
 
@@ -1244,7 +1244,7 @@ public struct QueryClauses {
     var union = [QueryType]()
 
     fileprivate init(_ name: String, alias: String?, database: String?) {
-        self.from = (name, alias, database)
+        from = (name, alias, database)
     }
 
 }

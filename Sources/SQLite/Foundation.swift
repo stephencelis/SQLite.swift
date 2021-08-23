@@ -80,7 +80,7 @@ extension UUID: Value {
     }
 
     public var datatypeValue: String {
-        return self.uuidString
+        return uuidString
     }
 
 }

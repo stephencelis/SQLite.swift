@@ -48,10 +48,10 @@ public final class Statement {
         sqlite3_finalize(handle)
     }
 
-    public lazy var columnCount: Int = Int(sqlite3_column_count(self.handle))
+    public lazy var columnCount: Int = Int(sqlite3_column_count(handle))
 
-    public lazy var columnNames: [String] = (0..<Int32(self.columnCount)).map {
-        String(cString: sqlite3_column_name(self.handle, $0))
+    public lazy var columnNames: [String] = (0..<Int32(columnCount)).map {
+        String(cString: sqlite3_column_name(handle, $0))
     }
 
     /// A cursor pointing to the current row.
@@ -182,7 +182,7 @@ public final class Statement {
     }
 
     public func step() throws -> Bool {
-        return try connection.sync { try self.connection.check(sqlite3_step(self.handle)) == SQLITE_ROW }
+        return try connection.sync { try connection.check(sqlite3_step(handle)) == SQLITE_ROW }
     }
 
     fileprivate func reset(clearBindings shouldClear: Bool = true) {
@@ -304,7 +304,7 @@ extension Cursor: Sequence {
     public func makeIterator() -> AnyIterator<Binding?> {
         var idx = 0
         return AnyIterator {
-            if idx >= self.columnCount {
+            if idx >= columnCount {
                 return Binding??.none
             } else {
                 idx += 1
