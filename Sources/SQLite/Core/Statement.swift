@@ -305,7 +305,7 @@ extension Cursor: Sequence {
         var idx = 0
         return AnyIterator {
             if idx >= columnCount {
-                return Binding??.none
+                return .none
             } else {
                 idx += 1
                 return self[idx - 1]
