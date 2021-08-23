@@ -636,8 +636,122 @@ public final class Connection {
         if functions[function] == nil { self.functions[function] = [:] }
         functions[function]?[argc] = box
     }
+    
+    /// Creates or redefines a custom SQL aggregate.
+    ///
+    /// - Parameters:
+    ///
+    ///   - aggregate: The name of the aggregate to create or redefine.
+    ///
+    ///   - argumentCount: The number of arguments that the aggregate takes. If
+    ///     `nil`, the aggregate may take any number of arguments.
+    ///
+    ///     Default: `nil`
+    ///
+    ///   - deterministic: Whether or not the aggregate is deterministic (_i.e._
+    ///     the aggregate always returns the same result for a given input).
+    ///
+    ///     Default: `false`
+    ///
+    ///   - step: A block of code to run for each row of an aggregation group.
+    ///     The block is called with an array of raw SQL values mapped to the
+    ///     aggregate’s parameters, and an UnsafeMutablePointer to a state
+    ///     variable.
+    ///
+    ///   - final: A block of code to run after each row of an aggregation group
+    ///     is processed. The block is called with an UnsafeMutablePointer to a
+    ///     state variable, and should return a raw SQL value (or nil).
+    ///
+    ///   - state: A block of code to run to produce a fresh state variable for
+    ///     each aggregation group. The block should return an
+    ///     UnsafeMutablePointer to the fresh state variable.
+    public func createAggregation<T>(
+        _ aggregate: String,
+        argumentCount: UInt? = nil,
+        deterministic: Bool = false,
+        step: @escaping ([Binding?], UnsafeMutablePointer<T>) -> (),
+        final: @escaping (UnsafeMutablePointer<T>) -> Binding?,
+        state: @escaping () -> UnsafeMutablePointer<T>) {
+        
+        
+        let argc = argumentCount.map { Int($0) } ?? -1
+        let box : Aggregate = { (stepFlag: Int, context: OpaquePointer?, argc: Int32, argv: UnsafeMutablePointer<OpaquePointer?>?) in
+            let ptr = sqlite3_aggregate_context(context, 64)! // needs to be at least as large as uintptr_t; better way to do this?
+            let p = ptr.assumingMemoryBound(to: UnsafeMutableRawPointer.self)
+            if stepFlag > 0 {
+                let arguments: [Binding?] = (0..<Int(argc)).map { idx in
+                    let value = argv![idx]
+                    switch sqlite3_value_type(value) {
+                    case SQLITE_BLOB:
+                        return Blob(bytes: sqlite3_value_blob(value), length: Int(sqlite3_value_bytes(value)))
+                    case SQLITE_FLOAT:
+                        return sqlite3_value_double(value)
+                    case SQLITE_INTEGER:
+                        return sqlite3_value_int64(value)
+                    case SQLITE_NULL:
+                        return nil
+                    case SQLITE_TEXT:
+                        return String(cString: UnsafePointer(sqlite3_value_text(value)))
+                    case let type:
+                        fatalError("unsupported value type: \(type)")
+                    }
+                }
+                
+                if ptr.assumingMemoryBound(to: Int64.self).pointee == 0 {
+                    let v = state()
+                    p.pointee = UnsafeMutableRawPointer(mutating: v)
+                }
+                step(arguments, p.pointee.assumingMemoryBound(to: T.self))
+            } else {
+                let result = final(p.pointee.assumingMemoryBound(to: T.self))
+                if let result = result as? Blob {
+                    sqlite3_result_blob(context, result.bytes, Int32(result.bytes.count), nil)
+                } else if let result = result as? Double {
+                    sqlite3_result_double(context, result)
+                } else if let result = result as? Int64 {
+                    sqlite3_result_int64(context, result)
+                } else if let result = result as? String {
+                    sqlite3_result_text(context, result, Int32(result.count), SQLITE_TRANSIENT)
+                } else if result == nil {
+                    sqlite3_result_null(context)
+                } else {
+                    fatalError("unsupported result type: \(String(describing: result))")
+                }
+            }
+        }
+        
+        var flags = SQLITE_UTF8
+        #if !os(Linux)
+        if deterministic {
+            flags |= SQLITE_DETERMINISTIC
+        }
+        #endif
+        
+        sqlite3_create_function_v2(
+            handle,
+            aggregate,
+            Int32(argc),
+            flags,
+            unsafeBitCast(box, to: UnsafeMutableRawPointer.self),
+            nil,
+            { context, argc, value in
+                let function = unsafeBitCast(sqlite3_user_data(context), to: Aggregate.self)
+                function(1, context, argc, value)
+        },
+            { context in
+                let function = unsafeBitCast(sqlite3_user_data(context), to: Aggregate.self)
+                function(0, context, 0, nil)
+        },
+            nil
+        )
+        if aggregations[aggregate] == nil { self.aggregations[aggregate] = [:] }
+        aggregations[aggregate]?[argc] = box
+    }
+
+    fileprivate typealias Aggregate = @convention(block) (Int, OpaquePointer?, Int32, UnsafeMutablePointer<OpaquePointer?>?) -> Void
     fileprivate typealias Function = @convention(block) (OpaquePointer?, Int32, UnsafeMutablePointer<OpaquePointer?>?) -> Void
     fileprivate var functions = [String: [Int: Function]]()
+    fileprivate var aggregations = [String: [Int: Aggregate]]()
 
     /// Defines a new collating sequence.
     ///
