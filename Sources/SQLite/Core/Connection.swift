@@ -434,7 +434,7 @@ public final class Connection {
         }
     }
 
-    @available(OSX, deprecated: 10.2)
+    @available(OSX, deprecated: 10.12)
     @available(iOS, deprecated: 10.0)
     @available(watchOS, deprecated: 3.0)
     @available(tvOS, deprecated: 10.0)
