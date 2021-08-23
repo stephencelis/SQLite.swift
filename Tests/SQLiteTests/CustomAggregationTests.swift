@@ -105,6 +105,7 @@ class CustomAggregationTests: SQLiteTestCase {
         }
         db.createAggregation("myReduceSUM3", initialValue: initial, reduce: reduce, result: { $0 })
         let result = try! db.prepare("SELECT myReduceSUM3(email) AS s FROM users")
+
         let i = result.columnNames.firstIndex(of: "s")!
         for row in result {
             let value = row[i] as? String

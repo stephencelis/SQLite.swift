@@ -217,7 +217,7 @@ public extension Connection {
 
         let state: () -> UnsafeMutablePointer<T> = {
             let pointer = UnsafeMutablePointer<T>.allocate(capacity: 1)
-            pointer.pointee = initialValue
+            pointer.initialize(to: initialValue)
             return pointer
         }
 
