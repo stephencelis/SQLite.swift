@@ -217,8 +217,6 @@ class ConnectionTests: SQLiteTestCase {
     }
 
     func test_savepoint_beginsAndCommitsSavepoints() {
-        let db: Connection = db
-
         try! db.savepoint("1") {
             try db.savepoint("2") {
                 try db.run("INSERT INTO users (email) VALUES (?)", "alice@example.com")
@@ -235,7 +233,6 @@ class ConnectionTests: SQLiteTestCase {
     }
 
     func test_savepoint_beginsAndRollsSavepointsBack() {
-        let db: Connection = db
         let stmt = try! db.prepare("INSERT INTO users (email) VALUES (?)", "alice@example.com")
 
         do {
