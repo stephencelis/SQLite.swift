@@ -1,14 +1,13 @@
 #if SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
 
-
 /// Extension methods for [SQLCipher](https://www.zetetic.net/sqlcipher/).
 /// @see [sqlcipher api](https://www.zetetic.net/sqlcipher/sqlcipher-api/)
 extension Connection {
 
     /// - Returns: the SQLCipher version
     public var cipherVersion: String? {
-        return (try? scalar("PRAGMA cipher_version")) as? String
+        (try? scalar("PRAGMA cipher_version")) as? String
     }
 
     /// Specify the key for an encrypted database.  This routine should be
@@ -91,7 +90,7 @@ extension Connection {
     // the key provided is incorrect. To test that the database can be successfully opened with the
     // provided key, it is necessary to perform some operation on the database (i.e. read from it).
     private func cipher_key_check() throws {
-        let _ = try scalar("SELECT count(*) FROM sqlite_master;")
+        _ = try scalar("SELECT count(*) FROM sqlite_master;")
     }
 }
 #endif

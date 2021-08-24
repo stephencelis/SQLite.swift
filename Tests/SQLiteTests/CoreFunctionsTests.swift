@@ -1,145 +1,145 @@
 import XCTest
 @testable import SQLite
 
-class CoreFunctionsTests : XCTestCase {
+class CoreFunctionsTests: XCTestCase {
 
     func test_round_wrapsDoubleExpressionsWithRoundFunction() {
-        AssertSQL("round(\"double\")", double.round())
-        AssertSQL("round(\"doubleOptional\")", doubleOptional.round())
+        assertSQL("round(\"double\")", double.round())
+        assertSQL("round(\"doubleOptional\")", doubleOptional.round())
 
-        AssertSQL("round(\"double\", 1)", double.round(1))
-        AssertSQL("round(\"doubleOptional\", 2)", doubleOptional.round(2))
+        assertSQL("round(\"double\", 1)", double.round(1))
+        assertSQL("round(\"doubleOptional\", 2)", doubleOptional.round(2))
     }
 
     func test_random_generatesExpressionWithRandomFunction() {
-        AssertSQL("random()", Expression<Int64>.random())
-        AssertSQL("random()", Expression<Int>.random())
+        assertSQL("random()", Expression<Int64>.random())
+        assertSQL("random()", Expression<Int>.random())
     }
 
     func test_length_wrapsStringExpressionWithLengthFunction() {
-        AssertSQL("length(\"string\")", string.length)
-        AssertSQL("length(\"stringOptional\")", stringOptional.length)
+        assertSQL("length(\"string\")", string.length)
+        assertSQL("length(\"stringOptional\")", stringOptional.length)
     }
 
     func test_lowercaseString_wrapsStringExpressionWithLowerFunction() {
-        AssertSQL("lower(\"string\")", string.lowercaseString)
-        AssertSQL("lower(\"stringOptional\")", stringOptional.lowercaseString)
+        assertSQL("lower(\"string\")", string.lowercaseString)
+        assertSQL("lower(\"stringOptional\")", stringOptional.lowercaseString)
     }
 
     func test_uppercaseString_wrapsStringExpressionWithUpperFunction() {
-        AssertSQL("upper(\"string\")", string.uppercaseString)
-        AssertSQL("upper(\"stringOptional\")", stringOptional.uppercaseString)
+        assertSQL("upper(\"string\")", string.uppercaseString)
+        assertSQL("upper(\"stringOptional\")", stringOptional.uppercaseString)
     }
 
     func test_like_buildsExpressionWithLikeOperator() {
-        AssertSQL("(\"string\" LIKE 'a%')", string.like("a%"))
-        AssertSQL("(\"stringOptional\" LIKE 'b%')", stringOptional.like("b%"))
+        assertSQL("(\"string\" LIKE 'a%')", string.like("a%"))
+        assertSQL("(\"stringOptional\" LIKE 'b%')", stringOptional.like("b%"))
 
-        AssertSQL("(\"string\" LIKE '%\\%' ESCAPE '\\')", string.like("%\\%", escape: "\\"))
-        AssertSQL("(\"stringOptional\" LIKE '_\\_' ESCAPE '\\')", stringOptional.like("_\\_", escape: "\\"))
-        
-        AssertSQL("(\"string\" LIKE \"a\")", string.like(Expression<String>("a")))
-        AssertSQL("(\"stringOptional\" LIKE \"a\")", stringOptional.like(Expression<String>("a")))
-        
-        AssertSQL("(\"string\" LIKE \"a\" ESCAPE '\\')", string.like(Expression<String>("a"), escape: "\\"))
-        AssertSQL("(\"stringOptional\" LIKE \"a\" ESCAPE '\\')", stringOptional.like(Expression<String>("a"), escape: "\\"))
-        
-        AssertSQL("('string' LIKE \"a\")", "string".like(Expression<String>("a")))
-        AssertSQL("('string' LIKE \"a\" ESCAPE '\\')", "string".like(Expression<String>("a"), escape: "\\"))
+        assertSQL("(\"string\" LIKE '%\\%' ESCAPE '\\')", string.like("%\\%", escape: "\\"))
+        assertSQL("(\"stringOptional\" LIKE '_\\_' ESCAPE '\\')", stringOptional.like("_\\_", escape: "\\"))
+
+        assertSQL("(\"string\" LIKE \"a\")", string.like(Expression<String>("a")))
+        assertSQL("(\"stringOptional\" LIKE \"a\")", stringOptional.like(Expression<String>("a")))
+
+        assertSQL("(\"string\" LIKE \"a\" ESCAPE '\\')", string.like(Expression<String>("a"), escape: "\\"))
+        assertSQL("(\"stringOptional\" LIKE \"a\" ESCAPE '\\')", stringOptional.like(Expression<String>("a"), escape: "\\"))
+
+        assertSQL("('string' LIKE \"a\")", "string".like(Expression<String>("a")))
+        assertSQL("('string' LIKE \"a\" ESCAPE '\\')", "string".like(Expression<String>("a"), escape: "\\"))
     }
 
     func test_glob_buildsExpressionWithGlobOperator() {
-        AssertSQL("(\"string\" GLOB 'a*')", string.glob("a*"))
-        AssertSQL("(\"stringOptional\" GLOB 'b*')", stringOptional.glob("b*"))
+        assertSQL("(\"string\" GLOB 'a*')", string.glob("a*"))
+        assertSQL("(\"stringOptional\" GLOB 'b*')", stringOptional.glob("b*"))
     }
 
     func test_match_buildsExpressionWithMatchOperator() {
-        AssertSQL("(\"string\" MATCH 'a*')", string.match("a*"))
-        AssertSQL("(\"stringOptional\" MATCH 'b*')", stringOptional.match("b*"))
+        assertSQL("(\"string\" MATCH 'a*')", string.match("a*"))
+        assertSQL("(\"stringOptional\" MATCH 'b*')", stringOptional.match("b*"))
     }
 
     func test_regexp_buildsExpressionWithRegexpOperator() {
-        AssertSQL("(\"string\" REGEXP '^.+@.+\\.com$')", string.regexp("^.+@.+\\.com$"))
-        AssertSQL("(\"stringOptional\" REGEXP '^.+@.+\\.net$')", stringOptional.regexp("^.+@.+\\.net$"))
+        assertSQL("(\"string\" REGEXP '^.+@.+\\.com$')", string.regexp("^.+@.+\\.com$"))
+        assertSQL("(\"stringOptional\" REGEXP '^.+@.+\\.net$')", stringOptional.regexp("^.+@.+\\.net$"))
     }
 
     func test_collate_buildsExpressionWithCollateOperator() {
-        AssertSQL("(\"string\" COLLATE BINARY)", string.collate(.binary))
-        AssertSQL("(\"string\" COLLATE NOCASE)", string.collate(.nocase))
-        AssertSQL("(\"string\" COLLATE RTRIM)", string.collate(.rtrim))
-        AssertSQL("(\"string\" COLLATE \"CUSTOM\")", string.collate(.custom("CUSTOM")))
+        assertSQL("(\"string\" COLLATE BINARY)", string.collate(.binary))
+        assertSQL("(\"string\" COLLATE NOCASE)", string.collate(.nocase))
+        assertSQL("(\"string\" COLLATE RTRIM)", string.collate(.rtrim))
+        assertSQL("(\"string\" COLLATE \"CUSTOM\")", string.collate(.custom("CUSTOM")))
 
-        AssertSQL("(\"stringOptional\" COLLATE BINARY)", stringOptional.collate(.binary))
-        AssertSQL("(\"stringOptional\" COLLATE NOCASE)", stringOptional.collate(.nocase))
-        AssertSQL("(\"stringOptional\" COLLATE RTRIM)", stringOptional.collate(.rtrim))
-        AssertSQL("(\"stringOptional\" COLLATE \"CUSTOM\")", stringOptional.collate(.custom("CUSTOM")))
+        assertSQL("(\"stringOptional\" COLLATE BINARY)", stringOptional.collate(.binary))
+        assertSQL("(\"stringOptional\" COLLATE NOCASE)", stringOptional.collate(.nocase))
+        assertSQL("(\"stringOptional\" COLLATE RTRIM)", stringOptional.collate(.rtrim))
+        assertSQL("(\"stringOptional\" COLLATE \"CUSTOM\")", stringOptional.collate(.custom("CUSTOM")))
     }
 
     func test_ltrim_wrapsStringWithLtrimFunction() {
-        AssertSQL("ltrim(\"string\")", string.ltrim())
-        AssertSQL("ltrim(\"stringOptional\")", stringOptional.ltrim())
+        assertSQL("ltrim(\"string\")", string.ltrim())
+        assertSQL("ltrim(\"stringOptional\")", stringOptional.ltrim())
 
-        AssertSQL("ltrim(\"string\", ' ')", string.ltrim([" "]))
-        AssertSQL("ltrim(\"stringOptional\", ' ')", stringOptional.ltrim([" "]))
+        assertSQL("ltrim(\"string\", ' ')", string.ltrim([" "]))
+        assertSQL("ltrim(\"stringOptional\", ' ')", stringOptional.ltrim([" "]))
     }
 
     func test_ltrim_wrapsStringWithRtrimFunction() {
-        AssertSQL("rtrim(\"string\")", string.rtrim())
-        AssertSQL("rtrim(\"stringOptional\")", stringOptional.rtrim())
+        assertSQL("rtrim(\"string\")", string.rtrim())
+        assertSQL("rtrim(\"stringOptional\")", stringOptional.rtrim())
 
-        AssertSQL("rtrim(\"string\", ' ')", string.rtrim([" "]))
-        AssertSQL("rtrim(\"stringOptional\", ' ')", stringOptional.rtrim([" "]))
+        assertSQL("rtrim(\"string\", ' ')", string.rtrim([" "]))
+        assertSQL("rtrim(\"stringOptional\", ' ')", stringOptional.rtrim([" "]))
     }
 
     func test_ltrim_wrapsStringWithTrimFunction() {
-        AssertSQL("trim(\"string\")", string.trim())
-        AssertSQL("trim(\"stringOptional\")", stringOptional.trim())
+        assertSQL("trim(\"string\")", string.trim())
+        assertSQL("trim(\"stringOptional\")", stringOptional.trim())
 
-        AssertSQL("trim(\"string\", ' ')", string.trim([" "]))
-        AssertSQL("trim(\"stringOptional\", ' ')", stringOptional.trim([" "]))
+        assertSQL("trim(\"string\", ' ')", string.trim([" "]))
+        assertSQL("trim(\"stringOptional\", ' ')", stringOptional.trim([" "]))
     }
 
     func test_replace_wrapsStringWithReplaceFunction() {
-        AssertSQL("replace(\"string\", '@example.com', '@example.net')", string.replace("@example.com", with: "@example.net"))
-        AssertSQL("replace(\"stringOptional\", '@example.net', '@example.com')", stringOptional.replace("@example.net", with: "@example.com"))
+        assertSQL("replace(\"string\", '@example.com', '@example.net')", string.replace("@example.com", with: "@example.net"))
+        assertSQL("replace(\"stringOptional\", '@example.net', '@example.com')", stringOptional.replace("@example.net", with: "@example.com"))
     }
 
     func test_substring_wrapsStringWithSubstrFunction() {
-        AssertSQL("substr(\"string\", 1, 2)", string.substring(1, length: 2))
-        AssertSQL("substr(\"stringOptional\", 2, 1)", stringOptional.substring(2, length: 1))
+        assertSQL("substr(\"string\", 1, 2)", string.substring(1, length: 2))
+        assertSQL("substr(\"stringOptional\", 2, 1)", stringOptional.substring(2, length: 1))
     }
 
     func test_subscriptWithRange_wrapsStringWithSubstrFunction() {
-        AssertSQL("substr(\"string\", 1, 2)", string[1..<3])
-        AssertSQL("substr(\"stringOptional\", 2, 1)", stringOptional[2..<3])
+        assertSQL("substr(\"string\", 1, 2)", string[1..<3])
+        assertSQL("substr(\"stringOptional\", 2, 1)", stringOptional[2..<3])
     }
 
     func test_nilCoalescingOperator_wrapsOptionalsWithIfnullFunction() {
-        AssertSQL("ifnull(\"intOptional\", 1)", intOptional ?? 1)
+        assertSQL("ifnull(\"intOptional\", 1)", intOptional ?? 1)
         // AssertSQL("ifnull(\"doubleOptional\", 1.0)", doubleOptional ?? 1) // rdar://problem/21677256
         XCTAssertEqual("ifnull(\"doubleOptional\", 1.0)", (doubleOptional ?? 1).asSQL())
-        AssertSQL("ifnull(\"stringOptional\", 'literal')", stringOptional ?? "literal")
+        assertSQL("ifnull(\"stringOptional\", 'literal')", stringOptional ?? "literal")
 
-        AssertSQL("ifnull(\"intOptional\", \"int\")", intOptional ?? int)
-        AssertSQL("ifnull(\"doubleOptional\", \"double\")", doubleOptional ?? double)
-        AssertSQL("ifnull(\"stringOptional\", \"string\")", stringOptional ?? string)
+        assertSQL("ifnull(\"intOptional\", \"int\")", intOptional ?? int)
+        assertSQL("ifnull(\"doubleOptional\", \"double\")", doubleOptional ?? double)
+        assertSQL("ifnull(\"stringOptional\", \"string\")", stringOptional ?? string)
 
-        AssertSQL("ifnull(\"intOptional\", \"intOptional\")", intOptional ?? intOptional)
-        AssertSQL("ifnull(\"doubleOptional\", \"doubleOptional\")", doubleOptional ?? doubleOptional)
-        AssertSQL("ifnull(\"stringOptional\", \"stringOptional\")", stringOptional ?? stringOptional)
+        assertSQL("ifnull(\"intOptional\", \"intOptional\")", intOptional ?? intOptional)
+        assertSQL("ifnull(\"doubleOptional\", \"doubleOptional\")", doubleOptional ?? doubleOptional)
+        assertSQL("ifnull(\"stringOptional\", \"stringOptional\")", stringOptional ?? stringOptional)
     }
 
     func test_absoluteValue_wrapsNumberWithAbsFucntion() {
-        AssertSQL("abs(\"int\")", int.absoluteValue)
-        AssertSQL("abs(\"intOptional\")", intOptional.absoluteValue)
+        assertSQL("abs(\"int\")", int.absoluteValue)
+        assertSQL("abs(\"intOptional\")", intOptional.absoluteValue)
 
-        AssertSQL("abs(\"double\")", double.absoluteValue)
-        AssertSQL("abs(\"doubleOptional\")", doubleOptional.absoluteValue)
+        assertSQL("abs(\"double\")", double.absoluteValue)
+        assertSQL("abs(\"doubleOptional\")", doubleOptional.absoluteValue)
     }
 
     func test_contains_buildsExpressionWithInOperator() {
-        AssertSQL("(\"string\" IN ('hello', 'world'))", ["hello", "world"].contains(string))
-        AssertSQL("(\"stringOptional\" IN ('hello', 'world'))", ["hello", "world"].contains(stringOptional))
+        assertSQL("(\"string\" IN ('hello', 'world'))", ["hello", "world"].contains(string))
+        assertSQL("(\"stringOptional\" IN ('hello', 'world'))", ["hello", "world"].contains(stringOptional))
     }
 
 }

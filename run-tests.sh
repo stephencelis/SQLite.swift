@@ -7,7 +7,11 @@ if [ -n "$BUILD_SCHEME" ]; then
         make test BUILD_SCHEME="$BUILD_SCHEME"
     fi
 elif [ -n "$VALIDATOR_SUBSPEC" ]; then
-    cd Tests/CocoaPods && make test
+    if [ "$VALIDATOR_SUBSPEC" == "none" ]; then
+      pod lib lint --no-subspecs --fail-fast
+    else
+      pod lib lint --subspec="${VALIDATOR_SUBSPEC}" --fail-fast
+    fi
 elif [ -n "$CARTHAGE_PLATFORM" ]; then
     cd Tests/Carthage && make test CARTHAGE_PLATFORM="$CARTHAGE_PLATFORM"
 elif [ -n "${PACKAGE_MANAGER_COMMAND}" ]; then

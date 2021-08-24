@@ -1,7 +1,7 @@
 import XCTest
 @testable import SQLite
 
-class RowTests : XCTestCase {
+class RowTests: XCTestCase {
 
     public func test_get_value() {
         let row = Row(["\"foo\"": 0], ["value"])

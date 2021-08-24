@@ -1,6 +1,6 @@
 # SQLite.swift
 
-[![Build Status][TravisBadge]][TravisLink] [![CocoaPods Version][CocoaPodsVersionBadge]][CocoaPodsVersionLink] [![Swift5 compatible][Swift5Badge]][Swift5Link] [![Platform][PlatformBadge]][PlatformLink] [![Carthage compatible][CartagheBadge]][CarthageLink] [![Join the chat at https://gitter.im/stephencelis/SQLite.swift][GitterBadge]][GitterLink]
+![Build Status][GitHubActionBadge] [![CocoaPods Version][CocoaPodsVersionBadge]][CocoaPodsVersionLink] [![Swift5 compatible][Swift5Badge]][Swift5Link] [![Platform][PlatformBadge]][PlatformLink] [![Carthage compatible][CartagheBadge]][CarthageLink] [![Join the chat at https://gitter.im/stephencelis/SQLite.swift][GitterBadge]][GitterLink]
 
 A type-safe, [Swift][]-language layer over [SQLite3][].
 
@@ -20,7 +20,7 @@ syntax _and_ intent.
  - Extensively tested
  - [SQLCipher][] support via CocoaPods
  - Active support at
-   [StackOverflow](http://stackoverflow.com/questions/tagged/sqlite.swift),
+   [StackOverflow](https://stackoverflow.com/questions/tagged/sqlite.swift),
    and [Gitter Chat Room](https://gitter.im/stephencelis/SQLite.swift)
    (_experimental_)
 
@@ -34,67 +34,79 @@ syntax _and_ intent.
 ```swift
 import SQLite
 
-let db = try Connection("path/to/db.sqlite3")
+// Wrap everything in a do...catch to handle errors
+do {
+    let db = try Connection("path/to/db.sqlite3")
 
-let users = Table("users")
-let id = Expression<Int64>("id")
-let name = Expression<String?>("name")
-let email = Expression<String>("email")
+    let users = Table("users")
+    let id = Expression<Int64>("id")
+    let name = Expression<String?>("name")
+    let email = Expression<String>("email")
 
-try db.run(users.create { t in
-    t.column(id, primaryKey: true)
-    t.column(name)
-    t.column(email, unique: true)
-})
-// CREATE TABLE "users" (
-//     "id" INTEGER PRIMARY KEY NOT NULL,
-//     "name" TEXT,
-//     "email" TEXT NOT NULL UNIQUE
-// )
+    try db.run(users.create { t in
+        t.column(id, primaryKey: true)
+        t.column(name)
+        t.column(email, unique: true)
+    })
+    // CREATE TABLE "users" (
+    //     "id" INTEGER PRIMARY KEY NOT NULL,
+    //     "name" TEXT,
+    //     "email" TEXT NOT NULL UNIQUE
+    // )
 
-let insert = users.insert(name <- "Alice", email <- "alice@mac.com")
-let rowid = try db.run(insert)
-// INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
+    let insert = users.insert(name <- "Alice", email <- "alice@mac.com")
+    let rowid = try db.run(insert)
+    // INSERT INTO "users" ("name", "email") VALUES ('Alice', 'alice@mac.com')
 
-for user in try db.prepare(users) {
-    print("id: \(user[id]), name: \(user[name]), email: \(user[email])")
-    // id: 1, name: Optional("Alice"), email: alice@mac.com
+    for user in try db.prepare(users) {
+        print("id: \(user[id]), name: \(user[name]), email: \(user[email])")
+        // id: 1, name: Optional("Alice"), email: alice@mac.com
+    }
+    // SELECT * FROM "users"
+
+    let alice = users.filter(id == rowid)
+
+    try db.run(alice.update(email <- email.replace("mac.com", with: "me.com")))
+    // UPDATE "users" SET "email" = replace("email", 'mac.com', 'me.com')
+    // WHERE ("id" = 1)
+
+    try db.run(alice.delete())
+    // DELETE FROM "users" WHERE ("id" = 1)
+
+    try db.scalar(users.count) // 0
+    // SELECT count(*) FROM "users"
+} catch {
+    print (error)
 }
-// SELECT * FROM "users"
-
-let alice = users.filter(id == rowid)
-
-try db.run(alice.update(email <- email.replace("mac.com", with: "me.com")))
-// UPDATE "users" SET "email" = replace("email", 'mac.com', 'me.com')
-// WHERE ("id" = 1)
-
-try db.run(alice.delete())
-// DELETE FROM "users" WHERE ("id" = 1)
-
-try db.scalar(users.count) // 0
-// SELECT count(*) FROM "users"
 ```
 
 SQLite.swift also works as a lightweight, Swift-friendly wrapper over the C
 API.
 
 ```swift
-let stmt = try db.prepare("INSERT INTO users (email) VALUES (?)")
-for email in ["betty@icloud.com", "cathy@icloud.com"] {
-    try stmt.run(email)
+// Wrap everything in a do...catch to handle errors
+do {
+    // ...
+    
+    let stmt = try db.prepare("INSERT INTO users (email) VALUES (?)")
+    for email in ["betty@icloud.com", "cathy@icloud.com"] {
+        try stmt.run(email)
+    }
+
+    db.totalChanges    // 3
+    db.changes         // 1
+    db.lastInsertRowid // 3
+
+    for row in try db.prepare("SELECT id, email FROM users") {
+        print("id: \(row[0]), email: \(row[1])")
+        // id: Optional(2), email: Optional("betty@icloud.com")
+        // id: Optional(3), email: Optional("cathy@icloud.com")
+    }
+
+    try db.scalar("SELECT count(*) FROM users") // 2
+} catch {
+    print (error)
 }
-
-db.totalChanges    // 3
-db.changes         // 1
-db.lastInsertRowid // 3
-
-for row in try db.prepare("SELECT id, email FROM users") {
-    print("id: \(row[0]), email: \(row[1])")
-    // id: Optional(2), email: Optional("betty@icloud.com")
-    // id: Optional(3), email: Optional("cathy@icloud.com")
-}
-
-try db.scalar("SELECT count(*) FROM users") // 2
 ```
 
 [Read the documentation][See Documentation] or explore more,
@@ -107,12 +119,33 @@ For a more comprehensive example, see
 and the [companion repository][SQLiteDataAccessLayer2].
 
 
-[Create a Data Access Layer with SQLite.swift and Swift 2]: http://masteringswift.blogspot.com/2015/09/create-data-access-layer-with.html
+[Create a Data Access Layer with SQLite.swift and Swift 2]: https://masteringswift.blogspot.com/2015/09/create-data-access-layer-with.html
 [SQLiteDataAccessLayer2]: https://github.com/hoffmanjon/SQLiteDataAccessLayer2/tree/master
 
 ## Installation
 
-> _Note:_ Version 0.12 requires Swift 5 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.2) or greater. Version 0.11.6 requires Swift 4.2 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.1) or greater.
+> _Note:_ Version 0.11.6 and later requires Swift 5 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.2) or greater. Version 0.11.5 requires Swift 4.2 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.1) or greater.
+
+### Swift Package Manager
+
+The [Swift Package Manager][] is a tool for managing the distribution of
+Swift code.
+
+1. Add the following to your `Package.swift` file:
+
+  ```swift
+  dependencies: [
+      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.13.0")
+  ]
+  ```
+
+2. Build your project:
+
+  ```sh
+  $ swift build
+  ```
+
+[Swift Package Manager]: https://swift.org/package-manager
 
 ### Carthage
 
@@ -124,7 +157,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.12.0
+    github "stephencelis/SQLite.swift" ~> 0.13.0
     ```
 
  3. Run `carthage update` and
@@ -156,7 +189,7 @@ SQLite.swift with CocoaPods:
     use_frameworks!
 
     target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.12.0'
+        pod 'SQLite.swift', '~> 0.13.0'
     end
     ```
 
@@ -164,27 +197,6 @@ SQLite.swift with CocoaPods:
 
 [CocoaPods]: https://cocoapods.org
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
-
-### Swift Package Manager
-
-The [Swift Package Manager][] is a tool for managing the distribution of
-Swift code.
-
-1. Add the following to your `Package.swift` file:
-
-  ```swift
-  dependencies: [
-      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.12.0")
-  ]
-  ```
-
-2. Build your project:
-
-  ```sh
-  $ swift build
-  ```
-
-[Swift Package Manager]: https://swift.org/package-manager
 
 ### Manual
 
@@ -214,7 +226,7 @@ device:
 
 
 [Xcode]: https://developer.apple.com/xcode/downloads/
-[Submodule]: http://git-scm.com/book/en/Git-Tools-Submodules
+[Submodule]: https://git-scm.com/book/en/Git-Tools-Submodules
 [download]: https://github.com/stephencelis/SQLite.swift/archive/master.zip
 
 
@@ -231,7 +243,7 @@ device:
 
 [See the planning document]: /Documentation/Planning.md
 [Read the contributing guidelines]: ./CONTRIBUTING.md#contributing
-[Ask on Stack Overflow]: http://stackoverflow.com/questions/tagged/sqlite.swift
+[Ask on Stack Overflow]: https://stackoverflow.com/questions/tagged/sqlite.swift
 [Open an issue]: https://github.com/stephencelis/SQLite.swift/issues/new
 [Submit a pull request]: https://github.com/stephencelis/SQLite.swift/fork
 
@@ -253,6 +265,7 @@ These projects enhance or use SQLite.swift:
 
  - [SQLiteMigrationManager.swift][] (inspired by
    [FMDBMigrationManager][])
+ - [Delta: Math helper](https://apps.apple.com/app/delta-math-helper/id1436506800) (see [Delta/Utils/Database.swift](https://github.com/GroupeMINASTE/Delta-iOS/blob/master/Delta/Utils/Database.swift) for production implementation example)
 
 
 ## Alternatives
@@ -267,17 +280,16 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
  - [SwiftSQLite](https://github.com/chrismsimpson/SwiftSQLite)
 
 [Swift]: https://swift.org/
-[SQLite3]: http://www.sqlite.org
+[SQLite3]: https://www.sqlite.org
 [SQLite.swift]: https://github.com/stephencelis/SQLite.swift
 
-[TravisBadge]: https://img.shields.io/travis/stephencelis/SQLite.swift/master.svg?style=flat
-[TravisLink]: https://travis-ci.org/stephencelis/SQLite.swift
+[GitHubActionBadge]: https://img.shields.io/github/workflow/status/stephencelis/SQLite.swift/Build%20and%20test
 
 [CocoaPodsVersionBadge]: https://cocoapod-badges.herokuapp.com/v/SQLite.swift/badge.png
-[CocoaPodsVersionLink]: http://cocoadocs.org/docsets/SQLite.swift
+[CocoaPodsVersionLink]: https://cocoapods.org/pods/SQLite.swift
 
 [PlatformBadge]: https://cocoapod-badges.herokuapp.com/p/SQLite.swift/badge.png
-[PlatformLink]: http://cocoadocs.org/docsets/SQLite.swift
+[PlatformLink]: https://cocoapods.org/pods/SQLite.swift
 
 [CartagheBadge]: https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat
 [CarthageLink]: https://github.com/Carthage/Carthage

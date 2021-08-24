@@ -35,7 +35,7 @@ import SQLite3
 /// A single SQL statement.
 public final class Statement {
 
-    fileprivate var handle: OpaquePointer? = nil
+    fileprivate var handle: OpaquePointer?
 
     fileprivate let connection: Connection
 
@@ -48,10 +48,10 @@ public final class Statement {
         sqlite3_finalize(handle)
     }
 
-    public lazy var columnCount: Int = Int(sqlite3_column_count(self.handle))
+    public lazy var columnCount: Int = Int(sqlite3_column_count(handle))
 
-    public lazy var columnNames: [String] = (0..<Int32(self.columnCount)).map {
-        String(cString: sqlite3_column_name(self.handle, $0))
+    public lazy var columnNames: [String] = (0..<Int32(columnCount)).map {
+        String(cString: sqlite3_column_name(handle, $0))
     }
 
     /// A cursor pointing to the current row.
@@ -63,7 +63,7 @@ public final class Statement {
     ///
     /// - Returns: The statement object (useful for chaining).
     public func bind(_ values: Binding?...) -> Statement {
-        return bind(values)
+        bind(values)
     }
 
     /// Binds a list of parameters to a statement.
@@ -140,7 +140,7 @@ public final class Statement {
     ///
     /// - Returns: The statement object (useful for chaining).
     @discardableResult public func run(_ bindings: [Binding?]) throws -> Statement {
-        return try bind(bindings).run()
+        try bind(bindings).run()
     }
 
     /// - Parameter bindings: A dictionary of named parameters to bind to the
@@ -150,7 +150,7 @@ public final class Statement {
     ///
     /// - Returns: The statement object (useful for chaining).
     @discardableResult public func run(_ bindings: [String: Binding?]) throws -> Statement {
-        return try bind(bindings).run()
+        try bind(bindings).run()
     }
 
     /// - Parameter bindings: A list of parameters to bind to the statement.
@@ -170,30 +170,29 @@ public final class Statement {
     ///
     /// - Returns: The first value of the first row returned.
     public func scalar(_ bindings: [Binding?]) throws -> Binding? {
-        return try bind(bindings).scalar()
+        try bind(bindings).scalar()
     }
-
 
     /// - Parameter bindings: A dictionary of named parameters to bind to the
     ///   statement.
     ///
     /// - Returns: The first value of the first row returned.
     public func scalar(_ bindings: [String: Binding?]) throws -> Binding? {
-        return try bind(bindings).scalar()
+        try bind(bindings).scalar()
     }
 
     public func step() throws -> Bool {
-        return try connection.sync { try self.connection.check(sqlite3_step(self.handle)) == SQLITE_ROW }
+        try connection.sync { try connection.check(sqlite3_step(handle)) == SQLITE_ROW }
     }
 
     fileprivate func reset(clearBindings shouldClear: Bool = true) {
         sqlite3_reset(handle)
-        if (shouldClear) { sqlite3_clear_bindings(handle) }
+        if shouldClear { sqlite3_clear_bindings(handle) }
     }
 
 }
 
-extension Statement : Sequence {
+extension Statement: Sequence {
 
     public func makeIterator() -> Statement {
         reset(clearBindings: false)
@@ -202,13 +201,13 @@ extension Statement : Sequence {
 
 }
 
-public protocol FailableIterator : IteratorProtocol {
+public protocol FailableIterator: IteratorProtocol {
     func failableNext() throws -> Self.Element?
 }
 
 extension FailableIterator {
     public func next() -> Element? {
-        return try! failableNext()
+        try? failableNext()
     }
 }
 
@@ -221,17 +220,17 @@ extension Array {
     }
 }
 
-extension Statement : FailableIterator {
+extension Statement: FailableIterator {
     public typealias Element = [Binding?]
     public func failableNext() throws -> [Binding?]? {
-        return try step() ? Array(row) : nil
+        try step() ? Array(row) : nil
     }
 }
 
-extension Statement : CustomStringConvertible {
+extension Statement: CustomStringConvertible {
 
     public var description: String {
-        return String(cString: sqlite3_sql(handle))
+        String(cString: sqlite3_sql(handle))
     }
 
 }
@@ -248,15 +247,15 @@ public struct Cursor {
     }
 
     public subscript(idx: Int) -> Double {
-        return sqlite3_column_double(handle, Int32(idx))
+        sqlite3_column_double(handle, Int32(idx))
     }
 
     public subscript(idx: Int) -> Int64 {
-        return sqlite3_column_int64(handle, Int32(idx))
+        sqlite3_column_int64(handle, Int32(idx))
     }
 
     public subscript(idx: Int) -> String {
-        return String(cString: UnsafePointer(sqlite3_column_text(handle, Int32(idx))))
+        String(cString: UnsafePointer(sqlite3_column_text(handle, Int32(idx))))
     }
 
     public subscript(idx: Int) -> Blob {
@@ -273,17 +272,17 @@ public struct Cursor {
     // MARK: -
 
     public subscript(idx: Int) -> Bool {
-        return Bool.fromDatatypeValue(self[idx])
+        Bool.fromDatatypeValue(self[idx])
     }
 
     public subscript(idx: Int) -> Int {
-        return Int.fromDatatypeValue(self[idx])
+        Int.fromDatatypeValue(self[idx])
     }
 
 }
 
 /// Cursors provide direct access to a statement’s current row.
-extension Cursor : Sequence {
+extension Cursor: Sequence {
 
     public subscript(idx: Int) -> Binding? {
         switch sqlite3_column_type(handle, Int32(idx)) {
@@ -305,8 +304,8 @@ extension Cursor : Sequence {
     public func makeIterator() -> AnyIterator<Binding?> {
         var idx = 0
         return AnyIterator {
-            if idx >= self.columnCount {
-                return Optional<Binding?>.none
+            if idx >= columnCount {
+                return .none
             } else {
                 idx += 1
                 return self[idx - 1]

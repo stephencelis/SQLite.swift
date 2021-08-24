@@ -1,330 +1,378 @@
 import XCTest
 import SQLite
 
-class OperatorsTests : XCTestCase {
+class OperatorsTests: XCTestCase {
 
     func test_stringExpressionPlusStringExpression_buildsConcatenatingStringExpression() {
-        AssertSQL("(\"string\" || \"string\")", string + string)
-        AssertSQL("(\"string\" || \"stringOptional\")", string + stringOptional)
-        AssertSQL("(\"stringOptional\" || \"string\")", stringOptional + string)
-        AssertSQL("(\"stringOptional\" || \"stringOptional\")", stringOptional + stringOptional)
-        AssertSQL("(\"string\" || 'literal')", string + "literal")
-        AssertSQL("(\"stringOptional\" || 'literal')", stringOptional + "literal")
-        AssertSQL("('literal' || \"string\")", "literal" + string)
-        AssertSQL("('literal' || \"stringOptional\")", "literal" + stringOptional)
+        assertSQL("(\"string\" || \"string\")", string + string)
+        assertSQL("(\"string\" || \"stringOptional\")", string + stringOptional)
+        assertSQL("(\"stringOptional\" || \"string\")", stringOptional + string)
+        assertSQL("(\"stringOptional\" || \"stringOptional\")", stringOptional + stringOptional)
+        assertSQL("(\"string\" || 'literal')", string + "literal")
+        assertSQL("(\"stringOptional\" || 'literal')", stringOptional + "literal")
+        assertSQL("('literal' || \"string\")", "literal" + string)
+        assertSQL("('literal' || \"stringOptional\")", "literal" + stringOptional)
     }
 
     func test_numberExpression_plusNumberExpression_buildsAdditiveNumberExpression() {
-        AssertSQL("(\"int\" + \"int\")", int + int)
-        AssertSQL("(\"int\" + \"intOptional\")", int + intOptional)
-        AssertSQL("(\"intOptional\" + \"int\")", intOptional + int)
-        AssertSQL("(\"intOptional\" + \"intOptional\")", intOptional + intOptional)
-        AssertSQL("(\"int\" + 1)", int + 1)
-        AssertSQL("(\"intOptional\" + 1)", intOptional + 1)
-        AssertSQL("(1 + \"int\")", 1 + int)
-        AssertSQL("(1 + \"intOptional\")", 1 + intOptional)
+        assertSQL("(\"int\" + \"int\")", int + int)
+        assertSQL("(\"int\" + \"intOptional\")", int + intOptional)
+        assertSQL("(\"intOptional\" + \"int\")", intOptional + int)
+        assertSQL("(\"intOptional\" + \"intOptional\")", intOptional + intOptional)
+        assertSQL("(\"int\" + 1)", int + 1)
+        assertSQL("(\"intOptional\" + 1)", intOptional + 1)
+        assertSQL("(1 + \"int\")", 1 + int)
+        assertSQL("(1 + \"intOptional\")", 1 + intOptional)
 
-        AssertSQL("(\"double\" + \"double\")", double + double)
-        AssertSQL("(\"double\" + \"doubleOptional\")", double + doubleOptional)
-        AssertSQL("(\"doubleOptional\" + \"double\")", doubleOptional + double)
-        AssertSQL("(\"doubleOptional\" + \"doubleOptional\")", doubleOptional + doubleOptional)
-        AssertSQL("(\"double\" + 1.0)", double + 1)
-        AssertSQL("(\"doubleOptional\" + 1.0)", doubleOptional + 1)
-        AssertSQL("(1.0 + \"double\")", 1 + double)
-        AssertSQL("(1.0 + \"doubleOptional\")", 1 + doubleOptional)
+        assertSQL("(\"double\" + \"double\")", double + double)
+        assertSQL("(\"double\" + \"doubleOptional\")", double + doubleOptional)
+        assertSQL("(\"doubleOptional\" + \"double\")", doubleOptional + double)
+        assertSQL("(\"doubleOptional\" + \"doubleOptional\")", doubleOptional + doubleOptional)
+        assertSQL("(\"double\" + 1.0)", double + 1)
+        assertSQL("(\"doubleOptional\" + 1.0)", doubleOptional + 1)
+        assertSQL("(1.0 + \"double\")", 1 + double)
+        assertSQL("(1.0 + \"doubleOptional\")", 1 + doubleOptional)
     }
 
     func test_numberExpression_minusNumberExpression_buildsSubtractiveNumberExpression() {
-        AssertSQL("(\"int\" - \"int\")", int - int)
-        AssertSQL("(\"int\" - \"intOptional\")", int - intOptional)
-        AssertSQL("(\"intOptional\" - \"int\")", intOptional - int)
-        AssertSQL("(\"intOptional\" - \"intOptional\")", intOptional - intOptional)
-        AssertSQL("(\"int\" - 1)", int - 1)
-        AssertSQL("(\"intOptional\" - 1)", intOptional - 1)
-        AssertSQL("(1 - \"int\")", 1 - int)
-        AssertSQL("(1 - \"intOptional\")", 1 - intOptional)
+        assertSQL("(\"int\" - \"int\")", int - int)
+        assertSQL("(\"int\" - \"intOptional\")", int - intOptional)
+        assertSQL("(\"intOptional\" - \"int\")", intOptional - int)
+        assertSQL("(\"intOptional\" - \"intOptional\")", intOptional - intOptional)
+        assertSQL("(\"int\" - 1)", int - 1)
+        assertSQL("(\"intOptional\" - 1)", intOptional - 1)
+        assertSQL("(1 - \"int\")", 1 - int)
+        assertSQL("(1 - \"intOptional\")", 1 - intOptional)
 
-        AssertSQL("(\"double\" - \"double\")", double - double)
-        AssertSQL("(\"double\" - \"doubleOptional\")", double - doubleOptional)
-        AssertSQL("(\"doubleOptional\" - \"double\")", doubleOptional - double)
-        AssertSQL("(\"doubleOptional\" - \"doubleOptional\")", doubleOptional - doubleOptional)
-        AssertSQL("(\"double\" - 1.0)", double - 1)
-        AssertSQL("(\"doubleOptional\" - 1.0)", doubleOptional - 1)
-        AssertSQL("(1.0 - \"double\")", 1 - double)
-        AssertSQL("(1.0 - \"doubleOptional\")", 1 - doubleOptional)
+        assertSQL("(\"double\" - \"double\")", double - double)
+        assertSQL("(\"double\" - \"doubleOptional\")", double - doubleOptional)
+        assertSQL("(\"doubleOptional\" - \"double\")", doubleOptional - double)
+        assertSQL("(\"doubleOptional\" - \"doubleOptional\")", doubleOptional - doubleOptional)
+        assertSQL("(\"double\" - 1.0)", double - 1)
+        assertSQL("(\"doubleOptional\" - 1.0)", doubleOptional - 1)
+        assertSQL("(1.0 - \"double\")", 1 - double)
+        assertSQL("(1.0 - \"doubleOptional\")", 1 - doubleOptional)
     }
 
     func test_numberExpression_timesNumberExpression_buildsMultiplicativeNumberExpression() {
-        AssertSQL("(\"int\" * \"int\")", int * int)
-        AssertSQL("(\"int\" * \"intOptional\")", int * intOptional)
-        AssertSQL("(\"intOptional\" * \"int\")", intOptional * int)
-        AssertSQL("(\"intOptional\" * \"intOptional\")", intOptional * intOptional)
-        AssertSQL("(\"int\" * 1)", int * 1)
-        AssertSQL("(\"intOptional\" * 1)", intOptional * 1)
-        AssertSQL("(1 * \"int\")", 1 * int)
-        AssertSQL("(1 * \"intOptional\")", 1 * intOptional)
+        assertSQL("(\"int\" * \"int\")", int * int)
+        assertSQL("(\"int\" * \"intOptional\")", int * intOptional)
+        assertSQL("(\"intOptional\" * \"int\")", intOptional * int)
+        assertSQL("(\"intOptional\" * \"intOptional\")", intOptional * intOptional)
+        assertSQL("(\"int\" * 1)", int * 1)
+        assertSQL("(\"intOptional\" * 1)", intOptional * 1)
+        assertSQL("(1 * \"int\")", 1 * int)
+        assertSQL("(1 * \"intOptional\")", 1 * intOptional)
 
-        AssertSQL("(\"double\" * \"double\")", double * double)
-        AssertSQL("(\"double\" * \"doubleOptional\")", double * doubleOptional)
-        AssertSQL("(\"doubleOptional\" * \"double\")", doubleOptional * double)
-        AssertSQL("(\"doubleOptional\" * \"doubleOptional\")", doubleOptional * doubleOptional)
-        AssertSQL("(\"double\" * 1.0)", double * 1)
-        AssertSQL("(\"doubleOptional\" * 1.0)", doubleOptional * 1)
-        AssertSQL("(1.0 * \"double\")", 1 * double)
-        AssertSQL("(1.0 * \"doubleOptional\")", 1 * doubleOptional)
+        assertSQL("(\"double\" * \"double\")", double * double)
+        assertSQL("(\"double\" * \"doubleOptional\")", double * doubleOptional)
+        assertSQL("(\"doubleOptional\" * \"double\")", doubleOptional * double)
+        assertSQL("(\"doubleOptional\" * \"doubleOptional\")", doubleOptional * doubleOptional)
+        assertSQL("(\"double\" * 1.0)", double * 1)
+        assertSQL("(\"doubleOptional\" * 1.0)", doubleOptional * 1)
+        assertSQL("(1.0 * \"double\")", 1 * double)
+        assertSQL("(1.0 * \"doubleOptional\")", 1 * doubleOptional)
     }
 
     func test_numberExpression_dividedByNumberExpression_buildsDivisiveNumberExpression() {
-        AssertSQL("(\"int\" / \"int\")", int / int)
-        AssertSQL("(\"int\" / \"intOptional\")", int / intOptional)
-        AssertSQL("(\"intOptional\" / \"int\")", intOptional / int)
-        AssertSQL("(\"intOptional\" / \"intOptional\")", intOptional / intOptional)
-        AssertSQL("(\"int\" / 1)", int / 1)
-        AssertSQL("(\"intOptional\" / 1)", intOptional / 1)
-        AssertSQL("(1 / \"int\")", 1 / int)
-        AssertSQL("(1 / \"intOptional\")", 1 / intOptional)
+        assertSQL("(\"int\" / \"int\")", int / int)
+        assertSQL("(\"int\" / \"intOptional\")", int / intOptional)
+        assertSQL("(\"intOptional\" / \"int\")", intOptional / int)
+        assertSQL("(\"intOptional\" / \"intOptional\")", intOptional / intOptional)
+        assertSQL("(\"int\" / 1)", int / 1)
+        assertSQL("(\"intOptional\" / 1)", intOptional / 1)
+        assertSQL("(1 / \"int\")", 1 / int)
+        assertSQL("(1 / \"intOptional\")", 1 / intOptional)
 
-        AssertSQL("(\"double\" / \"double\")", double / double)
-        AssertSQL("(\"double\" / \"doubleOptional\")", double / doubleOptional)
-        AssertSQL("(\"doubleOptional\" / \"double\")", doubleOptional / double)
-        AssertSQL("(\"doubleOptional\" / \"doubleOptional\")", doubleOptional / doubleOptional)
-        AssertSQL("(\"double\" / 1.0)", double / 1)
-        AssertSQL("(\"doubleOptional\" / 1.0)", doubleOptional / 1)
-        AssertSQL("(1.0 / \"double\")", 1 / double)
-        AssertSQL("(1.0 / \"doubleOptional\")", 1 / doubleOptional)
+        assertSQL("(\"double\" / \"double\")", double / double)
+        assertSQL("(\"double\" / \"doubleOptional\")", double / doubleOptional)
+        assertSQL("(\"doubleOptional\" / \"double\")", doubleOptional / double)
+        assertSQL("(\"doubleOptional\" / \"doubleOptional\")", doubleOptional / doubleOptional)
+        assertSQL("(\"double\" / 1.0)", double / 1)
+        assertSQL("(\"doubleOptional\" / 1.0)", doubleOptional / 1)
+        assertSQL("(1.0 / \"double\")", 1 / double)
+        assertSQL("(1.0 / \"doubleOptional\")", 1 / doubleOptional)
     }
 
     func test_numberExpression_prefixedWithMinus_buildsInvertedNumberExpression() {
-        AssertSQL("-(\"int\")", -int)
-        AssertSQL("-(\"intOptional\")", -intOptional)
+        assertSQL("-(\"int\")", -int)
+        assertSQL("-(\"intOptional\")", -intOptional)
 
-        AssertSQL("-(\"double\")", -double)
-        AssertSQL("-(\"doubleOptional\")", -doubleOptional)
+        assertSQL("-(\"double\")", -double)
+        assertSQL("-(\"doubleOptional\")", -doubleOptional)
     }
 
     func test_integerExpression_moduloIntegerExpression_buildsModuloIntegerExpression() {
-        AssertSQL("(\"int\" % \"int\")", int % int)
-        AssertSQL("(\"int\" % \"intOptional\")", int % intOptional)
-        AssertSQL("(\"intOptional\" % \"int\")", intOptional % int)
-        AssertSQL("(\"intOptional\" % \"intOptional\")", intOptional % intOptional)
-        AssertSQL("(\"int\" % 1)", int % 1)
-        AssertSQL("(\"intOptional\" % 1)", intOptional % 1)
-        AssertSQL("(1 % \"int\")", 1 % int)
-        AssertSQL("(1 % \"intOptional\")", 1 % intOptional)
+        assertSQL("(\"int\" % \"int\")", int % int)
+        assertSQL("(\"int\" % \"intOptional\")", int % intOptional)
+        assertSQL("(\"intOptional\" % \"int\")", intOptional % int)
+        assertSQL("(\"intOptional\" % \"intOptional\")", intOptional % intOptional)
+        assertSQL("(\"int\" % 1)", int % 1)
+        assertSQL("(\"intOptional\" % 1)", intOptional % 1)
+        assertSQL("(1 % \"int\")", 1 % int)
+        assertSQL("(1 % \"intOptional\")", 1 % intOptional)
     }
 
     func test_integerExpression_bitShiftLeftIntegerExpression_buildsLeftShiftedIntegerExpression() {
-        AssertSQL("(\"int\" << \"int\")", int << int)
-        AssertSQL("(\"int\" << \"intOptional\")", int << intOptional)
-        AssertSQL("(\"intOptional\" << \"int\")", intOptional << int)
-        AssertSQL("(\"intOptional\" << \"intOptional\")", intOptional << intOptional)
-        AssertSQL("(\"int\" << 1)", int << 1)
-        AssertSQL("(\"intOptional\" << 1)", intOptional << 1)
-        AssertSQL("(1 << \"int\")", 1 << int)
-        AssertSQL("(1 << \"intOptional\")", 1 << intOptional)
+        assertSQL("(\"int\" << \"int\")", int << int)
+        assertSQL("(\"int\" << \"intOptional\")", int << intOptional)
+        assertSQL("(\"intOptional\" << \"int\")", intOptional << int)
+        assertSQL("(\"intOptional\" << \"intOptional\")", intOptional << intOptional)
+        assertSQL("(\"int\" << 1)", int << 1)
+        assertSQL("(\"intOptional\" << 1)", intOptional << 1)
+        assertSQL("(1 << \"int\")", 1 << int)
+        assertSQL("(1 << \"intOptional\")", 1 << intOptional)
     }
 
     func test_integerExpression_bitShiftRightIntegerExpression_buildsRightShiftedIntegerExpression() {
-        AssertSQL("(\"int\" >> \"int\")", int >> int)
-        AssertSQL("(\"int\" >> \"intOptional\")", int >> intOptional)
-        AssertSQL("(\"intOptional\" >> \"int\")", intOptional >> int)
-        AssertSQL("(\"intOptional\" >> \"intOptional\")", intOptional >> intOptional)
-        AssertSQL("(\"int\" >> 1)", int >> 1)
-        AssertSQL("(\"intOptional\" >> 1)", intOptional >> 1)
-        AssertSQL("(1 >> \"int\")", 1 >> int)
-        AssertSQL("(1 >> \"intOptional\")", 1 >> intOptional)
+        assertSQL("(\"int\" >> \"int\")", int >> int)
+        assertSQL("(\"int\" >> \"intOptional\")", int >> intOptional)
+        assertSQL("(\"intOptional\" >> \"int\")", intOptional >> int)
+        assertSQL("(\"intOptional\" >> \"intOptional\")", intOptional >> intOptional)
+        assertSQL("(\"int\" >> 1)", int >> 1)
+        assertSQL("(\"intOptional\" >> 1)", intOptional >> 1)
+        assertSQL("(1 >> \"int\")", 1 >> int)
+        assertSQL("(1 >> \"intOptional\")", 1 >> intOptional)
     }
 
     func test_integerExpression_bitwiseAndIntegerExpression_buildsAndedIntegerExpression() {
-        AssertSQL("(\"int\" & \"int\")", int & int)
-        AssertSQL("(\"int\" & \"intOptional\")", int & intOptional)
-        AssertSQL("(\"intOptional\" & \"int\")", intOptional & int)
-        AssertSQL("(\"intOptional\" & \"intOptional\")", intOptional & intOptional)
-        AssertSQL("(\"int\" & 1)", int & 1)
-        AssertSQL("(\"intOptional\" & 1)", intOptional & 1)
-        AssertSQL("(1 & \"int\")", 1 & int)
-        AssertSQL("(1 & \"intOptional\")", 1 & intOptional)
+        assertSQL("(\"int\" & \"int\")", int & int)
+        assertSQL("(\"int\" & \"intOptional\")", int & intOptional)
+        assertSQL("(\"intOptional\" & \"int\")", intOptional & int)
+        assertSQL("(\"intOptional\" & \"intOptional\")", intOptional & intOptional)
+        assertSQL("(\"int\" & 1)", int & 1)
+        assertSQL("(\"intOptional\" & 1)", intOptional & 1)
+        assertSQL("(1 & \"int\")", 1 & int)
+        assertSQL("(1 & \"intOptional\")", 1 & intOptional)
     }
 
     func test_integerExpression_bitwiseOrIntegerExpression_buildsOredIntegerExpression() {
-        AssertSQL("(\"int\" | \"int\")", int | int)
-        AssertSQL("(\"int\" | \"intOptional\")", int | intOptional)
-        AssertSQL("(\"intOptional\" | \"int\")", intOptional | int)
-        AssertSQL("(\"intOptional\" | \"intOptional\")", intOptional | intOptional)
-        AssertSQL("(\"int\" | 1)", int | 1)
-        AssertSQL("(\"intOptional\" | 1)", intOptional | 1)
-        AssertSQL("(1 | \"int\")", 1 | int)
-        AssertSQL("(1 | \"intOptional\")", 1 | intOptional)
+        assertSQL("(\"int\" | \"int\")", int | int)
+        assertSQL("(\"int\" | \"intOptional\")", int | intOptional)
+        assertSQL("(\"intOptional\" | \"int\")", intOptional | int)
+        assertSQL("(\"intOptional\" | \"intOptional\")", intOptional | intOptional)
+        assertSQL("(\"int\" | 1)", int | 1)
+        assertSQL("(\"intOptional\" | 1)", intOptional | 1)
+        assertSQL("(1 | \"int\")", 1 | int)
+        assertSQL("(1 | \"intOptional\")", 1 | intOptional)
     }
 
     func test_integerExpression_bitwiseExclusiveOrIntegerExpression_buildsOredIntegerExpression() {
-        AssertSQL("(~((\"int\" & \"int\")) & (\"int\" | \"int\"))", int ^ int)
-        AssertSQL("(~((\"int\" & \"intOptional\")) & (\"int\" | \"intOptional\"))", int ^ intOptional)
-        AssertSQL("(~((\"intOptional\" & \"int\")) & (\"intOptional\" | \"int\"))", intOptional ^ int)
-        AssertSQL("(~((\"intOptional\" & \"intOptional\")) & (\"intOptional\" | \"intOptional\"))", intOptional ^ intOptional)
-        AssertSQL("(~((\"int\" & 1)) & (\"int\" | 1))", int ^ 1)
-        AssertSQL("(~((\"intOptional\" & 1)) & (\"intOptional\" | 1))", intOptional ^ 1)
-        AssertSQL("(~((1 & \"int\")) & (1 | \"int\"))", 1 ^ int)
-        AssertSQL("(~((1 & \"intOptional\")) & (1 | \"intOptional\"))", 1 ^ intOptional)
+        assertSQL("(~((\"int\" & \"int\")) & (\"int\" | \"int\"))", int ^ int)
+        assertSQL("(~((\"int\" & \"intOptional\")) & (\"int\" | \"intOptional\"))", int ^ intOptional)
+        assertSQL("(~((\"intOptional\" & \"int\")) & (\"intOptional\" | \"int\"))", intOptional ^ int)
+        assertSQL("(~((\"intOptional\" & \"intOptional\")) & (\"intOptional\" | \"intOptional\"))", intOptional ^ intOptional)
+        assertSQL("(~((\"int\" & 1)) & (\"int\" | 1))", int ^ 1)
+        assertSQL("(~((\"intOptional\" & 1)) & (\"intOptional\" | 1))", intOptional ^ 1)
+        assertSQL("(~((1 & \"int\")) & (1 | \"int\"))", 1 ^ int)
+        assertSQL("(~((1 & \"intOptional\")) & (1 | \"intOptional\"))", 1 ^ intOptional)
     }
 
     func test_bitwiseNot_integerExpression_buildsComplementIntegerExpression() {
-        AssertSQL("~(\"int\")", ~int)
-        AssertSQL("~(\"intOptional\")", ~intOptional)
+        assertSQL("~(\"int\")", ~int)
+        assertSQL("~(\"intOptional\")", ~intOptional)
     }
 
     func test_equalityOperator_withEquatableExpressions_buildsBooleanExpression() {
-        AssertSQL("(\"bool\" = \"bool\")", bool == bool)
-        AssertSQL("(\"bool\" = \"boolOptional\")", bool == boolOptional)
-        AssertSQL("(\"boolOptional\" = \"bool\")", boolOptional == bool)
-        AssertSQL("(\"boolOptional\" = \"boolOptional\")", boolOptional == boolOptional)
-        AssertSQL("(\"bool\" = 1)", bool == true)
-        AssertSQL("(\"boolOptional\" = 1)", boolOptional == true)
-        AssertSQL("(1 = \"bool\")", true == bool)
-        AssertSQL("(1 = \"boolOptional\")", true == boolOptional)
+        assertSQL("(\"bool\" = \"bool\")", bool == bool)
+        assertSQL("(\"bool\" = \"boolOptional\")", bool == boolOptional)
+        assertSQL("(\"boolOptional\" = \"bool\")", boolOptional == bool)
+        assertSQL("(\"boolOptional\" = \"boolOptional\")", boolOptional == boolOptional)
+        assertSQL("(\"bool\" = 1)", bool == true)
+        assertSQL("(\"boolOptional\" = 1)", boolOptional == true)
+        assertSQL("(1 = \"bool\")", true == bool)
+        assertSQL("(1 = \"boolOptional\")", true == boolOptional)
 
-        AssertSQL("(\"boolOptional\" IS NULL)", boolOptional == nil)
-        AssertSQL("(NULL IS \"boolOptional\")", nil == boolOptional)
+        assertSQL("(\"boolOptional\" IS NULL)", boolOptional == nil)
+        assertSQL("(NULL IS \"boolOptional\")", nil == boolOptional)
     }
 
-    func test_inequalityOperator_withEquatableExpressions_buildsBooleanExpression() {
-        AssertSQL("(\"bool\" != \"bool\")", bool != bool)
-        AssertSQL("(\"bool\" != \"boolOptional\")", bool != boolOptional)
-        AssertSQL("(\"boolOptional\" != \"bool\")", boolOptional != bool)
-        AssertSQL("(\"boolOptional\" != \"boolOptional\")", boolOptional != boolOptional)
-        AssertSQL("(\"bool\" != 1)", bool != true)
-        AssertSQL("(\"boolOptional\" != 1)", boolOptional != true)
-        AssertSQL("(1 != \"bool\")", true != bool)
-        AssertSQL("(1 != \"boolOptional\")", true != boolOptional)
+    func test_isOperator_withEquatableExpressions_buildsBooleanExpression() {
+       assertSQL("(\"bool\" IS \"bool\")", bool === bool)
+       assertSQL("(\"bool\" IS \"boolOptional\")", bool === boolOptional)
+       assertSQL("(\"boolOptional\" IS \"bool\")", boolOptional === bool)
+       assertSQL("(\"boolOptional\" IS \"boolOptional\")", boolOptional === boolOptional)
+       assertSQL("(\"bool\" IS 1)", bool === true)
+       assertSQL("(\"boolOptional\" IS 1)", boolOptional === true)
+       assertSQL("(1 IS \"bool\")", true === bool)
+       assertSQL("(1 IS \"boolOptional\")", true === boolOptional)
 
-        AssertSQL("(\"boolOptional\" IS NOT NULL)", boolOptional != nil)
-        AssertSQL("(NULL IS NOT \"boolOptional\")", nil != boolOptional)
+       assertSQL("(\"boolOptional\" IS NULL)", boolOptional === nil)
+       assertSQL("(NULL IS \"boolOptional\")", nil === boolOptional)
+    }
+
+    func test_isNotOperator_withEquatableExpressions_buildsBooleanExpression() {
+        assertSQL("(\"bool\" IS NOT \"bool\")", bool !== bool)
+        assertSQL("(\"bool\" IS NOT \"boolOptional\")", bool !== boolOptional)
+        assertSQL("(\"boolOptional\" IS NOT \"bool\")", boolOptional !== bool)
+        assertSQL("(\"boolOptional\" IS NOT \"boolOptional\")", boolOptional !== boolOptional)
+        assertSQL("(\"bool\" IS NOT 1)", bool !== true)
+        assertSQL("(\"boolOptional\" IS NOT 1)", boolOptional !== true)
+        assertSQL("(1 IS NOT \"bool\")", true !== bool)
+        assertSQL("(1 IS NOT \"boolOptional\")", true !== boolOptional)
+
+        assertSQL("(\"boolOptional\" IS NOT NULL)", boolOptional !== nil)
+        assertSQL("(NULL IS NOT \"boolOptional\")", nil !== boolOptional)
+     }
+
+    func test_inequalityOperator_withEquatableExpressions_buildsBooleanExpression() {
+        assertSQL("(\"bool\" != \"bool\")", bool != bool)
+        assertSQL("(\"bool\" != \"boolOptional\")", bool != boolOptional)
+        assertSQL("(\"boolOptional\" != \"bool\")", boolOptional != bool)
+        assertSQL("(\"boolOptional\" != \"boolOptional\")", boolOptional != boolOptional)
+        assertSQL("(\"bool\" != 1)", bool != true)
+        assertSQL("(\"boolOptional\" != 1)", boolOptional != true)
+        assertSQL("(1 != \"bool\")", true != bool)
+        assertSQL("(1 != \"boolOptional\")", true != boolOptional)
+
+        assertSQL("(\"boolOptional\" IS NOT NULL)", boolOptional != nil)
+        assertSQL("(NULL IS NOT \"boolOptional\")", nil != boolOptional)
     }
 
     func test_greaterThanOperator_withComparableExpressions_buildsBooleanExpression() {
-        AssertSQL("(\"bool\" > \"bool\")", bool > bool)
-        AssertSQL("(\"bool\" > \"boolOptional\")", bool > boolOptional)
-        AssertSQL("(\"boolOptional\" > \"bool\")", boolOptional > bool)
-        AssertSQL("(\"boolOptional\" > \"boolOptional\")", boolOptional > boolOptional)
-        AssertSQL("(\"bool\" > 1)", bool > true)
-        AssertSQL("(\"boolOptional\" > 1)", boolOptional > true)
-        AssertSQL("(1 > \"bool\")", true > bool)
-        AssertSQL("(1 > \"boolOptional\")", true > boolOptional)
+        assertSQL("(\"bool\" > \"bool\")", bool > bool)
+        assertSQL("(\"bool\" > \"boolOptional\")", bool > boolOptional)
+        assertSQL("(\"boolOptional\" > \"bool\")", boolOptional > bool)
+        assertSQL("(\"boolOptional\" > \"boolOptional\")", boolOptional > boolOptional)
+        assertSQL("(\"bool\" > 1)", bool > true)
+        assertSQL("(\"boolOptional\" > 1)", boolOptional > true)
+        assertSQL("(1 > \"bool\")", true > bool)
+        assertSQL("(1 > \"boolOptional\")", true > boolOptional)
     }
 
     func test_greaterThanOrEqualToOperator_withComparableExpressions_buildsBooleanExpression() {
-        AssertSQL("(\"bool\" >= \"bool\")", bool >= bool)
-        AssertSQL("(\"bool\" >= \"boolOptional\")", bool >= boolOptional)
-        AssertSQL("(\"boolOptional\" >= \"bool\")", boolOptional >= bool)
-        AssertSQL("(\"boolOptional\" >= \"boolOptional\")", boolOptional >= boolOptional)
-        AssertSQL("(\"bool\" >= 1)", bool >= true)
-        AssertSQL("(\"boolOptional\" >= 1)", boolOptional >= true)
-        AssertSQL("(1 >= \"bool\")", true >= bool)
-        AssertSQL("(1 >= \"boolOptional\")", true >= boolOptional)
+        assertSQL("(\"bool\" >= \"bool\")", bool >= bool)
+        assertSQL("(\"bool\" >= \"boolOptional\")", bool >= boolOptional)
+        assertSQL("(\"boolOptional\" >= \"bool\")", boolOptional >= bool)
+        assertSQL("(\"boolOptional\" >= \"boolOptional\")", boolOptional >= boolOptional)
+        assertSQL("(\"bool\" >= 1)", bool >= true)
+        assertSQL("(\"boolOptional\" >= 1)", boolOptional >= true)
+        assertSQL("(1 >= \"bool\")", true >= bool)
+        assertSQL("(1 >= \"boolOptional\")", true >= boolOptional)
     }
 
     func test_lessThanOperator_withComparableExpressions_buildsBooleanExpression() {
-        AssertSQL("(\"bool\" < \"bool\")", bool < bool)
-        AssertSQL("(\"bool\" < \"boolOptional\")", bool < boolOptional)
-        AssertSQL("(\"boolOptional\" < \"bool\")", boolOptional < bool)
-        AssertSQL("(\"boolOptional\" < \"boolOptional\")", boolOptional < boolOptional)
-        AssertSQL("(\"bool\" < 1)", bool < true)
-        AssertSQL("(\"boolOptional\" < 1)", boolOptional < true)
-        AssertSQL("(1 < \"bool\")", true < bool)
-        AssertSQL("(1 < \"boolOptional\")", true < boolOptional)
+        assertSQL("(\"bool\" < \"bool\")", bool < bool)
+        assertSQL("(\"bool\" < \"boolOptional\")", bool < boolOptional)
+        assertSQL("(\"boolOptional\" < \"bool\")", boolOptional < bool)
+        assertSQL("(\"boolOptional\" < \"boolOptional\")", boolOptional < boolOptional)
+        assertSQL("(\"bool\" < 1)", bool < true)
+        assertSQL("(\"boolOptional\" < 1)", boolOptional < true)
+        assertSQL("(1 < \"bool\")", true < bool)
+        assertSQL("(1 < \"boolOptional\")", true < boolOptional)
     }
 
     func test_lessThanOrEqualToOperator_withComparableExpressions_buildsBooleanExpression() {
-        AssertSQL("(\"bool\" <= \"bool\")", bool <= bool)
-        AssertSQL("(\"bool\" <= \"boolOptional\")", bool <= boolOptional)
-        AssertSQL("(\"boolOptional\" <= \"bool\")", boolOptional <= bool)
-        AssertSQL("(\"boolOptional\" <= \"boolOptional\")", boolOptional <= boolOptional)
-        AssertSQL("(\"bool\" <= 1)", bool <= true)
-        AssertSQL("(\"boolOptional\" <= 1)", boolOptional <= true)
-        AssertSQL("(1 <= \"bool\")", true <= bool)
-        AssertSQL("(1 <= \"boolOptional\")", true <= boolOptional)
+        assertSQL("(\"bool\" <= \"bool\")", bool <= bool)
+        assertSQL("(\"bool\" <= \"boolOptional\")", bool <= boolOptional)
+        assertSQL("(\"boolOptional\" <= \"bool\")", boolOptional <= bool)
+        assertSQL("(\"boolOptional\" <= \"boolOptional\")", boolOptional <= boolOptional)
+        assertSQL("(\"bool\" <= 1)", bool <= true)
+        assertSQL("(\"boolOptional\" <= 1)", boolOptional <= true)
+        assertSQL("(1 <= \"bool\")", true <= bool)
+        assertSQL("(1 <= \"boolOptional\")", true <= boolOptional)
     }
 
     func test_patternMatchingOperator_withComparableCountableClosedRange_buildsBetweenBooleanExpression() {
-        AssertSQL("\"int\" BETWEEN 0 AND 5", 0...5 ~= int)
-        AssertSQL("\"intOptional\" BETWEEN 0 AND 5", 0...5 ~= intOptional)
+        assertSQL("\"int\" BETWEEN 0 AND 5", 0...5 ~= int)
+        assertSQL("\"intOptional\" BETWEEN 0 AND 5", 0...5 ~= intOptional)
     }
 
     func test_patternMatchingOperator_withComparableClosedRange_buildsBetweenBooleanExpression() {
-        AssertSQL("\"double\" BETWEEN 1.2 AND 4.5", 1.2...4.5 ~= double)
-        AssertSQL("\"doubleOptional\" BETWEEN 1.2 AND 4.5", 1.2...4.5 ~= doubleOptional)
+        assertSQL("\"double\" BETWEEN 1.2 AND 4.5", 1.2...4.5 ~= double)
+        assertSQL("\"doubleOptional\" BETWEEN 1.2 AND 4.5", 1.2...4.5 ~= doubleOptional)
     }
 
     func test_patternMatchingOperator_withComparableRange_buildsBooleanExpression() {
-        AssertSQL("\"double\" >= 1.2 AND \"double\" < 4.5", 1.2..<4.5 ~= double)
-        AssertSQL("\"doubleOptional\" >= 1.2 AND \"doubleOptional\" < 4.5", 1.2..<4.5 ~= doubleOptional)
+        assertSQL("\"double\" >= 1.2 AND \"double\" < 4.5", 1.2..<4.5 ~= double)
+        assertSQL("\"doubleOptional\" >= 1.2 AND \"doubleOptional\" < 4.5", 1.2..<4.5 ~= doubleOptional)
     }
 
     func test_patternMatchingOperator_withComparablePartialRangeThrough_buildsBooleanExpression() {
-        AssertSQL("\"double\" <= 4.5", ...4.5 ~= double)
-        AssertSQL("\"doubleOptional\" <= 4.5", ...4.5 ~= doubleOptional)
+        assertSQL("\"double\" <= 4.5", ...4.5 ~= double)
+        assertSQL("\"doubleOptional\" <= 4.5", ...4.5 ~= doubleOptional)
     }
 
     func test_patternMatchingOperator_withComparablePartialRangeUpTo_buildsBooleanExpression() {
-        AssertSQL("\"double\" < 4.5", ..<4.5 ~= double)
-        AssertSQL("\"doubleOptional\" < 4.5", ..<4.5 ~= doubleOptional)
+        assertSQL("\"double\" < 4.5", ..<4.5 ~= double)
+        assertSQL("\"doubleOptional\" < 4.5", ..<4.5 ~= doubleOptional)
     }
 
     func test_patternMatchingOperator_withComparablePartialRangeFrom_buildsBooleanExpression() {
-        AssertSQL("\"double\" >= 4.5", 4.5... ~= double)
-        AssertSQL("\"doubleOptional\" >= 4.5", 4.5... ~= doubleOptional)
+        assertSQL("\"double\" >= 4.5", 4.5... ~= double)
+        assertSQL("\"doubleOptional\" >= 4.5", 4.5... ~= doubleOptional)
     }
 
     func test_patternMatchingOperator_withComparableClosedRangeString_buildsBetweenBooleanExpression() {
-        AssertSQL("\"string\" BETWEEN 'a' AND 'b'", "a"..."b" ~= string)
-        AssertSQL("\"stringOptional\" BETWEEN 'a' AND 'b'", "a"..."b" ~= stringOptional)
+        assertSQL("\"string\" BETWEEN 'a' AND 'b'", "a"..."b" ~= string)
+        assertSQL("\"stringOptional\" BETWEEN 'a' AND 'b'", "a"..."b" ~= stringOptional)
     }
 
     func test_doubleAndOperator_withBooleanExpressions_buildsCompoundExpression() {
-        AssertSQL("(\"bool\" AND \"bool\")", bool && bool)
-        AssertSQL("(\"bool\" AND \"boolOptional\")", bool && boolOptional)
-        AssertSQL("(\"boolOptional\" AND \"bool\")", boolOptional && bool)
-        AssertSQL("(\"boolOptional\" AND \"boolOptional\")", boolOptional && boolOptional)
-        AssertSQL("(\"bool\" AND 1)", bool && true)
-        AssertSQL("(\"boolOptional\" AND 1)", boolOptional && true)
-        AssertSQL("(1 AND \"bool\")", true && bool)
-        AssertSQL("(1 AND \"boolOptional\")", true && boolOptional)
+        assertSQL("(\"bool\" AND \"bool\")", bool && bool)
+        assertSQL("(\"bool\" AND \"boolOptional\")", bool && boolOptional)
+        assertSQL("(\"boolOptional\" AND \"bool\")", boolOptional && bool)
+        assertSQL("(\"boolOptional\" AND \"boolOptional\")", boolOptional && boolOptional)
+        assertSQL("(\"bool\" AND 1)", bool && true)
+        assertSQL("(\"boolOptional\" AND 1)", boolOptional && true)
+        assertSQL("(1 AND \"bool\")", true && bool)
+        assertSQL("(1 AND \"boolOptional\")", true && boolOptional)
+    }
+
+    func test_andFunction_withBooleanExpressions_buildsCompoundExpression() {
+        assertSQL("(\"bool\" AND \"bool\" AND \"bool\")", and([bool, bool, bool]))
+        assertSQL("(\"bool\" AND \"bool\")", and([bool, bool]))
+        assertSQL("(\"bool\")", and([bool]))
+
+        assertSQL("(\"bool\" AND \"bool\" AND \"bool\")", and(bool, bool, bool))
+        assertSQL("(\"bool\" AND \"bool\")", and(bool, bool))
+        assertSQL("(\"bool\")", and(bool))
     }
 
     func test_doubleOrOperator_withBooleanExpressions_buildsCompoundExpression() {
-        AssertSQL("(\"bool\" OR \"bool\")", bool || bool)
-        AssertSQL("(\"bool\" OR \"boolOptional\")", bool || boolOptional)
-        AssertSQL("(\"boolOptional\" OR \"bool\")", boolOptional || bool)
-        AssertSQL("(\"boolOptional\" OR \"boolOptional\")", boolOptional || boolOptional)
-        AssertSQL("(\"bool\" OR 1)", bool || true)
-        AssertSQL("(\"boolOptional\" OR 1)", boolOptional || true)
-        AssertSQL("(1 OR \"bool\")", true || bool)
-        AssertSQL("(1 OR \"boolOptional\")", true || boolOptional)
+        assertSQL("(\"bool\" OR \"bool\")", bool || bool)
+        assertSQL("(\"bool\" OR \"boolOptional\")", bool || boolOptional)
+        assertSQL("(\"boolOptional\" OR \"bool\")", boolOptional || bool)
+        assertSQL("(\"boolOptional\" OR \"boolOptional\")", boolOptional || boolOptional)
+        assertSQL("(\"bool\" OR 1)", bool || true)
+        assertSQL("(\"boolOptional\" OR 1)", boolOptional || true)
+        assertSQL("(1 OR \"bool\")", true || bool)
+        assertSQL("(1 OR \"boolOptional\")", true || boolOptional)
+    }
+
+    func test_orFunction_withBooleanExpressions_buildsCompoundExpression() {
+        assertSQL("(\"bool\" OR \"bool\" OR \"bool\")", or([bool, bool, bool]))
+        assertSQL("(\"bool\" OR \"bool\")", or([bool, bool]))
+        assertSQL("(\"bool\")", or([bool]))
+
+        assertSQL("(\"bool\" OR \"bool\" OR \"bool\")", or(bool, bool, bool))
+        assertSQL("(\"bool\" OR \"bool\")", or(bool, bool))
+        assertSQL("(\"bool\")", or(bool))
     }
 
     func test_unaryNotOperator_withBooleanExpressions_buildsNotExpression() {
-        AssertSQL("NOT (\"bool\")", !bool)
-        AssertSQL("NOT (\"boolOptional\")", !boolOptional)
+        assertSQL("NOT (\"bool\")", !bool)
+        assertSQL("NOT (\"boolOptional\")", !boolOptional)
     }
 
     func test_precedencePreserved() {
         let n = Expression<Int>(value: 1)
-        AssertSQL("(((1 = 1) AND (1 = 1)) OR (1 = 1))", (n == n && n == n) || n == n)
-        AssertSQL("((1 = 1) AND ((1 = 1) OR (1 = 1)))", n == n && (n == n || n == n))
+        assertSQL("(((1 = 1) AND (1 = 1)) OR (1 = 1))", (n == n && n == n) || n == n)
+        assertSQL("((1 = 1) AND ((1 = 1) OR (1 = 1)))", n == n && (n == n || n == n))
     }
 
     func test_dateExpressionLessGreater() {
         let begin = Date(timeIntervalSince1970: 0)
-        AssertSQL("(\"date\" < '1970-01-01T00:00:00.000')", date < begin)
-        AssertSQL("(\"date\" > '1970-01-01T00:00:00.000')", date > begin)
-        AssertSQL("(\"date\" >= '1970-01-01T00:00:00.000')", date >= begin)
-        AssertSQL("(\"date\" <= '1970-01-01T00:00:00.000')", date <= begin)
+        assertSQL("(\"date\" < '1970-01-01T00:00:00.000')", date < begin)
+        assertSQL("(\"date\" > '1970-01-01T00:00:00.000')", date > begin)
+        assertSQL("(\"date\" >= '1970-01-01T00:00:00.000')", date >= begin)
+        assertSQL("(\"date\" <= '1970-01-01T00:00:00.000')", date <= begin)
     }
 
     func test_dateExpressionRange() {
         let begin = Date(timeIntervalSince1970: 0)
         let end = Date(timeIntervalSince1970: 5000)
-        AssertSQL(
+        assertSQL(
             "\"date\" >= '1970-01-01T00:00:00.000' AND \"date\" < '1970-01-01T01:23:20.000'",
             (begin..<end) ~= date
         )
@@ -333,7 +381,7 @@ class OperatorsTests : XCTestCase {
     func test_dateExpressionClosedRange() {
         let begin = Date(timeIntervalSince1970: 0)
         let end = Date(timeIntervalSince1970: 5000)
-        AssertSQL(
+        assertSQL(
             "\"date\" BETWEEN '1970-01-01T00:00:00.000' AND '1970-01-01T01:23:20.000'",
             (begin...end) ~= date
         )

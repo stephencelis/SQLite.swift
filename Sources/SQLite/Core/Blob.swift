@@ -36,25 +36,25 @@ public struct Blob {
     }
 
     public func toHex() -> String {
-        return bytes.map {
+        bytes.map {
             ($0 < 16 ? "0" : "") + String($0, radix: 16, uppercase: false)
         }.joined(separator: "")
     }
 
 }
 
-extension Blob : CustomStringConvertible {
+extension Blob: CustomStringConvertible {
 
     public var description: String {
-        return "x'\(toHex())'"
+        "x'\(toHex())'"
     }
 
 }
 
-extension Blob : Equatable {
+extension Blob: Equatable {
 
 }
 
 public func ==(lhs: Blob, rhs: Blob) -> Bool {
-    return lhs.bytes == rhs.bytes
+    lhs.bytes == rhs.bytes
 }

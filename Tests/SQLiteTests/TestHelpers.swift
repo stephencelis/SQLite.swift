@@ -1,15 +1,15 @@
 import XCTest
 @testable import SQLite
 
-class SQLiteTestCase : XCTestCase {
-    private var trace:[String: Int]!
-    var db:Connection!
+class SQLiteTestCase: XCTestCase {
+    private var trace: [String: Int]!
+    var db: Connection!
     let users = Table("users")
 
     override func setUp() {
         super.setUp()
         db = try! Connection()
-        trace = [String:Int]()
+        trace = [String: Int]()
 
         db.trace { SQL in
             print(SQL)
@@ -17,7 +17,7 @@ class SQLiteTestCase : XCTestCase {
         }
     }
 
-    func CreateUsersTable() {
+    func createUsersTable() {
         try! db.execute("""
             CREATE TABLE users (
                 id INTEGER PRIMARY KEY,
@@ -26,28 +26,27 @@ class SQLiteTestCase : XCTestCase {
                 salary REAL,
                 admin BOOLEAN NOT NULL DEFAULT 0 CHECK (admin IN (0, 1)),
                 manager_id INTEGER,
+                created_at DATETIME,
                 FOREIGN KEY(manager_id) REFERENCES users(id)
             )
             """
         )
     }
 
-    func InsertUsers(_ names: String...) throws {
-        try InsertUsers(names)
+    func insertUsers(_ names: String...) throws {
+        try insertUsers(names)
     }
 
-    func InsertUsers(_ names: [String]) throws {
-        for name in names { try InsertUser(name) }
+    func insertUsers(_ names: [String]) throws {
+        for name in names { try insertUser(name) }
     }
 
-    @discardableResult func InsertUser(_ name: String, age: Int? = nil, admin: Bool = false) throws -> Statement {
-        return try db.run(
-            "INSERT INTO \"users\" (email, age, admin) values (?, ?, ?)",
-            "\(name)@example.com", age?.datatypeValue, admin.datatypeValue
-        )
+    @discardableResult func insertUser(_ name: String, age: Int? = nil, admin: Bool = false) throws -> Statement {
+        try db.run("INSERT INTO \"users\" (email, age, admin) values (?, ?, ?)",
+                   "\(name)@example.com", age?.datatypeValue, admin.datatypeValue)
     }
 
-    func AssertSQL(_ SQL: String, _ executions: Int = 1, _ message: String? = nil, file: StaticString = #file, line: UInt = #line) {
+    func assertSQL(_ SQL: String, _ executions: Int = 1, _ message: String? = nil, file: StaticString = #file, line: UInt = #line) {
         XCTAssertEqual(
             executions, trace[SQL] ?? 0,
             message ?? SQL,
@@ -55,9 +54,9 @@ class SQLiteTestCase : XCTestCase {
         )
     }
 
-    func AssertSQL(_ SQL: String, _ statement: Statement, _ message: String? = nil, file: StaticString = #file, line: UInt = #line) {
+    func assertSQL(_ SQL: String, _ statement: Statement, _ message: String? = nil, file: StaticString = #file, line: UInt = #line) {
         try! statement.run()
-        AssertSQL(SQL, 1, message, file: file, line: line)
+        assertSQL(SQL, 1, message, file: file, line: line)
         if let count = trace[SQL] { trace[SQL] = count - 1 }
     }
 
@@ -96,7 +95,8 @@ let int64Optional = Expression<Int64?>("int64Optional")
 let string = Expression<String>("string")
 let stringOptional = Expression<String?>("stringOptional")
 
-func AssertSQL(_ expression1: @autoclosure () -> String, _ expression2: @autoclosure () -> Expressible, file: StaticString = #file, line: UInt = #line) {
+func assertSQL(_ expression1: @autoclosure () -> String, _ expression2: @autoclosure () -> Expressible,
+               file: StaticString = #file, line: UInt = #line) {
     XCTAssertEqual(expression1(), expression2().asSQL(), file: file, line: line)
 }
 
@@ -111,15 +111,17 @@ class TestCodable: Codable {
     let bool: Bool
     let float: Float
     let double: Double
+    let date: Date
     let optional: String?
     let sub: TestCodable?
 
-    init(int: Int, string: String, bool: Bool, float: Float, double: Double, optional: String?, sub: TestCodable?) {
+    init(int: Int, string: String, bool: Bool, float: Float, double: Double, date: Date, optional: String?, sub: TestCodable?) {
         self.int = int
         self.string = string
         self.bool = bool
         self.float = float
         self.double = double
+        self.date = date
         self.optional = optional
         self.sub = sub
     }

@@ -11,7 +11,6 @@
 		03A65E721C6BB2D30062603F /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		03A65E731C6BB2D80062603F /* Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AF71C3F06E900AE3E12 /* Foundation.swift */; };
 		03A65E741C6BB2DA0062603F /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AF81C3F06E900AE3E12 /* Helpers.swift */; };
-		03A65E751C6BB2DF0062603F /* SQLiteObjc.h in Headers */ = {isa = PBXBuildFile; fileRef = EE91808D1C46E5230038162A /* SQLiteObjc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		03A65E761C6BB2E60062603F /* Blob.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEE1C3F06E900AE3E12 /* Blob.swift */; };
 		03A65E771C6BB2E60062603F /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEF1C3F06E900AE3E12 /* Connection.swift */; };
 		03A65E781C6BB2EA0062603F /* fts3_tokenizer.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AF01C3F06E900AE3E12 /* fts3_tokenizer.h */; };
@@ -81,6 +80,9 @@
 		19A17FB80B94E882050AA908 /* FoundationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1794CC4D7827E997E32A7 /* FoundationTests.swift */; };
 		19A17FDA323BAFDEC627E76F /* fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 19A17E2695737FAB5D6086E3 /* fixtures */; };
 		19A17FF4A10B44D3937C8CAC /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1710E73A46D5AC721CDA9 /* Errors.swift */; };
+		3717F908221F5D8800B9BD3D /* CustomAggregationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3717F907221F5D7C00B9BD3D /* CustomAggregationTests.swift */; };
+		3717F909221F5D8900B9BD3D /* CustomAggregationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3717F907221F5D7C00B9BD3D /* CustomAggregationTests.swift */; };
+		3717F90A221F5D8900B9BD3D /* CustomAggregationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3717F907221F5D7C00B9BD3D /* CustomAggregationTests.swift */; };
 		3D67B3E61DB2469200A4F4C6 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D67B3E51DB2469200A4F4C6 /* libsqlite3.tbd */; };
 		3D67B3E71DB246BA00A4F4C6 /* Blob.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEE1C3F06E900AE3E12 /* Blob.swift */; };
 		3D67B3E81DB246BA00A4F4C6 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEF1C3F06E900AE3E12 /* Connection.swift */; };
@@ -101,13 +103,19 @@
 		3D67B3F71DB246D700A4F4C6 /* Foundation.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AF71C3F06E900AE3E12 /* Foundation.swift */; };
 		3D67B3F81DB246D700A4F4C6 /* Helpers.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AF81C3F06E900AE3E12 /* Helpers.swift */; };
 		3D67B3F91DB246E700A4F4C6 /* SQLiteObjc.m in Sources */ = {isa = PBXBuildFile; fileRef = EE247AF11C3F06E900AE3E12 /* SQLiteObjc.m */; };
-		3D67B3FB1DB2470600A4F4C6 /* SQLiteObjc.h in Headers */ = {isa = PBXBuildFile; fileRef = EE91808D1C46E5230038162A /* SQLiteObjc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3D67B3FC1DB2471B00A4F4C6 /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3D67B3FD1DB2472D00A4F4C6 /* fts3_tokenizer.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AF01C3F06E900AE3E12 /* fts3_tokenizer.h */; };
+		3DDC112F26CDBA0200CE369F /* SQLiteObjc.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DDC112E26CDBA0200CE369F /* SQLiteObjc.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3DDC113626CDBE1900CE369F /* SQLiteObjc.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DDC112E26CDBA0200CE369F /* SQLiteObjc.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3DDC113726CDBE1900CE369F /* SQLiteObjc.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DDC112E26CDBA0200CE369F /* SQLiteObjc.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3DDC113826CDBE1C00CE369F /* SQLiteObjc.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DDC112E26CDBA0200CE369F /* SQLiteObjc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		49EB68C41F7B3CB400D89D40 /* Coding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EB68C31F7B3CB400D89D40 /* Coding.swift */; };
 		49EB68C51F7B3CB400D89D40 /* Coding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EB68C31F7B3CB400D89D40 /* Coding.swift */; };
 		49EB68C61F7B3CB400D89D40 /* Coding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EB68C31F7B3CB400D89D40 /* Coding.swift */; };
 		49EB68C71F7B3CB400D89D40 /* Coding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EB68C31F7B3CB400D89D40 /* Coding.swift */; };
+		D4DB368C20C09CFB00D5A58E /* SelectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DB368A20C09C9B00D5A58E /* SelectTests.swift */; };
+		D4DB368D20C09CFC00D5A58E /* SelectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DB368A20C09C9B00D5A58E /* SelectTests.swift */; };
+		D4DB368E20C09CFD00D5A58E /* SelectTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D4DB368A20C09C9B00D5A58E /* SelectTests.swift */; };
 		EE247AD71C3F04ED00AE3E12 /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE247ADE1C3F04ED00AE3E12 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE247AD31C3F04ED00AE3E12 /* SQLite.framework */; };
 		EE247B031C3F06E900AE3E12 /* Blob.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEE1C3F06E900AE3E12 /* Blob.swift */; };
@@ -180,8 +188,6 @@
 		EE247B731C3F3FEC00AE3E12 /* Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247B001C3F06E900AE3E12 /* Query.swift */; };
 		EE247B741C3F3FEC00AE3E12 /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247B011C3F06E900AE3E12 /* Schema.swift */; };
 		EE247B751C3F3FEC00AE3E12 /* Setter.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247B021C3F06E900AE3E12 /* Setter.swift */; };
-		EE91808E1C46E5230038162A /* SQLiteObjc.h in Headers */ = {isa = PBXBuildFile; fileRef = EE91808D1C46E5230038162A /* SQLiteObjc.h */; settings = {ATTRIBUTES = (Public, ); }; };
-		EE91808F1C46E76D0038162A /* SQLiteObjc.h in Headers */ = {isa = PBXBuildFile; fileRef = EE91808D1C46E5230038162A /* SQLiteObjc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE9180941C46EA210038162A /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EE9180931C46EA210038162A /* libsqlite3.tbd */; };
 		EE9180951C46EBCC0038162A /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = EE9180911C46E9D30038162A /* libsqlite3.tbd */; };
 /* End PBXBuildFile section */
@@ -225,9 +231,13 @@
 		19A17B93B48B5560E6E51791 /* Fixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
 		19A17BA55DABB480F9020C8A /* DateAndTimeFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateAndTimeFunctions.swift; sourceTree = "<group>"; };
 		19A17E2695737FAB5D6086E3 /* fixtures */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; path = fixtures; sourceTree = "<group>"; };
+		19A17EA3A313F129011B3FA0 /* Release.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Release.md; sourceTree = "<group>"; };
+		3717F907221F5D7C00B9BD3D /* CustomAggregationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAggregationTests.swift; sourceTree = "<group>"; };
 		3D67B3E51DB2469200A4F4C6 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS3.0.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
+		3DDC112E26CDBA0200CE369F /* SQLiteObjc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLiteObjc.h; path = ../SQLiteObjc/include/SQLiteObjc.h; sourceTree = "<group>"; };
 		49EB68C31F7B3CB400D89D40 /* Coding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coding.swift; sourceTree = "<group>"; };
 		A121AC451CA35C79005A31D1 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		D4DB368A20C09C9B00D5A58E /* SelectTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SelectTests.swift; sourceTree = "<group>"; };
 		EE247AD31C3F04ED00AE3E12 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE247AD61C3F04ED00AE3E12 /* SQLite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQLite.h; sourceTree = "<group>"; };
 		EE247AD81C3F04ED00AE3E12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -271,13 +281,11 @@
 		EE247B451C3F3ED000AE3E12 /* SQLiteTests Mac.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQLiteTests Mac.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE247B771C3F40D700AE3E12 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		EE247B8B1C3F820300AE3E12 /* CONTRIBUTING.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = CONTRIBUTING.md; sourceTree = "<group>"; };
-		EE247B8C1C3F821200AE3E12 /* .travis.yml */ = {isa = PBXFileReference; lastKnownFileType = text; path = .travis.yml; sourceTree = "<group>"; };
 		EE247B8D1C3F821200AE3E12 /* Makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; path = Makefile; sourceTree = "<group>"; };
 		EE247B8F1C3F822500AE3E12 /* Index.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = Index.md; sourceTree = "<group>"; };
 		EE247B911C3F822500AE3E12 /* installation@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "installation@2x.png"; sourceTree = "<group>"; };
 		EE247B921C3F822600AE3E12 /* playground@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "playground@2x.png"; sourceTree = "<group>"; };
 		EE247B931C3F826100AE3E12 /* SQLite.swift.podspec */ = {isa = PBXFileReference; explicitFileType = text.script.ruby; path = SQLite.swift.podspec; sourceTree = "<group>"; };
-		EE91808D1C46E5230038162A /* SQLiteObjc.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SQLiteObjc.h; path = ../../SQLiteObjc/include/SQLiteObjc.h; sourceTree = "<group>"; };
 		EE9180911C46E9D30038162A /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.11.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		EE9180931C46EA210038162A /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = usr/lib/libsqlite3.tbd; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
@@ -381,6 +389,7 @@
 			isa = PBXGroup;
 			children = (
 				EE247AD61C3F04ED00AE3E12 /* SQLite.h */,
+				3DDC112E26CDBA0200CE369F /* SQLiteObjc.h */,
 				EE247AF71C3F06E900AE3E12 /* Foundation.swift */,
 				EE247AF81C3F06E900AE3E12 /* Helpers.swift */,
 				EE247AD81C3F04ED00AE3E12 /* Info.plist */,
@@ -401,6 +410,7 @@
 				EE247B1D1C3F137700AE3E12 /* ConnectionTests.swift */,
 				EE247B1E1C3F137700AE3E12 /* CoreFunctionsTests.swift */,
 				EE247B1F1C3F137700AE3E12 /* CustomFunctionsTests.swift */,
+				3717F907221F5D7C00B9BD3D /* CustomAggregationTests.swift */,
 				EE247B201C3F137700AE3E12 /* ExpressionTests.swift */,
 				EE247B211C3F137700AE3E12 /* FTS4Tests.swift */,
 				EE247B2A1C3F141E00AE3E12 /* OperatorsTests.swift */,
@@ -418,6 +428,7 @@
 				19A17B93B48B5560E6E51791 /* Fixtures.swift */,
 				19A175C1F9CB3BBAB8FCEC7B /* RowTests.swift */,
 				19A1729B75C33F9A0B9A89C1 /* DateAndTimeFunctionTests.swift */,
+				D4DB368A20C09C9B00D5A58E /* SelectTests.swift */,
 			);
 			name = SQLiteTests;
 			path = Tests/SQLiteTests;
@@ -426,7 +437,6 @@
 		EE247AED1C3F06E900AE3E12 /* Core */ = {
 			isa = PBXGroup;
 			children = (
-				EE91808D1C46E5230038162A /* SQLiteObjc.h */,
 				EE247AEE1C3F06E900AE3E12 /* Blob.swift */,
 				EE247AEF1C3F06E900AE3E12 /* Connection.swift */,
 				EE247AF01C3F06E900AE3E12 /* fts3_tokenizer.h */,
@@ -473,7 +483,6 @@
 				EE247B771C3F40D700AE3E12 /* README.md */,
 				EE247B8B1C3F820300AE3E12 /* CONTRIBUTING.md */,
 				EE247B931C3F826100AE3E12 /* SQLite.swift.podspec */,
-				EE247B8C1C3F821200AE3E12 /* .travis.yml */,
 				EE247B8D1C3F821200AE3E12 /* Makefile */,
 				EE9180931C46EA210038162A /* libsqlite3.tbd */,
 				EE9180911C46E9D30038162A /* libsqlite3.tbd */,
@@ -488,6 +497,7 @@
 			children = (
 				EE247B8F1C3F822500AE3E12 /* Index.md */,
 				EE247B901C3F822500AE3E12 /* Resources */,
+				19A17EA3A313F129011B3FA0 /* Release.md */,
 			);
 			path = Documentation;
 			sourceTree = "<group>";
@@ -509,7 +519,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				03A65E781C6BB2EA0062603F /* fts3_tokenizer.h in Headers */,
-				03A65E751C6BB2DF0062603F /* SQLiteObjc.h in Headers */,
+				3DDC113626CDBE1900CE369F /* SQLiteObjc.h in Headers */,
 				03A65E721C6BB2D30062603F /* SQLite.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -518,8 +528,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3D67B3FB1DB2470600A4F4C6 /* SQLiteObjc.h in Headers */,
 				3D67B3FC1DB2471B00A4F4C6 /* SQLite.h in Headers */,
+				3DDC113726CDBE1900CE369F /* SQLiteObjc.h in Headers */,
 				3D67B3FD1DB2472D00A4F4C6 /* fts3_tokenizer.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -528,8 +538,8 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EE91808E1C46E5230038162A /* SQLiteObjc.h in Headers */,
 				EE247B051C3F06E900AE3E12 /* fts3_tokenizer.h in Headers */,
+				3DDC113826CDBE1C00CE369F /* SQLiteObjc.h in Headers */,
 				EE247AD71C3F04ED00AE3E12 /* SQLite.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -539,8 +549,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				EE247B671C3F3FEC00AE3E12 /* fts3_tokenizer.h in Headers */,
+				3DDC112F26CDBA0200CE369F /* SQLiteObjc.h in Headers */,
 				EE247B621C3F3FDB00AE3E12 /* SQLite.h in Headers */,
-				EE91808F1C46E76D0038162A /* SQLiteObjc.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -680,7 +690,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0720;
-				LastUpgradeCheck = 1020;
+				LastUpgradeCheck = 1250;
 				TargetAttributes = {
 					03A65E591C6BB0F50062603F = {
 						CreatedOnToolsVersion = 7.2;
@@ -835,6 +845,7 @@
 				03A65E921C6BB3030062603F /* SetterTests.swift in Sources */,
 				03A65E891C6BB3030062603F /* ConnectionTests.swift in Sources */,
 				03A65E8A1C6BB3030062603F /* CoreFunctionsTests.swift in Sources */,
+				3717F90A221F5D8900B9BD3D /* CustomAggregationTests.swift in Sources */,
 				03A65E931C6BB3030062603F /* StatementTests.swift in Sources */,
 				03A65E911C6BB3030062603F /* SchemaTests.swift in Sources */,
 				03A65E8D1C6BB3030062603F /* FTS4Tests.swift in Sources */,
@@ -847,6 +858,7 @@
 				19A17F60B685636D1F83C2DD /* Fixtures.swift in Sources */,
 				19A1785195182AF8731A8BDA /* RowTests.swift in Sources */,
 				19A1769C1F3A7542BECF50FF /* DateAndTimeFunctionTests.swift in Sources */,
+				D4DB368E20C09CFD00D5A58E /* SelectTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -923,6 +935,7 @@
 				EE247B271C3F137700AE3E12 /* CustomFunctionsTests.swift in Sources */,
 				EE247B341C3F142E00AE3E12 /* StatementTests.swift in Sources */,
 				EE247B301C3F141E00AE3E12 /* RTreeTests.swift in Sources */,
+				3717F908221F5D8800B9BD3D /* CustomAggregationTests.swift in Sources */,
 				EE247B231C3F137700AE3E12 /* BlobTests.swift in Sources */,
 				EE247B351C3F142E00AE3E12 /* ValueTests.swift in Sources */,
 				EE247B2F1C3F141E00AE3E12 /* QueryTests.swift in Sources */,
@@ -935,6 +948,7 @@
 				19A17408007B182F884E3A53 /* Fixtures.swift in Sources */,
 				19A1720B67ED13E6150C6A3D /* RowTests.swift in Sources */,
 				19A17C80076860CF7751A056 /* DateAndTimeFunctionTests.swift in Sources */,
+				D4DB368C20C09CFB00D5A58E /* SelectTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -981,6 +995,7 @@
 				EE247B5F1C3F3FC700AE3E12 /* StatementTests.swift in Sources */,
 				EE247B5C1C3F3FC700AE3E12 /* RTreeTests.swift in Sources */,
 				EE247B571C3F3FC700AE3E12 /* CustomFunctionsTests.swift in Sources */,
+				3717F909221F5D8900B9BD3D /* CustomAggregationTests.swift in Sources */,
 				EE247B601C3F3FC700AE3E12 /* ValueTests.swift in Sources */,
 				EE247B551C3F3FC700AE3E12 /* ConnectionTests.swift in Sources */,
 				EE247B611C3F3FC700AE3E12 /* TestHelpers.swift in Sources */,
@@ -993,6 +1008,7 @@
 				19A1709C3E7A406E62293B2A /* Fixtures.swift in Sources */,
 				19A171967CC511C4F6F773C9 /* RowTests.swift in Sources */,
 				19A172EB202970561E5C4245 /* DateAndTimeFunctionTests.swift in Sources */,
+				D4DB368D20C09CFC00D5A58E /* SelectTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1026,6 +1042,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Sources/SQLite/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1033,7 +1050,8 @@
 				PRODUCT_NAME = SQLite;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
-				TVOS_DEPLOYMENT_TARGET = 9.1;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				TVOS_DEPLOYMENT_TARGET = 12.0;
 			};
 			name = Debug;
 		};
@@ -1046,6 +1064,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Sources/SQLite/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1053,31 +1072,36 @@
 				PRODUCT_NAME = SQLite;
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
-				TVOS_DEPLOYMENT_TARGET = 9.1;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				TVOS_DEPLOYMENT_TARGET = 12.0;
 			};
 			name = Release;
 		};
 		03A65E6D1C6BB0F60062603F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Tests/SQLiteTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TVOS_DEPLOYMENT_TARGET = 9.1;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				TVOS_DEPLOYMENT_TARGET = 12.0;
 			};
 			name = Debug;
 		};
 		03A65E6E1C6BB0F60062603F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Tests/SQLiteTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = appletvos;
-				TVOS_DEPLOYMENT_TARGET = 9.1;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
+				TVOS_DEPLOYMENT_TARGET = 12.0;
 			};
 			name = Release;
 		};
@@ -1091,6 +1115,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Sources/SQLite/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1098,8 +1123,9 @@
 				PRODUCT_NAME = SQLite;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Debug;
 		};
@@ -1113,6 +1139,7 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Sources/SQLite/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -1120,8 +1147,9 @@
 				PRODUCT_NAME = SQLite;
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 				TARGETED_DEVICE_FAMILY = 4;
-				WATCHOS_DEPLOYMENT_TARGET = 2.2;
+				WATCHOS_DEPLOYMENT_TARGET = 3.0;
 			};
 			name = Release;
 		};
@@ -1148,6 +1176,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1173,8 +1202,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "";
@@ -1210,6 +1239,7 @@
 				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
 				CLANG_WARN_STRICT_PROTOTYPES = YES;
 				CLANG_WARN_SUSPICIOUS_MOVE = YES;
@@ -1229,8 +1259,8 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
-				MACOSX_DEPLOYMENT_TARGET = 10.9;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
+				MACOSX_DEPLOYMENT_TARGET = 10.15;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "";
 				SDKROOT = iphoneos;
@@ -1253,14 +1283,17 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Sources/SQLite/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 0.13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLite;
 				PRODUCT_NAME = SQLite;
 				SKIP_INSTALL = YES;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 			};
 			name = Debug;
 		};
@@ -1274,35 +1307,40 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Sources/SQLite/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
-				IPHONEOS_DEPLOYMENT_TARGET = 8.0;
+				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				MARKETING_VERSION = 0.13.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLite;
 				PRODUCT_NAME = SQLite;
 				SKIP_INSTALL = YES;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 			};
 			name = Release;
 		};
 		EE247AEB1C3F04ED00AE3E12 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Tests/SQLiteTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 			};
 			name = Debug;
 		};
 		EE247AEC1C3F04ED00AE3E12 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Tests/SQLiteTests/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 			};
 			name = Release;
 		};
@@ -1317,15 +1355,16 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Sources/SQLite/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLite;
 				PRODUCT_NAME = SQLite;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "";
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 			};
 			name = Debug;
 		};
@@ -1340,15 +1379,16 @@
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
 				FRAMEWORK_VERSION = A;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = "$(SRCROOT)/Sources/SQLite/Info.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLite;
 				PRODUCT_NAME = SQLite;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = "";
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 			};
 			name = Release;
 		};
@@ -1357,12 +1397,13 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Tests/SQLiteTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 			};
 			name = Debug;
 		};
@@ -1371,12 +1412,13 @@
 			buildSettings = {
 				CODE_SIGN_IDENTITY = "-";
 				COMBINE_HIDPI_IMAGES = YES;
+				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				INFOPLIST_FILE = Tests/SQLiteTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
-				MACOSX_DEPLOYMENT_TARGET = 10.10;
 				PRODUCT_BUNDLE_IDENTIFIER = com.stephencelis.SQLiteTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = macosx;
+				SWIFT_TREAT_WARNINGS_AS_ERRORS = YES;
 			};
 			name = Release;
 		};

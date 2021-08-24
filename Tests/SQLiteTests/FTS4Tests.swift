@@ -1,7 +1,7 @@
 import XCTest
 import SQLite
 
-class FTS4Tests : XCTestCase {
+class FTS4Tests: XCTestCase {
 
     func test_create_onVirtualTable_withFTS4_compilesCreateVirtualTableExpression() {
         XCTAssertEqual(
@@ -25,26 +25,33 @@ class FTS4Tests : XCTestCase {
             virtualTable.create(.FTS4(tokenize: .Unicode61(removeDiacritics: false)))
         )
         XCTAssertEqual(
-            "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(tokenize=unicode61 \"removeDiacritics=1\" \"tokenchars=.\" \"separators=X\")",
-            virtualTable.create(.FTS4(tokenize: .Unicode61(removeDiacritics: true, tokenchars: ["."], separators: ["X"])))
+            """
+            CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(tokenize=unicode61 \"removeDiacritics=1\"
+             \"tokenchars=.\" \"separators=X\")
+            """.replacingOccurrences(of: "\n", with: ""),
+            virtualTable.create(.FTS4(tokenize: .Unicode61(removeDiacritics: true,
+                                                           tokenchars: ["."], separators: ["X"])))
         )
     }
 
     func test_match_onVirtualTableAsExpression_compilesMatchExpression() {
-        AssertSQL("(\"virtual_table\" MATCH 'string')", virtualTable.match("string") as Expression<Bool>)
-        AssertSQL("(\"virtual_table\" MATCH \"string\")", virtualTable.match(string) as Expression<Bool>)
-        AssertSQL("(\"virtual_table\" MATCH \"stringOptional\")", virtualTable.match(stringOptional) as Expression<Bool?>)
+        assertSQL("(\"virtual_table\" MATCH 'string')", virtualTable.match("string") as Expression<Bool>)
+        assertSQL("(\"virtual_table\" MATCH \"string\")", virtualTable.match(string) as Expression<Bool>)
+        assertSQL("(\"virtual_table\" MATCH \"stringOptional\")", virtualTable.match(stringOptional) as Expression<Bool?>)
     }
 
     func test_match_onVirtualTableAsQueryType_compilesMatchExpression() {
-        AssertSQL("SELECT * FROM \"virtual_table\" WHERE (\"virtual_table\" MATCH 'string')", virtualTable.match("string") as QueryType)
-        AssertSQL("SELECT * FROM \"virtual_table\" WHERE (\"virtual_table\" MATCH \"string\")", virtualTable.match(string) as QueryType)
-        AssertSQL("SELECT * FROM \"virtual_table\" WHERE (\"virtual_table\" MATCH \"stringOptional\")", virtualTable.match(stringOptional) as QueryType)
+        assertSQL("SELECT * FROM \"virtual_table\" WHERE (\"virtual_table\" MATCH 'string')",
+                  virtualTable.match("string") as QueryType)
+        assertSQL("SELECT * FROM \"virtual_table\" WHERE (\"virtual_table\" MATCH \"string\")",
+                  virtualTable.match(string) as QueryType)
+        assertSQL("SELECT * FROM \"virtual_table\" WHERE (\"virtual_table\" MATCH \"stringOptional\")",
+                  virtualTable.match(stringOptional) as QueryType)
     }
 
 }
 
-class FTS4ConfigTests : XCTestCase {
+class FTS4ConfigTests: XCTestCase {
     var config: FTS4Config!
 
     override func setUp() {
@@ -108,7 +115,10 @@ class FTS4ConfigTests : XCTestCase {
 
     func test_tokenizer_unicode61_with_options() {
         XCTAssertEqual(
-            "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(tokenize=unicode61 \"removeDiacritics=1\" \"tokenchars=.\" \"separators=X\")",
+            """
+            CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(tokenize=unicode61 \"removeDiacritics=1\"
+             \"tokenchars=.\" \"separators=X\")
+            """.replacingOccurrences(of: "\n", with: ""),
             sql(config.tokenizer(.Unicode61(removeDiacritics: true, tokenchars: ["."], separators: ["X"]))))
     }
 
@@ -156,7 +166,11 @@ class FTS4ConfigTests : XCTestCase {
 
     func test_config_all() {
         XCTAssertEqual(
-            "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(\"int\", \"string\", \"date\", tokenize=porter, prefix=\"2,4\", content=\"table\", notindexed=\"string\", notindexed=\"date\", languageid=\"lid\", matchinfo=\"fts3\", order=\"desc\")",
+            """
+            CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(\"int\", \"string\", \"date\",
+             tokenize=porter, prefix=\"2,4\", content=\"table\", notindexed=\"string\", notindexed=\"date\",
+             languageid=\"lid\", matchinfo=\"fts3\", order=\"desc\")
+            """.replacingOccurrences(of: "\n", with: ""),
             sql(config
                 .tokenizer(.Porter)
                 .column(int)
@@ -171,11 +185,11 @@ class FTS4ConfigTests : XCTestCase {
     }
 
     func sql(_ config: FTS4Config) -> String {
-        return virtualTable.create(.FTS4(config))
+        virtualTable.create(.FTS4(config))
     }
 }
 
-class FTS4IntegrationTests : SQLiteTestCase {
+class FTS4IntegrationTests: SQLiteTestCase {
 #if !SQLITE_SWIFT_STANDALONE && !SQLITE_SWIFT_SQLCIPHER
     func test_registerTokenizer_registersTokenizer() {
         let emails = VirtualTable("emails")
@@ -184,9 +198,11 @@ class FTS4IntegrationTests : SQLiteTestCase {
 
         let locale = CFLocaleCopyCurrent()
         let tokenizerName = "tokenizer"
-        let tokenizer = CFStringTokenizerCreate(nil, "" as CFString, CFRangeMake(0, 0), UInt(kCFStringTokenizerUnitWord), locale)
+        let tokenizer = CFStringTokenizerCreate(nil, "" as CFString, CFRangeMake(0, 0),
+                                                UInt(kCFStringTokenizerUnitWord), locale)
         try! db.registerTokenizer(tokenizerName) { string in
-            CFStringTokenizerSetString(tokenizer, string as CFString, CFRangeMake(0, CFStringGetLength(string as CFString)))
+            CFStringTokenizerSetString(tokenizer, string as CFString,
+                                       CFRangeMake(0, CFStringGetLength(string as CFString)))
             if CFStringTokenizerAdvanceToNextToken(tokenizer).isEmpty {
                 return nil
             }
@@ -199,7 +215,10 @@ class FTS4IntegrationTests : SQLiteTestCase {
         }
 
         try! db.run(emails.create(.FTS4([subject, body], tokenize: .Custom(tokenizerName))))
-        AssertSQL("CREATE VIRTUAL TABLE \"emails\" USING fts4(\"subject\", \"body\", tokenize=\"SQLite.swift\" \"tokenizer\")")
+        assertSQL("""
+                  CREATE VIRTUAL TABLE \"emails\" USING fts4(\"subject\", \"body\",
+                   tokenize=\"SQLite.swift\" \"tokenizer\")
+                  """.replacingOccurrences(of: "\n", with: ""))
 
         try! _ = db.run(emails.insert(subject <- "Aún más cáfe!"))
         XCTAssertEqual(1, try! db.scalar(emails.filter(emails.match("aun")).count))
