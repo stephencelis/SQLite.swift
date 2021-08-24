@@ -135,3 +135,12 @@ class CustomFunctionWithTwoArgsTests: SQLiteTestCase {
         XCTAssertEqual("ab", result)
     }
 }
+
+class CustomFunctionTruncation: SQLiteTestCase {
+    // https://github.com/stephencelis/SQLite.swift/issues/468
+    func testStringTruncation() {
+        _ = try! db.createFunction("customLower") { (value: String) in value.lowercased() }
+        let result = try! db.prepare("SELECT customLower(?)").scalar("TÖL-AA 12") as? String
+        XCTAssertEqual("töl-aa 12", result)
+    }
+}
