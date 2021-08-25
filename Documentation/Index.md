@@ -262,10 +262,8 @@ If you have bundled it in your application, you can use FileManager to copy it t
 
 ```swift
 func copyDatabaseIfNeeded(sourcePath: String) -> Bool {
-    let path = NSSearchPathForDirectoriesInDomains(
-        .documentDirectory, .userDomainMask, true
-    ).first!
-    let destinationPath = destinationPath + "/db.sqlite3"
+    let documents = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
+    let destinationPath = documents + "/db.sqlite3"
     let exists = FileManager.default.fileExists(atPath: destinationPath)
     guard !exists else { return false }
     do {
