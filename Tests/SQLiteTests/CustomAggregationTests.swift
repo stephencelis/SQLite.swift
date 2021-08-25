@@ -13,7 +13,7 @@ import CSQLite
 import SQLite3
 #endif
 
-// https://bugs.swift.org/browse/SR-4429
+// https://github.com/stephencelis/SQLite.swift/issues/1071
 #if !os(Linux)
 
 class CustomAggregationTests: SQLiteTestCase {

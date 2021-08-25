@@ -1,7 +1,7 @@
 import XCTest
 import SQLite
 
-// https://bugs.swift.org/browse/SR-4429
+// https://github.com/stephencelis/SQLite.swift/issues/1071
 #if !os(Linux)
 
 class CustomFunctionNoArgsTests: SQLiteTestCase {

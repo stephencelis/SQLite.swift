@@ -343,7 +343,7 @@ class ConnectionTests: SQLiteTestCase {
         }
     }
 
-    // https://bugs.swift.org/browse/SR-4429
+    // https://github.com/stephencelis/SQLite.swift/issues/1071
     #if !os(Linux)
     func test_createFunction_withArrayArguments() {
         db.createFunction("hello") { $0[0].map { "Hello, \($0)!" } }

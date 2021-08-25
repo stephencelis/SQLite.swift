@@ -643,7 +643,7 @@ public final class Connection {
         }
 
         if functions[function] == nil {
-            functions[function] = [:] // fails on Linux, https://bugs.swift.org/browse/SR-4429
+            functions[function] = [:] // fails on Linux, https://github.com/stephencelis/SQLite.swift/issues/1071
         }
         functions[function]?[argc] = box
     }
