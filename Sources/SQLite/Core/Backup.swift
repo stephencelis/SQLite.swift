@@ -38,19 +38,19 @@ import SQLite3
 ///
 /// See: <https://www.sqlite.org/backup.html>
 public final class Backup {
-    
+
     /// The name of the database to backup
     public enum DatabaseName {
-        
+
         /// The main database
         case main
-        
+
         /// The temporary database
         case temp
-        
+
         /// A database added to the connection with ATTACH statement
         case attached(name: String)
-        
+
         var name: String {
             switch self {
             case .main:
@@ -62,16 +62,16 @@ public final class Backup {
             }
         }
     }
-    
+
     /// Number of pages to copy while performing a backup step
     public enum Pages {
-        
+
         /// Indicates all remaining pages should be copied
         case all
-        
+
         /// Indicates the maximal number of pages to be copied in single step
         case limited(number: Int32)
-        
+
         var number: Int32 {
             switch self {
             case .all:
@@ -81,63 +81,60 @@ public final class Backup {
             }
         }
     }
-    
+
     /// Total number of pages to copy
     ///
     /// See: <https://www.sqlite.org/c3ref/backup_finish.html#sqlite3backuppagecount>
     public var pageCount: Int32 {
         return handle.map { sqlite3_backup_pagecount($0) } ?? 0
     }
-    
+
     /// Number of remaining pages to copy.
     ///
     /// See: <https://www.sqlite.org/c3ref/backup_finish.html#sqlite3backupremaining>
     public var remainingPages: Int32 {
         return handle.map { sqlite3_backup_remaining($0) } ?? 0
     }
-    
+
     private let targetConnection: Connection
     private let sourceConnection: Connection
-    
+
     private var handle: OpaquePointer?
-    
+
     /// Initializes a new SQLite backup.
     ///
     /// - Parameters:
     ///
-    ///   - targetConnection: The connection to the database to save backup into.
-    ///
-    ///   - targetName: The name of the database to save backup into.
-    ///
+    ///   - sourceConnection: The connection to the database to backup.
+    ///   - sourceName: The name of the database to backup.
     ///     Default: `.main`.
     ///
-    ///   - sourceConnection: The connection to the database to backup.
-    ///
-    ///   - sourceName: The name of the database to backup.
-    /// 
+    ///   - targetConnection: The connection to the database to save backup into.
+    ///   - targetName: The name of the database to save backup into.
     ///     Default: `.main`.
     ///
     /// - Returns: A new database backup.
     ///
     /// See: <https://www.sqlite.org/c3ref/backup_finish.html#sqlite3backupinit>
-    public init(targetConnection: Connection,
-                targetName: DatabaseName = .main,
-                sourceConnection: Connection,
-                sourceName: DatabaseName = .main) throws {
-        
+    public init(sourceConnection: Connection,
+                sourceName: DatabaseName = .main,
+                targetConnection: Connection,
+                targetName: DatabaseName = .main) throws {
+
         self.targetConnection = targetConnection
         self.sourceConnection = sourceConnection
-        
+
         self.handle = sqlite3_backup_init(targetConnection.handle,
                                           targetName.name,
                                           sourceConnection.handle,
                                           sourceName.name)
-        
-        if self.handle == nil, let error = Result(errorCode: sqlite3_errcode(targetConnection.handle), connection: targetConnection) {
+
+        if handle == nil, let error = Result(errorCode: sqlite3_errcode(targetConnection.handle),
+                                             connection: targetConnection) {
             throw error
         }
     }
-    
+
     /// Performs a backup step.
     ///
     /// - Parameter pagesToCopy: The maximal number of pages to copy in one step
@@ -147,17 +144,17 @@ public final class Backup {
     /// See: <https://www.sqlite.org/c3ref/backup_finish.html#sqlite3backupstep>
     public func step(pagesToCopy pages: Pages = .all) throws {
         let status = sqlite3_backup_step(handle, pages.number)
-        
+
         guard status != SQLITE_DONE else {
             finish()
             return
         }
-        
+
         if let error = Result(errorCode: status, connection: targetConnection) {
             throw error
         }
     }
-    
+
     /// Finalizes backup.
     ///
     /// See: <https://www.sqlite.org/c3ref/backup_finish.html#sqlite3backupfinish>
@@ -165,11 +162,11 @@ public final class Backup {
         guard let handle = self.handle else {
             return
         }
-        
+
         sqlite3_backup_finish(handle)
         self.handle = nil
     }
-    
+
     deinit {
         finish()
     }

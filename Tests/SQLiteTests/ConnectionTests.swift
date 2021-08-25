@@ -147,15 +147,15 @@ class ConnectionTests: SQLiteTestCase {
 
         assertSQL("BEGIN EXCLUSIVE TRANSACTION")
     }
-    
+
     func test_backup_copiesDatabase() throws {
         let target = try Connection()
-        
-        try InsertUsers("alice", "betsy")
-        
+
+        try insertUsers("alice", "betsy")
+
         let backup = try db.backup(usingConnection: target)
         try backup.step()
-        
+
         let users = try target.prepare("SELECT email FROM users ORDER BY email")
         XCTAssertEqual(users.map { $0[0] as? String }, ["alice@example.com", "betsy@example.com"])
     }

@@ -790,9 +790,9 @@ public final class Connection {
     }
     fileprivate typealias Collation = @convention(block) (UnsafeRawPointer, UnsafeRawPointer) -> Int32
     fileprivate var collations = [String: Collation]()
-    
+
     // MARK: - Backup
-    
+
     /// Prepares a new backup for current connection.
     ///
     /// - Parameters:
@@ -808,16 +808,14 @@ public final class Connection {
     ///     Default: `.main`.
     ///
     /// - Returns: A new database backup.
-    
+
     public func backup(databaseName: Backup.DatabaseName = .main,
                        usingConnection targetConnection: Connection,
                        andDatabaseName targetDatabaseName: Backup.DatabaseName = .main) throws -> Backup {
-        return try Backup(targetConnection: targetConnection,
-                          targetName: targetDatabaseName,
-                          sourceConnection: self,
-                          sourceName: databaseName)
+        try Backup(sourceConnection: self, sourceName: databaseName, targetConnection: targetConnection,
+                   targetName: targetDatabaseName)
     }
-    
+
     // MARK: - Error Handling
 
     func sync<T>(_ block: () throws -> T) rethrows -> T {
@@ -865,40 +863,4 @@ extension Connection.Location: CustomStringConvertible {
         }
     }
 
-}
-
-public enum Result: Error {
-
-    fileprivate static let successCodes: Set = [SQLITE_OK, SQLITE_ROW, SQLITE_DONE]
-
-    /// Represents a SQLite specific [error code](https://sqlite.org/rescode.html)
-    ///
-    /// - message: English-language text that describes the error
-    ///
-    /// - code: SQLite [error code](https://sqlite.org/rescode.html#primary_result_code_list)
-    ///
-    /// - statement: the statement which produced the error
-    case error(message: String, code: Int32, statement: Statement?)
-
-    init?(errorCode: Int32, connection: Connection, statement: Statement? = nil) {
-        guard !Result.successCodes.contains(errorCode) else { return nil }
-
-        let message = String(cString: sqlite3_errmsg(connection.handle))
-        self = .error(message: message, code: errorCode, statement: statement)
-    }
-
-}
-
-extension Result: CustomStringConvertible {
-
-    public var description: String {
-        switch self {
-        case let .error(message, errorCode, statement):
-            if let statement = statement {
-                return "\(message) (\(statement)) (code: \(errorCode))"
-            } else {
-                return "\(message) (code: \(errorCode))"
-            }
-        }
-    }
 }
