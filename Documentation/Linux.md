@@ -1,5 +1,10 @@
 # Linux
 
+## Limitations
+
+* Custom functions are currently not supported and crash, caused by a bug in Swift.
+See [#1071](https://github.com/stephencelis/SQLite.swift/issues/1071).
+
 ## Debugging
 
 ### Create and launch docker container

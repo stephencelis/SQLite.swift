@@ -19,6 +19,7 @@ syntax _and_ intent.
  - [Well-documented][See Documentation]
  - Extensively tested
  - [SQLCipher][] support via CocoaPods
+ - Works on [Linux](Documentation/Linux.md) (with some limitations)
  - Active support at
    [StackOverflow](https://stackoverflow.com/questions/tagged/sqlite.swift),
    and [Gitter Chat Room](https://gitter.im/stephencelis/SQLite.swift)
