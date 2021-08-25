@@ -52,6 +52,7 @@
 		19A171F12AB8B07F2FD7201A /* Cipher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A178A39ACA9667A62663CC /* Cipher.swift */; };
 		19A1720B67ED13E6150C6A3D /* RowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A175C1F9CB3BBAB8FCEC7B /* RowTests.swift */; };
 		19A17254FBA7894891F7297B /* FTS5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1721B8984686B9963B45D /* FTS5Tests.swift */; };
+		19A172A9B536D02D4A98AAAD /* QueryIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A17BA6B4E282C1315A115C /* QueryIntegrationTests.swift */; };
 		19A172EB202970561E5C4245 /* DateAndTimeFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1729B75C33F9A0B9A89C1 /* DateAndTimeFunctionTests.swift */; };
 		19A173668D948AD4DF1F5352 /* DateAndTimeFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A17BA55DABB480F9020C8A /* DateAndTimeFunctions.swift */; };
 		19A1737286A74F3CF7412906 /* DateAndTimeFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A17BA55DABB480F9020C8A /* DateAndTimeFunctions.swift */; };
@@ -60,6 +61,7 @@
 		19A174D78559CD30679BCCCB /* FTS5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1721B8984686B9963B45D /* FTS5Tests.swift */; };
 		19A1750CEE9B05267995CF3D /* FTS5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1730E4390C775C25677D1 /* FTS5.swift */; };
 		19A175DFF47B84757E547C62 /* fixtures in Resources */ = {isa = PBXBuildFile; fileRef = 19A17E2695737FAB5D6086E3 /* fixtures */; };
+		19A176406BDE9D9C80CC9FA3 /* QueryIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A17BA6B4E282C1315A115C /* QueryIntegrationTests.swift */; };
 		19A1769C1F3A7542BECF50FF /* DateAndTimeFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1729B75C33F9A0B9A89C1 /* DateAndTimeFunctionTests.swift */; };
 		19A177CC33F2E6A24AF90B02 /* CipherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A17399EA9E61235D5D77BF /* CipherTests.swift */; };
 		19A178072B371489E6A1E839 /* FoundationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1794CC4D7827E997E32A7 /* FoundationTests.swift */; };
@@ -71,6 +73,7 @@
 		19A179E76EA6207669B60C1B /* Cipher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A178A39ACA9667A62663CC /* Cipher.swift */; };
 		19A17C4B951CB054EE48AB1C /* CipherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A17399EA9E61235D5D77BF /* CipherTests.swift */; };
 		19A17C80076860CF7751A056 /* DateAndTimeFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1729B75C33F9A0B9A89C1 /* DateAndTimeFunctionTests.swift */; };
+		19A17CB808ACF606726E77A8 /* QueryIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A17BA6B4E282C1315A115C /* QueryIntegrationTests.swift */; };
 		19A17DC282E36C4F41AA440B /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1710E73A46D5AC721CDA9 /* Errors.swift */; };
 		19A17E04C4C0956715C5676A /* FoundationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1794CC4D7827E997E32A7 /* FoundationTests.swift */; };
 		19A17E29278A12BC4F542506 /* DateAndTimeFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A17BA55DABB480F9020C8A /* DateAndTimeFunctions.swift */; };
@@ -231,6 +234,7 @@
 		19A1794CC4D7827E997E32A7 /* FoundationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoundationTests.swift; sourceTree = "<group>"; };
 		19A17B93B48B5560E6E51791 /* Fixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
 		19A17BA55DABB480F9020C8A /* DateAndTimeFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateAndTimeFunctions.swift; sourceTree = "<group>"; };
+		19A17BA6B4E282C1315A115C /* QueryIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QueryIntegrationTests.swift; sourceTree = "<group>"; };
 		19A17E2695737FAB5D6086E3 /* fixtures */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = folder; path = fixtures; sourceTree = "<group>"; };
 		19A17EA3A313F129011B3FA0 /* Release.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Release.md; sourceTree = "<group>"; };
 		3717F907221F5D7C00B9BD3D /* CustomAggregationTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomAggregationTests.swift; sourceTree = "<group>"; };
@@ -430,6 +434,7 @@
 				19A175C1F9CB3BBAB8FCEC7B /* RowTests.swift */,
 				19A1729B75C33F9A0B9A89C1 /* DateAndTimeFunctionTests.swift */,
 				D4DB368A20C09C9B00D5A58E /* SelectTests.swift */,
+				19A17BA6B4E282C1315A115C /* QueryIntegrationTests.swift */,
 			);
 			name = SQLiteTests;
 			path = Tests/SQLiteTests;
@@ -861,6 +866,7 @@
 				19A1785195182AF8731A8BDA /* RowTests.swift in Sources */,
 				19A1769C1F3A7542BECF50FF /* DateAndTimeFunctionTests.swift in Sources */,
 				D4DB368E20C09CFD00D5A58E /* SelectTests.swift in Sources */,
+				19A17CB808ACF606726E77A8 /* QueryIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -951,6 +957,7 @@
 				19A1720B67ED13E6150C6A3D /* RowTests.swift in Sources */,
 				19A17C80076860CF7751A056 /* DateAndTimeFunctionTests.swift in Sources */,
 				D4DB368C20C09CFB00D5A58E /* SelectTests.swift in Sources */,
+				19A172A9B536D02D4A98AAAD /* QueryIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1011,6 +1018,7 @@
 				19A171967CC511C4F6F773C9 /* RowTests.swift in Sources */,
 				19A172EB202970561E5C4245 /* DateAndTimeFunctionTests.swift in Sources */,
 				D4DB368D20C09CFC00D5A58E /* SelectTests.swift in Sources */,
+				19A176406BDE9D9C80CC9FA3 /* QueryIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
