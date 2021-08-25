@@ -10,7 +10,7 @@ import SQLite3
 #endif
 
 extension Connection {
-    private typealias Aggregate = @convention(block) (Int, OpaquePointer?, Int32, UnsafeMutablePointer<OpaquePointer?>?) -> Void
+    private typealias Aggregate = @convention(block) (Int, Context, Int32, Argv) -> Void
 
     /// Creates or redefines a custom SQL aggregate.
     ///
@@ -49,29 +49,29 @@ extension Connection {
             state: @escaping () -> UnsafeMutablePointer<T>) {
 
         let argc = argumentCount.map { Int($0) } ?? -1
-        let box: Aggregate = { (stepFlag: Int, context: OpaquePointer?, argc: Int32, argv: UnsafeMutablePointer<OpaquePointer?>?) in
+        let box: Aggregate = { (stepFlag: Int, context: Context, argc: Int32, argv: Argv) in
             let nBytes = Int32(MemoryLayout<UnsafeMutablePointer<Int64>>.size)
             guard let aggregateContext = sqlite3_aggregate_context(context, nBytes) else {
                 fatalError("Could not get aggregate context")
             }
             let mutablePointer = aggregateContext.assumingMemoryBound(to: UnsafeMutableRawPointer.self)
             if stepFlag > 0 {
-                let arguments = getArguments(argc: argc, argv: argv)
+                let arguments = argv.getBindings(argc: argc)
                 if aggregateContext.assumingMemoryBound(to: Int64.self).pointee == 0 {
                     mutablePointer.pointee = UnsafeMutableRawPointer(mutating: state())
                 }
                 step(arguments, mutablePointer.pointee.assumingMemoryBound(to: T.self))
             } else {
                 let result = final(mutablePointer.pointee.assumingMemoryBound(to: T.self))
-                set(result: result, on: context)
+                context.set(result: result)
             }
         }
 
-        func xStep(context: OpaquePointer?, argc: Int32, value: UnsafeMutablePointer<OpaquePointer?>?) {
+        func xStep(context: Context, argc: Int32, value: Argv) {
             unsafeBitCast(sqlite3_user_data(context), to: Aggregate.self)(1, context, argc, value)
         }
 
-        func xFinal(context: OpaquePointer?) {
+        func xFinal(context: Context) {
             unsafeBitCast(sqlite3_user_data(context), to: Aggregate.self)(0, context, 0, nil)
         }
 

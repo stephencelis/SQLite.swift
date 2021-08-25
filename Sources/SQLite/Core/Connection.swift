@@ -590,10 +590,10 @@ public final class Connection {
                                deterministic: Bool = false,
                                _ block: @escaping (_ args: [Binding?]) -> Binding?) {
         let argc = argumentCount.map { Int($0) } ?? -1
-        let box: Function = { context, argc, argv in
-            set(result: block(getArguments(argc: argc, argv: argv)), on: context)
+        let box: Function = { (context: Context, argc, argv: Argv) in
+            context.set(result: block(argv.getBindings(argc: argc)))
         }
-        func xFunc(context: OpaquePointer?, argc: Int32, value: UnsafeMutablePointer<OpaquePointer?>?) {
+        func xFunc(context: Context, argc: Int32, value: Argv) {
             unsafeBitCast(sqlite3_user_data(context), to: Function.self)(context, argc, value)
         }
         let flags = SQLITE_UTF8 | (deterministic ? SQLITE_DETERMINISTIC : 0)
@@ -619,7 +619,7 @@ public final class Connection {
         functions[functionName]?[argc] = value
     }
 
-    fileprivate typealias Function = @convention(block) (OpaquePointer?, Int32, UnsafeMutablePointer<OpaquePointer?>?) -> Void
+    fileprivate typealias Function = @convention(block) (Context, Int32, Argv) -> Void
     fileprivate var functions = [String: [Int: Any]]()
 
     /// Defines a new collating sequence.
@@ -723,39 +723,45 @@ extension Connection.Location: CustomStringConvertible {
 
 }
 
-func getArguments(argc: Int32, argv: UnsafeMutablePointer<OpaquePointer?>?) -> [Binding?] {
-    (0..<Int(argc)).map { idx in
-        let value = argv![idx]
-        switch sqlite3_value_type(value) {
-        case SQLITE_BLOB:
-            return Blob(bytes: sqlite3_value_blob(value), length: Int(sqlite3_value_bytes(value)))
-        case SQLITE_FLOAT:
-            return sqlite3_value_double(value)
-        case SQLITE_INTEGER:
-            return sqlite3_value_int64(value)
-        case SQLITE_NULL:
-            return nil
-        case SQLITE_TEXT:
-            return String(cString: UnsafePointer(sqlite3_value_text(value)))
-        case let type:
-            fatalError("unsupported value type: \(type)")
+typealias Context = OpaquePointer?
+extension Context {
+    func set(result: Binding?) {
+        switch result {
+        case let blob as Blob:
+            sqlite3_result_blob(self, blob.bytes, Int32(blob.bytes.count), nil)
+        case let double as Double:
+            sqlite3_result_double(self, double)
+        case let int as Int64:
+            sqlite3_result_int64(self, int)
+        case let string as String:
+            sqlite3_result_text(self, string, Int32(string.lengthOfBytes(using: .utf8)), SQLITE_TRANSIENT)
+        case .none:
+            sqlite3_result_null(self)
+        default:
+            fatalError("unsupported result type: \(String(describing: result))")
         }
     }
 }
 
-func set(result: Binding?, on context: OpaquePointer?) {
-    switch result {
-    case let blob as Blob:
-        sqlite3_result_blob(context, blob.bytes, Int32(blob.bytes.count), nil)
-    case let double as Double:
-        sqlite3_result_double(context, double)
-    case let int as Int64:
-        sqlite3_result_int64(context, int)
-    case let string as String:
-        sqlite3_result_text(context, string, Int32(string.lengthOfBytes(using: .utf8)), SQLITE_TRANSIENT)
-    case .none:
-        sqlite3_result_null(context)
-    default:
-        fatalError("unsupported result type: \(String(describing: result))")
+typealias Argv = UnsafeMutablePointer<OpaquePointer?>?
+extension Argv {
+    func getBindings(argc: Int32) -> [Binding?] {
+        (0..<Int(argc)).map { idx in
+            let value = self![idx]
+            switch sqlite3_value_type(value) {
+            case SQLITE_BLOB:
+                return Blob(bytes: sqlite3_value_blob(value), length: Int(sqlite3_value_bytes(value)))
+            case SQLITE_FLOAT:
+                return sqlite3_value_double(value)
+            case SQLITE_INTEGER:
+                return sqlite3_value_int64(value)
+            case SQLITE_NULL:
+                return nil
+            case SQLITE_TEXT:
+                return String(cString: UnsafePointer(sqlite3_value_text(value)))
+            case let type:
+                fatalError("unsupported value type: \(type)")
+            }
+        }
     }
 }
