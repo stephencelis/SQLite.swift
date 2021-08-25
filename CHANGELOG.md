@@ -1,3 +1,9 @@
+0.13.1 (tba)
+========================================
+
+* Support for database backup ([#919][])
+* Support for custom SQL aggregates ([#881][])
+
 0.13.0 (22-08-2021), [diff][diff-0.13.0]
 ========================================
 
@@ -116,3 +122,5 @@
 [#726]: https://github.com/stephencelis/SQLite.swift/pull/726
 [#797]: https://github.com/stephencelis/SQLite.swift/pull/797
 [#866]: https://github.com/stephencelis/SQLite.swift/pull/866
+[#881]: https://github.com/stephencelis/SQLite.swift/pull/881
+[#919]: https://github.com/stephencelis/SQLite.swift/pull/919
