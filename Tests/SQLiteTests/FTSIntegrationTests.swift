@@ -15,15 +15,12 @@ class FTSIntegrationTests: SQLiteTestCase {
     let index = VirtualTable("index")
 
     private func createIndex() throws {
-        do {
+        try createOrSkip { db in
             try db.run(index.create(.FTS5(
                 FTS5Config()
                     .column(email)
                     .tokenizer(.Unicode61()))
             ))
-        } catch let error as Result {
-            try XCTSkipIf(error.description.starts(with: "no such model"))
-            throw error
         }
 
         for user in try db.prepare(users) {
@@ -32,16 +29,12 @@ class FTSIntegrationTests: SQLiteTestCase {
     }
 
     private func createTrigramIndex() throws {
-        do {
+        try createOrSkip { db in
             try db.run(index.create(.FTS5(
                 FTS5Config()
                   .column(email)
                   .tokenizer(.Trigram(caseSensitive: false)))
             ))
-        } catch let error as Result {
-            try XCTSkipIf(error.description.starts(with: "no such model") ||
-                          error.description.starts(with: "parse error in"))
-            throw error
         }
 
         for user in try db.prepare(users) {
@@ -72,5 +65,16 @@ class FTSIntegrationTests: SQLiteTestCase {
         try createTrigramIndex()
         let matches = Array(try db.prepare(index.match("Paul")))
         XCTAssertEqual(1, matches.count)
+    }
+
+    private func createOrSkip(_ createIndex: (Connection) throws -> Void) throws {
+        do {
+            try createIndex(db)
+        } catch let error as Result {
+            try XCTSkipIf(error.description.starts(with: "no such module:") ||
+                          error.description.starts(with: "parse error")
+            )
+            throw error
+        }
     }
 }
