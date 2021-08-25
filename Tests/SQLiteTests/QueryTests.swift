@@ -290,6 +290,7 @@ class QueryTests: XCTestCase {
         )
     }
 
+    #if !os(Linux) // depends on exact JSON serialization
     func test_insert_encodable_with_nested_encodable() throws {
         let emails = Table("emails")
         let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
@@ -307,6 +308,7 @@ class QueryTests: XCTestCase {
             insert
         )
     }
+    #endif
 
     func test_upsert_withOnConflict_compilesInsertOrOnConflictExpression() {
         assertSQL(

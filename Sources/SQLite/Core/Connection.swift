@@ -629,12 +629,22 @@ public final class Connection {
             flags |= SQLITE_DETERMINISTIC
         }
         #endif
-        sqlite3_create_function_v2(handle, function, Int32(argc), flags,
-                                   unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { context, argc, value in
+        let resultCode = sqlite3_create_function_v2(handle,
+                                                    function,
+                                                    Int32(argc),
+                                                    flags,
+                                                    unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { context, argc, value in
             let function = unsafeBitCast(sqlite3_user_data(context), to: Function.self)
             function(context, argc, value)
         }, nil, nil, nil)
-        if functions[function] == nil { functions[function] = [:] }
+
+        if let result = Result(errorCode: resultCode, connection: self, statement: nil) {
+            fatalError("Error creating function: \(result)")
+        }
+
+        if functions[function] == nil {
+            functions[function] = [:] // fails on Linux, https://github.com/stephencelis/SQLite.swift/issues/1071
+        }
         functions[function]?[argc] = box
     }
 

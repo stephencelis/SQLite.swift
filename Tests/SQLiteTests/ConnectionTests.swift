@@ -343,6 +343,8 @@ class ConnectionTests: SQLiteTestCase {
         }
     }
 
+    // https://github.com/stephencelis/SQLite.swift/issues/1071
+    #if !os(Linux)
     func test_createFunction_withArrayArguments() {
         db.createFunction("hello") { $0[0].map { "Hello, \($0)!" } }
 
@@ -390,6 +392,7 @@ class ConnectionTests: SQLiteTestCase {
             }
         }
     }
+    #endif
 
     func test_concurrent_access_single_connection() {
         // test can fail on iOS/tvOS 9.x: SQLite compile-time differences?

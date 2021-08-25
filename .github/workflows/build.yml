@@ -61,3 +61,13 @@ jobs:
       env:
         CARTHAGE_PLATFORM: tvOS
       run: ./run-tests.sh
+  build-linux:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install
+      run: |
+        sudo apt-get update -qq
+        sudo apt-get install -y libsqlite3-dev
+    - name: Test
+      run: swift test
