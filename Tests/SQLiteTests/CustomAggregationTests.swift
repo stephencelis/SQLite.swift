@@ -17,12 +17,12 @@ import SQLite3
 #if !os(Linux)
 
 class CustomAggregationTests: SQLiteTestCase {
-    override func setUp() {
-        super.setUp()
-        createUsersTable()
-        try! insertUser("Alice", age: 30, admin: true)
-        try! insertUser("Bob", age: 25, admin: true)
-        try! insertUser("Eve", age: 28, admin: false)
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try createUsersTable()
+        try insertUser("Alice", age: 30, admin: true)
+        try insertUser("Bob", age: 25, admin: true)
+        try insertUser("Eve", age: 28, admin: false)
     }
 
     func testUnsafeCustomSum() {

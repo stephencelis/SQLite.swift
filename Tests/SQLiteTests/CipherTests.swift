@@ -8,22 +8,22 @@ class CipherTests: XCTestCase {
     let db1 = try! Connection()
     let db2 = try! Connection()
 
-    override func setUp() {
+    override func setUpWithError() throws {
         // db
 
-        try! db1.key("hello")
+        try db1.key("hello")
 
-        try! db1.run("CREATE TABLE foo (bar TEXT)")
-        try! db1.run("INSERT INTO foo (bar) VALUES ('world')")
+        try db1.run("CREATE TABLE foo (bar TEXT)")
+        try db1.run("INSERT INTO foo (bar) VALUES ('world')")
 
         // db2
         let key2 = keyData()
-        try! db2.key(Blob(bytes: key2.bytes, length: key2.length))
+        try db2.key(Blob(bytes: key2.bytes, length: key2.length))
 
-        try! db2.run("CREATE TABLE foo (bar TEXT)")
-        try! db2.run("INSERT INTO foo (bar) VALUES ('world')")
+        try db2.run("CREATE TABLE foo (bar TEXT)")
+        try db2.run("INSERT INTO foo (bar) VALUES ('world')")
 
-        super.setUp()
+        try super.setUpWithError()
     }
 
     func test_key() {
