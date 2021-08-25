@@ -258,7 +258,28 @@ let path = NSSearchPathForDirectoriesInDomains(
 let db = try Connection("\(path)/db.sqlite3")
 ```
 
+If you have bundled it in your application, you can use FileManager to copy it to the Documents directory:
+
+```swift
+func copyDatabaseIfNeeded(sourcePath: String) -> Bool {
+    let path = NSSearchPathForDirectoriesInDomains(
+        .documentDirectory, .userDomainMask, true
+    ).first!
+    let destinationPath = destinationPath + "/db.sqlite3"
+    let exists = FileManager.default.fileExists(atPath: destinationPath)
+    guard !exists else { return false }
+    do {
+        try FileManager.default.copyItem(atPath: sourcePath, toPath: destinationPath)
+        return true
+    } catch {
+      print("error during file copy: \(error)")
+	    return false
+    }
+}
+```
+
 On macOS, you can use your app’s **Application Support** directory:
+
 
 ```swift
 var path = NSSearchPathForDirectoriesInDomains(
@@ -272,7 +293,6 @@ atPath: path, withIntermediateDirectories: true, attributes: nil
 
 let db = try Connection("\(path)/db.sqlite3")
 ```
-
 
 #### Read-Only Databases
 
@@ -295,7 +315,7 @@ let db = try Connection(path, readonly: true)
 > See these two Stack Overflow questions for more information about iOS apps
 > with SQLite databases: [1](https://stackoverflow.com/questions/34609746/what-different-between-store-database-in-different-locations-in-ios),
 > [2](https://stackoverflow.com/questions/34614968/ios-how-to-copy-pre-seeded-database-at-the-first-running-app-with-sqlite-swift).
-> We welcome sample code to show how to successfully copy and use a bundled "seed"
+> We welcome changes to the above sample code to show how to successfully copy and use a bundled "seed"
 > database for writing in an app.
 
 #### In-Memory Databases
