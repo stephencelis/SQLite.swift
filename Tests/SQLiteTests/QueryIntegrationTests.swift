@@ -210,7 +210,6 @@ class QueryIntegrationTests: SQLiteTestCase {
     }
 }
 
-
 private extension Connection {
     func satisfiesMinimumVersion(minor: Int, patch: Int = 0) -> Bool {
         guard let version = try? scalar("SELECT sqlite_version()") as? String else { return false }
