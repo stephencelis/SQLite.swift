@@ -227,6 +227,7 @@
 		19A17399EA9E61235D5D77BF /* CipherTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CipherTests.swift; sourceTree = "<group>"; };
 		19A175C1F9CB3BBAB8FCEC7B /* RowTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RowTests.swift; sourceTree = "<group>"; };
 		19A178A39ACA9667A62663CC /* Cipher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Cipher.swift; sourceTree = "<group>"; };
+		19A1794B7972D14330A65BBD /* Linux.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = Linux.md; sourceTree = "<group>"; };
 		19A1794CC4D7827E997E32A7 /* FoundationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FoundationTests.swift; sourceTree = "<group>"; };
 		19A17B93B48B5560E6E51791 /* Fixtures.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Fixtures.swift; sourceTree = "<group>"; };
 		19A17BA55DABB480F9020C8A /* DateAndTimeFunctions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateAndTimeFunctions.swift; sourceTree = "<group>"; };
@@ -498,6 +499,7 @@
 				EE247B8F1C3F822500AE3E12 /* Index.md */,
 				EE247B901C3F822500AE3E12 /* Resources */,
 				19A17EA3A313F129011B3FA0 /* Release.md */,
+				19A1794B7972D14330A65BBD /* Linux.md */,
 			);
 			path = Documentation;
 			sourceTree = "<group>";

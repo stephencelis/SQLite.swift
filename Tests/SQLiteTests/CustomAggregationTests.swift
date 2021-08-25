@@ -13,6 +13,9 @@ import CSQLite
 import SQLite3
 #endif
 
+// https://bugs.swift.org/browse/SR-4429
+#if !os(Linux)
+
 class CustomAggregationTests: SQLiteTestCase {
     override func setUp() {
         super.setUp()
@@ -139,6 +142,7 @@ class CustomAggregationTests: SQLiteTestCase {
         XCTAssertEqual(TestObject.deinits, 3) // the initial value is still retained by the aggregate's state block, so deinits is one less than inits
     }
 }
+#endif
 
 /// This class is used to test that aggregation state variables
 /// can be reference types and are properly memory managed when

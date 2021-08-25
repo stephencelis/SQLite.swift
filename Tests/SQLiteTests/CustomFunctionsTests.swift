@@ -1,6 +1,9 @@
 import XCTest
 import SQLite
 
+// https://bugs.swift.org/browse/SR-4429
+#if !os(Linux)
+
 class CustomFunctionNoArgsTests: SQLiteTestCase {
     typealias FunctionNoOptional              = ()  -> Expression<String>
     typealias FunctionResultOptional          = ()  -> Expression<String?>
@@ -144,3 +147,5 @@ class CustomFunctionTruncation: SQLiteTestCase {
         XCTAssertEqual("töl-aa 12", result)
     }
 }
+
+#endif
