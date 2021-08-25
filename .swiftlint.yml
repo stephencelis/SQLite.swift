@@ -38,5 +38,6 @@ line_length:
   ignores_comments: true
 
 file_length:
-  warning: 900
-  error: 900
+  warning: 500
+  error: 500
+  ignore_comment_only_lines: true
