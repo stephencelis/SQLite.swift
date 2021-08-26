@@ -2,9 +2,9 @@ import XCTest
 import SQLite
 
 class StatementTests: SQLiteTestCase {
-    override func setUp() {
-        super.setUp()
-        createUsersTable()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try createUsersTable()
     }
 
     func test_cursor_to_blob() {

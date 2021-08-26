@@ -81,6 +81,16 @@ class FTS5Tests: XCTestCase {
             sql(config.tokenizer(.Unicode61(removeDiacritics: true, tokenchars: ["."], separators: ["X"]))))
     }
 
+    func test_tokenizer_trigram() {
+        XCTAssertEqual(
+                "CREATE VIRTUAL TABLE \"virtual_table\" USING fts5(tokenize=trigram case_sensitive 0)",
+                sql(config.tokenizer(.Trigram())))
+
+        XCTAssertEqual(
+                "CREATE VIRTUAL TABLE \"virtual_table\" USING fts5(tokenize=trigram case_sensitive 1)",
+                sql(config.tokenizer(.Trigram(caseSensitive: true))))
+    }
+
     func test_column_size() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts5(columnsize=1)",

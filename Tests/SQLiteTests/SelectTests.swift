@@ -3,14 +3,14 @@ import XCTest
 
 class SelectTests: SQLiteTestCase {
 
-    override func setUp() {
-        super.setUp()
-        createUsersTable()
-        createUsersDataTable()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try createUsersTable()
+        try createUsersDataTable()
     }
 
-    func createUsersDataTable() {
-        try! db.execute("""
+    func createUsersDataTable() throws {
+        try db.execute("""
             CREATE TABLE users_name (
                 id INTEGER,
                 user_id INTEGER REFERENCES users(id),

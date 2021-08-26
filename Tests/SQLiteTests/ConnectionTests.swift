@@ -15,10 +15,9 @@ import SQLite3
 
 class ConnectionTests: SQLiteTestCase {
 
-    override func setUp() {
-        super.setUp()
-
-        createUsersTable()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try createUsersTable()
     }
 
     func test_init_withInMemory_returnsInMemoryConnection() {

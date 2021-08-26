@@ -46,6 +46,7 @@ package.dependencies = [.package(url: "https://github.com/stephencelis/CSQLite.g
 package.targets = [
     .target(name: "SQLite", exclude: ["Extensions/FTS4.swift", "Extensions/FTS5.swift"]),
     .testTarget(name: "SQLiteTests", dependencies: ["SQLite"], path: "Tests/SQLiteTests", exclude: [
+        "FTSIntegrationTests.swift",
         "FTS4Tests.swift",
         "FTS5Tests.swift"
     ])

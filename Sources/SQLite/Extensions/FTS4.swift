@@ -95,10 +95,10 @@ extension VirtualTable {
 public struct Tokenizer {
 
     public static let Simple = Tokenizer("simple")
-
     public static let Porter = Tokenizer("porter")
 
-    public static func Unicode61(removeDiacritics: Bool? = nil, tokenchars: Set<Character> = [],
+    public static func Unicode61(removeDiacritics: Bool? = nil,
+                                 tokenchars: Set<Character> = [],
                                  separators: Set<Character> = []) -> Tokenizer {
         var arguments = [String]()
 
@@ -117,6 +117,11 @@ public struct Tokenizer {
         }
 
         return Tokenizer("unicode61", arguments)
+    }
+
+    // https://sqlite.org/fts5.html#the_experimental_trigram_tokenizer
+    public static func Trigram(caseSensitive: Bool = false) -> Tokenizer {
+        return Tokenizer("trigram", ["case_sensitive", caseSensitive ? "1" : "0"])
     }
 
     public static func Custom(_ name: String) -> Tokenizer {

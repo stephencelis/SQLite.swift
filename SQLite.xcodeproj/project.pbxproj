@@ -54,6 +54,7 @@
 		19A17152E32A9585831E3FE0 /* DateAndTimeFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A17BA55DABB480F9020C8A /* DateAndTimeFunctions.swift */; };
 		19A1717B10CC941ACB5533D6 /* FTS5.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1730E4390C775C25677D1 /* FTS5.swift */; };
 		19A171967CC511C4F6F773C9 /* RowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A175C1F9CB3BBAB8FCEC7B /* RowTests.swift */; };
+		19A171BE056457F13BFBC4C3 /* FTSIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A171FDE4D67879B14ACBDF /* FTSIntegrationTests.swift */; };
 		19A171E6FA242F72A308C594 /* FTS5Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1721B8984686B9963B45D /* FTS5Tests.swift */; };
 		19A171F12AB8B07F2FD7201A /* Cipher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A178A39ACA9667A62663CC /* Cipher.swift */; };
 		19A1720B67ED13E6150C6A3D /* RowTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A175C1F9CB3BBAB8FCEC7B /* RowTests.swift */; };
@@ -80,8 +81,10 @@
 		19A179B59450FE7C4811AB8A /* Connection+Aggregation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A175A9CB446640AE6F2200 /* Connection+Aggregation.swift */; };
 		19A179CCF9671E345E5A9811 /* Cipher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A178A39ACA9667A62663CC /* Cipher.swift */; };
 		19A179E76EA6207669B60C1B /* Cipher.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A178A39ACA9667A62663CC /* Cipher.swift */; };
+		19A17C013B00682B70D53DB8 /* FTSIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A171FDE4D67879B14ACBDF /* FTSIntegrationTests.swift */; };
 		19A17C4B951CB054EE48AB1C /* CipherTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A17399EA9E61235D5D77BF /* CipherTests.swift */; };
 		19A17C80076860CF7751A056 /* DateAndTimeFunctionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1729B75C33F9A0B9A89C1 /* DateAndTimeFunctionTests.swift */; };
+		19A17C9407AC0EE104E5CC85 /* FTSIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A171FDE4D67879B14ACBDF /* FTSIntegrationTests.swift */; };
 		19A17CB808ACF606726E77A8 /* QueryIntegrationTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A17BA6B4E282C1315A115C /* QueryIntegrationTests.swift */; };
 		19A17DC282E36C4F41AA440B /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1710E73A46D5AC721CDA9 /* Errors.swift */; };
 		19A17DF8D4F13A20F5D2269E /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A17E723300E5ED3771DCB5 /* Result.swift */; };
@@ -236,6 +239,7 @@
 		03A65E631C6BB0F60062603F /* SQLiteTests tvOS.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "SQLiteTests tvOS.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		03A65E961C6BB3210062603F /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		19A1710E73A46D5AC721CDA9 /* Errors.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Errors.swift; sourceTree = "<group>"; };
+		19A171FDE4D67879B14ACBDF /* FTSIntegrationTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FTSIntegrationTests.swift; sourceTree = "<group>"; };
 		19A1721B8984686B9963B45D /* FTS5Tests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FTS5Tests.swift; sourceTree = "<group>"; };
 		19A1729B75C33F9A0B9A89C1 /* DateAndTimeFunctionTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateAndTimeFunctionTests.swift; sourceTree = "<group>"; };
 		19A1730E4390C775C25677D1 /* FTS5.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FTS5.swift; sourceTree = "<group>"; };
@@ -449,6 +453,7 @@
 				19A1729B75C33F9A0B9A89C1 /* DateAndTimeFunctionTests.swift */,
 				D4DB368A20C09C9B00D5A58E /* SelectTests.swift */,
 				19A17BA6B4E282C1315A115C /* QueryIntegrationTests.swift */,
+				19A171FDE4D67879B14ACBDF /* FTSIntegrationTests.swift */,
 			);
 			name = SQLiteTests;
 			path = Tests/SQLiteTests;
@@ -887,6 +892,7 @@
 				19A1769C1F3A7542BECF50FF /* DateAndTimeFunctionTests.swift in Sources */,
 				D4DB368E20C09CFD00D5A58E /* SelectTests.swift in Sources */,
 				19A17CB808ACF606726E77A8 /* QueryIntegrationTests.swift in Sources */,
+				19A17C9407AC0EE104E5CC85 /* FTSIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -983,6 +989,7 @@
 				19A17C80076860CF7751A056 /* DateAndTimeFunctionTests.swift in Sources */,
 				D4DB368C20C09CFB00D5A58E /* SelectTests.swift in Sources */,
 				19A172A9B536D02D4A98AAAD /* QueryIntegrationTests.swift in Sources */,
+				19A17C013B00682B70D53DB8 /* FTSIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1047,6 +1054,7 @@
 				19A172EB202970561E5C4245 /* DateAndTimeFunctionTests.swift in Sources */,
 				D4DB368D20C09CFC00D5A58E /* SelectTests.swift in Sources */,
 				19A176406BDE9D9C80CC9FA3 /* QueryIntegrationTests.swift in Sources */,
+				19A171BE056457F13BFBC4C3 /* FTSIntegrationTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

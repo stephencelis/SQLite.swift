@@ -16,10 +16,9 @@ class QueryIntegrationTests: SQLiteTestCase {
     let email = Expression<String>("email")
     let age = Expression<Int>("age")
 
-    override func setUp() {
-        super.setUp()
-
-        createUsersTable()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        try createUsersTable()
     }
 
     // MARK: -
@@ -131,7 +130,7 @@ class QueryIntegrationTests: SQLiteTestCase {
     }
 
     func test_upsert() throws {
-        guard db.satisfiesMinimumVersion(minor: 24) else { return }
+        try XCTSkipUnless(db.satisfiesMinimumVersion(minor: 24))
         let fetchAge = { () throws -> Int? in
             try self.db.pluck(self.users.filter(self.email == "alice@example.com")).flatMap { $0[self.age] }
         }
@@ -210,7 +209,7 @@ class QueryIntegrationTests: SQLiteTestCase {
     }
 }
 
-private extension Connection {
+extension Connection {
     func satisfiesMinimumVersion(minor: Int, patch: Int = 0) -> Bool {
         guard let version = try? scalar("SELECT sqlite_version()") as? String else { return false }
         let components = version.split(separator: ".", maxSplits: 3).compactMap { Int($0) }

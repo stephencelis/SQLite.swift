@@ -6,9 +6,9 @@ class SQLiteTestCase: XCTestCase {
     var db: Connection!
     let users = Table("users")
 
-    override func setUp() {
-        super.setUp()
-        db = try! Connection()
+    override func setUpWithError() throws {
+        try super.setUpWithError()
+        db = try Connection()
         trace = [String: Int]()
 
         db.trace { SQL in
@@ -17,8 +17,8 @@ class SQLiteTestCase: XCTestCase {
         }
     }
 
-    func createUsersTable() {
-        try! db.execute("""
+    func createUsersTable() throws {
+        try db.execute("""
             CREATE TABLE users (
                 id INTEGER PRIMARY KEY,
                 email TEXT NOT NULL UNIQUE,
