@@ -1169,7 +1169,7 @@ public struct Row {
         }
 
         guard let idx = columnNames[column.template] else {
-            let similar = Array(columnNames.keys).filter { $0.hasSuffix(".\(column.template)") }
+            let similar = Array(columnNames.keys).filter { $0.hasSuffix(".\(column.template)") || $0.hasSuffix(" AS \(column.template)") }
 
             switch similar.count {
             case 0:
