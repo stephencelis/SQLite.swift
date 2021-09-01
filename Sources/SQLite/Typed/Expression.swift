@@ -106,8 +106,8 @@ extension ExpressionType {
         " ".join([self, Expression<Void>(literal: "DESC")])
     }
 
-    public func alias(name:String) -> Expressible {
-        return " ".join([self, Expression<Void>(literal: "AS \(name)")])
+    public func alias(_ aliasName: String) -> Expressible {
+        return " ".join([self, Expression<Void>(literal: "AS \(aliasName)")])
     }
 }
 
