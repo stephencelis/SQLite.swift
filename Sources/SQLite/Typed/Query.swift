@@ -1137,7 +1137,7 @@ public struct Row {
 
     fileprivate let values: [Binding?]
 
-    internal init(_ columnNames: [String: Int], _ values: [Binding?]) {
+    public init(_ columnNames: [String: Int], _ values: [Binding?]) {
         self.columnNames = columnNames
         self.values = values
     }
