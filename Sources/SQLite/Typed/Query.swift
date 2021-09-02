@@ -1169,7 +1169,7 @@ public struct Row {
         }
 
         guard let idx = columnNames[column.template] else {
-            let similar = Array(columnNames.keys).filter { $0.hasSuffix(".\(column.template)") }
+            let similar = Array(columnNames.keys).filter { $0.hasSuffix(".\(column.template)") || $0.hasSuffix(" AS \(column.template)") }
 
             switch similar.count {
             case 0:
@@ -1228,21 +1228,21 @@ public enum OnConflict: String {
 
 public struct QueryClauses {
 
-    var select = (distinct: false, columns: [Expression<Void>(literal: "*") as Expressible])
+    public internal(set) var select = (distinct: false, columns: [Expression<Void>(literal: "*") as Expressible])
 
-    var from: (name: String, alias: String?, database: String?)
+    public internal(set) var from: (name: String, alias: String?, database: String?)
 
-    var join = [(type: JoinType, query: QueryType, condition: Expressible)]()
+    public internal(set) var join = [(type: JoinType, query: QueryType, condition: Expressible)]()
 
-    var filters: Expression<Bool?>?
+    public internal(set) var filters: Expression<Bool?>?
 
-    var group: (by: [Expressible], having: Expression<Bool?>?)?
+    public internal(set) var group: (by: [Expressible], having: Expression<Bool?>?)?
 
-    var order = [Expressible]()
+    public internal(set) var order = [Expressible]()
 
-    var limit: (length: Int, offset: Int?)?
+    public internal(set) var limit: (length: Int, offset: Int?)?
 
-    var union = [QueryType]()
+    public internal(set) var union = [QueryType]()
 
     fileprivate init(_ name: String, alias: String?, database: String?) {
         from = (name, alias, database)
