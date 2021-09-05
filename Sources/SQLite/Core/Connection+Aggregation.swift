@@ -90,7 +90,7 @@ extension Connection {
         register(functionName, argc: argc, value: box)
     }
 
-    func createAggregation<T: AnyObject>(
+    public func createAggregation<T: AnyObject>(
             _ aggregate: String,
             argumentCount: UInt? = nil,
             deterministic: Bool = false,
@@ -122,7 +122,7 @@ extension Connection {
         createAggregation(aggregate, step: step, final: final, state: state)
     }
 
-    func createAggregation<T>(
+    public func createAggregation<T>(
             _ aggregate: String,
             argumentCount: UInt? = nil,
             deterministic: Bool = false,

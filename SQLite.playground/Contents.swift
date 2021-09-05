@@ -1,43 +1,93 @@
 import SQLite
 
-let db = try! Connection()
+/// Create an in-memory database
+let db = try Connection(.inMemory)
 
+/// enable statement logging
 db.trace { print($0) }
 
+/// define a "users" table with some fields
 let users = Table("users")
 
 let id = Expression<Int64>("id")
-let email = Expression<String>("email")
-let name = Expression<String?>("name")
+let email = Expression<String>("email") // non-null
+let name = Expression<String?>("name")  // nullable
 
-try! db.run(users.create { t in
+/// prepare the query
+let statement = users.create { t in
     t.column(id, primaryKey: true)
     t.column(email, unique: true, check: email.like("%@%"))
     t.column(name)
-})
+}
 
-let rowid = try! db.run(users.insert(email <- "alice@mac.com"))
-let alice = users.filter(id == rowid)
+/// …and run it
+try db.run(statement)
 
-for user in try! db.prepare(users) {
+/// insert "alice"
+let rowid = try db.run(users.insert(email <- "alice@mac.com"))
+
+/// insert multiple rows using `insertMany`
+let lastRowid = try db.run(users.insertMany([
+  [email <- "bob@mac.com"],
+  [email <- "mallory@evil.com"]
+]))
+
+
+let query = try db.prepare(users)
+for user in query {
     print("id: \(user[id]), email: \(user[email])")
 }
 
+// re-requery just rowid of Alice
+let alice = try db.prepare(users.filter(id == rowid))
+for user in alice {
+    print("id: \(user[id]), email: \(user[email])")
+}
+
+/// using the `RowIterator` API
+let rowIterator = try db.prepareRowIterator(users)
+for user in try Array(rowIterator) {
+    print("id: \(user[id]), email: \(user[email])")
+}
+
+/// also with `map()`
+let mapRowIterator = try db.prepareRowIterator(users)
+let userIds = try mapRowIterator.map { $0[id] }
+
+/// define a virtual tabe for the FTS index
 let emails = VirtualTable("emails")
 
-let subject = Expression<String?>("subject")
+let subject = Expression<String>("subject")
 let body = Expression<String?>("body")
 
-try! db.run(emails.create(.FTS4(subject, body)))
+/// create the index
+try db.run(emails.create(.FTS5(
+    FTS5Config()
+      .column(subject)
+      .column(body)
+)))
 
-try! db.run(emails.insert(
+/// populate with data
+try db.run(emails.insert(
     subject <- "Hello, world!",
     body <- "This is a hello world message."
 ))
 
-let row = try! db.pluck(emails.match("hello"))
+/// run a query
+let ftsQuery = try db.prepare(emails.match("hello"))
 
-let query = try! db.prepare(emails.match("hello"))
-for row in query {
+for row in ftsQuery {
     print(row[subject])
 }
+
+/// custom aggregations
+let reduce: (String, [Binding?]) -> String = { (last, bindings) in
+    last + " " + (bindings.first as? String ?? "")
+}
+
+db.createAggregation("customConcat",
+                     initialValue: "users:",
+                     reduce: reduce,
+                     result: { $0 })
+let result = db.prepare("SELECT customConcat(email) FROM users").scalar() as! String
+print(result)

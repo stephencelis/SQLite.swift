@@ -77,9 +77,6 @@ The [Swift Package Manager][] is a tool for managing the distribution of
 Swift code. It’s integrated with the Swift build system to automate the
 process of downloading, compiling, and linking dependencies.
 
-It is the recommended approach for using SQLite.swift in OSX CLI
-applications.
-
  1. Add the following to your `Package.swift` file:
 
   ```swift
@@ -342,16 +339,15 @@ execution and can be safely accessed across threads. Threads that open
 transactions and savepoints will block other threads from executing
 statements while the transaction is open.
 
-If you maintain multiple connections for a single database, consider setting a timeout (in seconds) and/or a busy handler:
+If you maintain multiple connections for a single database, consider setting a timeout
+(in seconds) *or* a busy handler. There can only be one active at a time, so setting a busy
+handler will effectively override `busyTimeout`.
 
 ```swift
-db.busyTimeout = 5
+db.busyTimeout = 5 // error after 5 seconds (does multiple retries)
 
 db.busyHandler({ tries in
-    if tries >= 3 {
-        return false
-    }
-    return true
+    tries < 3  // error after 3 tries
 })
 ```
 
@@ -656,12 +652,13 @@ do {
 }
 ```
 
-Multiple rows can be inserted at once by similarily calling `insertMany` with an array of per-row [setters](#setters).
+Multiple rows can be inserted at once by similarily calling `insertMany` with an array of
+per-row [setters](#setters).
 
 ```swift
 do {
-    let rowid = try db.run(users.insertMany([mail <- "alice@mac.com"], [email <- "geoff@mac.com"]))
-    print("inserted id: \(rowid)")
+    let lastRowid = try db.run(users.insertMany([mail <- "alice@mac.com"], [email <- "geoff@mac.com"]))
+    print("last inserted id: \(lastRowid)")
 } catch {
     print("insertion failed: \(error)")
 }
@@ -797,6 +794,33 @@ for user in try db.prepare(users) {
         // handle
     }
 }
+```
+
+Note that the iterator can throw *undeclared* database errors at any point during
+iteration:
+
+```swift
+let query = try db.prepare(users)
+for user in query {
+    // 💥 can throw an error here
+}
+````
+
+#### Failable iteration
+
+It is therefore recommended using the `RowIterator` API instead,
+which has explicit error handling:
+
+```swift
+let rowIterator = try db.prepareRowIterator(users)
+for user in try Array(rowIterator) {
+    print("id: \(user[id]), email: \(user[email])")
+}
+
+/// or using `map()`
+let mapRowIterator = try db.prepareRowIterator(users)
+let userIds = try mapRowIterator.map { $0[id] }
+
 ```
 
 ### Plucking Rows
@@ -1285,7 +1309,6 @@ try db.run(users.addColumn(suffix))
 // ALTER TABLE "users" ADD COLUMN "suffix" TEXT
 ```
 
-
 #### Added Column Constraints
 
 The `addColumn` function shares several of the same [`column` function
@@ -1337,6 +1360,13 @@ tables](#creating-a-table).
     // ALTER TABLE "posts" ADD COLUMN "user_id" INTEGER REFERENCES "users" ("id")
     ```
 
+### Renaming Columns
+
+Added in SQLite 3.25.0, not exposed yet. [#1073](https://github.com/stephencelis/SQLite.swift/issues/1073)
+
+### Dropping Columns
+
+Added in SQLite 3.35.0, not exposed yet. [#1073](https://github.com/stephencelis/SQLite.swift/issues/1073)
 
 ### Indexes
 
@@ -1762,6 +1792,19 @@ for row in stmt.bind(kUTTypeImage) { /* ... */ }
 
 [UTTypeConformsTo]: https://developer.apple.com/documentation/coreservices/1444079-uttypeconformsto
 
+## Custom Aggregations
+
+We can create custom aggregation functions by calling `createAggregation`:
+
+```swift
+let reduce: (String, [Binding?]) -> String = { (last, bindings) in
+    last + " " + (bindings.first as? String ?? "")
+}
+
+db.createAggregation("customConcat", initialValue: "", reduce: reduce, result: { $0 })
+let result = db.prepare("SELECT customConcat(email) FROM users").scalar() as! String
+```
+
 ## Custom Collations
 
 We can create custom collating sequences by calling `createCollation` on a
@@ -1944,6 +1987,19 @@ using the following functions.
     let count = try stmt.scalar() as! Int64
     ```
 
+## Online Database Backup
+
+To copy a database to another using the
+[SQLite Online Backup API](https://sqlite.org/backup.html):
+
+```swift
+// creates an in-memory copy of db.sqlite
+let db = try Connection("db.sqlite")
+let target = try Connection(.inMemory)
+
+let backup = try db.backup(usingConnection: target)
+try backup.step()
+```
 
 ## Logging
 
@@ -1953,6 +2009,14 @@ We can log SQL using the database’s `trace` function.
 #if DEBUG
     db.trace { print($0) }
 #endif
+```
+
+## Vacuum
+
+To run the [vacuum](https://www.sqlite.org/lang_vacuum.html) command:
+
+```swift
+try db.vacuum()
 ```
 
 

@@ -3,6 +3,8 @@
 
 * Support for database backup ([#919][])
 * Support for custom SQL aggregates ([#881][])
+* Restore previous iteration behavior ([#1075][])
+* Fix compilation on Linux ([#1077][])
 
 0.13.0 (22-08-2021), [diff][diff-0.13.0]
 ========================================
@@ -124,3 +126,5 @@
 [#866]: https://github.com/stephencelis/SQLite.swift/pull/866
 [#881]: https://github.com/stephencelis/SQLite.swift/pull/881
 [#919]: https://github.com/stephencelis/SQLite.swift/pull/919
+[#1075]: https://github.com/stephencelis/SQLite.swift/pull/1075
+[#1077]: https://github.com/stephencelis/SQLite.swift/issues/1077

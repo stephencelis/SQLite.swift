@@ -146,6 +146,8 @@ Swift code.
   $ swift build
   ```
 
+See the [Tests/SPM](https://github.com/stephencelis/SQLite.swift/tree/master/Tests/SPM) folder for a small demo project which uses SPM.
+
 [Swift Package Manager]: https://swift.org/package-manager
 
 ### Carthage
@@ -175,8 +177,7 @@ install SQLite.swift with Carthage:
 [CocoaPods][] is a dependency manager for Cocoa projects. To install
 SQLite.swift with CocoaPods:
 
- 1. Make sure CocoaPods is [installed][CocoaPods Installation]. (SQLite.swift
-    requires version 1.6.1 or greater.)
+ 1. Make sure CocoaPods is [installed][CocoaPods Installation].
 
     ```sh
     # Using the default Ruby install will require you to use sudo when
@@ -266,7 +267,8 @@ These projects enhance or use SQLite.swift:
 
  - [SQLiteMigrationManager.swift][] (inspired by
    [FMDBMigrationManager][])
- - [Delta: Math helper](https://apps.apple.com/app/delta-math-helper/id1436506800) (see [Delta/Utils/Database.swift](https://github.com/GroupeMINASTE/Delta-iOS/blob/master/Delta/Utils/Database.swift) for production implementation example)
+ - [Delta: Math helper](https://apps.apple.com/app/delta-math-helper/id1436506800)
+   (see [Delta/Utils/Database.swift](https://github.com/GroupeMINASTE/Delta-iOS/blob/master/Delta/Utils/Database.swift) for production implementation example)
 
 
 ## Alternatives
@@ -278,7 +280,6 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
  - [SQLiteDB](https://github.com/FahimF/SQLiteDB)
  - [Squeal](https://github.com/nerdyc/Squeal)
  - [SwiftData](https://github.com/ryanfowler/SwiftData)
- - [SwiftSQLite](https://github.com/chrismsimpson/SwiftSQLite)
 
 [Swift]: https://swift.org/
 [SQLite3]: https://www.sqlite.org

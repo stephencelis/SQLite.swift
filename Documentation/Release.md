@@ -1,6 +1,7 @@
 # SQLite.swift Release checklist
 
 * [ ] Make sure current master branch has a green build
+* [ ] Make sure `SQLite.playground` runs without errors
 * [ ] Make sure `CHANGELOG.md` is up-to-date
 * [ ] Update the version number in `SQLite.swift.podspec`
 * [ ] Run `pod lib lint` locally
