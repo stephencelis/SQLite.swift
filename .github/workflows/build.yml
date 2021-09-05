@@ -21,6 +21,10 @@ jobs:
       env:
         PACKAGE_MANAGER_COMMAND: test -Xswiftc -warnings-as-errors
       run: ./run-tests.sh
+    - name: "Run tests (SPM integration test)"
+      env:
+        SPM: run
+      run: ./run-tests.sh
     - name: "Run tests (BUILD_SCHEME: SQLite iOS)"
       env:
         BUILD_SCHEME: SQLite iOS
@@ -71,3 +75,7 @@ jobs:
         sudo apt-get install -y libsqlite3-dev
     - name: Test
       run: swift test
+    - name: "Run tests (SPM integration test)"
+      env:
+        SPM: run
+      run: ./run-tests.sh
