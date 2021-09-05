@@ -21,6 +21,10 @@ jobs:
       env:
         PACKAGE_MANAGER_COMMAND: test -Xswiftc -warnings-as-errors
       run: ./run-tests.sh
+    - name: "Run tests (SPM integration test)"
+      env:
+        SPM: run
+      run: ./run-tests.sh
     - name: "Run tests (BUILD_SCHEME: SQLite iOS)"
       env:
         BUILD_SCHEME: SQLite iOS
