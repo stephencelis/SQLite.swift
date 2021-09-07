@@ -812,15 +812,24 @@ It is therefore recommended using the `RowIterator` API instead,
 which has explicit error handling:
 
 ```swift
+// option 1: convert results into an Array of rows
 let rowIterator = try db.prepareRowIterator(users)
 for user in try Array(rowIterator) {
     print("id: \(user[id]), email: \(user[email])")
 }
 
-/// or using `map()`
+/// option 2: transform results using `map()`
 let mapRowIterator = try db.prepareRowIterator(users)
 let userIds = try mapRowIterator.map { $0[id] }
 
+/// option 3: handle each row individually with `failableNext()`
+do {
+    while let row = try rowIterator.failableNext() {
+        // Handle row
+    }
+} catch {
+    // Handle error
+}
 ```
 
 ### Plucking Rows
