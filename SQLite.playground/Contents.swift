@@ -54,6 +54,16 @@ for user in try Array(rowIterator) {
 let mapRowIterator = try db.prepareRowIterator(users)
 let userIds = try mapRowIterator.map { $0[id] }
 
+/// using `failableNext()` on `RowIterator`
+let iterator = try db.prepareRowIterator(users)
+do {
+    while let row = try rowIterator.failableNext() {
+        print(row)
+    }
+} catch {
+    // Handle error
+}
+
 /// define a virtual tabe for the FTS index
 let emails = VirtualTable("emails")
 
