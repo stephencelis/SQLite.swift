@@ -27,6 +27,10 @@ class SchemaTests: XCTestCase {
                 "\"doubleOptional\" REAL, " +
                 "\"int64\" INTEGER NOT NULL, " +
                 "\"int64Optional\" INTEGER, " +
+                "\"uint32\" INTEGER NOT NULL, " +
+                "\"uint32Optional\" INTEGER, " +
+                "\"uint64\" BLOB NOT NULL, " +
+                "\"uint64Optional\" BLOB, " +
                 "\"string\" TEXT NOT NULL, " +
                 "\"stringOptional\" TEXT" +
             ")",
@@ -37,6 +41,10 @@ class SchemaTests: XCTestCase {
                 t.column(doubleOptional)
                 t.column(int64)
                 t.column(int64Optional)
+                t.column(uint32)
+                t.column(uint32Optional)
+                t.column(uint64)
+                t.column(uint64Optional)
                 t.column(string)
                 t.column(stringOptional)
             }

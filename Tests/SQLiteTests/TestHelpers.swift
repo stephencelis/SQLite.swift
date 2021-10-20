@@ -92,6 +92,12 @@ let intOptional = Expression<Int?>("intOptional")
 let int64 = Expression<Int64>("int64")
 let int64Optional = Expression<Int64?>("int64Optional")
 
+let uint32 = Expression<Int>("uint32")
+let uint32Optional = Expression<Int?>("uint32Optional")
+
+let uint64 = Expression<UInt64>("uint64")
+let uint64Optional = Expression<UInt64?>("uint64Optional")
+
 let string = Expression<String>("string")
 let stringOptional = Expression<String?>("stringOptional")
 
