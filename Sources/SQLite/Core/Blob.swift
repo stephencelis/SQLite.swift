@@ -58,3 +58,23 @@ extension Blob: Equatable {
 public func ==(lhs: Blob, rhs: Blob) -> Bool {
     lhs.bytes == rhs.bytes
 }
+
+extension Blob: Comparable {
+    public static func < (lhs: Blob, rhs: Blob) -> Bool {
+        // put most sig digit at the end
+        let lBytes: [UInt8] = lhs.bytes.reversed()
+        let rBytes: [UInt8] = rhs.bytes.reversed()
+
+        for i in stride(from: max(lhs.bytes.count, rhs.bytes.count) - 1, to: 0, by: -1) {
+            let lVal = i < lBytes.count ? lBytes[i] : 0
+            let rVal = i < rBytes.count ? rBytes[i] : 0
+            if lVal < rVal {
+                return true
+            } else if lVal > rVal {
+                return false
+            }
+        }
+        return true // lhs.bytes == rhs.bytes
+    }
+
+}
