@@ -108,6 +108,8 @@ public final class Statement {
             sqlite3_bind_double(handle, Int32(idx), value)
         } else if let value = value as? Int64 {
             sqlite3_bind_int64(handle, Int32(idx), value)
+        } else if let value = value as? UInt64 {
+            sqlite3_bind_blob(handle, Int32(idx), value.datatypeValue.bytes, Int32(value.datatypeValue.bytes.count), SQLITE_TRANSIENT)
         } else if let value = value as? String {
             sqlite3_bind_text(handle, Int32(idx), value, -1, SQLITE_TRANSIENT)
         } else if let value = value as? Int {
