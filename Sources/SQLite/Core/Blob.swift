@@ -65,9 +65,9 @@ extension Blob: Comparable {
         let lBytes: [UInt8] = lhs.bytes.reversed()
         let rBytes: [UInt8] = rhs.bytes.reversed()
 
-        for i in stride(from: max(lhs.bytes.count, rhs.bytes.count) - 1, to: 0, by: -1) {
-            let lVal = i < lBytes.count ? lBytes[i] : 0
-            let rVal = i < rBytes.count ? rBytes[i] : 0
+        for byteIndex in stride(from: max(lhs.bytes.count, rhs.bytes.count) - 1, to: 0, by: -1) {
+            let lVal = byteIndex < lBytes.count ? lBytes[byteIndex] : 0
+            let rVal = byteIndex < rBytes.count ? rBytes[byteIndex] : 0
             if lVal < rVal {
                 return true
             } else if lVal > rVal {
