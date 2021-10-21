@@ -22,7 +22,7 @@ class SelectTests: SQLiteTestCase {
         )
     }
 
-    func test_select_columns_from_multiple_tables() {
+    func test_select_columns_from_multiple_tables() throws {
         let usersData = Table("users_name")
         let users = Table("users")
 
@@ -51,5 +51,9 @@ class SelectTests: SQLiteTestCase {
             XCTAssertEqual($0[stepCount], reallyBigNumber)
             XCTAssertEqual($0[stairCount], prettyBigNumber)
         }
+
+        // ensure we can bind UInt64 and UInt32
+        _ = try db.run("SELECT * FROM \"users_name\" WHERE step_count = ? AND stair_count = ?",
+                       reallyBigNumber, prettyBigNumber)
     }
 }
