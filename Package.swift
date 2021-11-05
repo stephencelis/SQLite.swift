@@ -52,12 +52,6 @@ package.dependencies = [.package(url: "https://github.com/stephencelis/CSQLite.g
 package.targets = [
     .target(
         name: "SQLite",
-        platforms: [
-            .iOS(.v9),
-            .macOS(.v10_15),
-            .watchOS(.v3),
-            .tvOS(.v9)
-        ],
         dependencies: [.product(name: "CSQLite", package: "CSQLite")],
         exclude: ["Extensions/FTS4.swift", "Extensions/FTS5.swift"]
     ),
