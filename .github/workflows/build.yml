@@ -5,7 +5,7 @@ env:
   IOS_VERSION: 14.4
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: macos-11
     steps:
     - uses: actions/checkout@v2
     - name: Install
