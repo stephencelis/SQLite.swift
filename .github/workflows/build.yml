@@ -2,7 +2,7 @@ name: Build and test
 on: [push, pull_request]
 env:
   IOS_SIMULATOR: iPhone 12
-  IOS_VERSION: 14.4
+  IOS_VERSION: 15.0
 jobs:
   build:
     runs-on: macos-11
