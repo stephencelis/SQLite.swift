@@ -1,7 +1,7 @@
 BUILD_TOOL = xcodebuild
 BUILD_SCHEME = SQLite Mac
 IOS_SIMULATOR = iPhone 12
-IOS_VERSION = 14.4
+IOS_VERSION = 15.0
 ifeq ($(BUILD_SCHEME),SQLite iOS)
 	BUILD_ARGUMENTS = -scheme "$(BUILD_SCHEME)" -destination "platform=iOS Simulator,name=$(IOS_SIMULATOR),OS=$(IOS_VERSION)"
 else
