@@ -5,6 +5,8 @@
 * Support for custom SQL aggregates ([#881][])
 * Restore previous iteration behavior ([#1075][])
 * Fix compilation on Linux ([#1077][])
+* Align platform versions in SPM manifest and Xcode ([#1094][])
+* Revert OSX deployment target back to 10.10 ([#1095][])
 
 0.13.0 (22-08-2021), [diff][diff-0.13.0]
 ========================================
@@ -128,3 +130,5 @@
 [#919]: https://github.com/stephencelis/SQLite.swift/pull/919
 [#1075]: https://github.com/stephencelis/SQLite.swift/pull/1075
 [#1077]: https://github.com/stephencelis/SQLite.swift/issues/1077
+[#1094]: https://github.com/stephencelis/SQLite.swift/pull/1094
+[#1095]: https://github.com/stephencelis/SQLite.swift/pull/1095
