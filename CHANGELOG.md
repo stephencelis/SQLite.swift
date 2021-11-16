@@ -1,9 +1,9 @@
-0.13.1 (tba)
+0.13.1 (17-11-2021), [diff][diff-0.13.1]
 ========================================
 
 * Support for database backup ([#919][])
 * Support for custom SQL aggregates ([#881][])
-* Restore previous iteration behavior ([#1075][])
+* Restore previous behavior in `FailableIterator` ([#1075][])
 * Fix compilation on Linux ([#1077][])
 * Align platform versions in SPM manifest and Xcode ([#1094][])
 * Revert OSX deployment target back to 10.10 ([#1095][])
@@ -94,6 +94,7 @@
 [diff-0.12.0]: https://github.com/stephencelis/SQLite.swift/compare/0.11.6...0.12.0
 [diff-0.12.2]: https://github.com/stephencelis/SQLite.swift/compare/0.12.0...0.12.2
 [diff-0.13.0]: https://github.com/stephencelis/SQLite.swift/compare/0.12.2...0.13.0
+[diff-0.13.1]: https://github.com/stephencelis/SQLite.swift/compare/0.13.0...0.13.1
 
 [#142]: https://github.com/stephencelis/SQLite.swift/issues/142
 [#315]: https://github.com/stephencelis/SQLite.swift/issues/315
