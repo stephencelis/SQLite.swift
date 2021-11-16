@@ -170,6 +170,8 @@ If you want to use [SQLCipher][] with SQLite.swift you can require the
 
 ```ruby
 target 'YourAppTargetName' do
+  # Make sure you only require the subspec, otherwise you app might link against
+  # the system SQLite, which means the SQLCipher-specific methods won't work.
   pod 'SQLite.swift/SQLCipher', '~> 0.13.0'
 end
 ```
