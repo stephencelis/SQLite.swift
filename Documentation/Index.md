@@ -1174,7 +1174,7 @@ joined by the `<-` operator. Upserting is like inserting, except if there is a
 conflict on the specified column value, SQLite will perform an update on the row instead.
 
 ```swift
-try db.run(users.upsert(email <- "alice@mac.com", name <- "Alice"), onConflictOf: email)
+try db.run(users.upsert(email <- "alice@mac.com", name <- "Alice", onConflictOf: email))
 // INSERT INTO "users" ("email", "name") VALUES ('alice@mac.com', 'Alice') ON CONFLICT (\"email\") DO UPDATE SET \"name\" = \"excluded\".\"name\"
 ```
 
