@@ -152,21 +152,20 @@ public final class Connection {
         Int(sqlite3_total_changes(handle))
     }
 
-    /// Gets the user version of the database.
+    /// The user version of the database.
     /// See SQLite [PRAGMA user_version](https://sqlite.org/pragma.html#pragma_user_version)
-    /// - Returns: the user version of the database
-    public func getUserVersion() throws -> Int32? {
-        guard let userVersion = try scalar("PRAGMA user_version") as? Int64 else {
-            return nil
+    public var userVersion: Int32? {
+        get {
+            guard let userVersion = try? scalar("PRAGMA user_version") as? Int64 else {
+                return nil
+            }
+            return Int32(userVersion)
         }
-        return Int32(userVersion)
-    }
-
-    /// Sets the user version of the database.
-    /// See SQLite [PRAGMA user_version](https://sqlite.org/pragma.html#pragma_user_version)
-    /// - Parameter userVersion: the new user version of the database
-    public func setUserVersion(to userVersion: Int32) throws {
-        try run("PRAGMA user_version = \(userVersion)")
+        set {
+            if let userVersion = newValue {
+                _ = try? run("PRAGMA user_version = \(userVersion)")
+            }
+        }
     }
 
     // MARK: - Execute

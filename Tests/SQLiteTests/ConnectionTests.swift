@@ -97,8 +97,8 @@ class ConnectionTests: SQLiteTestCase {
     }
 
     func test_userVersion() {
-        try! db.setUserVersion(to: 2)
-        XCTAssertEqual(2, try! db.getUserVersion()!)
+        db.userVersion = 2
+        XCTAssertEqual(2, db.userVersion!)
     }
 
     func test_prepare_preparesAndReturnsStatements() {
