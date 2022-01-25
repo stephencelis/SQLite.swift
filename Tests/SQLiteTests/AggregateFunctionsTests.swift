@@ -21,6 +21,8 @@ class AggregateFunctionsTests: XCTestCase {
     func test_max_wrapsComparableExpressionsWithMaxFunction() {
         assertSQL("max(\"int\")", int.max)
         assertSQL("max(\"intOptional\")", intOptional.max)
+        assertSQL("max(\"uint64\")", uint64.max)
+        assertSQL("max(\"uint64Optional\")", uint64Optional.max)
         assertSQL("max(\"double\")", double.max)
         assertSQL("max(\"doubleOptional\")", doubleOptional.max)
         assertSQL("max(\"string\")", string.max)

@@ -25,4 +25,17 @@ class FoundationTests: XCTestCase {
         let uuid = UUID.fromDatatypeValue(string)
         XCTAssertEqual(UUID(uuidString: "4ABE10C9-FF12-4CD4-90C1-4B429001BAD3"), uuid)
     }
+
+    func testCompareBlob() {
+        let data1 = Data([1, 2, 3])
+        let data2 = Data([1, 3, 3])
+        let data3 = Data([4, 3])
+        let blob1 = data1.datatypeValue
+        let blob2 = data2.datatypeValue
+        let blob3 = data3.datatypeValue
+        XCTAssert(blob1 < blob2)
+        XCTAssert(blob2 > blob1)
+        XCTAssert(blob1 > blob3)
+        XCTAssert(blob2 > blob3)
+    }
 }
