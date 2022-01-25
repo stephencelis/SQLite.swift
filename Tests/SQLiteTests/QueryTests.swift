@@ -398,7 +398,7 @@ class QueryTests: XCTestCase {
         let expectedPrefix =
             """
             UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0,
-            \"date\" = '1970-01-01T00:00:00.000', \"sub\" = '
+             \"date\" = '1970-01-01T00:00:00.000', \"sub\" = '
             """.replacingOccurrences(of: "\n", with: "")
         let expectedSuffix = "'"
 
