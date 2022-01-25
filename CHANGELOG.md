@@ -1,3 +1,9 @@
+0.13.2 (25-01-2022), [diff][diff-0.13.2]
+========================================
+
+* Closing bracket position ([#1100][])
+* Native user_version support in Connection ([#1105][])
+
 0.13.1 (17-11-2021), [diff][diff-0.13.1]
 ========================================
 
@@ -95,6 +101,7 @@
 [diff-0.12.2]: https://github.com/stephencelis/SQLite.swift/compare/0.12.0...0.12.2
 [diff-0.13.0]: https://github.com/stephencelis/SQLite.swift/compare/0.12.2...0.13.0
 [diff-0.13.1]: https://github.com/stephencelis/SQLite.swift/compare/0.13.0...0.13.1
+[diff-0.13.2]: https://github.com/stephencelis/SQLite.swift/compare/0.13.1...0.13.2
 
 [#142]: https://github.com/stephencelis/SQLite.swift/issues/142
 [#315]: https://github.com/stephencelis/SQLite.swift/issues/315
@@ -133,3 +140,5 @@
 [#1077]: https://github.com/stephencelis/SQLite.swift/issues/1077
 [#1094]: https://github.com/stephencelis/SQLite.swift/pull/1094
 [#1095]: https://github.com/stephencelis/SQLite.swift/pull/1095
+[#1100]: https://github.com/stephencelis/SQLite.swift/pull/1100
+[#1105]: https://github.com/stephencelis/SQLite.swift/pull/1105
