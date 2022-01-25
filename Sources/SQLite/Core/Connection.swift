@@ -152,6 +152,19 @@ public final class Connection {
         Int(sqlite3_total_changes(handle))
     }
 
+    /// The user version of the database.
+    /// See SQLite [PRAGMA user_version](https://sqlite.org/pragma.html#pragma_user_version)
+    public var userVersion: Int32? {
+        get {
+            (try? scalar("PRAGMA user_version") as? Int64).map(Int32.init)
+        }
+        set {
+            if let userVersion = newValue {
+                _ = try? run("PRAGMA user_version = \(userVersion)")
+            }
+        }
+    }
+
     // MARK: - Execute
 
     /// Executes a batch of SQL statements.

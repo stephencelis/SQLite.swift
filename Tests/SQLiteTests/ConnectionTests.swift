@@ -96,6 +96,11 @@ class ConnectionTests: SQLiteTestCase {
         XCTAssertEqual(2, db.totalChanges)
     }
 
+    func test_userVersion() {
+        db.userVersion = 2
+        XCTAssertEqual(2, db.userVersion!)
+    }
+
     func test_prepare_preparesAndReturnsStatements() {
         _ = try! db.prepare("SELECT * FROM users WHERE admin = 0")
         _ = try! db.prepare("SELECT * FROM users WHERE admin = ?", 0)

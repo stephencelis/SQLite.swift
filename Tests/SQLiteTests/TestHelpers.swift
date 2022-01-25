@@ -105,7 +105,7 @@ let qualifiedTable = Table("table", database: "main")
 let virtualTable = VirtualTable("virtual_table")
 let _view = View("view") // avoid Mac XCTestCase collision
 
-class TestCodable: Codable {
+class TestCodable: Codable, Equatable {
     let int: Int
     let string: String
     let bool: Bool
@@ -124,5 +124,16 @@ class TestCodable: Codable {
         self.date = date
         self.optional = optional
         self.sub = sub
+    }
+
+    static func == (lhs: TestCodable, rhs: TestCodable) -> Bool {
+        lhs.int == rhs.int &&
+        lhs.string == rhs.string &&
+        lhs.bool == rhs.bool &&
+        lhs.float == rhs.float &&
+        lhs.double == rhs.double &&
+        lhs.date == rhs.date &&
+        lhs.optional == rhs.optional &&
+        lhs.sub == rhs.sub
     }
 }
