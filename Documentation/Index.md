@@ -1457,21 +1457,11 @@ try db.run(users.drop(ifExists: true))
 
 ### Migrations and Schema Versioning
 
-You can add a convenience property on `Connection` to query and set the
+You can use the convenience property on `Connection` to query and set the
 [`PRAGMA user_version`](https://sqlite.org/pragma.html#pragma_user_version).
 
 This is a great way to manage your schema’s version over migrations.
-
-```swift
-extension Connection {
-    public var userVersion: Int32 {
-        get { return Int32(try! scalar("PRAGMA user_version") as! Int64)}
-        set { try! run("PRAGMA user_version = \(newValue)") }
-    }
-}
-```
-
-Then you can conditionally run your migrations along the lines of:
+You can conditionally run your migrations along the lines of:
 
 ```swift
 if db.userVersion == 0 {
