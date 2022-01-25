@@ -391,18 +391,25 @@ class QueryTests: XCTestCase {
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
                                 date: Date(timeIntervalSince1970: 0), optional: nil, sub: value1)
         let update = try emails.update(value)
-        
+
         // NOTE: As Linux JSON decoding doesn't order keys the same way, we need to check prefix, suffix,
         // and extract JSON to decode it and check the decoded object.
-        
-        let expectedPrefix = "UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0, \"date\" = '1970-01-01T00:00:00.000', \"sub\" = '"
+
+        let expectedPrefix =
+            """
+            UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0,
+            \"date\" = '1970-01-01T00:00:00.000', \"sub\" = '
+            """.replacingOccurrences(of: "\n", with: "")
         let expectedSuffix = "'"
-        
+
         let sql = update.asSQL()
         XCTAssert(sql.hasPrefix(expectedPrefix))
         XCTAssert(sql.hasSuffix(expectedSuffix))
-        
-        let extractedJSON = String(sql[sql.index(sql.startIndex, offsetBy: expectedPrefix.count) ..< sql.index(sql.endIndex, offsetBy: -expectedSuffix.count)])
+
+        let extractedJSON = String(sql[
+            sql.index(sql.startIndex, offsetBy: expectedPrefix.count) ..<
+            sql.index(sql.endIndex, offsetBy: -expectedSuffix.count)
+        ])
         let decodedJSON = try JSONDecoder().decode(TestCodable.self, from: extractedJSON.data(using: .utf8)!)
         XCTAssertEqual(decodedJSON, value1)
     }

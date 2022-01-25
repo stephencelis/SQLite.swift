@@ -125,7 +125,7 @@ class TestCodable: Codable, Equatable {
         self.optional = optional
         self.sub = sub
     }
-    
+
     static func == (lhs: TestCodable, rhs: TestCodable) -> Bool {
         lhs.int == rhs.int &&
         lhs.string == rhs.string &&
