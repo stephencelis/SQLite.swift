@@ -156,10 +156,7 @@ public final class Connection {
     /// See SQLite [PRAGMA user_version](https://sqlite.org/pragma.html#pragma_user_version)
     public var userVersion: Int32? {
         get {
-            guard let userVersion = try? scalar("PRAGMA user_version") as? Int64 else {
-                return nil
-            }
-            return Int32(userVersion)
+            (try? scalar("PRAGMA user_version") as? Int64).map(Int32.init)
         }
         set {
             if let userVersion = newValue {
