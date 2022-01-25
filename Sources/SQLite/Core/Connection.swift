@@ -159,9 +159,7 @@ public final class Connection {
             (try? scalar("PRAGMA user_version") as? Int64).map(Int32.init)
         }
         set {
-            if let userVersion = newValue {
-                _ = try? run("PRAGMA user_version = \(userVersion)")
-            }
+            _ = try? run("PRAGMA user_version = \(newValue ?? 0)")
         }
     }
 
