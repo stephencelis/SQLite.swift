@@ -207,6 +207,8 @@ private class SQLiteEncoder: Encoder {
                 encoder.setters.append(Expression(key.stringValue) <- data)
             } else if let date = value as? Date {
                 encoder.setters.append(Expression(key.stringValue) <- date.datatypeValue)
+            } else if let uuid = value as? UUID {
+                encoder.setters.append(Expression(key.stringValue) <- uuid.datatypeValue)
             } else {
                 let encoded = try JSONEncoder().encode(value)
                 let string = String(data: encoded, encoding: .utf8)
