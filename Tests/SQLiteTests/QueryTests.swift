@@ -310,6 +310,32 @@ class QueryTests: XCTestCase {
     }
     #endif
 
+    func test_insert_and_search_for_UUID() {
+        struct Test: Codable {
+            var uuid: UUID
+            var string: String
+        }
+        let testUUID = UUID()
+        let testValue = Test(uuid: testUUID, string: "value")
+        let db = try! Connection(.temporary)
+        try! db.run(table.create { t in
+            t.column(uuid)
+            t.column(string)
+        }
+        )
+
+        let iQuery = try! table.insert(testValue)
+        try! db.run(iQuery)
+
+        let fQuery = table.filter(uuid == testUUID)
+        if let result = try! db.pluck(fQuery) {
+            let testValueReturned = Test(uuid: result[uuid], string: result[string])
+            XCTAssertEqual(testUUID, testValueReturned.uuid)
+        } else {
+            XCTFail("Search for uuid failed")
+        }
+    }
+
     func test_upsert_withOnConflict_compilesInsertOrOnConflictExpression() {
         assertSQL(
             """
