@@ -1169,22 +1169,22 @@ public struct Row {
         }
 
         guard let idx = columnNames[column.template] else {
-            func match(_ s: String) -> Bool {
+            func similar(_ s: String) -> Bool {
                 return s.hasSuffix(".\(column.template)")
             }
             
-            guard let firstIndex = columnNames.firstIndex(where: { match($0.key) }) else {
+            guard let firstIndex = columnNames.firstIndex(where: { similar($0.key) }) else {
                 throw QueryError.noSuchColumn(name: column.template, columns: columnNames.keys.sorted())
             }
             
             let secondIndex = columnNames
                 .suffix(from: columnNames.index(after: firstIndex))
-                .firstIndex(where: { match($0.key) })
+                .firstIndex(where: { similar($0.key) })
             
             guard secondIndex == nil else {
                 throw QueryError.ambiguousColumn(
                     name: column.template,
-                    similar: columnNames.keys.filter(match).sorted()
+                    similar: columnNames.keys.filter(similar).sorted()
                 )
             }
             return valueAtIndex(columnNames[firstIndex].value)
