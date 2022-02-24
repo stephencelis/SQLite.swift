@@ -1,5 +1,5 @@
 > Issues are used to track bugs and feature requests.
-> Need  help or have a general question? Ask on Stack Overflow (tag sqlite.swift).
+> Need help or have a general question? Ask on Stack Overflow (tag sqlite.swift).
 
 ## Build Information
 
