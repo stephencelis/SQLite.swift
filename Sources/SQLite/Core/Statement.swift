@@ -232,7 +232,7 @@ extension Statement {
     public func prepareRowIterator() -> RowIterator {
         return RowIterator(statement: self, columnNames: self.columnNameMap)
     }
-    
+
     var columnNameMap: [String: Int] {
         var result = [String: Int]()
         for (index, name) in self.columnNames.enumerated() {
