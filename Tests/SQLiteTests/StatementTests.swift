@@ -23,7 +23,7 @@ class StatementTests: SQLiteTestCase {
         let blobValue = try! db.scalar(blobs.select(blobColumn).limit(1, offset: 0))
         XCTAssertEqual([], blobValue.bytes)
     }
-    
+
     func test_prepareRowIterator() {
         let names = ["a", "b", "c"]
         try! insertUsers(names)
