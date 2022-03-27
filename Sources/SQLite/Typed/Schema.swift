@@ -308,7 +308,7 @@ public final class TableBuilder {
                                  references table: QueryType, _ other: Expression<V>) where V.Datatype == Int64 {
         column(name, V.declaredDatatype, nil, true, unique, check, nil, (table, other), nil)
     }
-    
+
     public func column<V: Value>(_ name: Expression<V>, primaryKey: Bool, check: Expression<Bool>? = nil,
                                  references table: QueryType, _ other: Expression<V>) where V.Datatype == Int64 {
         column(name, V.declaredDatatype, primaryKey ? .default : nil, false, false, check, nil, (table, other), nil)
