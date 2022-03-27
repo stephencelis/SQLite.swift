@@ -1,3 +1,10 @@
+0.13.3 (25-01-2022), [diff][diff-0.13.3]
+========================================
+
+* UUID Fix ([#1112][])
+* Add prepareRowIterator method to an extension of Statement. ([#1119][])
+* Adding primary key support to column with references ([#1121][])
+
 0.13.2 (25-01-2022), [diff][diff-0.13.2]
 ========================================
 
@@ -102,6 +109,7 @@
 [diff-0.13.0]: https://github.com/stephencelis/SQLite.swift/compare/0.12.2...0.13.0
 [diff-0.13.1]: https://github.com/stephencelis/SQLite.swift/compare/0.13.0...0.13.1
 [diff-0.13.2]: https://github.com/stephencelis/SQLite.swift/compare/0.13.1...0.13.2
+[diff-0.13.3]: https://github.com/stephencelis/SQLite.swift/compare/0.13.2...0.13.3
 
 [#142]: https://github.com/stephencelis/SQLite.swift/issues/142
 [#315]: https://github.com/stephencelis/SQLite.swift/issues/315
@@ -142,3 +150,6 @@
 [#1095]: https://github.com/stephencelis/SQLite.swift/pull/1095
 [#1100]: https://github.com/stephencelis/SQLite.swift/pull/1100
 [#1105]: https://github.com/stephencelis/SQLite.swift/pull/1105
+[#1112]: https://github.com/stephencelis/SQLite.swift/pull/1112
+[#1119]: https://github.com/stephencelis/SQLite.swift/pull/1119
+[#1121]: https://github.com/stephencelis/SQLite.swift/pull/1121

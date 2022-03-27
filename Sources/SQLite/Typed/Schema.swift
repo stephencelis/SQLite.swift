@@ -309,6 +309,26 @@ public final class TableBuilder {
         column(name, V.declaredDatatype, nil, true, unique, check, nil, (table, other), nil)
     }
 
+    public func column<V: Value>(_ name: Expression<V>, primaryKey: Bool, check: Expression<Bool>? = nil,
+                                 references table: QueryType, _ other: Expression<V>) where V.Datatype == Int64 {
+        column(name, V.declaredDatatype, primaryKey ? .default : nil, false, false, check, nil, (table, other), nil)
+    }
+
+    public func column<V: Value>(_ name: Expression<V>, primaryKey: Bool, check: Expression<Bool?>,
+                                 references table: QueryType, _ other: Expression<V>) where V.Datatype == Int64 {
+        column(name, V.declaredDatatype, primaryKey ? .default : nil, false, false, check, nil, (table, other), nil)
+    }
+
+    public func column<V: Value>(_ name: Expression<V?>, primaryKey: Bool, check: Expression<Bool>? = nil,
+                                 references table: QueryType, _ other: Expression<V>) where V.Datatype == Int64 {
+        column(name, V.declaredDatatype, primaryKey ? .default : nil, true, false, check, nil, (table, other), nil)
+    }
+
+    public func column<V: Value>(_ name: Expression<V?>, primaryKey: Bool, check: Expression<Bool?>,
+                                 references table: QueryType, _ other: Expression<V>) where V.Datatype == Int64 {
+        column(name, V.declaredDatatype, primaryKey ? .default : nil, true, false, check, nil, (table, other), nil)
+    }
+
     public func column<V: Value>(_ name: Expression<V>, unique: Bool = false, check: Expression<Bool>? = nil,
                                  defaultValue: Expression<V>? = nil, collate: Collation) where V.Datatype == String {
         column(name, V.declaredDatatype, nil, false, unique, check, defaultValue, nil, collate)
