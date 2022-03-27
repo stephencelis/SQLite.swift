@@ -2,6 +2,7 @@
 ========================================
 
 * UUID Fix ([#1112][])
+* Add prepareRowIterator method to an extension of Statement. ([#1119][])
 * Adding primary key support to column with references ([#1121][])
 
 0.13.2 (25-01-2022), [diff][diff-0.13.2]
@@ -150,4 +151,5 @@
 [#1100]: https://github.com/stephencelis/SQLite.swift/pull/1100
 [#1105]: https://github.com/stephencelis/SQLite.swift/pull/1105
 [#1112]: https://github.com/stephencelis/SQLite.swift/pull/1112
+[#1119]: https://github.com/stephencelis/SQLite.swift/pull/1119
 [#1121]: https://github.com/stephencelis/SQLite.swift/pull/1121
