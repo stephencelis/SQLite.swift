@@ -6,7 +6,7 @@ additions and Pull Requests, as well as to keep the Issues list clear of
 enhancement requests so that bugs are more visible.
 
 > ⚠ This document is currently not actively maintained. See
-> the [0.13.3 milestone](https://github.com/stephencelis/SQLite.swift/issues?q=is%3Aopen+is%3Aissue+milestone%3A0.13.3)
+> the [0.13.4 milestone](https://github.com/stephencelis/SQLite.swift/issues?q=is%3Aopen+is%3Aissue+milestone%3A0.13.4)
 > on Github for additional information about planned features for the next release.
 
 ## Roadmap
