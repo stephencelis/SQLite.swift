@@ -106,6 +106,23 @@ class QueryIntegrationTests: SQLiteTestCase {
         XCTAssertNil(values[0].sub?.sub)
     }
 
+    func test_select_codable_camelCase() throws {
+        let table = Table("codable_enum")
+        let column = Expression<StringEnum>("camelCaseString")
+        try db.run(table.create { builder in
+            builder.column(column)
+        })
+        let value = CamelCaseStruct(camelCaseString: .one)
+        try db.run(table.insert(value))
+        try db.run(table.insert(column <- .one))
+
+        let rows = try db.prepare(table)
+        let values: [CamelCaseStruct] = try rows.map({ try $0.decode() })
+        XCTAssertEqual(values.count, 2)
+        XCTAssertEqual(values[0].camelCaseString, .one)
+        XCTAssertEqual(values[1].camelCaseString, .one)
+    }
+
     func test_scalar() {
         XCTAssertEqual(0, try! db.scalar(users.count))
         XCTAssertEqual(false, try! db.scalar(users.exists))

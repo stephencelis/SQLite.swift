@@ -140,3 +140,24 @@ class TestCodable: Codable, Equatable {
         lhs.sub == rhs.sub
     }
 }
+
+enum StringEnum: String {
+    case one
+    case nope
+}
+extension StringEnum: Codable {}
+struct CamelCaseStruct: Codable {
+    var camelCaseString: StringEnum
+}
+extension StringEnum: Value {
+    public typealias Datatype = String
+    public static var declaredDatatype: String = String.declaredDatatype
+
+    public static func fromDatatypeValue(_ datatypeValue: String) -> StringEnum {
+        return StringEnum(rawValue: datatypeValue) ?? .nope
+    }
+
+    public var datatypeValue: String {
+        return self.rawValue
+    }
+}
