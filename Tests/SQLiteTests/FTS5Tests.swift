@@ -77,7 +77,7 @@ class FTS5Tests: XCTestCase {
 
     func test_tokenizer_unicode61_with_options() {
         XCTAssertEqual(
-            "CREATE VIRTUAL TABLE \"virtual_table\" USING fts5(tokenize=unicode61 \"removeDiacritics=1\" \"tokenchars=.\" \"separators=X\")",
+            "CREATE VIRTUAL TABLE \"virtual_table\" USING fts5(tokenize=unicode61 \"remove_diacritics=1\" \"tokenchars=.\" \"separators=X\")",
             sql(config.tokenizer(.Unicode61(removeDiacritics: true, tokenchars: ["."], separators: ["X"]))))
     }
 

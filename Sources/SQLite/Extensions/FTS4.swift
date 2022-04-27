@@ -103,7 +103,7 @@ public struct Tokenizer {
         var arguments = [String]()
 
         if let removeDiacritics = removeDiacritics {
-            arguments.append("removeDiacritics=\(removeDiacritics ? 1 : 0)".quote())
+            arguments.append("remove_diacritics=\(removeDiacritics ? 1 : 0)".quote())
         }
 
         if !tokenchars.isEmpty {
