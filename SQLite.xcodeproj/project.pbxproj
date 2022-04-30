@@ -592,9 +592,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 03A65E6F1C6BB0F60062603F /* Build configuration list for PBXNativeTarget "SQLite tvOS" */;
 			buildPhases = (
+				03A65E571C6BB0F50062603F /* Headers */,
 				03A65E551C6BB0F50062603F /* Sources */,
 				03A65E561C6BB0F50062603F /* Frameworks */,
-				03A65E571C6BB0F50062603F /* Headers */,
 				03A65E581C6BB0F50062603F /* Resources */,
 			);
 			buildRules = (
@@ -628,9 +628,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = A121AC4C1CA35C79005A31D1 /* Build configuration list for PBXNativeTarget "SQLite watchOS" */;
 			buildPhases = (
+				A121AC421CA35C79005A31D1 /* Headers */,
 				A121AC401CA35C79005A31D1 /* Sources */,
 				A121AC411CA35C79005A31D1 /* Frameworks */,
-				A121AC421CA35C79005A31D1 /* Headers */,
 				A121AC431CA35C79005A31D1 /* Resources */,
 			);
 			buildRules = (
@@ -646,9 +646,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EE247AE71C3F04ED00AE3E12 /* Build configuration list for PBXNativeTarget "SQLite iOS" */;
 			buildPhases = (
+				EE247AD01C3F04ED00AE3E12 /* Headers */,
 				EE247ACE1C3F04ED00AE3E12 /* Sources */,
 				EE247ACF1C3F04ED00AE3E12 /* Frameworks */,
-				EE247AD01C3F04ED00AE3E12 /* Headers */,
 				EE247AD11C3F04ED00AE3E12 /* Resources */,
 			);
 			buildRules = (
@@ -682,9 +682,9 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = EE247B511C3F3ED000AE3E12 /* Build configuration list for PBXNativeTarget "SQLite Mac" */;
 			buildPhases = (
+				EE247B391C3F3ED000AE3E12 /* Headers */,
 				EE247B371C3F3ED000AE3E12 /* Sources */,
 				EE247B381C3F3ED000AE3E12 /* Frameworks */,
-				EE247B391C3F3ED000AE3E12 /* Headers */,
 				EE247B3A1C3F3ED000AE3E12 /* Resources */,
 			);
 			buildRules = (
