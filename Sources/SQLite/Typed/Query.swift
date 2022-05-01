@@ -1169,16 +1169,25 @@ public struct Row {
         }
 
         guard let idx = columnNames[column.template] else {
-            let similar = Array(columnNames.keys).filter { $0.hasSuffix(".\(column.template)") }
-
-            switch similar.count {
-            case 0:
-                throw QueryError.noSuchColumn(name: column.template, columns: columnNames.keys.sorted())
-            case 1:
-                return valueAtIndex(columnNames[similar[0]]!)
-            default:
-                throw QueryError.ambiguousColumn(name: column.template, similar: similar)
+            func similar(_ name: String) -> Bool {
+                return name.hasSuffix(".\(column.template)")
             }
+
+            guard let firstIndex = columnNames.firstIndex(where: { similar($0.key) }) else {
+                throw QueryError.noSuchColumn(name: column.template, columns: columnNames.keys.sorted())
+            }
+
+            let secondIndex = columnNames
+                .suffix(from: columnNames.index(after: firstIndex))
+                .firstIndex(where: { similar($0.key) })
+
+            guard secondIndex == nil else {
+                throw QueryError.ambiguousColumn(
+                    name: column.template,
+                    similar: columnNames.keys.filter(similar).sorted()
+                )
+            }
+            return valueAtIndex(columnNames[firstIndex].value)
         }
 
         return valueAtIndex(idx)
