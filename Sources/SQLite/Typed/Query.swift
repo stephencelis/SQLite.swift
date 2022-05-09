@@ -1162,13 +1162,10 @@ public struct Row {
         }
     }
 
-    public func get<V: Value>(_ column: Expression<V?>) throws -> V? {
-        func valueAtIndex(_ idx: Int) -> V? {
-            guard let value = values[idx] as? V.Datatype else { return nil }
-            return V.fromDatatypeValue(value) as? V
-        }
-
-        guard let idx = columnNames[column.template] else {
+    public func getIndex<V>(_ column: Expression<V>) throws -> Int {
+        if let idx = columnNames[column.template] {
+            return idx
+        } else {
             func similar(_ name: String) -> Bool {
                 return name.hasSuffix(".\(column.template)")
             }
@@ -1187,10 +1184,19 @@ public struct Row {
                     similar: columnNames.keys.filter(similar).sorted()
                 )
             }
-            return valueAtIndex(columnNames[firstIndex].value)
+            return columnNames[firstIndex].value
         }
+    }
 
-        return valueAtIndex(idx)
+    public func get<V: Value>(_ column: Expression<V?>) throws -> V? {
+        return at(try getIndex(column))
+    }
+
+    public func at<V: Value>(_ index: Int) -> V? {
+        guard let value = values[index] as? V.Datatype else {
+            return nil
+        }
+        return V.fromDatatypeValue(value) as? V
     }
 
     public subscript<T: Value>(column: Expression<T>) -> T {

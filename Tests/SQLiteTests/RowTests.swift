@@ -85,4 +85,18 @@ class RowTests: XCTestCase {
             }
         }
     }
+
+    public func test_get_with_index() throws {
+        let row = Row(["\"foo\"": 0, "\"bar\"": 1], ["value", Int64(3)])
+
+        let barIndex = try row.getIndex(Expression<Int>("bar"))
+        let fooIndex = try row.getIndex(Expression<String>("foo"))
+        XCTAssertThrowsError(try row.getIndex(Expression<String>("foo1")))
+
+        let fooValue: String? = row.at(fooIndex)
+        XCTAssertEqual(fooValue, "value")
+
+        let barValue: Int? = row.at(barIndex)
+        XCTAssertEqual(barValue, 3)
+    }
 }
