@@ -387,7 +387,11 @@ private class SQLiteDecoder: Decoder {
             } else if type == Date.self {
                 let date = try row.get(Expression<Date>(key.stringValue))
                 return date as! T
+            } else if type == UUID.self {
+                let uuid = try row.get(Expression<UUID>(key.stringValue))
+                return uuid as! T
             }
+            
             // swiftlint:enable force_cast
             guard let JSONString = try row.get(Expression<String?>(key.stringValue)) else {
                 throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: codingPath,
