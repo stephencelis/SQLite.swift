@@ -391,7 +391,7 @@ private class SQLiteDecoder: Decoder {
                 let uuid = try row.get(Expression<UUID>(key.stringValue))
                 return uuid as! T
             }
-            
+
             // swiftlint:enable force_cast
             guard let JSONString = try row.get(Expression<String?>(key.stringValue)) else {
                 throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: codingPath,
