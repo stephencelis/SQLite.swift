@@ -115,16 +115,18 @@ class TestCodable: Codable, Equatable {
     let float: Float
     let double: Double
     let date: Date
+    let uuid: UUID
     let optional: String?
     let sub: TestCodable?
 
-    init(int: Int, string: String, bool: Bool, float: Float, double: Double, date: Date, optional: String?, sub: TestCodable?) {
+    init(int: Int, string: String, bool: Bool, float: Float, double: Double, date: Date, uuid: UUID, optional: String?, sub: TestCodable?) {
         self.int = int
         self.string = string
         self.bool = bool
         self.float = float
         self.double = double
         self.date = date
+        self.uuid = uuid
         self.optional = optional
         self.sub = sub
     }
@@ -136,6 +138,7 @@ class TestCodable: Codable, Equatable {
         lhs.float == rhs.float &&
         lhs.double == rhs.double &&
         lhs.date == rhs.date &&
+        lhs.uuid == lhs.uuid &&
         lhs.optional == rhs.optional &&
         lhs.sub == rhs.sub
     }
