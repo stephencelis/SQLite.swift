@@ -54,12 +54,17 @@ extension Optional: _OptionalType {
 let SQLITE_TRANSIENT = unsafeBitCast(-1, to: sqlite3_destructor_type.self)
 
 extension String {
-
     func quote(_ mark: Character = "\"") -> String {
-        let escaped = reduce("") { string, character in
-            string + (character == mark ? "\(mark)\(mark)" : "\(character)")
+        var quoted = ""
+        quoted.append(mark)
+        for character in self {
+            quoted.append(character)
+            if character == mark {
+                quoted.append(character)
+            }
         }
-        return "\(mark)\(escaped)\(mark)"
+        quoted.append(mark)
+        return quoted
     }
 
     func join(_ expressions: [Expressible]) -> Expressible {
