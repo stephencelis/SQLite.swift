@@ -279,7 +279,7 @@ class QueryTests: XCTestCase {
     func test_insert_encodable() throws {
         let emails = Table("emails")
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
-                                date: Date(timeIntervalSince1970: 0), uuid: UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!, optional: nil, sub: nil)
+                                date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let insert = try emails.insert(value)
         assertSQL(
             """
@@ -294,9 +294,9 @@ class QueryTests: XCTestCase {
     func test_insert_encodable_with_nested_encodable() throws {
         let emails = Table("emails")
         let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
-                                 date: Date(timeIntervalSince1970: 0), uuid: UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!, optional: nil, sub: nil)
+                                 date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
-                                date: Date(timeIntervalSince1970: 0), uuid: UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!, optional: "optional", sub: value1)
+                                date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: "optional", sub: value1)
         let insert = try emails.insert(value)
         let encodedJSON = try JSONEncoder().encode(value1)
         let encodedJSONString = String(data: encodedJSON, encoding: .utf8)!
@@ -350,7 +350,7 @@ class QueryTests: XCTestCase {
         let emails = Table("emails")
         let string = Expression<String>("string")
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
-                                date: Date(timeIntervalSince1970: 0), uuid: UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!, optional: nil, sub: nil)
+                                date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let insert = try emails.upsert(value, onConflictOf: string)
         assertSQL(
             """
@@ -366,11 +366,11 @@ class QueryTests: XCTestCase {
     func test_insert_many_encodable() throws {
         let emails = Table("emails")
         let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
-                                 date: Date(timeIntervalSince1970: 0), uuid: UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!, optional: nil, sub: nil)
+                                 date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let value2 = TestCodable(int: 2, string: "3", bool: true, float: 3, double: 5,
-                                 date: Date(timeIntervalSince1970: 0), uuid: UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!, optional: nil, sub: nil)
+                                 date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let value3 = TestCodable(int: 3, string: "4", bool: true, float: 3, double: 6,
-                                 date: Date(timeIntervalSince1970: 0), uuid: UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!, optional: nil, sub: nil)
+                                 date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let insert = try emails.insertMany([value1, value2, value3])
         assertSQL(
             """
@@ -399,7 +399,7 @@ class QueryTests: XCTestCase {
     func test_update_encodable() throws {
         let emails = Table("emails")
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
-                                date: Date(timeIntervalSince1970: 0), uuid: UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!, optional: nil, sub: nil)
+                                date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let update = try emails.update(value)
         assertSQL(
             """
@@ -413,9 +413,9 @@ class QueryTests: XCTestCase {
     func test_update_encodable_with_nested_encodable() throws {
         let emails = Table("emails")
         let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
-                                 date: Date(timeIntervalSince1970: 0), uuid: UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!, optional: nil, sub: nil)
+                                 date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
-                                date: Date(timeIntervalSince1970: 0), uuid: UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!, optional: nil, sub: value1)
+                                date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: value1)
         let update = try emails.update(value)
 
         // NOTE: As Linux JSON decoding doesn't order keys the same way, we need to check prefix, suffix,

@@ -98,6 +98,8 @@ let stringOptional = Expression<String?>("stringOptional")
 let uuid = Expression<UUID>("uuid")
 let uuidOptional = Expression<UUID?>("uuidOptional")
 
+let testUUIDValue = UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!
+
 func assertSQL(_ expression1: @autoclosure () -> String, _ expression2: @autoclosure () -> Expressible,
                file: StaticString = #file, line: UInt = #line) {
     XCTAssertEqual(expression1(), expression2().asSQL(), file: file, line: line)
