@@ -300,6 +300,7 @@ class QueryTests: XCTestCase {
         let insert = try emails.insert(value)
         let encodedJSON = try JSONEncoder().encode(value1)
         let encodedJSONString = String(data: encodedJSON, encoding: .utf8)!
+        // swiftlint:disable line_length
         assertSQL(
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\", \"optional\",
@@ -307,6 +308,7 @@ class QueryTests: XCTestCase {
             """.replacingOccurrences(of: "\n", with: ""),
             insert
         )
+        // swiftlint:enable line_length
     }
     #endif
 
@@ -352,6 +354,7 @@ class QueryTests: XCTestCase {
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
                                 date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let insert = try emails.upsert(value, onConflictOf: string)
+        // swiftlint:disable line_length
         assertSQL(
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\")
@@ -361,6 +364,7 @@ class QueryTests: XCTestCase {
             """.replacingOccurrences(of: "\n", with: ""),
             insert
         )
+        // swiftlint:enable line_length
     }
 
     func test_insert_many_encodable() throws {
@@ -372,6 +376,7 @@ class QueryTests: XCTestCase {
         let value3 = TestCodable(int: 3, string: "4", bool: true, float: 3, double: 6,
                                  date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let insert = try emails.insertMany([value1, value2, value3])
+        // swiftlint:disable line_length
         assertSQL(
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\")
@@ -380,6 +385,7 @@ class QueryTests: XCTestCase {
             """.replacingOccurrences(of: "\n", with: ""),
             insert
         )
+        // swiftlint:enable line_length
     }
 
     func test_update_compilesUpdateExpression() {
