@@ -300,15 +300,14 @@ class QueryTests: XCTestCase {
         let insert = try emails.insert(value)
         let encodedJSON = try JSONEncoder().encode(value1)
         let encodedJSONString = String(data: encodedJSON, encoding: .utf8)!
-        // swiftlint:disable line_length
         assertSQL(
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\", \"optional\",
-             \"sub\") VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', 'optional', '\(encodedJSONString)')
+             \"sub\") VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F',
+             'optional', '\(encodedJSONString)')
             """.replacingOccurrences(of: "\n", with: ""),
             insert
         )
-        // swiftlint:enable line_length
     }
     #endif
 
@@ -354,17 +353,16 @@ class QueryTests: XCTestCase {
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
                                 date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let insert = try emails.upsert(value, onConflictOf: string)
-        // swiftlint:disable line_length
         assertSQL(
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\")
              VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F') ON CONFLICT (\"string\")
              DO UPDATE SET \"int\" = \"excluded\".\"int\", \"bool\" = \"excluded\".\"bool\",
-             \"float\" = \"excluded\".\"float\", \"double\" = \"excluded\".\"double\", \"date\" = \"excluded\".\"date\", \"uuid\" = \"excluded\".\"uuid\"
+             \"float\" = \"excluded\".\"float\", \"double\" = \"excluded\".\"double\", \"date\" = \"excluded\".\"date\",
+             \"uuid\" = \"excluded\".\"uuid\"
             """.replacingOccurrences(of: "\n", with: ""),
             insert
         )
-        // swiftlint:enable line_length
     }
 
     func test_insert_many_encodable() throws {
@@ -376,16 +374,15 @@ class QueryTests: XCTestCase {
         let value3 = TestCodable(int: 3, string: "4", bool: true, float: 3, double: 6,
                                  date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let insert = try emails.insertMany([value1, value2, value3])
-        // swiftlint:disable line_length
         assertSQL(
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\")
-             VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F'), (2, '3', 1, 3.0, 5.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F'),
+             VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F'),
+             (2, '3', 1, 3.0, 5.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F'),
              (3, '4', 1, 3.0, 6.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F')
             """.replacingOccurrences(of: "\n", with: ""),
             insert
         )
-        // swiftlint:enable line_length
     }
 
     func test_update_compilesUpdateExpression() {
