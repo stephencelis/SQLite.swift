@@ -203,13 +203,14 @@ private class SQLiteEncoder: Encoder {
         }
 
         func encode<T>(_ value: T, forKey key: Key) throws where T: Swift.Encodable {
-            if let data = value as? Data {
+            switch value {
+            case let data as Data:
                 encoder.setters.append(Expression(key.stringValue) <- data)
-            } else if let date = value as? Date {
+            case let date as Date:
                 encoder.setters.append(Expression(key.stringValue) <- date.datatypeValue)
-            } else if let uuid = value as? UUID {
+            case let uuid as UUID:
                 encoder.setters.append(Expression(key.stringValue) <- uuid.datatypeValue)
-            } else {
+            default:
                 let encoded = try JSONEncoder().encode(value)
                 let string = String(data: encoded, encoding: .utf8)
                 encoder.setters.append(Expression(key.stringValue) <- string)
@@ -261,7 +262,7 @@ private class SQLiteEncoder: Encoder {
         }
 
         func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key)
-                        -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
+        -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
             fatalError("encoding a nested container is not supported")
         }
 
@@ -381,27 +382,32 @@ private class SQLiteDecoder: Decoder {
 
         func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T: Swift.Decodable {
             // swiftlint:disable force_cast
-            if type == Data.self {
+            switch type {
+            case is Data.Type:
                 let data = try row.get(Expression<Data>(key.stringValue))
                 return data as! T
-            } else if type == Date.self {
+            case is Date.Type:
                 let date = try row.get(Expression<Date>(key.stringValue))
                 return date as! T
+            case is UUID.Type:
+                let uuid = try row.get(Expression<UUID>(key.stringValue))
+                return uuid as! T
+            default:
+                // swiftlint:enable force_cast
+                guard let JSONString = try row.get(Expression<String?>(key.stringValue)) else {
+                    throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: codingPath,
+                                                                                 debugDescription: "an unsupported type was found"))
+                }
+                guard let data = JSONString.data(using: .utf8) else {
+                    throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath,
+                                                                            debugDescription: "invalid utf8 data found"))
+                }
+                return try JSONDecoder().decode(type, from: data)
             }
-            // swiftlint:enable force_cast
-            guard let JSONString = try row.get(Expression<String?>(key.stringValue)) else {
-                throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: codingPath,
-                                                                             debugDescription: "an unsupported type was found"))
-            }
-            guard let data = JSONString.data(using: .utf8) else {
-                throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath,
-                                                                        debugDescription: "invalid utf8 data found"))
-            }
-            return try JSONDecoder().decode(type, from: data)
         }
 
         func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: Key) throws
-                        -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
+        -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
             throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath,
                                                                     debugDescription: "decoding nested containers is not supported"))
         }

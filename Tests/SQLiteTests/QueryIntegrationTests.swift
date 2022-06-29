@@ -75,15 +75,15 @@ class QueryIntegrationTests: SQLiteTestCase {
             builder.column(Expression<Double>("float"))
             builder.column(Expression<Double>("double"))
             builder.column(Expression<Date>("date"))
+            builder.column(Expression<UUID>("uuid"))
             builder.column(Expression<String?>("optional"))
             builder.column(Expression<Data>("sub"))
         })
 
         let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
-                                 date: Date(timeIntervalSince1970: 0), optional: nil, sub: nil)
+                                 date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let value = TestCodable(int: 5, string: "6", bool: true, float: 7, double: 8,
-                                date: Date(timeIntervalSince1970: 5000), optional: "optional", sub: value1)
-
+                                date: Date(timeIntervalSince1970: 5000), uuid: testUUIDValue, optional: "optional", sub: value1)
         try db.run(table.insert(value))
 
         let rows = try db.prepare(table)
@@ -95,6 +95,7 @@ class QueryIntegrationTests: SQLiteTestCase {
         XCTAssertEqual(values[0].float, 7)
         XCTAssertEqual(values[0].double, 8)
         XCTAssertEqual(values[0].date, Date(timeIntervalSince1970: 5000))
+        XCTAssertEqual(values[0].uuid, testUUIDValue)
         XCTAssertEqual(values[0].optional, "optional")
         XCTAssertEqual(values[0].sub?.int, 1)
         XCTAssertEqual(values[0].sub?.string, "2")
