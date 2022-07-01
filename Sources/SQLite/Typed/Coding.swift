@@ -233,7 +233,7 @@ private class SQLiteEncoder: Encoder {
         func encodeIfPresent(_ value: Float?, forKey key: Key) throws {
             if let value = value {
                 encoder.setters.append(Expression(key.stringValue) <- Double(value))
-            } else if forcingNilValueSetters{
+            } else if forcingNilValueSetters {
                 encoder.setters.append(Expression<Double?>(key.stringValue) <- nil)
             }
         }

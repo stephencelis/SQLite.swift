@@ -142,7 +142,8 @@ class QueryIntegrationTests: SQLiteTestCase {
             builder.column(Expression<UUID?>("uuid"))
         })
 
-        let value1 = TestOptionalCodable(int: 5, string: "6", bool: true, float: 7, double: 8, date: Date(timeIntervalSince1970: 5000), uuid: testUUIDValue)
+        let value1 = TestOptionalCodable(int: 5, string: "6", bool: true, float: 7, double: 8,
+                                         date: Date(timeIntervalSince1970: 5000), uuid: testUUIDValue)
         let valueWithNils = TestOptionalCodable(int: nil, string: nil, bool: nil, float: nil, double: nil, date: nil, uuid: nil)
         try db.run(table.insertMany([value1, valueWithNils]))
 
