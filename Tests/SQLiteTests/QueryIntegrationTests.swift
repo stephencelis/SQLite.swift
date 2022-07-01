@@ -130,6 +130,27 @@ class QueryIntegrationTests: SQLiteTestCase {
         XCTAssertEqual(2, id)
     }
 
+    func test_insert_many_encodables() throws {
+        let table = Table("codable")
+        try db.run(table.create { builder in
+            builder.column(Expression<Int?>("int"))
+            builder.column(Expression<String?>("string"))
+            builder.column(Expression<Bool?>("bool"))
+            builder.column(Expression<Double?>("float"))
+            builder.column(Expression<Double?>("double"))
+            builder.column(Expression<Date?>("date"))
+            builder.column(Expression<UUID?>("uuid"))
+        })
+
+        let value1 = TestOptionalCodable(int: 5, string: "6", bool: true, float: 7, double: 8, date: Date(timeIntervalSince1970: 5000), uuid: testUUIDValue)
+        let valueWithNils = TestOptionalCodable(int: nil, string: nil, bool: nil, float: nil, double: nil, date: nil, uuid: nil)
+        try db.run(table.insertMany([value1, valueWithNils]))
+
+         let rows = try db.prepare(table)
+         let values: [TestOptionalCodable] = try rows.map({ try $0.decode() })
+         XCTAssertEqual(values.count, 2)
+    }
+
     func test_upsert() throws {
         try XCTSkipUnless(db.satisfiesMinimumVersion(minor: 24))
         let fetchAge = { () throws -> Int? in
