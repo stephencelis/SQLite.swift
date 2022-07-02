@@ -365,21 +365,21 @@ class QueryTests: XCTestCase {
         )
     }
 
-    func test_insert_many_encodable() throws {
+    func test_insert_many_encodables() throws {
         let emails = Table("emails")
         let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
                                  date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let value2 = TestCodable(int: 2, string: "3", bool: true, float: 3, double: 5,
-                                 date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
+                                 date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: "optional", sub: nil)
         let value3 = TestCodable(int: 3, string: "4", bool: true, float: 3, double: 6,
                                  date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let insert = try emails.insertMany([value1, value2, value3])
         assertSQL(
             """
-            INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\")
-             VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F'),
-             (2, '3', 1, 3.0, 5.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F'),
-             (3, '4', 1, 3.0, 6.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F')
+            INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\", \"optional\", \"sub\")
+             VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', NULL, NULL),
+             (2, '3', 1, 3.0, 5.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', 'optional', NULL),
+             (3, '4', 1, 3.0, 6.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', NULL, NULL)
             """.replacingOccurrences(of: "\n", with: ""),
             insert
         )
