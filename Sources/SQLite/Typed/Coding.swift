@@ -216,7 +216,7 @@ private class SQLiteEncoder: Encoder {
 
         func encodeIfPresent(_ value: Int?, forKey key: SQLiteEncoder.SQLiteKeyedEncodingContainer<Key>.Key) throws {
             if let value = value {
-                encoder.setters.append(Expression(key.stringValue) <- value)
+                try encode(value, forKey: key)
             } else if forcingNilValueSetters {
                 encoder.setters.append(Expression<Int?>(key.stringValue) <- nil)
             }
@@ -224,7 +224,7 @@ private class SQLiteEncoder: Encoder {
 
         func encodeIfPresent(_ value: Bool?, forKey key: Key) throws {
             if let value = value {
-                encoder.setters.append(Expression(key.stringValue) <- value)
+                try encode(value, forKey: key)
             } else if forcingNilValueSetters {
                 encoder.setters.append(Expression<Bool?>(key.stringValue) <- nil)
             }
@@ -232,7 +232,7 @@ private class SQLiteEncoder: Encoder {
 
         func encodeIfPresent(_ value: Float?, forKey key: Key) throws {
             if let value = value {
-                encoder.setters.append(Expression(key.stringValue) <- Double(value))
+                try encode(value, forKey: key)
             } else if forcingNilValueSetters {
                 encoder.setters.append(Expression<Double?>(key.stringValue) <- nil)
             }
@@ -240,7 +240,7 @@ private class SQLiteEncoder: Encoder {
 
         func encodeIfPresent(_ value: Double?, forKey key: Key) throws {
             if let value = value {
-                encoder.setters.append(Expression(key.stringValue) <- value)
+                try encode(value, forKey: key)
             } else if forcingNilValueSetters {
                 encoder.setters.append(Expression<Double?>(key.stringValue) <- nil)
             }
@@ -248,7 +248,7 @@ private class SQLiteEncoder: Encoder {
 
         func encodeIfPresent(_ value: String?, forKey key: MyKey) throws {
             if let value = value {
-                encoder.setters.append(Expression(key.stringValue) <- value)
+                try encode(value, forKey: key)
             } else if forcingNilValueSetters {
                 encoder.setters.append(Expression<String?>(key.stringValue) <- nil)
             }
@@ -277,18 +277,7 @@ private class SQLiteEncoder: Encoder {
                 encoder.setters.append(Expression<String?>(key.stringValue) <- nil)
                 return
             }
-            switch value {
-            case let data as Data:
-                encoder.setters.append(Expression(key.stringValue) <- data)
-            case let date as Date:
-                encoder.setters.append(Expression(key.stringValue) <- date.datatypeValue)
-            case let uuid as UUID:
-                encoder.setters.append(Expression(key.stringValue) <- uuid.datatypeValue)
-            default:
-                let encoded = try JSONEncoder().encode(value)
-                let string = String(data: encoded, encoding: .utf8)
-                encoder.setters.append(Expression(key.stringValue) <- string)
-            }
+            try encode(value, forKey: key)
         }
 
         func encode(_ value: Int8, forKey key: Key) throws {
