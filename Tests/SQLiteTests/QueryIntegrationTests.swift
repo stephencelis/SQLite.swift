@@ -230,6 +230,47 @@ class QueryIntegrationTests: SQLiteTestCase {
         let result = Array(try db.prepare(users.select(email).order(Expression<Int>.random()).limit(1)))
         XCTAssertEqual(1, result.count)
     }
+    
+    func test_with_recursive() {
+        let nodes = Table("nodes")
+        let id = Expression<Int64>("id")
+        let parent = Expression<Int64?>("parent")
+        let value = Expression<Int64>("value")
+                
+        try! db.run(nodes.create { builder in
+            builder.column(id)
+            builder.column(parent)
+            builder.column(value)
+        })
+        
+        try! db.run(nodes.insertMany([
+            [id <- 0, parent <- nil, value <- 2],
+            [id <- 1, parent <- 0, value <- 4],
+            [id <- 2, parent <- 0, value <- 9],
+            [id <- 3, parent <- 2, value <- 8],
+            [id <- 4, parent <- 2, value <- 7],
+            [id <- 5, parent <- 4, value <- 3],
+        ]))
+        
+        // Compute the sum of the values of node 5 and its ancestors
+        let ancestors = Table("ancestors")
+        let sum = try! db.scalar(
+            ancestors
+                .select(value.sum)
+                .with(ancestors,
+                      columns: [id, parent, value],
+                      recursive: true,
+                      as: nodes
+                        .where(id == 5)
+                        .union(all: true,
+                               nodes.join(ancestors, on: nodes[id] == ancestors[parent])
+                                    .select(nodes[id], nodes[parent], nodes[value])
+                              )
+                     )
+        )
+        
+        XCTAssertEqual(21, sum)
+    }
 }
 
 extension Connection {

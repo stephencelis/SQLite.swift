@@ -193,12 +193,14 @@ extension QueryType {
     ///
     /// - Parameters:
     ///
+    ///   - all: If false, duplicate rows are removed from the result.
+    ///
     ///   - table: A query representing the other table.
     ///
     /// - Returns: A query with the given `UNION` clause applied.
-    public func union(_ table: QueryType) -> Self {
+    public func union(all: Bool = false, _ table: QueryType) -> Self {
         var query = self
-        query.clauses.union.append(table)
+        query.clauses.union.append((all, table))
         return query
     }
 
@@ -496,6 +498,37 @@ extension QueryType {
         query.clauses.limit = length.map { ($0, offset) }
         return query
     }
+    
+    // MARK: WITH
+    
+    /// Sets a `WITH` clause on the query.
+    ///
+    ///     let users = Table("users")
+    ///     let id = Expression<String>("email")
+    ///     let name = Expression<String?>("name")
+    ///
+    ///     let userNames = Table("user_names")
+    ///     userCategories.with(userNames, as: users.select(name))
+    ///     // WITH "user_names" as (SELECT "name" FROM "users") SELECT * FROM "user_names"
+    ///
+    /// - Parameters:
+    ///
+    ///   -  alias: A name to assign to the table expression.
+    ///
+    ///   -  recursive: Whether to evaluate the expression recursively.
+    ///
+    ///   -  materializationHint: Provides a hint to the query planner for how the expression should be implemented.
+    ///
+    ///   -  subquery: A query that generates the rows for the table expression.
+    ///
+    /// - Returns: A query with the given `ORDER BY` clause applied.
+    public func with(_ alias: Table, columns: [Expressible]? = nil, recursive: Bool = false, materializationHint: MaterializationHint? = nil, as subquery: QueryType) -> Self {
+        var query = self
+        let clause = WithClauses.Clause(alias: alias, columns: columns, materializationHint: materializationHint, query: subquery)
+        query.clauses.with.recursive = query.clauses.with.recursive || recursive
+        query.clauses.with.clauses.append(clause)
+        return query
+    }
 
     // MARK: - Clauses
     //
@@ -596,12 +629,49 @@ extension QueryType {
             return nil
         }
 
-        return " ".join(clauses.union.map { query in
+        return " ".join(clauses.union.map { (all, query) in
             " ".join([
-                Expression<Void>(literal: "UNION"),
+                Expression<Void>(literal: all ? "UNION ALL" : "UNION"),
                 query
             ])
         })
+    }
+    
+    fileprivate var withClause: Expressible? {
+        guard !clauses.with.clauses.isEmpty else {
+            return nil
+        }
+
+        let innerClauses = ", ".join(clauses.with.clauses.map { (clause) in
+            let hintExpr: Expression<Void>?
+            if let hint = clause.materializationHint {
+                hintExpr = Expression<Void>(literal: hint.rawValue)
+            } else {
+                hintExpr = nil
+            }
+            
+            let columnExpr: Expression<Void>?
+            if let columns = clause.columns {
+                columnExpr = "".wrap(", ".join(columns))
+            } else {
+                columnExpr = nil
+            }
+            
+            let expressions: [Expressible?] = [
+                clause.alias.tableName(),
+                columnExpr,
+                Expression<Void>(literal: "AS"),
+                hintExpr,
+                "".wrap(clause.query) as Expression<Void>
+            ]
+            
+            return " ".join(expressions.compactMap { $0 })
+        })
+        
+        return " ".join([
+            Expression<Void>(literal: clauses.with.recursive ? "WITH RECURSIVE" : "WITH"),
+            innerClauses
+        ])
     }
 
     // MARK: -
@@ -856,6 +926,7 @@ extension QueryType {
 
     public var expression: Expression<Void> {
         let clauses: [Expressible?] = [
+            withClause,
             selectClause,
             joinClause,
             whereClause,
@@ -1233,7 +1304,29 @@ public enum OnConflict: String {
 
 }
 
+/// Materialization hints for `WITH` clause
+public enum MaterializationHint: String {
+
+    case materialized = "MATERIALIZED"
+
+    case notMaterialized = "NOT MATERIALIZED"
+}
+
 // MARK: - Private
+
+struct WithClauses {
+    struct Clause {
+        var alias: Table
+        var columns: [Expressible]?
+        var materializationHint: MaterializationHint?
+        var query: QueryType
+    }
+    /// The `RECURSIVE` flag is applied to the entire `WITH` clause
+    var recursive: Bool = false
+    
+    /// Each `WITH` clause may have multiple subclauses
+    var clauses: [Clause] = []
+}
 
 public struct QueryClauses {
 
@@ -1251,7 +1344,9 @@ public struct QueryClauses {
 
     var limit: (length: Int, offset: Int?)?
 
-    var union = [QueryType]()
+    var union = [(all: Bool, table: QueryType)]()
+    
+    var with = WithClauses()
 
     fileprivate init(_ name: String, alias: String?, database: String?) {
         from = (name, alias, database)
