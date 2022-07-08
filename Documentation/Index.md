@@ -1090,7 +1090,7 @@ users.limit(5, offset: 5)
 #### Recursive and Hierarchical Queries
 
 We can perform a recursive or hierarchical query using a [query's](#queries) `with`
-function. Column names and a materialization hint can optionally be provided.
+function.
 
 ```swift
 // Get the management chain for the manager with id == 8
@@ -1112,9 +1112,12 @@ chain.with(chain, recursive: true, as: query)
 //     JOIN "managers" ON "chain"."manager_id" = "managers"."id"
 //   ) 
 // SELECT * FROM "chain"
+```
 
+Column names and a materialization hint can optionally be provided.
+
+```swift
 // Add a "level" column to the query representing manager's position in the chain
-
 let level = Expression<Int64>("level")
 
 let queryWithLevel = 
