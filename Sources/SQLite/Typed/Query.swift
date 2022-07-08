@@ -498,9 +498,9 @@ extension QueryType {
         query.clauses.limit = length.map { ($0, offset) }
         return query
     }
-    
+
     // MARK: WITH
-    
+
     /// Sets a `WITH` clause on the query.
     ///
     ///     let users = Table("users")
@@ -517,14 +517,15 @@ extension QueryType {
     ///
     ///   -  recursive: Whether to evaluate the expression recursively.
     ///
-    ///   -  materializationHint: Provides a hint to the query planner for how the expression should be implemented.
+    ///   -  hint: Provides a hint to the query planner for how the expression should be implemented.
     ///
     ///   -  subquery: A query that generates the rows for the table expression.
     ///
     /// - Returns: A query with the given `ORDER BY` clause applied.
-    public func with(_ alias: Table, columns: [Expressible]? = nil, recursive: Bool = false, materializationHint: MaterializationHint? = nil, as subquery: QueryType) -> Self {
+    public func with(_ alias: Table, columns: [Expressible]? = nil, recursive: Bool = false,
+                     hint: MaterializationHint? = nil, as subquery: QueryType) -> Self {
         var query = self
-        let clause = WithClauses.Clause(alias: alias, columns: columns, materializationHint: materializationHint, query: subquery)
+        let clause = WithClauses.Clause(alias: alias, columns: columns, hint: hint, query: subquery)
         query.clauses.with.recursive = query.clauses.with.recursive || recursive
         query.clauses.with.clauses.append(clause)
         return query
@@ -636,7 +637,7 @@ extension QueryType {
             ])
         })
     }
-    
+
     fileprivate var withClause: Expressible? {
         guard !clauses.with.clauses.isEmpty else {
             return nil
@@ -644,19 +645,19 @@ extension QueryType {
 
         let innerClauses = ", ".join(clauses.with.clauses.map { (clause) in
             let hintExpr: Expression<Void>?
-            if let hint = clause.materializationHint {
+            if let hint = clause.hint {
                 hintExpr = Expression<Void>(literal: hint.rawValue)
             } else {
                 hintExpr = nil
             }
-            
+
             let columnExpr: Expression<Void>?
             if let columns = clause.columns {
                 columnExpr = "".wrap(", ".join(columns))
             } else {
                 columnExpr = nil
             }
-            
+
             let expressions: [Expressible?] = [
                 clause.alias.tableName(),
                 columnExpr,
@@ -664,10 +665,10 @@ extension QueryType {
                 hintExpr,
                 "".wrap(clause.query) as Expression<Void>
             ]
-            
+
             return " ".join(expressions.compactMap { $0 })
         })
-        
+
         return " ".join([
             Expression<Void>(literal: clauses.with.recursive ? "WITH RECURSIVE" : "WITH"),
             innerClauses
@@ -1318,12 +1319,12 @@ struct WithClauses {
     struct Clause {
         var alias: Table
         var columns: [Expressible]?
-        var materializationHint: MaterializationHint?
+        var hint: MaterializationHint?
         var query: QueryType
     }
     /// The `RECURSIVE` flag is applied to the entire `WITH` clause
     var recursive: Bool = false
-    
+
     /// Each `WITH` clause may have multiple subclauses
     var clauses: [Clause] = []
 }
@@ -1345,7 +1346,7 @@ public struct QueryClauses {
     var limit: (length: Int, offset: Int?)?
 
     var union = [(all: Bool, table: QueryType)]()
-    
+
     var with = WithClauses()
 
     fileprivate init(_ name: String, alias: String?, database: String?) {

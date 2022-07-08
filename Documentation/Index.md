@@ -1130,7 +1130,7 @@ let queryWithLevel =
 chain.with(chain, 
            columns: [id, managerId, level], 
            recursive: true,
-           materializationHint: .materialize,
+           hint: .materialize,
            as: queryWithLevel)
 // WITH RECURSIVE
 //   "chain" ("id", "manager_id", "level") AS MATERIALIZED (
