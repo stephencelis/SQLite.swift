@@ -499,38 +499,6 @@ extension QueryType {
         return query
     }
 
-    // MARK: WITH
-
-    /// Sets a `WITH` clause on the query.
-    ///
-    ///     let users = Table("users")
-    ///     let id = Expression<String>("email")
-    ///     let name = Expression<String?>("name")
-    ///
-    ///     let userNames = Table("user_names")
-    ///     userCategories.with(userNames, as: users.select(name))
-    ///     // WITH "user_names" as (SELECT "name" FROM "users") SELECT * FROM "user_names"
-    ///
-    /// - Parameters:
-    ///
-    ///   -  alias: A name to assign to the table expression.
-    ///
-    ///   -  recursive: Whether to evaluate the expression recursively.
-    ///
-    ///   -  hint: Provides a hint to the query planner for how the expression should be implemented.
-    ///
-    ///   -  subquery: A query that generates the rows for the table expression.
-    ///
-    /// - Returns: A query with the given `ORDER BY` clause applied.
-    public func with(_ alias: Table, columns: [Expressible]? = nil, recursive: Bool = false,
-                     hint: MaterializationHint? = nil, as subquery: QueryType) -> Self {
-        var query = self
-        let clause = WithClauses.Clause(alias: alias, columns: columns, hint: hint, query: subquery)
-        query.clauses.with.recursive = query.clauses.with.recursive || recursive
-        query.clauses.with.clauses.append(clause)
-        return query
-    }
-
     // MARK: - Clauses
     //
     // MARK: SELECT
@@ -636,43 +604,6 @@ extension QueryType {
                 query
             ])
         })
-    }
-
-    fileprivate var withClause: Expressible? {
-        guard !clauses.with.clauses.isEmpty else {
-            return nil
-        }
-
-        let innerClauses = ", ".join(clauses.with.clauses.map { (clause) in
-            let hintExpr: Expression<Void>?
-            if let hint = clause.hint {
-                hintExpr = Expression<Void>(literal: hint.rawValue)
-            } else {
-                hintExpr = nil
-            }
-
-            let columnExpr: Expression<Void>?
-            if let columns = clause.columns {
-                columnExpr = "".wrap(", ".join(columns))
-            } else {
-                columnExpr = nil
-            }
-
-            let expressions: [Expressible?] = [
-                clause.alias.tableName(),
-                columnExpr,
-                Expression<Void>(literal: "AS"),
-                hintExpr,
-                "".wrap(clause.query) as Expression<Void>
-            ]
-
-            return " ".join(expressions.compactMap { $0 })
-        })
-
-        return " ".join([
-            Expression<Void>(literal: clauses.with.recursive ? "WITH RECURSIVE" : "WITH"),
-            innerClauses
-        ])
     }
 
     // MARK: -
