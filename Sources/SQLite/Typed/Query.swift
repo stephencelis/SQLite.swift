@@ -1236,14 +1236,6 @@ public enum OnConflict: String {
 
 }
 
-/// Materialization hints for `WITH` clause
-public enum MaterializationHint: String {
-
-    case materialized = "MATERIALIZED"
-
-    case notMaterialized = "NOT MATERIALIZED"
-}
-
 // MARK: - Private
 
 public struct QueryClauses {
