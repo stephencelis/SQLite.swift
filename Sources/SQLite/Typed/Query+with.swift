@@ -93,3 +93,17 @@ extension QueryType {
         ])
     }
 }
+
+struct WithClauses {
+    struct Clause {
+        var alias: Table
+        var columns: [Expressible]?
+        var hint: MaterializationHint?
+        var query: QueryType
+    }
+    /// The `RECURSIVE` flag is applied to the entire `WITH` clause
+    var recursive: Bool = false
+
+    /// Each `WITH` clause may have multiple subclauses
+    var clauses: [Clause] = []
+}
