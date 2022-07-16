@@ -84,3 +84,19 @@ extension UUID: Value {
     }
 
 }
+
+extension URL: Value {
+
+    public static var declaredDatatype: String {
+        String.declaredDatatype
+    }
+
+    public static func fromDatatypeValue(_ stringValue: String) -> URL {
+        URL(string: stringValue)!
+    }
+
+    public var datatypeValue: String {
+        absoluteString
+    }
+
+}
