@@ -61,6 +61,9 @@ class QueryTests: XCTestCase {
 
     func test_union_compilesUnionClause() {
         assertSQL("SELECT * FROM \"users\" UNION SELECT * FROM \"posts\"", users.union(posts))
+    }
+
+    func test_union_compilesUnionAllClause() {
         assertSQL("SELECT * FROM \"users\" UNION ALL SELECT * FROM \"posts\"", users.union(all: true, posts))
     }
 
@@ -232,21 +235,22 @@ class QueryTests: XCTestCase {
                   temp.with(temp, as: users))
     }
 
-    func test_with_recursive_compilesWithClause() {
+    func test_with_compilesWithRecursiveClause() {
         let temp = Table("temp")
 
         assertSQL("WITH RECURSIVE \"temp\" AS (SELECT * FROM \"users\") SELECT * FROM \"temp\"",
                   temp.with(temp, recursive: true, as: users))
-
-        assertSQL("WITH \"temp\" AS (SELECT * FROM \"users\") SELECT * FROM \"temp\"",
-                  temp.with(temp, recursive: false, as: users))
     }
 
-    func test_with_materialization_compilesWithClause() {
+    func test_with_compilesWithMaterializedClause() {
         let temp = Table("temp")
 
         assertSQL("WITH \"temp\" AS MATERIALIZED (SELECT * FROM \"users\") SELECT * FROM \"temp\"",
                   temp.with(temp, hint: .materialized, as: users))
+    }
+
+    func test_with_compilesWithNotMaterializedClause() {
+        let temp = Table("temp")
 
         assertSQL("WITH \"temp\" AS NOT MATERIALIZED (SELECT * FROM \"users\") SELECT * FROM \"temp\"",
                   temp.with(temp, hint: .notMaterialized, as: users))
