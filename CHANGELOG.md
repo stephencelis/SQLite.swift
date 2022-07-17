@@ -5,6 +5,7 @@
 * Support `WITH` clause ([#1139][])
 * Add `Value` conformance for `NSURL` ([#1110][], [#1141][])
 * Add decoding for `UUID` ([#1137][])
+* SQLCipher: improve documentation ([#1098][]), add `sqlcipher_export`
 * Fix `insertMany([Encodable])` ([#1130][], [#1138][])
 * Fix incorrect spelling of `remove_diacritics` ([#1128][])
 * Fix project build order ([#1131][])
@@ -162,6 +163,7 @@
 [#1077]: https://github.com/stephencelis/SQLite.swift/issues/1077
 [#1094]: https://github.com/stephencelis/SQLite.swift/pull/1094
 [#1095]: https://github.com/stephencelis/SQLite.swift/pull/1095
+[#1098]: https://github.com/stephencelis/SQLite.swift/issues/1098
 [#1100]: https://github.com/stephencelis/SQLite.swift/pull/1100
 [#1105]: https://github.com/stephencelis/SQLite.swift/pull/1105
 [#1109]: https://github.com/stephencelis/SQLite.swift/issues/1109

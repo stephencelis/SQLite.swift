@@ -16,3 +16,7 @@ func fixture(_ name: String, withExtension: String?) -> String {
     }
     fatalError("Cannot find \(name).\(withExtension ?? "")")
 }
+
+func temporaryFile() -> String {
+    URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(UUID().uuidString).path
+}
