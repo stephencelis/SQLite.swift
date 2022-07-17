@@ -4,12 +4,13 @@ import SQLite
 import SQLCipher
 
 class CipherTests: XCTestCase {
-
-    let db1 = try Connection()
-    let db2 = try Connection()
+    var db1: Connection!
+    var db2: Connection!
 
     override func setUpWithError() throws {
-        // db
+        db1 = try Connection()
+        db2 = try Connection()
+        // db1
 
         try db1.key("hello")
 
@@ -30,7 +31,7 @@ class CipherTests: XCTestCase {
         XCTAssertEqual(1, try db1.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
-    func test_key_blob_literal() {
+    func test_key_blob_literal() throws {
         let db = try Connection()
         try db.key("x'2DD29CA851E7B56E4697B0E1F08507293D761A05CE4D1B628663F411A8086D99'")
     }
@@ -55,7 +56,7 @@ class CipherTests: XCTestCase {
         _ = try? FileManager.default.removeItem(atPath: path)
 
         let connA = try Connection(path)
-        defer { try FileManager.default.removeItem(atPath: path) }
+        defer { try? FileManager.default.removeItem(atPath: path) }
 
         try connA.key("hello")
         try connA.run("CREATE TABLE foo (bar TEXT)")
@@ -90,7 +91,7 @@ class CipherTests: XCTestCase {
 
         defer {
             // ensure file can be cleaned up afterwards
-            try FileManager.default.setAttributes([FileAttributeKey.immutable: 0], ofItemAtPath: encryptedFile)
+            try? FileManager.default.setAttributes([FileAttributeKey.immutable: 0], ofItemAtPath: encryptedFile)
         }
 
         let conn = try Connection(encryptedFile)

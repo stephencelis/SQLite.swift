@@ -104,7 +104,7 @@ public final class Connection {
     ///
     /// - Returns: A new database connection.
     public init(_ location: Location = .inMemory, readonly: Bool = false) throws {
-        let flags = readonly ? SQLITE_OPEN_READONLY : SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE
+        let flags = readonly ? SQLITE_OPEN_READONLY : (SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE)
         try check(sqlite3_open_v2(location.description,
                                   &_handle,
                                   flags | SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_URI,

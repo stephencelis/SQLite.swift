@@ -7,7 +7,7 @@ func fixture(_ name: String, withExtension: String?) -> String {
     let testBundle = Bundle(for: SQLiteTestCase.self)
     #endif
 
-    for resource in [name, "fixtures/\(name)"] {
+    for resource in [name, "Resources/\(name)"] {
         if let url = testBundle.url(
             forResource: resource,
             withExtension: withExtension) {

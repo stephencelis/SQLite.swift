@@ -47,12 +47,17 @@ class ConnectionTests: SQLiteTestCase {
         XCTAssertEqual(url.lastPathComponent, "SQLite.swift Tests.sqlite3")
     }
 
-    func testLocationWithoutUriParameters() {
+    func test_init_with_Uri_and_Parameters() throws {
+        let testDb = fixture("test", withExtension: "sqlite")
+        _ = try Connection(.uri(testDb, parameters: [.cache(.shared)]))
+    }
+
+    func test_location_without_Uri_parameters() {
         let location: Connection.Location = .uri("foo")
         XCTAssertEqual(location.description, "foo")
     }
 
-    func testLocationWithUriParameters() {
+    func test_location_with_Uri_parameters() {
         let location: Connection.Location = .uri("foo", parameters: [.mode(.readOnly), .cache(.private)])
         XCTAssertEqual(location.description, "file:foo?mode=ro&cache=private")
     }
