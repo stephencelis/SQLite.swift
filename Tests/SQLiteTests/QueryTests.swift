@@ -375,25 +375,25 @@ class QueryTests: XCTestCase {
     }
     #endif
 
-    func test_insert_and_search_for_UUID() {
+    func test_insert_and_search_for_UUID() throws {
         struct Test: Codable {
             var uuid: UUID
             var string: String
         }
         let testUUID = UUID()
         let testValue = Test(uuid: testUUID, string: "value")
-        let db = try! Connection(.temporary)
-        try! db.run(table.create { t in
+        let db = try Connection(.temporary)
+        try db.run(table.create { t in
             t.column(uuid)
             t.column(string)
         }
         )
 
-        let iQuery = try! table.insert(testValue)
-        try! db.run(iQuery)
+        let iQuery = try table.insert(testValue)
+        try db.run(iQuery)
 
         let fQuery = table.filter(uuid == testUUID)
-        if let result = try! db.pluck(fQuery) {
+        if let result = try db.pluck(fQuery) {
             let testValueReturned = Test(uuid: result[uuid], string: result[string])
             XCTAssertEqual(testUUID, testValueReturned.uuid)
         } else {

@@ -13,7 +13,11 @@ import SQLite3
 #endif
 
 class ResultTests: XCTestCase {
-    let connection = try! Connection(.inMemory)
+    var connection: Connection!
+
+    override func setUpWithError() throws {
+        connection = try Connection(.inMemory)
+    }
 
     func test_init_with_ok_code_returns_nil() {
         XCTAssertNil(Result(errorCode: SQLITE_OK, connection: connection, statement: nil) as Result?)
@@ -44,8 +48,8 @@ class ResultTests: XCTestCase {
             Result(errorCode: SQLITE_MISUSE, connection: connection, statement: nil)?.description)
     }
 
-    func test_description_contains_statement_and_error_code() {
-        let statement = try! Statement(connection, "SELECT 1")
+    func test_description_contains_statement_and_error_code() throws {
+        let statement = try Statement(connection, "SELECT 1")
         XCTAssertEqual("not an error (SELECT 1) (code: 21)",
             Result(errorCode: SQLITE_MISUSE, connection: connection, statement: statement)?.description)
     }

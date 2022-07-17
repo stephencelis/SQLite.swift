@@ -25,7 +25,7 @@ class CustomAggregationTests: SQLiteTestCase {
         try insertUser("Eve", age: 28, admin: false)
     }
 
-    func testUnsafeCustomSum() {
+    func testUnsafeCustomSum() throws {
         let step = { (bindings: [Binding?], state: UnsafeMutablePointer<Int64>) in
             if let v = bindings[0] as? Int64 {
                 state.pointee += v
@@ -43,7 +43,7 @@ class CustomAggregationTests: SQLiteTestCase {
             v[0] = 0
             return v.baseAddress!
         }
-        let result = try! db.prepare("SELECT mySUM1(age) AS s FROM users")
+        let result = try db.prepare("SELECT mySUM1(age) AS s FROM users")
         let i = result.columnNames.firstIndex(of: "s")!
         for row in result {
             let value = row[i] as? Int64
@@ -51,7 +51,7 @@ class CustomAggregationTests: SQLiteTestCase {
         }
     }
 
-    func testUnsafeCustomSumGrouping() {
+    func testUnsafeCustomSumGrouping() throws {
         let step = { (bindings: [Binding?], state: UnsafeMutablePointer<Int64>) in
             if let v = bindings[0] as? Int64 {
                 state.pointee += v
@@ -68,19 +68,19 @@ class CustomAggregationTests: SQLiteTestCase {
             v[0] = 0
             return v.baseAddress!
         }
-        let result = try! db.prepare("SELECT mySUM2(age) AS s FROM users GROUP BY admin ORDER BY s")
+        let result = try db.prepare("SELECT mySUM2(age) AS s FROM users GROUP BY admin ORDER BY s")
         let i = result.columnNames.firstIndex(of: "s")!
         let values = result.compactMap { $0[i] as? Int64 }
         XCTAssertTrue(values.elementsEqual([28, 55]))
     }
 
-    func testCustomSum() {
+    func testCustomSum() throws {
         let reduce: (Int64, [Binding?]) -> Int64 = { (last, bindings) in
             let v = (bindings[0] as? Int64) ?? 0
             return last + v
         }
         db.createAggregation("myReduceSUM1", initialValue: Int64(2000), reduce: reduce, result: { $0 })
-        let result = try! db.prepare("SELECT myReduceSUM1(age) AS s FROM users")
+        let result = try db.prepare("SELECT myReduceSUM1(age) AS s FROM users")
         let i = result.columnNames.firstIndex(of: "s")!
         for row in result {
             let value = row[i] as? Int64
@@ -88,26 +88,26 @@ class CustomAggregationTests: SQLiteTestCase {
         }
     }
 
-    func testCustomSumGrouping() {
+    func testCustomSumGrouping() throws {
         let reduce: (Int64, [Binding?]) -> Int64 = { (last, bindings) in
             let v = (bindings[0] as? Int64) ?? 0
             return last + v
         }
         db.createAggregation("myReduceSUM2", initialValue: Int64(3000), reduce: reduce, result: { $0 })
-        let result = try! db.prepare("SELECT myReduceSUM2(age) AS s FROM users GROUP BY admin ORDER BY s")
+        let result = try db.prepare("SELECT myReduceSUM2(age) AS s FROM users GROUP BY admin ORDER BY s")
         let i = result.columnNames.firstIndex(of: "s")!
         let values = result.compactMap { $0[i] as? Int64 }
         XCTAssertTrue(values.elementsEqual([3028, 3055]))
     }
 
-    func testCustomStringAgg() {
+    func testCustomStringAgg() throws {
         let initial = String(repeating: " ", count: 64)
         let reduce: (String, [Binding?]) -> String = { (last, bindings) in
             let v = (bindings[0] as? String) ?? ""
             return last + v
         }
         db.createAggregation("myReduceSUM3", initialValue: initial, reduce: reduce, result: { $0 })
-        let result = try! db.prepare("SELECT myReduceSUM3(email) AS s FROM users")
+        let result = try db.prepare("SELECT myReduceSUM3(email) AS s FROM users")
 
         let i = result.columnNames.firstIndex(of: "s")!
         for row in result {
@@ -116,7 +116,7 @@ class CustomAggregationTests: SQLiteTestCase {
         }
     }
 
-    func testCustomObjectSum() {
+    func testCustomObjectSum() throws {
         {
             let initial = TestObject(value: 1000)
             let reduce: (TestObject, [Binding?]) -> TestObject = { (last, bindings) in

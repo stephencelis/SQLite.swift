@@ -3,9 +3,9 @@ import XCTest
 
 class RowTests: XCTestCase {
 
-    public func test_get_value() {
+    public func test_get_value() throws {
         let row = Row(["\"foo\"": 0], ["value"])
-        let result = try! row.get(Expression<String>("foo"))
+        let result = try row.get(Expression<String>("foo"))
 
         XCTAssertEqual("value", result)
     }
@@ -17,9 +17,9 @@ class RowTests: XCTestCase {
         XCTAssertEqual("value", result)
     }
 
-    public func test_get_value_optional() {
+    public func test_get_value_optional() throws {
         let row = Row(["\"foo\"": 0], ["value"])
-        let result = try! row.get(Expression<String?>("foo"))
+        let result = try row.get(Expression<String?>("foo"))
 
         XCTAssertEqual("value", result)
     }
@@ -31,9 +31,9 @@ class RowTests: XCTestCase {
         XCTAssertEqual("value", result)
     }
 
-    public func test_get_value_optional_nil() {
+    public func test_get_value_optional_nil() throws {
         let row = Row(["\"foo\"": 0], [nil])
-        let result = try! row.get(Expression<String?>("foo"))
+        let result = try row.get(Expression<String?>("foo"))
 
         XCTAssertNil(result)
     }
@@ -56,9 +56,9 @@ class RowTests: XCTestCase {
         }
     }
 
-    public func test_get_type_mismatch_optional_returns_nil() {
+    public func test_get_type_mismatch_optional_returns_nil() throws {
         let row = Row(["\"foo\"": 0], ["value"])
-        let result = try! row.get(Expression<Int?>("foo"))
+        let result = try row.get(Expression<Int?>("foo"))
         XCTAssertNil(result)
     }
 

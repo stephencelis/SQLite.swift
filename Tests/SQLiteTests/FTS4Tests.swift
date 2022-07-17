@@ -191,7 +191,7 @@ class FTS4ConfigTests: XCTestCase {
 
 class FTS4IntegrationTests: SQLiteTestCase {
 #if !SQLITE_SWIFT_STANDALONE && !SQLITE_SWIFT_SQLCIPHER
-    func test_registerTokenizer_registersTokenizer() {
+    func test_registerTokenizer_registersTokenizer() throws {
         let emails = VirtualTable("emails")
         let subject = Expression<String?>("subject")
         let body = Expression<String?>("body")
@@ -200,7 +200,7 @@ class FTS4IntegrationTests: SQLiteTestCase {
         let tokenizerName = "tokenizer"
         let tokenizer = CFStringTokenizerCreate(nil, "" as CFString, CFRangeMake(0, 0),
                                                 UInt(kCFStringTokenizerUnitWord), locale)
-        try! db.registerTokenizer(tokenizerName) { string in
+        try db.registerTokenizer(tokenizerName) { string in
             CFStringTokenizerSetString(tokenizer, string as CFString,
                                        CFRangeMake(0, CFStringGetLength(string as CFString)))
             if CFStringTokenizerAdvanceToNextToken(tokenizer).isEmpty {
@@ -214,14 +214,14 @@ class FTS4IntegrationTests: SQLiteTestCase {
             return (token as String, string.range(of: input as String)!)
         }
 
-        try! db.run(emails.create(.FTS4([subject, body], tokenize: .Custom(tokenizerName))))
+        try db.run(emails.create(.FTS4([subject, body], tokenize: .Custom(tokenizerName))))
         assertSQL("""
                   CREATE VIRTUAL TABLE \"emails\" USING fts4(\"subject\", \"body\",
                    tokenize=\"SQLite.swift\" \"tokenizer\")
                   """.replacingOccurrences(of: "\n", with: ""))
 
-        try! _ = db.run(emails.insert(subject <- "Aún más cáfe!"))
-        XCTAssertEqual(1, try! db.scalar(emails.filter(emails.match("aun")).count))
+        try _ = db.run(emails.insert(subject <- "Aún más cáfe!"))
+        XCTAssertEqual(1, try db.scalar(emails.filter(emails.match("aun")).count))
     }
 #endif
 }

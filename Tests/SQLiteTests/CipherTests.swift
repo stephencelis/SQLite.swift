@@ -5,8 +5,8 @@ import SQLCipher
 
 class CipherTests: XCTestCase {
 
-    let db1 = try! Connection()
-    let db2 = try! Connection()
+    let db1 = try Connection()
+    let db2 = try Connection()
 
     override func setUpWithError() throws {
         // db
@@ -26,41 +26,41 @@ class CipherTests: XCTestCase {
         try super.setUpWithError()
     }
 
-    func test_key() {
-        XCTAssertEqual(1, try! db1.scalar("SELECT count(*) FROM foo") as? Int64)
+    func test_key() throws {
+        XCTAssertEqual(1, try db1.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
     func test_key_blob_literal() {
-        let db = try! Connection()
-        try! db.key("x'2DD29CA851E7B56E4697B0E1F08507293D761A05CE4D1B628663F411A8086D99'")
+        let db = try Connection()
+        try db.key("x'2DD29CA851E7B56E4697B0E1F08507293D761A05CE4D1B628663F411A8086D99'")
     }
 
-    func test_rekey() {
-        try! db1.rekey("goodbye")
-        XCTAssertEqual(1, try! db1.scalar("SELECT count(*) FROM foo") as? Int64)
+    func test_rekey() throws {
+        try db1.rekey("goodbye")
+        XCTAssertEqual(1, try db1.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
-    func test_data_key() {
-        XCTAssertEqual(1, try! db2.scalar("SELECT count(*) FROM foo") as? Int64)
+    func test_data_key() throws {
+        XCTAssertEqual(1, try db2.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
-    func test_data_rekey() {
+    func test_data_rekey() throws {
         let newKey = keyData()
-        try! db2.rekey(Blob(bytes: newKey.bytes, length: newKey.length))
-        XCTAssertEqual(1, try! db2.scalar("SELECT count(*) FROM foo") as? Int64)
+        try db2.rekey(Blob(bytes: newKey.bytes, length: newKey.length))
+        XCTAssertEqual(1, try db2.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
-    func test_keyFailure() {
+    func test_keyFailure() throws {
         let path = "\(NSTemporaryDirectory())/db.sqlite3"
         _ = try? FileManager.default.removeItem(atPath: path)
 
-        let connA = try! Connection(path)
-        defer { try! FileManager.default.removeItem(atPath: path) }
+        let connA = try Connection(path)
+        defer { try FileManager.default.removeItem(atPath: path) }
 
-        try! connA.key("hello")
-        try! connA.run("CREATE TABLE foo (bar TEXT)")
+        try connA.key("hello")
+        try connA.run("CREATE TABLE foo (bar TEXT)")
 
-        let connB = try! Connection(path, readonly: true)
+        let connB = try Connection(path, readonly: true)
 
         do {
             try connB.key("world")
@@ -72,7 +72,7 @@ class CipherTests: XCTestCase {
         }
     }
 
-    func test_open_db_encrypted_with_sqlcipher() {
+    func test_open_db_encrypted_with_sqlcipher() throws {
         // $ sqlcipher Tests/SQLiteTests/fixtures/encrypted-[version].x.sqlite
         // sqlite> pragma key = 'sqlcipher-test';
         // sqlite> CREATE TABLE foo (bar TEXT);
@@ -85,17 +85,17 @@ class CipherTests: XCTestCase {
             fixture("encrypted-3.x", withExtension: "sqlite") :
             fixture("encrypted-4.x", withExtension: "sqlite")
 
-        try! FileManager.default.setAttributes([FileAttributeKey.immutable: 1], ofItemAtPath: encryptedFile)
+        try FileManager.default.setAttributes([FileAttributeKey.immutable: 1], ofItemAtPath: encryptedFile)
         XCTAssertFalse(FileManager.default.isWritableFile(atPath: encryptedFile))
 
         defer {
             // ensure file can be cleaned up afterwards
-            try! FileManager.default.setAttributes([FileAttributeKey.immutable: 0], ofItemAtPath: encryptedFile)
+            try FileManager.default.setAttributes([FileAttributeKey.immutable: 0], ofItemAtPath: encryptedFile)
         }
 
-        let conn = try! Connection(encryptedFile)
-        try! conn.key("sqlcipher-test")
-        XCTAssertEqual(1, try! conn.scalar("SELECT count(*) FROM foo") as? Int64)
+        let conn = try Connection(encryptedFile)
+        try conn.key("sqlcipher-test")
+        XCTAssertEqual(1, try conn.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
     private func keyData(length: Int = 64) -> NSMutableData {
