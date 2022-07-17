@@ -341,10 +341,10 @@ We can pass `.uri` to the `Connection` initializer to control more aspects of
 the database connection with the help of `URIQueryParameter`s:
 
 ```swift
-let db = try Connection(.uri("file.sqlite", parameters: [.cache(.private)], .noLock(true)]))
+let db = try Connection(.uri("file.sqlite", parameters: [.cache(.private), .noLock(true)]))
 ```
 
-See [Uniform Resource Identifiers](https://www.sqlite.org/uri.html) for more details.
+See [Uniform Resource Identifiers](https://www.sqlite.org/uri.html#recognized_query_parameters) for more details.
 
 #### Thread-Safety
 
@@ -2089,7 +2089,7 @@ databases to an existing connection:
 ```swift
 let db = try Connection("db.sqlite")
 
-try db.attach(.uri("external.sqlite", parameters: [.mode(.readOnly)), as: "external")
+try db.attach(.uri("external.sqlite", parameters: [.mode(.readOnly)], as: "external")
 // ATTACH DATABASE 'file:external.sqlite?mode=ro' AS 'external'
 
 let table = Table("table", database: "external")
