@@ -383,6 +383,9 @@ to their [SQLite counterparts](https://www.sqlite.org/datatype3.html).
 | `String`        | `TEXT`      |
 | `nil`           | `NULL`      |
 | `SQLite.Blob`†  | `BLOB`      |
+| `URL`           | `TEXT`      |
+| `UUID`          | `TEXT`      |
+| `Date`          | `TEXT`      |
 
 > *While `Int64` is the basic, raw type (to preserve 64-bit integers on
 > 32-bit platforms), `Int` and `Bool` work transparently.
