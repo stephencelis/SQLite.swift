@@ -126,6 +126,17 @@
 		3DDC113626CDBE1900CE369F /* SQLiteObjc.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DDC112E26CDBA0200CE369F /* SQLiteObjc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3DDC113726CDBE1900CE369F /* SQLiteObjc.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DDC112E26CDBA0200CE369F /* SQLiteObjc.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		3DDC113826CDBE1C00CE369F /* SQLiteObjc.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DDC112E26CDBA0200CE369F /* SQLiteObjc.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		3DF7B78828842972005DD8CA /* Connection+Attach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF7B78728842972005DD8CA /* Connection+Attach.swift */; };
+		3DF7B78928842972005DD8CA /* Connection+Attach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF7B78728842972005DD8CA /* Connection+Attach.swift */; };
+		3DF7B78A28842972005DD8CA /* Connection+Attach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF7B78728842972005DD8CA /* Connection+Attach.swift */; };
+		3DF7B78B28842972005DD8CA /* Connection+Attach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF7B78728842972005DD8CA /* Connection+Attach.swift */; };
+		3DF7B78D28842C23005DD8CA /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF7B78C28842C23005DD8CA /* ResultTests.swift */; };
+		3DF7B78E28842C23005DD8CA /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF7B78C28842C23005DD8CA /* ResultTests.swift */; };
+		3DF7B78F28842C23005DD8CA /* ResultTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF7B78C28842C23005DD8CA /* ResultTests.swift */; };
+		3DF7B791288449BA005DD8CA /* URIQueryParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF7B790288449BA005DD8CA /* URIQueryParameter.swift */; };
+		3DF7B792288449BA005DD8CA /* URIQueryParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF7B790288449BA005DD8CA /* URIQueryParameter.swift */; };
+		3DF7B793288449BA005DD8CA /* URIQueryParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF7B790288449BA005DD8CA /* URIQueryParameter.swift */; };
+		3DF7B794288449BA005DD8CA /* URIQueryParameter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF7B790288449BA005DD8CA /* URIQueryParameter.swift */; };
 		49EB68C41F7B3CB400D89D40 /* Coding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EB68C31F7B3CB400D89D40 /* Coding.swift */; };
 		49EB68C51F7B3CB400D89D40 /* Coding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EB68C31F7B3CB400D89D40 /* Coding.swift */; };
 		49EB68C61F7B3CB400D89D40 /* Coding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 49EB68C31F7B3CB400D89D40 /* Coding.swift */; };
@@ -263,6 +274,9 @@
 		3D3C3CCB26E5568800759140 /* SQLite.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = SQLite.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		3D67B3E51DB2469200A4F4C6 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS3.0.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		3DDC112E26CDBA0200CE369F /* SQLiteObjc.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = SQLiteObjc.h; path = ../SQLiteObjc/include/SQLiteObjc.h; sourceTree = "<group>"; };
+		3DF7B78728842972005DD8CA /* Connection+Attach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+Attach.swift"; sourceTree = "<group>"; };
+		3DF7B78C28842C23005DD8CA /* ResultTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ResultTests.swift; sourceTree = "<group>"; };
+		3DF7B790288449BA005DD8CA /* URIQueryParameter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = URIQueryParameter.swift; sourceTree = "<group>"; };
 		49EB68C31F7B3CB400D89D40 /* Coding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coding.swift; sourceTree = "<group>"; };
 		997DF2AD287FC06D00F8DF95 /* Query+with.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Query+with.swift"; sourceTree = "<group>"; };
 		A121AC451CA35C79005A31D1 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -461,6 +475,7 @@
 				D4DB368A20C09C9B00D5A58E /* SelectTests.swift */,
 				19A17BA6B4E282C1315A115C /* QueryIntegrationTests.swift */,
 				19A171FDE4D67879B14ACBDF /* FTSIntegrationTests.swift */,
+				3DF7B78C28842C23005DD8CA /* ResultTests.swift */,
 			);
 			name = SQLiteTests;
 			path = Tests/SQLiteTests;
@@ -479,6 +494,8 @@
 				02A43A9722738CF100FEC494 /* Backup.swift */,
 				19A17E723300E5ED3771DCB5 /* Result.swift */,
 				19A175A9CB446640AE6F2200 /* Connection+Aggregation.swift */,
+				3DF7B78728842972005DD8CA /* Connection+Attach.swift */,
+				3DF7B790288449BA005DD8CA /* URIQueryParameter.swift */,
 			);
 			path = Core;
 			sourceTree = "<group>";
@@ -847,12 +864,14 @@
 				49EB68C61F7B3CB400D89D40 /* Coding.swift in Sources */,
 				03A65E761C6BB2E60062603F /* Blob.swift in Sources */,
 				03A65E7D1C6BB2F70062603F /* RTree.swift in Sources */,
+				3DF7B793288449BA005DD8CA /* URIQueryParameter.swift in Sources */,
 				03A65E791C6BB2EF0062603F /* SQLiteObjc.m in Sources */,
 				03A65E7B1C6BB2F70062603F /* Value.swift in Sources */,
 				03A65E821C6BB2FB0062603F /* Expression.swift in Sources */,
 				03A65E731C6BB2D80062603F /* Foundation.swift in Sources */,
 				03A65E7F1C6BB2FB0062603F /* Collation.swift in Sources */,
 				03A65E861C6BB2FB0062603F /* Setter.swift in Sources */,
+				3DF7B78A28842972005DD8CA /* Connection+Attach.swift in Sources */,
 				03A65E811C6BB2FB0062603F /* CustomFunctions.swift in Sources */,
 				03A65E7A1C6BB2F70062603F /* Statement.swift in Sources */,
 				03A65E741C6BB2DA0062603F /* Helpers.swift in Sources */,
@@ -877,6 +896,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DF7B78F28842C23005DD8CA /* ResultTests.swift in Sources */,
 				03A65E881C6BB3030062603F /* BlobTests.swift in Sources */,
 				03A65E901C6BB3030062603F /* RTreeTests.swift in Sources */,
 				03A65E941C6BB3030062603F /* ValueTests.swift in Sources */,
@@ -910,6 +930,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				3D67B3F91DB246E700A4F4C6 /* SQLiteObjc.m in Sources */,
+				3DF7B78B28842972005DD8CA /* Connection+Attach.swift in Sources */,
 				49EB68C71F7B3CB400D89D40 /* Coding.swift in Sources */,
 				997DF2B1287FC06D00F8DF95 /* Query+with.swift in Sources */,
 				3D67B3F71DB246D700A4F4C6 /* Foundation.swift in Sources */,
@@ -925,6 +946,7 @@
 				3D67B3F11DB246D100A4F4C6 /* CustomFunctions.swift in Sources */,
 				3D67B3F21DB246D100A4F4C6 /* Expression.swift in Sources */,
 				3D67B3F31DB246D100A4F4C6 /* Operators.swift in Sources */,
+				3DF7B794288449BA005DD8CA /* URIQueryParameter.swift in Sources */,
 				3D67B3F41DB246D100A4F4C6 /* Query.swift in Sources */,
 				3D67B3F51DB246D100A4F4C6 /* Schema.swift in Sources */,
 				3D67B3F61DB246D100A4F4C6 /* Setter.swift in Sources */,
@@ -946,12 +968,14 @@
 				49EB68C41F7B3CB400D89D40 /* Coding.swift in Sources */,
 				EE247B0A1C3F06E900AE3E12 /* RTree.swift in Sources */,
 				EE247B031C3F06E900AE3E12 /* Blob.swift in Sources */,
+				3DF7B791288449BA005DD8CA /* URIQueryParameter.swift in Sources */,
 				EE247B0B1C3F06E900AE3E12 /* Foundation.swift in Sources */,
 				EE247B041C3F06E900AE3E12 /* Connection.swift in Sources */,
 				EE247B111C3F06E900AE3E12 /* Expression.swift in Sources */,
 				EE247B0C1C3F06E900AE3E12 /* Helpers.swift in Sources */,
 				EE247B0E1C3F06E900AE3E12 /* Collation.swift in Sources */,
 				EE247B151C3F06E900AE3E12 /* Setter.swift in Sources */,
+				3DF7B78828842972005DD8CA /* Connection+Attach.swift in Sources */,
 				EE247B101C3F06E900AE3E12 /* CustomFunctions.swift in Sources */,
 				EE247B091C3F06E900AE3E12 /* FTS4.swift in Sources */,
 				EE247B081C3F06E900AE3E12 /* Value.swift in Sources */,
@@ -976,6 +1000,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DF7B78D28842C23005DD8CA /* ResultTests.swift in Sources */,
 				EE247B261C3F137700AE3E12 /* CoreFunctionsTests.swift in Sources */,
 				EE247B291C3F137700AE3E12 /* FTS4Tests.swift in Sources */,
 				EE247B191C3F134A00AE3E12 /* SetterTests.swift in Sources */,
@@ -1012,12 +1037,14 @@
 				49EB68C51F7B3CB400D89D40 /* Coding.swift in Sources */,
 				EE247B651C3F3FEC00AE3E12 /* Blob.swift in Sources */,
 				EE247B6C1C3F3FEC00AE3E12 /* RTree.swift in Sources */,
+				3DF7B792288449BA005DD8CA /* URIQueryParameter.swift in Sources */,
 				EE247B681C3F3FEC00AE3E12 /* SQLiteObjc.m in Sources */,
 				EE247B6A1C3F3FEC00AE3E12 /* Value.swift in Sources */,
 				EE247B711C3F3FEC00AE3E12 /* Expression.swift in Sources */,
 				EE247B631C3F3FDB00AE3E12 /* Foundation.swift in Sources */,
 				EE247B6E1C3F3FEC00AE3E12 /* Collation.swift in Sources */,
 				EE247B751C3F3FEC00AE3E12 /* Setter.swift in Sources */,
+				3DF7B78928842972005DD8CA /* Connection+Attach.swift in Sources */,
 				EE247B701C3F3FEC00AE3E12 /* CustomFunctions.swift in Sources */,
 				EE247B691C3F3FEC00AE3E12 /* Statement.swift in Sources */,
 				EE247B641C3F3FDB00AE3E12 /* Helpers.swift in Sources */,
@@ -1042,6 +1069,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3DF7B78E28842C23005DD8CA /* ResultTests.swift in Sources */,
 				EE247B561C3F3FC700AE3E12 /* CoreFunctionsTests.swift in Sources */,
 				EE247B5A1C3F3FC700AE3E12 /* OperatorsTests.swift in Sources */,
 				EE247B541C3F3FC700AE3E12 /* BlobTests.swift in Sources */,

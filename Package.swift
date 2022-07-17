@@ -41,7 +41,8 @@ let package = Package(
             ],
             resources: [
                 .copy("fixtures/encrypted-3.x.sqlite"),
-                .copy("fixtures/encrypted-4.x.sqlite")
+                .copy("fixtures/encrypted-4.x.sqlite"),
+                .copy("fixtures/test.sqlite")
             ]
         )
     ]

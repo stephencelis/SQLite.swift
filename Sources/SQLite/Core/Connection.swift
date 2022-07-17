@@ -55,7 +55,8 @@ public final class Connection {
         /// See: <https://www.sqlite.org/uri.html>
         ///
         /// - Parameter filename: A URI filename
-        case uri(String)
+        /// - Parameter parameters: optional query parameters
+        case uri(String, parameters: [URIQueryParameter] = [])
     }
 
     /// An SQL operation passed to update callbacks.
@@ -727,8 +728,17 @@ extension Connection.Location: CustomStringConvertible {
             return ":memory:"
         case .temporary:
             return ""
-        case .uri(let URI):
-            return URI
+        case let .uri(URI, parameters):
+            guard parameters.count > 0,
+                  var components = URLComponents(string: URI) else {
+                return URI
+            }
+            components.queryItems =
+                (components.queryItems ?? []) + parameters.map(\.queryItem)
+            if components.scheme == nil {
+                components.scheme = "file"
+            }
+            return components.description
         }
     }
 
