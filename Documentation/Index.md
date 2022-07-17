@@ -1103,8 +1103,8 @@ users.limit(5, offset: 5)
 
 #### Recursive and Hierarchical Queries
 
-We can perform a recursive or hierarchical query using a [query's](#queries) `with`
-function.
+We can perform a recursive or hierarchical query using a [query's](#queries)
+[`WITH`](https://sqlite.org/lang_with.html) function.
 
 ```swift
 // Get the management chain for the manager with id == 8
@@ -2092,7 +2092,7 @@ databases to an existing connection:
 ```swift
 let db = try Connection("db.sqlite")
 
-try db.attach(.uri("external.sqlite", parameters: [.mode(.readOnly)], as: "external")
+try db.attach(.uri("external.sqlite", parameters: [.mode(.readOnly)]), as: "external")
 // ATTACH DATABASE 'file:external.sqlite?mode=ro' AS 'external'
 
 let table = Table("table", database: "external")
