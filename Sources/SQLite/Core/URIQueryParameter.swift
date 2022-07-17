@@ -1,5 +1,6 @@
 import Foundation
 
+/// See https://www.sqlite.org/uri.html
 public enum URIQueryParameter: CustomStringConvertible {
     public enum FileMode: String {
         case readOnly = "ro", readWrite = "rw", readWriteCreate = "rwc", memory
@@ -29,7 +30,7 @@ public enum URIQueryParameter: CustomStringConvertible {
     case nolock(Bool)
 
     /// The psow query parameter overrides the `powersafe_overwrite` property of the database file being opened.
-    case psow(Bool)
+    case powersafeOverwrite(Bool)
 
     /// The vfs query parameter causes the database connection to be opened using the VFS called NAME.
     case vfs(String)
@@ -45,7 +46,7 @@ public enum URIQueryParameter: CustomStringConvertible {
         case .modeOf(let filename): return .init(name: "modeOf", value: filename)
         case .mode(let fileMode): return .init(name: "mode", value: fileMode.rawValue)
         case .nolock(let bool): return .init(name: "nolock", value: NSNumber(value: bool).description)
-        case .psow(let bool): return .init(name: "psow", value: NSNumber(value: bool).description)
+        case .powersafeOverwrite(let bool): return .init(name: "psow", value: NSNumber(value: bool).description)
         case .vfs(let name): return .init(name: "vfs", value: name)
         }
     }

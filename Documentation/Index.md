@@ -10,6 +10,7 @@
       - [Read-Write Databases](#read-write-databases)
       - [Read-Only Databases](#read-only-databases)
       - [In-Memory Databases](#in-memory-databases)
+      - [URI parameters](#uri-parameters)
       - [Thread-Safety](#thread-safety)
   - [Building Type-Safe SQL](#building-type-safe-sql)
     - [Expressions](#expressions)
@@ -61,8 +62,8 @@
   - [Custom Collations](#custom-collations)
   - [Full-text Search](#full-text-search)
   - [Executing Arbitrary SQL](#executing-arbitrary-sql)
+  - [Attaching and detaching databases](#attaching-and-detaching-databases)
   - [Logging](#logging)
-
 
 [↩]: #sqliteswift-documentation
 
@@ -334,6 +335,16 @@ let db = try Connection(.temporary)
 In-memory databases are automatically deleted when the database connection is
 closed.
 
+#### URI parameters
+
+We can pass `.uri` to the `Connection` initializer to control more aspects of
+the database connection with the help of `URIQueryParameter`s:
+
+```swift
+let db = try Connection(.uri("file.sqlite", parameters: [.cache(.private)], .noLock(true)]))
+```
+
+See [Uniform Resource Identifiers](https://www.sqlite.org/uri.html) for more details.
 
 #### Thread-Safety
 
@@ -2068,6 +2079,25 @@ let target = try Connection(.inMemory)
 
 let backup = try db.backup(usingConnection: target)
 try backup.step()
+```
+
+## Attaching and detaching databases
+
+We can [ATTACH](https://www3.sqlite.org/lang_attach.html) and [DETACH](https://www3.sqlite.org/lang_detach.html)
+databases to an existing connection:
+
+```swift
+let db = try Connection("db.sqlite")
+
+try db.attach(.uri("external.sqlite", parameters: [.mode(.readOnly)), as: "external")
+// ATTACH DATABASE 'file:external.sqlite?mode=ro' AS 'external'
+
+let table = Table("table", database: "external")
+let count = try db.scalar(table.count)
+// SELECT count(*) FROM 'external.table'
+
+try db.detach("external")
+// DETACH DATABASE 'external'
 ```
 
 ## Logging
