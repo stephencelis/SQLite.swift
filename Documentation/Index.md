@@ -34,6 +34,7 @@
         - [Filter Operators and Functions](#filter-operators-and-functions)
       - [Sorting Rows](#sorting-rows)
       - [Limiting and Paging Results](#limiting-and-paging-results)
+      - [Recursive and Hierarchical Queries](#recursive-and-hierarchical-queries)
       - [Aggregation](#aggregation)
   - [Upserting Rows](#upserting-rows)
   - [Updating Rows](#updating-rows)
@@ -1083,6 +1084,65 @@ users.limit(5)
 
 users.limit(5, offset: 5)
 // SELECT * FROM "users" LIMIT 5 OFFSET 5
+```
+
+
+#### Recursive and Hierarchical Queries
+
+We can perform a recursive or hierarchical query using a [query's](#queries) `with`
+function.
+
+```swift
+// Get the management chain for the manager with id == 8
+
+let chain = Table("chain")
+let id = Expression<Int64>("id")
+let managerId = Expression<Int64>("manager_id")
+
+let query = managers
+    .where(id == 8)
+    .union(chain.join(managers, on: chain[managerId] == managers[id])
+
+chain.with(chain, recursive: true, as: query)
+// WITH RECURSIVE
+//   "chain" AS (
+//     SELECT * FROM "managers" WHERE "id" = 8 
+//     UNION 
+//     SELECT * from "chain" 
+//     JOIN "managers" ON "chain"."manager_id" = "managers"."id"
+//   ) 
+// SELECT * FROM "chain"
+```
+
+Column names and a materialization hint can optionally be provided.
+
+```swift
+// Add a "level" column to the query representing manager's position in the chain
+let level = Expression<Int64>("level")
+
+let queryWithLevel = 
+    managers
+        .select(id, managerId, 0)
+        .where(id == 8)
+        .union(
+            chain
+                .select(managers[id], managers[manager_id], level + 1)
+                .join(managers, on: chain[managerId] == managers[id])
+        )
+
+chain.with(chain, 
+           columns: [id, managerId, level], 
+           recursive: true,
+           hint: .materialize,
+           as: queryWithLevel)
+// WITH RECURSIVE
+//   "chain" ("id", "manager_id", "level") AS MATERIALIZED (
+//     SELECT ("id", "manager_id", 0) FROM "managers" WHERE "id" = 8 
+//     UNION 
+//     SELECT ("manager"."id", "manager"."manager_id", "level" + 1) FROM "chain" 
+//     JOIN "managers" ON "chain"."manager_id" = "managers"."id"
+//   ) 
+// SELECT * FROM "chain"
 ```
 
 

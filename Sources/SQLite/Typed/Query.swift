@@ -193,12 +193,14 @@ extension QueryType {
     ///
     /// - Parameters:
     ///
+    ///   - all: If false, duplicate rows are removed from the result.
+    ///
     ///   - table: A query representing the other table.
     ///
     /// - Returns: A query with the given `UNION` clause applied.
-    public func union(_ table: QueryType) -> Self {
+    public func union(all: Bool = false, _ table: QueryType) -> Self {
         var query = self
-        query.clauses.union.append(table)
+        query.clauses.union.append((all, table))
         return query
     }
 
@@ -596,9 +598,9 @@ extension QueryType {
             return nil
         }
 
-        return " ".join(clauses.union.map { query in
+        return " ".join(clauses.union.map { (all, query) in
             " ".join([
-                Expression<Void>(literal: "UNION"),
+                Expression<Void>(literal: all ? "UNION ALL" : "UNION"),
                 query
             ])
         })
@@ -856,6 +858,7 @@ extension QueryType {
 
     public var expression: Expression<Void> {
         let clauses: [Expressible?] = [
+            withClause,
             selectClause,
             joinClause,
             whereClause,
@@ -1251,7 +1254,9 @@ public struct QueryClauses {
 
     var limit: (length: Int, offset: Int?)?
 
-    var union = [QueryType]()
+    var union = [(all: Bool, table: QueryType)]()
+
+    var with = WithClauses()
 
     fileprivate init(_ name: String, alias: String?, database: String?) {
         from = (name, alias, database)

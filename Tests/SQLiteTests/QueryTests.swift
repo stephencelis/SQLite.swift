@@ -59,6 +59,14 @@ class QueryTests: XCTestCase {
         assertSQL("SELECT DISTINCT * FROM \"users\"", users.select(distinct: *))
     }
 
+    func test_union_compilesUnionClause() {
+        assertSQL("SELECT * FROM \"users\" UNION SELECT * FROM \"posts\"", users.union(posts))
+    }
+
+    func test_union_compilesUnionAllClause() {
+        assertSQL("SELECT * FROM \"users\" UNION ALL SELECT * FROM \"posts\"", users.union(all: true, posts))
+    }
+
     func test_join_compilesJoinClause() {
         assertSQL(
             "SELECT * FROM \"users\" INNER JOIN \"posts\" ON (\"posts\".\"user_id\" = \"users\".\"id\")",
@@ -217,6 +225,62 @@ class QueryTests: XCTestCase {
             "SELECT * FROM \"users\" " +
             "INNER JOIN \"users\" AS \"managers\" ON (\"managers\".\"id\" = \"users\".\"manager_id\")",
             users.join(managers, on: managers[id] == users[managerId])
+        )
+    }
+
+    func test_with_compilesWithClause() {
+        let temp = Table("temp")
+
+        assertSQL("WITH \"temp\" AS (SELECT * FROM \"users\") SELECT * FROM \"temp\"",
+                  temp.with(temp, as: users))
+    }
+
+    func test_with_compilesWithRecursiveClause() {
+        let temp = Table("temp")
+
+        assertSQL("WITH RECURSIVE \"temp\" AS (SELECT * FROM \"users\") SELECT * FROM \"temp\"",
+                  temp.with(temp, recursive: true, as: users))
+    }
+
+    func test_with_compilesWithMaterializedClause() {
+        let temp = Table("temp")
+
+        assertSQL("WITH \"temp\" AS MATERIALIZED (SELECT * FROM \"users\") SELECT * FROM \"temp\"",
+                  temp.with(temp, hint: .materialized, as: users))
+    }
+
+    func test_with_compilesWithNotMaterializedClause() {
+        let temp = Table("temp")
+
+        assertSQL("WITH \"temp\" AS NOT MATERIALIZED (SELECT * FROM \"users\") SELECT * FROM \"temp\"",
+                  temp.with(temp, hint: .notMaterialized, as: users))
+    }
+
+    func test_with_columns_compilesWithClause() {
+        let temp = Table("temp")
+
+        assertSQL("WITH \"temp\" (\"id\", \"email\") AS (SELECT * FROM \"users\") SELECT * FROM \"temp\"",
+                  temp.with(temp, columns: [id, email], recursive: false, hint: nil, as: users))
+    }
+
+    func test_with_multiple_compilesWithClause() {
+        let temp = Table("temp")
+        let second = Table("second")
+        let third = Table("third")
+
+        let query = temp
+            .with(temp, recursive: true, as: users)
+            .with(second, recursive: true, as: posts)
+            .with(third, hint: .materialized, as: categories)
+
+        assertSQL(
+            """
+            WITH RECURSIVE \"temp\" AS (SELECT * FROM \"users\"),
+             \"second\" AS (SELECT * FROM \"posts\"),
+             \"third\" AS MATERIALIZED (SELECT * FROM \"categories\")
+             SELECT * FROM \"temp\"
+            """.replacingOccurrences(of: "\n", with: ""),
+            query
         )
     }
 
