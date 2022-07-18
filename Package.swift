@@ -40,8 +40,7 @@ let package = Package(
                 "Info.plist"
             ],
             resources: [
-                .copy("fixtures/encrypted-3.x.sqlite"),
-                .copy("fixtures/encrypted-4.x.sqlite")
+                .copy("Resources")
             ]
         )
     ]
@@ -55,10 +54,15 @@ package.targets = [
         dependencies: [.product(name: "CSQLite", package: "CSQLite")],
         exclude: ["Extensions/FTS4.swift", "Extensions/FTS5.swift"]
     ),
-    .testTarget(name: "SQLiteTests", dependencies: ["SQLite"], path: "Tests/SQLiteTests", exclude: [
-        "FTSIntegrationTests.swift",
-        "FTS4Tests.swift",
-        "FTS5Tests.swift"
-    ])
+    .testTarget(
+        name: "SQLiteTests",
+        dependencies: ["SQLite"],
+        path: "Tests/SQLiteTests", exclude: [
+            "FTSIntegrationTests.swift",
+            "FTS4Tests.swift",
+            "FTS5Tests.swift"
+        ],
+        resources: [ .copy("Resources") ]
+    )
 ]
 #endif

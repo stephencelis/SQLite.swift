@@ -20,7 +20,7 @@ class SelectTests: SQLiteTestCase {
         )
     }
 
-    func test_select_columns_from_multiple_tables() {
+    func test_select_columns_from_multiple_tables() throws {
         let usersData = Table("users_name")
         let users = Table("users")
 
@@ -29,14 +29,14 @@ class SelectTests: SQLiteTestCase {
         let userID = Expression<Int64>("user_id")
         let email = Expression<String>("email")
 
-        try! insertUser("Joey")
-        try! db.run(usersData.insert(
+        try insertUser("Joey")
+        try db.run(usersData.insert(
             id <- 1,
             userID <- 1,
             name <- "Joey"
         ))
 
-        try! db.prepare(users.select(name, email).join(usersData, on: userID == users[id])).forEach {
+        try db.prepare(users.select(name, email).join(usersData, on: userID == users[id])).forEach {
             XCTAssertEqual($0[name], "Joey")
             XCTAssertEqual($0[email], "Joey@example.com")
         }

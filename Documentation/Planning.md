@@ -21,8 +21,6 @@ be referred to when it comes time to add the corresponding feature._
 
 ### Features
 
- * encapsulate ATTACH DATABASE / DETACH DATABASE as methods, per
-   [#30](https://github.com/stephencelis/SQLite.swift/issues/30)
  * provide separate threads for update vs read, so updates don't block reads,
    per [#236](https://github.com/stephencelis/SQLite.swift/issues/236)
  * expose triggers, per

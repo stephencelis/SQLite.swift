@@ -35,7 +35,7 @@ Pod::Spec.new do |s|
     ss.library = 'sqlite3'
 
     ss.test_spec 'tests' do |test_spec|
-      test_spec.resources = 'Tests/SQLiteTests/fixtures/*'
+      test_spec.resources = 'Tests/SQLiteTests/Resources/*'
       test_spec.source_files = 'Tests/SQLiteTests/*.swift'
       test_spec.ios.deployment_target = ios_deployment_target
       test_spec.tvos.deployment_target = tvos_deployment_target
@@ -55,7 +55,7 @@ Pod::Spec.new do |s|
     ss.dependency 'sqlite3'
 
     ss.test_spec 'tests' do |test_spec|
-      test_spec.resources = 'Tests/SQLiteTests/fixtures/*'
+      test_spec.resources = 'Tests/SQLiteTests/Resources/*'
       test_spec.source_files = 'Tests/SQLiteTests/*.swift'
       test_spec.ios.deployment_target = ios_deployment_target
       test_spec.tvos.deployment_target = tvos_deployment_target
@@ -73,7 +73,7 @@ Pod::Spec.new do |s|
     ss.dependency 'SQLCipher', '>= 4.0.0'
 
     ss.test_spec 'tests' do |test_spec|
-      test_spec.resources = 'Tests/SQLiteTests/fixtures/*'
+      test_spec.resources = 'Tests/SQLiteTests/Resources/*'
       test_spec.source_files = 'Tests/SQLiteTests/*.swift'
       test_spec.ios.deployment_target = ios_deployment_target
       test_spec.tvos.deployment_target = tvos_deployment_target

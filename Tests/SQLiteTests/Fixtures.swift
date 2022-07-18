@@ -1,8 +1,18 @@
 import Foundation
 
 func fixture(_ name: String, withExtension: String?) -> String {
+    #if SWIFT_PACKAGE
+    let testBundle = Bundle.module
+    #else
     let testBundle = Bundle(for: SQLiteTestCase.self)
-    return testBundle.url(
-        forResource: name,
-        withExtension: withExtension)!.path
+    #endif
+
+    for resource in [name, "Resources/\(name)"] {
+        if let url = testBundle.url(
+            forResource: resource,
+            withExtension: withExtension) {
+            return url.path
+        }
+    }
+    fatalError("Cannot find \(name).\(withExtension ?? "")")
 }

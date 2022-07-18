@@ -23,45 +23,45 @@ class QueryIntegrationTests: SQLiteTestCase {
 
     // MARK: -
 
-    func test_select() {
+    func test_select() throws {
         let managerId = Expression<Int64>("manager_id")
         let managers = users.alias("managers")
 
-        let alice = try! db.run(users.insert(email <- "alice@example.com"))
-        _ = try! db.run(users.insert(email <- "betsy@example.com", managerId <- alice))
+        let alice = try db.run(users.insert(email <- "alice@example.com"))
+        _ = try db.run(users.insert(email <- "betsy@example.com", managerId <- alice))
 
-        for user in try! db.prepare(users.join(managers, on: managers[id] == users[managerId])) {
+        for user in try db.prepare(users.join(managers, on: managers[id] == users[managerId])) {
             _ = user[users[managerId]]
         }
     }
 
-    func test_prepareRowIterator() {
+    func test_prepareRowIterator() throws {
         let names = ["a", "b", "c"]
-        try! insertUsers(names)
+        try insertUsers(names)
 
         let emailColumn = Expression<String>("email")
-        let emails = try! db.prepareRowIterator(users).map { $0[emailColumn] }
+        let emails = try db.prepareRowIterator(users).map { $0[emailColumn] }
 
         XCTAssertEqual(names.map({ "\($0)@example.com" }), emails.sorted())
     }
 
-    func test_ambiguousMap() {
+    func test_ambiguousMap() throws {
         let names = ["a", "b", "c"]
-        try! insertUsers(names)
+        try insertUsers(names)
 
-        let emails = try! db.prepare("select email from users", []).map { $0[0] as! String  }
+        let emails = try db.prepare("select email from users", []).map { $0[0] as! String  }
 
         XCTAssertEqual(names.map({ "\($0)@example.com" }), emails.sorted())
     }
 
-    func test_select_optional() {
+    func test_select_optional() throws {
         let managerId = Expression<Int64?>("manager_id")
         let managers = users.alias("managers")
 
-        let alice = try! db.run(users.insert(email <- "alice@example.com"))
-        _ = try! db.run(users.insert(email <- "betsy@example.com", managerId <- alice))
+        let alice = try db.run(users.insert(email <- "alice@example.com"))
+        _ = try db.run(users.insert(email <- "betsy@example.com", managerId <- alice))
 
-        for user in try! db.prepare(users.join(managers, on: managers[id] == users[managerId])) {
+        for user in try db.prepare(users.join(managers, on: managers[id] == users[managerId])) {
             _ = user[users[managerId]]
         }
     }
@@ -107,26 +107,26 @@ class QueryIntegrationTests: SQLiteTestCase {
         XCTAssertNil(values[0].sub?.sub)
     }
 
-    func test_scalar() {
-        XCTAssertEqual(0, try! db.scalar(users.count))
-        XCTAssertEqual(false, try! db.scalar(users.exists))
+    func test_scalar() throws {
+        XCTAssertEqual(0, try db.scalar(users.count))
+        XCTAssertEqual(false, try db.scalar(users.exists))
 
-        try! insertUsers("alice")
-        XCTAssertEqual(1, try! db.scalar(users.select(id.average)))
+        try insertUsers("alice")
+        XCTAssertEqual(1, try db.scalar(users.select(id.average)))
     }
 
-    func test_pluck() {
-        let rowid = try! db.run(users.insert(email <- "alice@example.com"))
-        XCTAssertEqual(rowid, try! db.pluck(users)![id])
+    func test_pluck() throws {
+        let rowid = try db.run(users.insert(email <- "alice@example.com"))
+        XCTAssertEqual(rowid, try db.pluck(users)![id])
     }
 
-    func test_insert() {
-        let id = try! db.run(users.insert(email <- "alice@example.com"))
+    func test_insert() throws {
+        let id = try db.run(users.insert(email <- "alice@example.com"))
         XCTAssertEqual(1, id)
     }
 
-    func test_insert_many() {
-        let id = try! db.run(users.insertMany([[email <- "alice@example.com"], [email <- "geoff@example.com"]]))
+    func test_insert_many() throws {
+        let id = try db.run(users.insertMany([[email <- "alice@example.com"], [email <- "geoff@example.com"]]))
         XCTAssertEqual(2, id)
     }
 
@@ -167,13 +167,13 @@ class QueryIntegrationTests: SQLiteTestCase {
         XCTAssertEqual(42, try fetchAge())
     }
 
-    func test_update() {
-        let changes = try! db.run(users.update(email <- "alice@example.com"))
+    func test_update() throws {
+        let changes = try db.run(users.update(email <- "alice@example.com"))
         XCTAssertEqual(0, changes)
     }
 
-    func test_delete() {
-        let changes = try! db.run(users.delete())
+    func test_delete() throws {
+        let changes = try db.run(users.delete())
         XCTAssertEqual(0, changes)
     }
 
@@ -200,8 +200,8 @@ class QueryIntegrationTests: SQLiteTestCase {
 
     func test_no_such_column() throws {
         let doesNotExist = Expression<String>("doesNotExist")
-        try! insertUser("alice")
-        let row = try! db.pluck(users.filter(email == "alice@example.com"))!
+        try insertUser("alice")
+        let row = try db.pluck(users.filter(email == "alice@example.com"))!
 
         XCTAssertThrowsError(try row.get(doesNotExist)) { error in
             if case QueryError.noSuchColumn(let name, _) = error {
@@ -212,8 +212,8 @@ class QueryIntegrationTests: SQLiteTestCase {
         }
     }
 
-    func test_catchConstraintError() {
-        try! db.run(users.insert(email <- "alice@example.com"))
+    func test_catchConstraintError() throws {
+        try db.run(users.insert(email <- "alice@example.com"))
         do {
             try db.run(users.insert(email <- "alice@example.com"))
             XCTFail("expected error")
@@ -231,19 +231,19 @@ class QueryIntegrationTests: SQLiteTestCase {
         XCTAssertEqual(1, result.count)
     }
 
-    func test_with_recursive() {
+    func test_with_recursive() throws {
         let nodes = Table("nodes")
         let id = Expression<Int64>("id")
         let parent = Expression<Int64?>("parent")
         let value = Expression<Int64>("value")
 
-        try! db.run(nodes.create { builder in
+        try db.run(nodes.create { builder in
             builder.column(id)
             builder.column(parent)
             builder.column(value)
         })
 
-        try! db.run(nodes.insertMany([
+        try db.run(nodes.insertMany([
             [id <- 0, parent <- nil, value <- 2],
             [id <- 1, parent <- 0, value <- 4],
             [id <- 2, parent <- 0, value <- 9],
@@ -254,7 +254,7 @@ class QueryIntegrationTests: SQLiteTestCase {
 
         // Compute the sum of the values of node 5 and its ancestors
         let ancestors = Table("ancestors")
-        let sum = try! db.scalar(
+        let sum = try db.scalar(
             ancestors
                 .select(value.sum)
                 .with(ancestors,

@@ -54,8 +54,8 @@ class SQLiteTestCase: XCTestCase {
         )
     }
 
-    func assertSQL(_ SQL: String, _ statement: Statement, _ message: String? = nil, file: StaticString = #file, line: UInt = #line) {
-        try! statement.run()
+    func assertSQL(_ SQL: String, _ statement: Statement, _ message: String? = nil, file: StaticString = #file, line: UInt = #line) throws {
+        try statement.run()
         assertSQL(SQL, 1, message, file: file, line: line)
         if let count = trace[SQL] { trace[SQL] = count - 1 }
     }
@@ -66,9 +66,9 @@ class SQLiteTestCase: XCTestCase {
 //        if let count = trace[SQL] { trace[SQL] = count - 1 }
 //    }
 
-    func async(expect description: String = "async", timeout: Double = 5, block: (@escaping () -> Void) -> Void) {
+    func async(expect description: String = "async", timeout: Double = 5, block: (@escaping () -> Void) throws -> Void) throws {
         let expectation = self.expectation(description: description)
-        block({ expectation.fulfill() })
+        try block({ expectation.fulfill() })
         waitForExpectations(timeout: timeout, handler: nil)
     }
 
