@@ -2110,6 +2110,13 @@ try db.detach("external")
 // DETACH DATABASE 'external'
 ```
 
+When compiled for SQLCipher, you can additionally pass a `key` parameter to `attach`:
+
+```swift
+try db.attach(.uri("encrypted.sqlite"), as: "encrypted", key: "secret")
+// ATTACH DATABASE 'encrypted.sqlite' AS 'encrypted' KEY 'secret'
+```
+
 ## Logging
 
 We can log SQL using the database’s `trace` function.
