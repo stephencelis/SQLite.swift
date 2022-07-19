@@ -2,9 +2,8 @@
 
 ## Limitations
 
-* Custom functions are currently not supported and crash, caused by a bug in Swift.
+* Custom functions/aggregations are currently not supported and crash, caused by a bug in Swift.
 See [#1071](https://github.com/stephencelis/SQLite.swift/issues/1071).
-* FTS5 might not work, see [#1007](https://github.com/stephencelis/SQLite.swift/issues/1007)
 
 ## Debugging
 
