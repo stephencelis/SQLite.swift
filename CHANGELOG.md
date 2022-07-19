@@ -10,6 +10,7 @@
 * Fix incorrect spelling of `remove_diacritics` ([#1128][])
 * Fix project build order ([#1131][])
 * Performance improvements ([#1109][], [#1115][], [#1132][])
+* Removed FTS3/4 tokenizer integration (`registerTokenizer`, [#1104][], [#1144[]])
 
 0.13.3 (27-03-2022), [diff][diff-0.13.3]
 ========================================
@@ -166,6 +167,7 @@
 [#1098]: https://github.com/stephencelis/SQLite.swift/issues/1098
 [#1100]: https://github.com/stephencelis/SQLite.swift/pull/1100
 [#1101]: https://github.com/stephencelis/SQLite.swift/issues/1101
+[#1104]: https://github.com/stephencelis/SQLite.swift/issues/1104
 [#1105]: https://github.com/stephencelis/SQLite.swift/pull/1105
 [#1109]: https://github.com/stephencelis/SQLite.swift/issues/1109
 [#1110]: https://github.com/stephencelis/SQLite.swift/pull/1110
@@ -182,3 +184,4 @@
 [#1139]: https://github.com/stephencelis/SQLite.swift/pull/1139
 [#1141]: https://github.com/stephencelis/SQLite.swift/pull/1141
 [#1142]: https://github.com/stephencelis/SQLite.swift/pull/1142
+[#1144]: https://github.com/stephencelis/SQLite.swift/pull/1144

@@ -39,23 +39,10 @@ let package = Package(
 )
 
 #if os(Linux)
-package.dependencies = [.package(url: "https://github.com/stephencelis/CSQLite.git", from: "0.0.3")]
-package.targets = [
-    .target(
-        name: "SQLite",
-        dependencies: [.product(name: "CSQLite", package: "CSQLite")],
-        exclude: ["Extensions/FTS4.swift", "Extensions/FTS5.swift"]
-    ),
-    .testTarget(
-        name: "SQLiteTests",
-        dependencies: ["SQLite"],
-        path: "Tests/SQLiteTests",
-        exclude: [
-            "FTSIntegrationTests.swift",
-            "FTS4Tests.swift",
-            "FTS5Tests.swift"
-        ],
-        resources: [ .copy("Resources") ]
-    )
+package.dependencies = [
+    .package(url: "https://github.com/stephencelis/CSQLite.git", from: "0.0.3")
+]
+package.targets.first?.dependencies += [
+    .product(name: "CSQLite", package: "CSQLite")
 ]
 #endif

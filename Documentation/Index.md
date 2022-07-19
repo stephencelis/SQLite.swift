@@ -1983,8 +1983,6 @@ try db.run(emails.create(.FTS5(config)))
 // the last FTS4 query above as:
 let replies = emails.filter(emails.match("subject:\"Re:\"*"))
 // SELECT * FROM "emails" WHERE "emails" MATCH 'subject:"Re:"*'
-
-// https://www.sqlite.org/fts5.html#_changes_to_select_statements_
 ```
 
 ## Executing Arbitrary SQL
