@@ -10,7 +10,7 @@
 * Fix incorrect spelling of `remove_diacritics` ([#1128][])
 * Fix project build order ([#1131][])
 * Performance improvements ([#1109][], [#1115][], [#1132][])
-* Removed FTS3/4 tokenizer integration (`registerTokenizer`, [#1104][], [#1144[]])
+* Removed FTS3/4 tokenizer integration (`registerTokenizer`, [#1104][], [#1144][])
 
 0.13.3 (27-03-2022), [diff][diff-0.13.3]
 ========================================
