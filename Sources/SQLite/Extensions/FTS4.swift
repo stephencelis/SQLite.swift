@@ -22,10 +22,6 @@
 // THE SOFTWARE.
 //
 
-#if SWIFT_PACKAGE
-import SQLiteObjc
-#endif
-
 extension Module {
 
     public static func FTS4(_ column: Expressible, _ more: Expressible...) -> Module {
@@ -147,29 +143,6 @@ extension Tokenizer: CustomStringConvertible {
         ([name] + arguments).joined(separator: " ")
     }
 
-}
-
-extension Connection {
-
-    public func registerTokenizer(_ submoduleName: String, next: @escaping (String) -> (String, Range<String.Index>)?) throws {
-        try check(_SQLiteRegisterTokenizer(handle, Tokenizer.moduleName, submoduleName) {
-            (input: UnsafePointer<Int8>, offset: UnsafeMutablePointer<Int32>, length: UnsafeMutablePointer<Int32>) in
-            let string = String(cString: input)
-
-            guard let (token, range) = next(string) else { return nil }
-
-            let view: String.UTF8View = string.utf8
-
-            if let from = range.lowerBound.samePosition(in: view),
-               let to = range.upperBound.samePosition(in: view) {
-                offset.pointee += Int32(string[string.startIndex..<range.lowerBound].utf8.count)
-                length.pointee = Int32(view.distance(from: from, to: to))
-                return token
-            } else {
-                return nil
-            }
-        })
-    }
 }
 
 /// Configuration options shared between the [FTS4](https://www.sqlite.org/fts3.html) and

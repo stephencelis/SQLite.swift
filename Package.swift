@@ -18,16 +18,8 @@ let package = Package(
     targets: [
         .target(
             name: "SQLite",
-            dependencies: ["SQLiteObjc"],
             exclude: [
                 "Info.plist"
-            ]
-        ),
-        .target(
-            name: "SQLiteObjc",
-            dependencies: [],
-            exclude: [
-                "fts3_tokenizer.h"
             ]
         ),
         .testTarget(
@@ -57,7 +49,8 @@ package.targets = [
     .testTarget(
         name: "SQLiteTests",
         dependencies: ["SQLite"],
-        path: "Tests/SQLiteTests", exclude: [
+        path: "Tests/SQLiteTests",
+        exclude: [
             "FTSIntegrationTests.swift",
             "FTS4Tests.swift",
             "FTS5Tests.swift"
