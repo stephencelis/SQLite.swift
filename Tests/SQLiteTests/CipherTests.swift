@@ -99,6 +99,15 @@ class CipherTests: XCTestCase {
         XCTAssertEqual(1, try conn.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
+    func test_export() throws {
+        let tmp = temporaryFile()
+        try db1.sqlcipher_export(.uri(tmp), key: "mykey")
+
+        let conn = try Connection(tmp)
+        try conn.key("mykey")
+        XCTAssertEqual(1, try conn.scalar("SELECT count(*) FROM foo") as? Int64)
+    }
+
     private func keyData(length: Int = 64) -> NSMutableData {
         let keyData = NSMutableData(length: length)!
         let result  = SecRandomCopyBytes(kSecRandomDefault, length,

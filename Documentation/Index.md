@@ -184,9 +184,16 @@ extend `Connection` with methods to change the database key:
 ```swift
 import SQLite
 
-let db = try Connection("path/to/db.sqlite3")
+let db = try Connection("path/to/encrypted.sqlite3")
 try db.key("secret")
-try db.rekey("another secret")
+try db.rekey("new secret") // changes encryption key on already encrypted db
+```
+
+To encrypt an existing database:
+
+```swift
+let db = try Connection("path/to/unencrypted.sqlite3")
+try db.sqlcipher_export(.uri("encrypted.sqlite3"), key: "secret")
 ```
 
 [CocoaPods]: https://cocoapods.org
@@ -2101,6 +2108,13 @@ let count = try db.scalar(table.count)
 
 try db.detach("external")
 // DETACH DATABASE 'external'
+```
+
+When compiled for SQLCipher, you can additionally pass a `key` parameter to `attach`:
+
+```swift
+try db.attach(.uri("encrypted.sqlite"), as: "encrypted", key: "secret")
+// ATTACH DATABASE 'encrypted.sqlite' AS 'encrypted' KEY 'secret'
 ```
 
 ## Logging
