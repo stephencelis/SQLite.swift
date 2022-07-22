@@ -38,15 +38,13 @@ class StatementTests: SQLiteTestCase {
     /// Check that a statement reset will close the implicit transaction, allowing wal file to checkpoint
     func test_reset_statement() throws {
         // Remove old test db if any
-        let path = "\(NSTemporaryDirectory())/SQLite.swift Tests.sqlite3"
+        let path = temporaryFile() + ".sqlite3"
         try? FileManager.default.removeItem(atPath: path)
         try? FileManager.default.removeItem(atPath: path + "-shm")
         try? FileManager.default.removeItem(atPath: path + "-wal")
 
         // create new db on disk in wal mode
         let db = try Connection(.uri(path))
-        let url = URL(fileURLWithPath: db.description)
-        XCTAssertEqual(url.lastPathComponent, "SQLite.swift Tests.sqlite3")
         try db.run("PRAGMA journal_mode=WAL;")
 
         // create users table
