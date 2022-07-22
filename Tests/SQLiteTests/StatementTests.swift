@@ -37,13 +37,8 @@ class StatementTests: SQLiteTestCase {
 
     /// Check that a statement reset will close the implicit transaction, allowing wal file to checkpoint
     func test_reset_statement() throws {
-        // Remove old test db if any
-        let path = temporaryFile() + ".sqlite3"
-        try? FileManager.default.removeItem(atPath: path)
-        try? FileManager.default.removeItem(atPath: path + "-shm")
-        try? FileManager.default.removeItem(atPath: path + "-wal")
-
         // create new db on disk in wal mode
+        let path = temporaryFile() + ".sqlite3"
         let db = try Connection(.uri(path))
         try db.run("PRAGMA journal_mode=WAL;")
 
@@ -70,9 +65,7 @@ class StatementTests: SQLiteTestCase {
         // prevents the implicit transaction from closing.
         // https://www.sqlite.org/lang_transaction.html#implicit_versus_explicit_transactions
         let statement = try db.prepare("SELECT email FROM users")
-        XCTAssert(try statement.step())
-        let blob = statement.row[0] as Blob
-        XCTAssertEqual("alice@example.com", String(bytes: blob.bytes, encoding: .utf8)!)
+        _ = try statement.step()
 
         // verify that the transaction is not closed, which prevents wal_checkpoints (both explicit and auto)
         do {
