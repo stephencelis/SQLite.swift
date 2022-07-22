@@ -828,7 +828,7 @@ let query = try db.prepare(users)
 for user in query {
     // 💥 can throw an error here
 }
-````
+```
 
 #### Failable iteration
 
