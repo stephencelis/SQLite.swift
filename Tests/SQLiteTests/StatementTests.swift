@@ -68,12 +68,7 @@ class StatementTests: SQLiteTestCase {
         _ = try statement.step()
 
         // verify that the transaction is not closed, which prevents wal_checkpoints (both explicit and auto)
-        do {
-            try db.run("pragma wal_checkpoint(truncate)")
-            XCTFail("Database should be locked")
-        } catch {
-            // pass
-        }
+        XCTAssertThrowsError(try db.run("pragma wal_checkpoint(truncate)"))
 
         // reset the prepared statement, allowing the implicit transaction to close
         statement.reset()
