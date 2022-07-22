@@ -1872,7 +1872,7 @@ let stmt = try db.prepare("SELECT * FROM attachments WHERE typeConformsTo(UTI, ?
 for row in stmt.bind(kUTTypeImage) { /* ... */ }
 ```
 
-> _Note:_ Prepared queries can be reused, and long lived prepared queries should be `reset()` after each use. Otherwise, the transaction (either implicit or explicit) might be held open until the query is reset or finalized. This can affect performance. Statements are reset automatically during `deinit`.
+> _Note:_ Prepared queries can be reused, and long lived prepared queries should be `reset()` after each use. Otherwise, the transaction (either [implicit or explicit](https://www.sqlite.org/lang_transaction.html#implicit_versus_explicit_transactions)) will be held open until the query is reset or finalized. This can affect performance. Statements are reset automatically during `deinit`.
 > 
 > ```swift
 > someObj.statement = try db.prepare("SELECT * FROM attachments WHERE typeConformsTo(UTI, ?)")
