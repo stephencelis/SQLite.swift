@@ -40,7 +40,6 @@ class StatementTests: SQLiteTestCase {
         // create new db on disk in wal mode
         let path = temporaryFile() + ".sqlite3"
         let db = try Connection(.uri(path))
-        try db.run("PRAGMA journal_mode=WAL;")
 
         // create users table
         try db.execute("""
