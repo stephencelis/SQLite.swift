@@ -50,7 +50,7 @@ class StatementTests: SQLiteTestCase {
         // insert single row
         try insertUsers("bob")
 
-        // prepare a statement and read a single row. This will incremeent the cursor which
+        // prepare a statement and read a single row. This will increment the cursor which
         // prevents the implicit transaction from closing.
         // https://www.sqlite.org/lang_transaction.html#implicit_versus_explicit_transactions
         let statement = try db.prepare("SELECT email FROM users")
