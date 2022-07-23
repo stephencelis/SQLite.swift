@@ -1,6 +1,16 @@
 import XCTest
 import SQLite
 
+#if SQLITE_SWIFT_STANDALONE
+import sqlite3
+#elseif SQLITE_SWIFT_SQLCIPHER
+import SQLCipher
+#elseif os(Linux)
+import CSQLite
+#else
+import SQLite3
+#endif
+
 class StatementTests: SQLiteTestCase {
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -37,28 +47,8 @@ class StatementTests: SQLiteTestCase {
 
     /// Check that a statement reset will close the implicit transaction, allowing wal file to checkpoint
     func test_reset_statement() throws {
-        // create new db on disk in wal mode
-        let path = temporaryFile() + ".sqlite3"
-        let db = try Connection(.uri(path))
-
-        // create users table
-        try db.execute("""
-            CREATE TABLE users (
-                id INTEGER PRIMARY KEY,
-                email TEXT NOT NULL UNIQUE,
-                age INTEGER,
-                salary REAL,
-                admin BOOLEAN NOT NULL DEFAULT 0 CHECK (admin IN (0, 1)),
-                manager_id INTEGER,
-                created_at DATETIME,
-                FOREIGN KEY(manager_id) REFERENCES users(id)
-            )
-            """
-        )
-
         // insert single row
-        try db.run("INSERT INTO \"users\" (email, age, admin) values (?, ?, ?)",
-                   "alice@example.com", 1.datatypeValue, false.datatypeValue)
+        try insertUsers("bob")
 
         // prepare a statement and read a single row. This will incremeent the cursor which
         // prevents the implicit transaction from closing.
@@ -66,14 +56,20 @@ class StatementTests: SQLiteTestCase {
         let statement = try db.prepare("SELECT email FROM users")
         _ = try statement.step()
 
-        // verify that the transaction is not closed, which prevents wal_checkpoints (both explicit and auto)
-        XCTAssertThrowsError(try db.run("pragma wal_checkpoint(truncate)"))
+        // verify implicit transaction is not closed, and the users table is still locked
+        XCTAssertThrowsError(try db.run("DROP TABLE users")) { error in
+            if case let Result.error(_, code, _) = error {
+                XCTAssertEqual(code, SQLITE_LOCKED)
+            } else {
+                XCTFail("unexpected error")
+            }
+        }
 
-        // reset the prepared statement, allowing the implicit transaction to close
+        // reset the prepared statement, unlocking the table and allowing the implicit transaction to close
         statement.reset()
 
         // truncate succeeds
-        try db.run("pragma wal_checkpoint(truncate)")
+        try db.run("DROP TABLE users")
     }
 
 }
