@@ -29,6 +29,7 @@ class ColumnDefinitionTests: XCTestCase {
         "\"real_column\" REAL DEFAULT 123.123")
     ]
 
+    #if !os(Linux)
     override class var defaultTestSuite: XCTestSuite {
         let suite = XCTestSuite(forTestCaseClass: ColumnDefinitionTests.self)
 
@@ -44,6 +45,7 @@ class ColumnDefinitionTests: XCTestCase {
     @objc func verify() {
         XCTAssertEqual(definition.toSQL(), expected)
     }
+    #endif
 }
 
 class AffinityTests: XCTestCase {
@@ -105,6 +107,7 @@ class IndexDefinitionTests: XCTestCase {
         "CREATE INDEX IF NOT EXISTS \"index_tests\" ON \"tests\" (\"test_column\")")
     ]
 
+    #if !os(Linux)
     override class var defaultTestSuite: XCTestSuite {
         let suite = XCTestSuite(forTestCaseClass: IndexDefinitionTests.self)
 
@@ -121,6 +124,7 @@ class IndexDefinitionTests: XCTestCase {
     @objc func verify() {
         XCTAssertEqual(definition.toSQL(ifNotExists: ifNotExists), expected)
     }
+    #endif
 
     func test_validate() {
 

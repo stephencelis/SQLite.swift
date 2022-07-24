@@ -1,6 +1,19 @@
 import Foundation
 
 extension Connection {
+    var sqliteVersion: String? {
+        (try? scalar("SELECT sqlite_version()")) as? String
+    }
+
+    var sqliteVersionTriple: (Int, Int, Int) {
+        guard let version = sqliteVersion,
+              let splits = .some(version.split(separator: ".", maxSplits: 3)), splits.count == 3,
+              let major = Int(splits[0]), let minor = Int(splits[1]), let point = Int(splits[2]) else {
+            return (0, 0, 0)
+        }
+        return (major, minor, point)
+    }
+
     // Changing the foreign_keys setting affects the execution of all statements prepared using the database
     // connection, including those prepared before the setting was changed.
     //

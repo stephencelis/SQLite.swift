@@ -136,4 +136,11 @@ class ConnectionSchemaTests: SQLiteTestCase {
             ForeignKeyDefinition(table: "users", column: "test_id", primaryKey: "id", onUpdate: nil, onDelete: nil)
         ])
     }
+
+    func test_sqlite_version_triple() {
+        let version = db.sqliteVersionTriple
+        XCTAssertEqual(version.0, 3)
+        XCTAssertGreaterThan(version.1, 0)
+        XCTAssertGreaterThanOrEqual(version.2, 0)
+    }
 }

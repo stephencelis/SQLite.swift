@@ -27,6 +27,8 @@ import Foundation
        12. If foreign keys constraints were originally enabled, reenable them now.
 */
 public class SchemaChanger: CustomStringConvertible {
+    typealias SQLiteVersion = (Int, Int, Int)
+
     enum SchemaChangeError: LocalizedError {
         case foreignKeyError([ForeignKeyError])
 
@@ -46,9 +48,14 @@ public class SchemaChanger: CustomStringConvertible {
         case renameTable(String)
 
         /// Returns non-nil if the operation can be executed with a simple SQL statement
-        func toSQL(_ table: String) -> String? {
+        func toSQL(_ table: String, version: SQLiteVersion) -> String? {
             switch self {
-            case .add(let definition): return "ALTER TABLE \(table.quote()) ADD COLUMN \(definition.toSQL())"
+            case .add(let definition):
+                return "ALTER TABLE \(table.quote()) ADD COLUMN \(definition.toSQL())"
+            case .renameColumn(let from, let to) where version.0 >= 3 && version.1 >= 25:
+                return "ALTER TABLE \(table.quote()) RENAME COLUMN \(from.quote()) TO \(to.quote())"
+            case .remove(let column) where version.0 >= 3 && version.1 >= 35:
+                return "ALTER TABLE \(table.quote()) DROP COLUMN \(column.quote())"
             default: return nil
             }
         }
@@ -77,6 +84,7 @@ public class SchemaChanger: CustomStringConvertible {
     }
 
     private let connection: Connection
+    private let version: SQLiteVersion
     static let tempPrefix = "tmp_"
     typealias Block = () throws -> Void
     public typealias AlterTableDefinitionBlock = (AlterTableDefinition) -> Void
@@ -87,8 +95,14 @@ public class SchemaChanger: CustomStringConvertible {
         static let temp = Options(rawValue: 1)
     }
 
-    public init(connection: Connection) {
+    public convenience init(connection: Connection) {
+        self.init(connection: connection,
+                  version: connection.sqliteVersionTriple)
+    }
+
+    init(connection: Connection, version: SQLiteVersion) {
         self.connection = connection
+        self.version = version
     }
 
     public func alter(table: String, block: AlterTableDefinitionBlock) throws {
@@ -105,7 +119,7 @@ public class SchemaChanger: CustomStringConvertible {
     }
 
     private func run(table: String, operation: Operation) throws {
-        if let sql = operation.toSQL(table) {
+        if let sql = operation.toSQL(table, version: version) {
             try connection.run(sql)
         } else {
             try doTheTableDance(table: table, operation: operation)
