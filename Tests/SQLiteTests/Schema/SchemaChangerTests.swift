@@ -102,8 +102,12 @@ class SchemaChangerTests: SQLiteTestCase {
 
     func test_drop_table() throws {
         try schemaChanger.drop(table: "users")
-
-        let tables = try db.tableInfo()
-        XCTAssertFalse(tables.contains("users"))
+        XCTAssertThrowsError(try db.scalar(users.count)) { error in
+            if case Result.error(let message, _, _) =  error {
+                XCTAssertEqual(message, "no such table: users")
+            } else {
+                XCTFail("unexpected error \(error)")
+            }
+        }
     }
 }

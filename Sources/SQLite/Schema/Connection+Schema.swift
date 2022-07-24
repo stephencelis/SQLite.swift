@@ -63,16 +63,6 @@ extension Connection {
         }
     }
 
-    func tableInfo() throws -> [String] {
-        try run("SELECT tbl_name FROM sqlite_master WHERE type = 'table'").compactMap { row in
-            if let name = row[0] as? String, !name.starts(with: "sqlite_") {
-                return name
-            } else {
-                return nil
-            }
-        }
-    }
-
     func foreignKeyInfo(table: String) throws -> [ColumnDefinition.ForeignKey] {
         try run("PRAGMA foreign_key_list(\(table.quote()))").compactMap { row in
             if let table = row[2] as? String,      // table

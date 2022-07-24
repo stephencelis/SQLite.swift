@@ -108,11 +108,6 @@ class ConnectionSchemaTests: SQLiteTestCase {
         ])
     }
 
-    func test_table_info_returns_list_of_tables() throws {
-        let tables = try db.tableInfo()
-        XCTAssertEqual(tables, ["users"])
-    }
-
     func test_foreign_key_info_empty() throws {
         try db.run("CREATE TABLE t (\"id\" INTEGER PRIMARY KEY)")
 
@@ -135,9 +130,5 @@ class ConnectionSchemaTests: SQLiteTestCase {
         XCTAssertEqual(foreignKeys, [
             .init(table: "users", column: "test_id", primaryKey: "id", onUpdate: nil, onDelete: nil)
         ])
-    }
-
-    func test_sqlite_version() {
-        XCTAssertTrue(db.sqliteVersion >= (3, 0, 0))
     }
 }
