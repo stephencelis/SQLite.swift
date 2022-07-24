@@ -1,52 +1,6 @@
 import Foundation
 
 extension Connection {
-    var sqliteVersion: String? {
-        (try? scalar("SELECT sqlite_version()")) as? String
-    }
-
-    var sqliteVersionTriple: (Int, Int, Int) {
-        guard let version = sqliteVersion,
-              let splits = .some(version.split(separator: ".", maxSplits: 3)), splits.count == 3,
-              let major = Int(splits[0]), let minor = Int(splits[1]), let point = Int(splits[2]) else {
-            return (0, 0, 0)
-        }
-        return (major, minor, point)
-    }
-
-    // Changing the foreign_keys setting affects the execution of all statements prepared using the database
-    // connection, including those prepared before the setting was changed.
-    //
-    // https://sqlite.org/pragma.html#pragma_foreign_keys
-    var foreignKeys: Bool {
-        get { getBoolPragma("foreign_keys") }
-        set { setBoolPragma("foreign_keys", newValue) }
-    }
-
-    var deferForeignKeys: Bool {
-        get { getBoolPragma("defer_foreign_keys") }
-        set { setBoolPragma("defer_foreign_keys", newValue) }
-    }
-
-    // https://sqlite.org/pragma.html#pragma_foreign_key_check
-
-    // There are four columns in each result row.
-    // The first column is the name of the table that
-    // contains the REFERENCES clause.
-    // The second column is the rowid of the row that contains the
-    // invalid REFERENCES clause, or NULL if the child table is a WITHOUT ROWID table.
-    // The third column is the name of the table that is referred to.
-    // The fourth column is the index of the specific foreign key constraint that failed.
-    func foreignKeyCheck() throws -> [ForeignKeyError] {
-        try run("PRAGMA foreign_key_check").compactMap { row -> ForeignKeyError? in
-            guard let table = row[0] as? String,
-                  let rowId = row[1] as? Int64,
-                  let target = row[2] as? String else { return nil }
-
-            return ForeignKeyError(from: table, rowId: rowId, to: target)
-        }
-    }
-
     // https://sqlite.org/pragma.html#pragma_table_info
     //
     // This pragma returns one row for each column in the named table. Columns in the result set include the
@@ -58,7 +12,7 @@ extension Connection {
             try createTableSQL(name: table).flatMap { .init(sql: $0) }
         }
 
-        let foreignKeys: [String: [ForeignKeyDefinition]] =
+        let foreignKeys: [String: [ColumnDefinition.ForeignKey]] =
             Dictionary(grouping: try foreignKeyInfo(table: table), by: { $0.column })
 
         return try run("PRAGMA table_info(\(table.quote()))").compactMap { row -> ColumnDefinition? in
@@ -71,7 +25,7 @@ extension Connection {
                                     primaryKey: primaryKey == 1 ? try parsePrimaryKey(column: name) : nil,
                                     type: ColumnDefinition.Affinity.from(type),
                                     null: notNull == 0,
-                                    defaultValue: LiteralValue.from(defaultValue),
+                                    defaultValue: .from(defaultValue),
                                     references: foreignKeys[name]?.first)
         }
     }
@@ -119,20 +73,39 @@ extension Connection {
         }
     }
 
-    func foreignKeyInfo(table: String) throws -> [ForeignKeyDefinition] {
+    func foreignKeyInfo(table: String) throws -> [ColumnDefinition.ForeignKey] {
         try run("PRAGMA foreign_key_list(\(table.quote()))").compactMap { row in
             if let table = row[2] as? String,      // table
                let column = row[3] as? String,     // from
                let primaryKey = row[4] as? String, // to
                let onUpdate = row[5] as? String,
                let onDelete = row[6] as? String {
-                return ForeignKeyDefinition(table: table, column: column, primaryKey: primaryKey,
-                                            onUpdate: onUpdate == TableBuilder.Dependency.noAction.rawValue ? nil : onUpdate,
-                                            onDelete: onDelete == TableBuilder.Dependency.noAction.rawValue ? nil : onDelete
+                return .init(table: table, column: column, primaryKey: primaryKey,
+                             onUpdate: onUpdate == TableBuilder.Dependency.noAction.rawValue ? nil : onUpdate,
+                             onDelete: onDelete == TableBuilder.Dependency.noAction.rawValue ? nil : onDelete
                 )
             } else {
                 return nil
             }
+        }
+    }
+
+    // https://sqlite.org/pragma.html#pragma_foreign_key_check
+
+    // There are four columns in each result row.
+    // The first column is the name of the table that
+    // contains the REFERENCES clause.
+    // The second column is the rowid of the row that contains the
+    // invalid REFERENCES clause, or NULL if the child table is a WITHOUT ROWID table.
+    // The third column is the name of the table that is referred to.
+    // The fourth column is the index of the specific foreign key constraint that failed.
+    func foreignKeyCheck() throws -> [ForeignKeyError] {
+        try run("PRAGMA foreign_key_check").compactMap { row -> ForeignKeyError? in
+            guard let table = row[0] as? String,
+                  let rowId = row[1] as? Int64,
+                  let target = row[2] as? String else { return nil }
+
+            return ForeignKeyError(from: table, rowId: rowId, to: target)
         }
     }
 
@@ -144,15 +117,5 @@ extension Connection {
         """, name, name)
             .compactMap { row in row[0] as? String }
             .first
-    }
-
-    private func getBoolPragma(_ key: String) -> Bool {
-        guard let binding = try? scalar("PRAGMA \(key)"),
-              let intBinding = binding as? Int64 else { return false }
-        return intBinding == 1
-    }
-
-    private func setBoolPragma(_ key: String, _ newValue: Bool) {
-        _ = try? run("PRAGMA \(key) = \(newValue ? "1" : "0")")
     }
 }

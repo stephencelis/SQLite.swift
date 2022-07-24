@@ -10,7 +10,7 @@ class ColumnDefinitionTests: XCTestCase {
         "\"id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL"),
 
         (ColumnDefinition(name: "other_id", primaryKey: nil, type: .INTEGER, null: false, defaultValue: .NULL,
-                          references: ForeignKeyDefinition(table: "other_table", column: "", primaryKey: "some_id", onUpdate: nil, onDelete: nil)),
+                          references: .init(table: "other_table", column: "", primaryKey: "some_id", onUpdate: nil, onDelete: nil)),
         "\"other_id\" INTEGER NOT NULL REFERENCES \"other_table\" (\"some_id\")"),
 
         (ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, null: true, defaultValue: .NULL, references: nil),
@@ -168,7 +168,7 @@ class IndexDefinitionTests: XCTestCase {
 class ForeignKeyDefinitionTests: XCTestCase {
     func test_toSQL() {
         XCTAssertEqual(
-            ForeignKeyDefinition(
+            ColumnDefinition.ForeignKey(
                 table: "foo",
                 column: "bar",
                 primaryKey: "bar_id",

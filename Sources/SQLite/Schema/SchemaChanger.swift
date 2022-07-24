@@ -27,8 +27,6 @@ import Foundation
        12. If foreign keys constraints were originally enabled, reenable them now.
 */
 public class SchemaChanger: CustomStringConvertible {
-    typealias SQLiteVersion = (Int, Int, Int)
-
     enum SchemaChangeError: LocalizedError {
         case foreignKeyError([ForeignKeyError])
 
@@ -52,9 +50,9 @@ public class SchemaChanger: CustomStringConvertible {
             switch self {
             case .add(let definition):
                 return "ALTER TABLE \(table.quote()) ADD COLUMN \(definition.toSQL())"
-            case .renameColumn(let from, let to) where version.0 >= 3 && version.1 >= 25:
+            case .renameColumn(let from, let to) where version >= (3, 25, 0):
                 return "ALTER TABLE \(table.quote()) RENAME COLUMN \(from.quote()) TO \(to.quote())"
-            case .remove(let column) where version.0 >= 3 && version.1 >= 35:
+            case .remove(let column) where version >= (3, 35, 0):
                 return "ALTER TABLE \(table.quote()) DROP COLUMN \(column.quote())"
             default: return nil
             }
@@ -97,7 +95,7 @@ public class SchemaChanger: CustomStringConvertible {
 
     public convenience init(connection: Connection) {
         self.init(connection: connection,
-                  version: connection.sqliteVersionTriple)
+                  version: connection.sqliteVersion)
     }
 
     init(connection: Connection, version: SQLiteVersion) {

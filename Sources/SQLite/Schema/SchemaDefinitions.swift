@@ -18,14 +18,14 @@ public struct ColumnDefinition: Equatable {
     // The important idea here is that the type is recommended, not required. Any column can still
     // store any type of data. It is just that some columns, given the choice, will prefer to use one
     // storage class over another. The preferred storage class for a column is called its "affinity".
-    enum Affinity: String, CustomStringConvertible, CaseIterable {
+    public enum Affinity: String, CustomStringConvertible, CaseIterable {
         case INTEGER
         case NUMERIC
         case REAL
         case TEXT
         case BLOB
 
-        var description: String {
+        public var description: String {
             rawValue
         }
 
@@ -34,7 +34,7 @@ public struct ColumnDefinition: Equatable {
         }
     }
 
-    enum OnConflict: String, CaseIterable {
+    public enum OnConflict: String, CaseIterable {
         case ROLLBACK
         case ABORT
         case FAIL
@@ -46,7 +46,7 @@ public struct ColumnDefinition: Equatable {
         }
     }
 
-    struct PrimaryKey: Equatable {
+    public struct PrimaryKey: Equatable {
         let autoIncrement: Bool
         let onConflict: OnConflict?
 
@@ -73,12 +73,30 @@ public struct ColumnDefinition: Equatable {
         }
     }
 
-    let name: String
-    let primaryKey: PrimaryKey?
-    let type: Affinity
-    let null: Bool
-    let defaultValue: LiteralValue
-    let references: ForeignKeyDefinition?
+    public struct ForeignKey: Equatable {
+        let table: String
+        let column: String
+        let primaryKey: String
+        let onUpdate: String?
+        let onDelete: String?
+    }
+
+    public let name: String
+    public let primaryKey: PrimaryKey?
+    public let type: Affinity
+    public let null: Bool
+    public let defaultValue: LiteralValue
+    public let references: ForeignKey?
+
+    public init(name: String, primaryKey: PrimaryKey?, type: Affinity, null: Bool, defaultValue: LiteralValue,
+                references: ForeignKey?) {
+        self.name = name
+        self.primaryKey = primaryKey
+        self.type = type
+        self.null = null
+        self.defaultValue = defaultValue
+        self.references = references
+    }
 
     func rename(from: String, to: String) -> ColumnDefinition {
         guard from == name else { return self }
@@ -86,7 +104,7 @@ public struct ColumnDefinition: Equatable {
     }
 }
 
-enum LiteralValue: Equatable, CustomStringConvertible {
+public enum LiteralValue: Equatable, CustomStringConvertible {
     // swiftlint:disable force_try
     private static let singleQuote = try! NSRegularExpression(pattern: "^'(.*)'$")
     private static let doubleQuote = try! NSRegularExpression(pattern: "^\"(.*)\"$")
@@ -141,7 +159,7 @@ enum LiteralValue: Equatable, CustomStringConvertible {
         }
     }
 
-    var description: String {
+    public var description: String {
         switch self {
         case .NULL: return "NULL"
         case .TRUE: return "TRUE"
@@ -166,7 +184,7 @@ enum LiteralValue: Equatable, CustomStringConvertible {
 
 // https://sqlite.org/lang_createindex.html
 // schema-name.index-name ON table-name ( indexed-column+ ) WHERE expr
-struct IndexDefinition: Equatable {
+public struct IndexDefinition: Equatable {
     // SQLite supports index names up to 64 characters.
     static let maxIndexLength = 64
 
@@ -175,9 +193,9 @@ struct IndexDefinition: Equatable {
     static let orderRe = try! NSRegularExpression(pattern: "\"?(\\w+)\"? DESC")
     // swiftlint:enable force_try
 
-    enum Order: String { case ASC, DESC }
+    public enum Order: String { case ASC, DESC }
 
-    init(table: String, name: String, unique: Bool = false, columns: [String], `where`: String? = nil, orders: [String: Order]? = nil) {
+    public init(table: String, name: String, unique: Bool = false, columns: [String], `where`: String? = nil, orders: [String: Order]? = nil) {
         self.table = table
         self.name = name
         self.unique = unique
@@ -236,14 +254,6 @@ struct IndexDefinition: Equatable {
     }
 }
 
-struct ForeignKeyDefinition: Equatable {
-    let table: String
-    let column: String
-    let primaryKey: String
-    let onUpdate: String?
-    let onDelete: String?
-}
-
 struct ForeignKeyError: CustomStringConvertible {
     let from: String
     let rowId: Int64
@@ -292,7 +302,7 @@ extension ColumnDefinition {
 }
 
 extension IndexDefinition {
-    func toSQL(ifNotExists: Bool = false) -> String {
+    public func toSQL(ifNotExists: Bool = false) -> String {
         let commaSeparatedColumns = columns.map { (column: String) -> String in
             column.quote() + (orders?[column].map { " \($0.rawValue)" } ?? "")
         }.joined(separator: ", ")
@@ -312,7 +322,7 @@ extension IndexDefinition {
     }
 }
 
-extension ForeignKeyDefinition {
+extension ColumnDefinition.ForeignKey {
     func toSQL() -> String {
         ([
             "REFERENCES",

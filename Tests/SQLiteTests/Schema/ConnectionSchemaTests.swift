@@ -133,14 +133,11 @@ class ConnectionSchemaTests: SQLiteTestCase {
 
         let foreignKeys = try db.foreignKeyInfo(table: "test_links")
         XCTAssertEqual(foreignKeys, [
-            ForeignKeyDefinition(table: "users", column: "test_id", primaryKey: "id", onUpdate: nil, onDelete: nil)
+            .init(table: "users", column: "test_id", primaryKey: "id", onUpdate: nil, onDelete: nil)
         ])
     }
 
-    func test_sqlite_version_triple() {
-        let version = db.sqliteVersionTriple
-        XCTAssertEqual(version.0, 3)
-        XCTAssertGreaterThan(version.1, 0)
-        XCTAssertGreaterThanOrEqual(version.2, 0)
+    func test_sqlite_version() {
+        XCTAssertTrue(db.sqliteVersion >= (3, 0, 0))
     }
 }
