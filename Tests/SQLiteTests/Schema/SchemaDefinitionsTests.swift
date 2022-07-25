@@ -22,10 +22,12 @@ class ColumnDefinitionTests: XCTestCase {
         (ColumnDefinition(name: "text_column", primaryKey: nil, type: .TEXT, nullable: true, defaultValue: .stringLiteral("fo\"o"), references: nil),
         "\"text_column\" TEXT DEFAULT 'fo\"o'"),
 
-        (ColumnDefinition(name: "integer_column", primaryKey: nil, type: .INTEGER, nullable: true, defaultValue: .numericLiteral("123"), references: nil),
+        (ColumnDefinition(name: "integer_column", primaryKey: nil, type: .INTEGER, nullable: true,
+                          defaultValue: .numericLiteral("123"), references: nil),
         "\"integer_column\" INTEGER DEFAULT 123"),
 
-        (ColumnDefinition(name: "real_column", primaryKey: nil, type: .REAL, nullable: true, defaultValue: .numericLiteral("123.123"), references: nil),
+        (ColumnDefinition(name: "real_column", primaryKey: nil, type: .REAL, nullable: true,
+                          defaultValue: .numericLiteral("123.123"), references: nil),
         "\"real_column\" REAL DEFAULT 123.123")
     ]
 
