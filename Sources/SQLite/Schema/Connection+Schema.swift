@@ -24,7 +24,7 @@ extension Connection {
             return ColumnDefinition(name: name,
                                     primaryKey: primaryKey == 1 ? try parsePrimaryKey(column: name) : nil,
                                     type: ColumnDefinition.Affinity.from(type),
-                                    null: notNull == 0,
+                                    nullable: notNull == 0,
                                     defaultValue: .from(defaultValue),
                                     references: foreignKeys[name]?.first)
         }

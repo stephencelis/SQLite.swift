@@ -6,26 +6,26 @@ class ColumnDefinitionTests: XCTestCase {
     var expected: String!
 
     static let definitions: [(ColumnDefinition, String)] = [
-        (ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, null: false, defaultValue: .NULL, references: nil),
+        (ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, nullable: false, defaultValue: .NULL, references: nil),
         "\"id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL"),
 
-        (ColumnDefinition(name: "other_id", primaryKey: nil, type: .INTEGER, null: false, defaultValue: .NULL,
+        (ColumnDefinition(name: "other_id", primaryKey: nil, type: .INTEGER, nullable: false, defaultValue: .NULL,
                           references: .init(table: "other_table", column: "", primaryKey: "some_id", onUpdate: nil, onDelete: nil)),
         "\"other_id\" INTEGER NOT NULL REFERENCES \"other_table\" (\"some_id\")"),
 
-        (ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, null: true, defaultValue: .NULL, references: nil),
+        (ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, nullable: true, defaultValue: .NULL, references: nil),
         "\"text\" TEXT"),
 
-        (ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, null: false, defaultValue: .NULL, references: nil),
+        (ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, nullable: false, defaultValue: .NULL, references: nil),
         "\"text\" TEXT NOT NULL"),
 
-        (ColumnDefinition(name: "text_column", primaryKey: nil, type: .TEXT, null: true, defaultValue: .stringLiteral("fo\"o"), references: nil),
+        (ColumnDefinition(name: "text_column", primaryKey: nil, type: .TEXT, nullable: true, defaultValue: .stringLiteral("fo\"o"), references: nil),
         "\"text_column\" TEXT DEFAULT 'fo\"o'"),
 
-        (ColumnDefinition(name: "integer_column", primaryKey: nil, type: .INTEGER, null: true, defaultValue: .numericLiteral("123"), references: nil),
+        (ColumnDefinition(name: "integer_column", primaryKey: nil, type: .INTEGER, nullable: true, defaultValue: .numericLiteral("123"), references: nil),
         "\"integer_column\" INTEGER DEFAULT 123"),
 
-        (ColumnDefinition(name: "real_column", primaryKey: nil, type: .REAL, null: true, defaultValue: .numericLiteral("123.123"), references: nil),
+        (ColumnDefinition(name: "real_column", primaryKey: nil, type: .REAL, nullable: true, defaultValue: .numericLiteral("123.123"), references: nil),
         "\"real_column\" REAL DEFAULT 123.123")
     ]
 
@@ -184,8 +184,8 @@ class ForeignKeyDefinitionTests: XCTestCase {
 class TableDefinitionTests: XCTestCase {
     func test_quoted_columnList() {
         let definition = TableDefinition(name: "foo", columns: [
-            ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, null: false, defaultValue: .NULL, references: nil),
-            ColumnDefinition(name: "baz", primaryKey: nil, type: .INTEGER, null: false, defaultValue: .NULL, references: nil)
+            ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, nullable: false, defaultValue: .NULL, references: nil),
+            ColumnDefinition(name: "baz", primaryKey: nil, type: .INTEGER, nullable: false, defaultValue: .NULL, references: nil)
         ], indexes: [])
 
         XCTAssertEqual(definition.quotedColumnList, """
@@ -195,7 +195,7 @@ class TableDefinitionTests: XCTestCase {
 
     func test_toSQL() {
         let definition = TableDefinition(name: "foo", columns: [
-            ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, null: false, defaultValue: .NULL, references: nil)
+            ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, nullable: false, defaultValue: .NULL, references: nil)
         ], indexes: [])
 
         XCTAssertEqual(definition.toSQL(), """
@@ -205,7 +205,7 @@ class TableDefinitionTests: XCTestCase {
 
     func test_toSQL_temp_table() {
         let definition = TableDefinition(name: "foo", columns: [
-            ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, null: false, defaultValue: .NULL, references: nil)
+            ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, nullable: false, defaultValue: .NULL, references: nil)
         ], indexes: [])
 
         XCTAssertEqual(definition.toSQL(temporary: true), """
@@ -222,11 +222,11 @@ class TableDefinitionTests: XCTestCase {
 
     func test_copySQL() {
         let from = TableDefinition(name: "from_table", columns: [
-            ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, null: false, defaultValue: .NULL, references: nil)
+            ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, nullable: false, defaultValue: .NULL, references: nil)
         ], indexes: [])
 
         let to = TableDefinition(name: "to_table", columns: [
-            ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, null: false, defaultValue: .NULL, references: nil)
+            ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, nullable: false, defaultValue: .NULL, references: nil)
         ], indexes: [])
 
         XCTAssertEqual(from.copySQL(to: to), """

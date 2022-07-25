@@ -84,23 +84,27 @@ public struct ColumnDefinition: Equatable {
     public let name: String
     public let primaryKey: PrimaryKey?
     public let type: Affinity
-    public let null: Bool
+    public let nullable: Bool
     public let defaultValue: LiteralValue
     public let references: ForeignKey?
 
-    public init(name: String, primaryKey: PrimaryKey?, type: Affinity, null: Bool, defaultValue: LiteralValue,
-                references: ForeignKey?) {
+    public init(name: String,
+                primaryKey: PrimaryKey? = nil,
+                type: Affinity,
+                nullable: Bool = false,
+                defaultValue: LiteralValue = .NULL,
+                references: ForeignKey? = nil) {
         self.name = name
         self.primaryKey = primaryKey
         self.type = type
-        self.null = null
+        self.nullable = nullable
         self.defaultValue = defaultValue
         self.references = references
     }
 
     func rename(from: String, to: String) -> ColumnDefinition {
         guard from == name else { return self }
-        return ColumnDefinition(name: to, primaryKey: primaryKey, type: type, null: null, defaultValue: defaultValue, references: references)
+        return ColumnDefinition(name: to, primaryKey: primaryKey, type: type, nullable: nullable, defaultValue: defaultValue, references: references)
     }
 }
 
@@ -254,12 +258,12 @@ public struct IndexDefinition: Equatable {
     }
 }
 
-struct ForeignKeyError: CustomStringConvertible {
+public struct ForeignKeyError: CustomStringConvertible {
     let from: String
     let rowId: Int64
     let to: String
 
-    var description: String {
+    public var description: String {
         "\(from) [\(rowId)] => \(to)"
     }
 }
@@ -294,7 +298,7 @@ extension ColumnDefinition {
             type.rawValue,
             defaultValue.map { "DEFAULT \($0)" },
             primaryKey.map { $0.toSQL() },
-            null ? nil : "NOT NULL",
+            nullable ? nil : "NOT NULL",
             references.map { $0.toSQL() }
         ].compactMap { $0 }
          .joined(separator: " ")

@@ -90,7 +90,11 @@ class SchemaChangerTests: SQLiteTestCase {
     }
 
     func test_add_column() throws {
-        let newColumn = ColumnDefinition(name: "new_column", primaryKey: nil, type: .TEXT, null: true, defaultValue: .NULL, references: nil)
+        let column = Expression<String>("new_column")
+        let newColumn = ColumnDefinition(name: "new_column",
+                                         type: .TEXT,
+                                         nullable: true,
+                                         defaultValue: .stringLiteral("foo"))
 
         try schemaChanger.alter(table: "users") { table in
             table.add(newColumn)
@@ -98,6 +102,24 @@ class SchemaChangerTests: SQLiteTestCase {
 
         let columns = try db.columnInfo(table: "users")
         XCTAssertTrue(columns.contains(newColumn))
+
+        XCTAssertEqual(try db.pluck(users.select(column))?[column], "foo")
+    }
+
+    func test_add_column_primary_key_fails() throws {
+        let newColumn = ColumnDefinition(name: "new_column",
+                                         primaryKey: .init(autoIncrement: false, onConflict: nil),
+                                         type: .TEXT)
+
+        XCTAssertThrowsError(try schemaChanger.alter(table: "users") { table in
+            table.add(newColumn)
+        }) { error in
+            if case SchemaChanger.Error.invalidColumnDefinition(_) = error {
+                XCTAssertEqual("Invalid column definition: can not add primary key column", error.localizedDescription)
+            } else {
+                XCTFail("invalid error: \(error)")
+            }
+        }
     }
 
     func test_drop_table() throws {
@@ -109,5 +131,11 @@ class SchemaChangerTests: SQLiteTestCase {
                 XCTFail("unexpected error \(error)")
             }
         }
+    }
+
+    func test_rename_table() throws {
+        try schemaChanger.rename(table: "users", to: "users_new")
+        let users_new = Table("users_new")
+        XCTAssertEqual((try db.scalar(users_new.count)) as Int, 1)
     }
 }
