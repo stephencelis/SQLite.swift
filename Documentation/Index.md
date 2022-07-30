@@ -288,8 +288,7 @@ On macOS, you can use your app’s **Application Support** directory:
 
 
 ```swift
-
-// set the path corresponding to application support.
+// set the path corresponding to application support
 var path = NSSearchPathForDirectoriesInDomains(
     .applicationSupportDirectory, .userDomainMask, true
 ).first! + "/" + Bundle.main.bundleIdentifier!
