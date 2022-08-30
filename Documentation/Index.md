@@ -308,7 +308,7 @@ into your Xcode project and added it to your application target), you can
 establish a _read-only_ connection to it.
 
 ```swift
-let path = Bundle.main.pathForResource("db", ofType: "sqlite3")!
+let path = Bundle.main.path(forResource: "db", ofType: "sqlite3")!
 
 let db = try Connection(path, readonly: true)
 ```
