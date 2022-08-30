@@ -1035,11 +1035,9 @@ extension Connection {
                 select.clauses.select = (false, [Expression<Void>(literal: "*") as Expressible])
                 let queries = [select] + query.clauses.join.map { $0.query }
                 if !namespace.isEmpty {
-                    for q in queries {
-                        if q.tableName().expression.template == namespace {
-                            try expandGlob(true)(q)
-                            continue column
-                        }
+                    for q in queries where q.tableName().expression.template == namespace {
+                        try expandGlob(true)(q)
+                        continue column
                     }
                     throw QueryError.noSuchTable(name: namespace)
                 }
