@@ -114,7 +114,6 @@ extension Connection {
         try run("PRAGMA integrity_check").compactMap { $0[0] as? String }.filter { $0 != "ok" }
     }
 
-
     private func createTableSQL(name: String) throws  -> String? {
         try run("""
                 SELECT sql FROM sqlite_master WHERE name=? AND type='table'
