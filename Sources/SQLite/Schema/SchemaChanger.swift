@@ -52,9 +52,9 @@ public class SchemaChanger: CustomStringConvertible {
             switch self {
             case .addColumn(let definition):
                 return "ALTER TABLE \(table.quote()) ADD COLUMN \(definition.toSQL())"
-            case .renameColumn(let from, let to) where version >= (3, 25, 0):
+            case .renameColumn(let from, let to) where version >= .init(major: 3, minor: 25):
                 return "ALTER TABLE \(table.quote()) RENAME COLUMN \(from.quote()) TO \(to.quote())"
-            case .dropColumn(let column) where version >= (3, 35, 0):
+            case .dropColumn(let column) where version >= .init(major: 3, minor: 35):
                 return "ALTER TABLE \(table.quote()) DROP COLUMN \(column.quote())"
             default: return nil
             }

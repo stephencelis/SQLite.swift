@@ -80,6 +80,16 @@ extension Connection {
         }
     }
 
+    func tableInfo() throws -> [String] {
+        try run("SELECT tbl_name FROM sqlite_master WHERE type = 'table'").compactMap { row in
+            if let name = row[0] as? String, !name.starts(with: "sqlite_") {
+                return name
+            } else {
+                return nil
+            }
+        }
+    }
+
     // https://sqlite.org/pragma.html#pragma_foreign_key_check
 
     // There are four columns in each result row.
@@ -98,6 +108,12 @@ extension Connection {
             return ForeignKeyError(from: table, rowId: rowId, to: target)
         }
     }
+
+    // https://sqlite.org/pragma.html#pragma_integrity_check
+    func integrityCheck() throws -> [String] {
+        try run("PRAGMA integrity_check").compactMap { $0[0] as? String }.filter { $0 != "ok" }
+    }
+
 
     private func createTableSQL(name: String) throws  -> String? {
         try run("""
