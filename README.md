@@ -268,7 +268,7 @@ These projects enhance or use SQLite.swift:
  - [SQLiteMigrationManager.swift][] (inspired by
    [FMDBMigrationManager][])
  - [Delta: Math helper](https://apps.apple.com/app/delta-math-helper/id1436506800)
-   (see [Delta/Utils/Database.swift](https://github.com/GroupeMINASTE/Delta-iOS/blob/master/Delta/Utils/Database.swift) for production implementation example)
+   (see [Delta/Utils/Database.swift](https://web.archive.org/web/20210823165515/https://github.com/GroupeMINASTE/Delta-iOS/blob/master/Delta/Utils/Database.swift) for production implementation example)
 
 
 ## Alternatives
