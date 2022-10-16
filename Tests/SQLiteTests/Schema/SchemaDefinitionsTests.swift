@@ -5,37 +5,38 @@ class ColumnDefinitionTests: XCTestCase {
     var definition: ColumnDefinition!
     var expected: String!
 
-    static let definitions: [(ColumnDefinition, String)] = [
-        (ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, nullable: false, defaultValue: .NULL, references: nil),
-        "\"id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL"),
+    static let definitions: [(String, ColumnDefinition)] = [
+        ("\"id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL",
+        ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, nullable: false, defaultValue: .NULL, references: nil)),
 
-        (ColumnDefinition(name: "other_id", primaryKey: nil, type: .INTEGER, nullable: false, defaultValue: .NULL,
-                          references: .init(table: "other_table", column: "", primaryKey: "some_id", onUpdate: nil, onDelete: nil)),
-        "\"other_id\" INTEGER NOT NULL REFERENCES \"other_table\" (\"some_id\")"),
+        ("\"other_id\" INTEGER NOT NULL REFERENCES \"other_table\" (\"some_id\")",
+        ColumnDefinition(name: "other_id", primaryKey: nil, type: .INTEGER, nullable: false, defaultValue: .NULL,
+                         references: .init(table: "other_table", column: "", primaryKey: "some_id", onUpdate: nil, onDelete: nil))),
 
-        (ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, nullable: true, defaultValue: .NULL, references: nil),
-        "\"text\" TEXT"),
+        ("\"text\" TEXT",
+        ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, nullable: true, defaultValue: .NULL, references: nil)),
 
-        (ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, nullable: false, defaultValue: .NULL, references: nil),
-        "\"text\" TEXT NOT NULL"),
+        ("\"text\" TEXT NOT NULL",
+        ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, nullable: false, defaultValue: .NULL, references: nil)),
 
-        (ColumnDefinition(name: "text_column", primaryKey: nil, type: .TEXT, nullable: true, defaultValue: .stringLiteral("fo\"o"), references: nil),
-        "\"text_column\" TEXT DEFAULT 'fo\"o'"),
+        ("\"text_column\" TEXT DEFAULT 'fo\"o'",
+        ColumnDefinition(name: "text_column", primaryKey: nil, type: .TEXT, nullable: true,
+        defaultValue: .stringLiteral("fo\"o"), references: nil)),
 
-        (ColumnDefinition(name: "integer_column", primaryKey: nil, type: .INTEGER, nullable: true,
-                          defaultValue: .numericLiteral("123"), references: nil),
-        "\"integer_column\" INTEGER DEFAULT 123"),
+        ("\"integer_column\" INTEGER DEFAULT 123",
+        ColumnDefinition(name: "integer_column", primaryKey: nil, type: .INTEGER, nullable: true,
+                          defaultValue: .numericLiteral("123"), references: nil)),
 
-        (ColumnDefinition(name: "real_column", primaryKey: nil, type: .REAL, nullable: true,
-                          defaultValue: .numericLiteral("123.123"), references: nil),
-        "\"real_column\" REAL DEFAULT 123.123")
+        ("\"real_column\" REAL DEFAULT 123.123",
+        ColumnDefinition(name: "real_column", primaryKey: nil, type: .REAL, nullable: true,
+                          defaultValue: .numericLiteral("123.123"), references: nil))
     ]
 
     #if !os(Linux)
     override class var defaultTestSuite: XCTestSuite {
         let suite = XCTestSuite(forTestCaseClass: ColumnDefinitionTests.self)
 
-        for (column, expected) in ColumnDefinitionTests.definitions {
+        for (expected, column) in ColumnDefinitionTests.definitions {
             let test = ColumnDefinitionTests(selector: #selector(verify))
             test.definition = column
             test.expected = expected
@@ -51,14 +52,17 @@ class ColumnDefinitionTests: XCTestCase {
 }
 
 class AffinityTests: XCTestCase {
-    func test_from() {
-        XCTAssertEqual(ColumnDefinition.Affinity.from("TEXT"), .TEXT)
-        XCTAssertEqual(ColumnDefinition.Affinity.from("text"), .TEXT)
-        XCTAssertEqual(ColumnDefinition.Affinity.from("INTEGER"), .INTEGER)
+    func test_init() {
+        XCTAssertEqual(ColumnDefinition.Affinity("TEXT"), .TEXT)
+        XCTAssertEqual(ColumnDefinition.Affinity("text"), .TEXT)
+        XCTAssertEqual(ColumnDefinition.Affinity("INTEGER"), .INTEGER)
+        XCTAssertEqual(ColumnDefinition.Affinity("BLOB"), .BLOB)
+        XCTAssertEqual(ColumnDefinition.Affinity("REAL"), .REAL)
+        XCTAssertEqual(ColumnDefinition.Affinity("NUMERIC"), .NUMERIC)
     }
 
     func test_returns_TEXT_for_unknown_type() {
-        XCTAssertEqual(ColumnDefinition.Affinity.from("baz"), .TEXT)
+        XCTAssertEqual(ColumnDefinition.Affinity("baz"), .TEXT)
     }
 }
 
@@ -215,13 +219,6 @@ class TableDefinitionTests: XCTestCase {
                                                           """)
     }
 
-    /*
-    func test_throws_an_error_when_columns_are_empty() {
-        let empty = TableDefinition(name: "empty", columns: [], indexes: [])
-        XCTAssertThrowsError(empty.toSQL())
-    }
-     */
-
     func test_copySQL() {
         let from = TableDefinition(name: "from_table", columns: [
             ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, nullable: false, defaultValue: .NULL, references: nil)
@@ -239,74 +236,105 @@ class TableDefinitionTests: XCTestCase {
 
 class PrimaryKeyTests: XCTestCase {
     func test_toSQL() {
-        XCTAssertEqual(ColumnDefinition.PrimaryKey(autoIncrement: false).toSQL(),
-                       "PRIMARY KEY")
+        XCTAssertEqual(
+            ColumnDefinition.PrimaryKey(autoIncrement: false).toSQL(),
+            "PRIMARY KEY"
+        )
     }
 
     func test_toSQL_autoincrement() {
-        XCTAssertEqual(ColumnDefinition.PrimaryKey(autoIncrement: true).toSQL(),
-                       "PRIMARY KEY AUTOINCREMENT")
+        XCTAssertEqual(
+            ColumnDefinition.PrimaryKey(autoIncrement: true).toSQL(),
+            "PRIMARY KEY AUTOINCREMENT"
+        )
     }
 
     func test_toSQL_on_conflict() {
-        XCTAssertEqual(ColumnDefinition.PrimaryKey(autoIncrement: false, onConflict: .ROLLBACK).toSQL(),
-                       "PRIMARY KEY ON CONFLICT ROLLBACK")
+        XCTAssertEqual(
+            ColumnDefinition.PrimaryKey(autoIncrement: false, onConflict: .ROLLBACK).toSQL(),
+            "PRIMARY KEY ON CONFLICT ROLLBACK"
+        )
+    }
+
+    func test_fromSQL() {
+        XCTAssertEqual(
+            ColumnDefinition.PrimaryKey(sql: "PRIMARY KEY"),
+            ColumnDefinition.PrimaryKey(autoIncrement: false)
+        )
+    }
+
+    func test_fromSQL_invalid_sql_is_nil() {
+        XCTAssertNil(ColumnDefinition.PrimaryKey(sql: "FOO"))
+    }
+
+    func test_fromSQL_autoincrement() {
+        XCTAssertEqual(
+            ColumnDefinition.PrimaryKey(sql: "PRIMARY KEY AUTOINCREMENT"),
+            ColumnDefinition.PrimaryKey(autoIncrement: true)
+        )
+    }
+
+    func test_fromSQL_on_conflict() {
+        XCTAssertEqual(
+            ColumnDefinition.PrimaryKey(sql: "PRIMARY KEY ON CONFLICT ROLLBACK"),
+            ColumnDefinition.PrimaryKey(autoIncrement: false, onConflict: .ROLLBACK)
+        )
     }
 }
 
 class LiteralValueTests: XCTestCase {
     func test_recognizes_TRUE() {
-        XCTAssertEqual(LiteralValue.from("TRUE"), .TRUE)
+        XCTAssertEqual(LiteralValue("TRUE"), .TRUE)
     }
 
     func test_recognizes_FALSE() {
-        XCTAssertEqual(LiteralValue.from("FALSE"), .FALSE)
+        XCTAssertEqual(LiteralValue("FALSE"), .FALSE)
     }
 
     func test_recognizes_NULL() {
-        XCTAssertEqual(LiteralValue.from("NULL"), .NULL)
+        XCTAssertEqual(LiteralValue("NULL"), .NULL)
     }
 
     func test_recognizes_nil() {
-        XCTAssertEqual(LiteralValue.from(nil), .NULL)
+        XCTAssertEqual(LiteralValue(nil), .NULL)
     }
 
     func test_recognizes_CURRENT_TIME() {
-        XCTAssertEqual(LiteralValue.from("CURRENT_TIME"), .CURRENT_TIME)
+        XCTAssertEqual(LiteralValue("CURRENT_TIME"), .CURRENT_TIME)
     }
 
     func test_recognizes_CURRENT_TIMESTAMP() {
-        XCTAssertEqual(LiteralValue.from("CURRENT_TIMESTAMP"), .CURRENT_TIMESTAMP)
+        XCTAssertEqual(LiteralValue("CURRENT_TIMESTAMP"), .CURRENT_TIMESTAMP)
     }
 
     func test_recognizes_CURRENT_DATE() {
-        XCTAssertEqual(LiteralValue.from("CURRENT_DATE"), .CURRENT_DATE)
+        XCTAssertEqual(LiteralValue("CURRENT_DATE"), .CURRENT_DATE)
     }
 
     func test_recognizes_double_quote_string_literals() {
-        XCTAssertEqual(LiteralValue.from("\"foo\""), .stringLiteral("foo"))
+        XCTAssertEqual(LiteralValue("\"foo\""), .stringLiteral("foo"))
     }
 
     func test_recognizes_single_quote_string_literals() {
-        XCTAssertEqual(LiteralValue.from("\'foo\'"), .stringLiteral("foo"))
+        XCTAssertEqual(LiteralValue("\'foo\'"), .stringLiteral("foo"))
     }
 
     func test_unquotes_double_quote_string_literals() {
-        XCTAssertEqual(LiteralValue.from("\"fo\"\"o\""), .stringLiteral("fo\"o"))
+        XCTAssertEqual(LiteralValue("\"fo\"\"o\""), .stringLiteral("fo\"o"))
     }
 
     func test_unquotes_single_quote_string_literals() {
-        XCTAssertEqual(LiteralValue.from("'fo''o'"), .stringLiteral("fo'o"))
+        XCTAssertEqual(LiteralValue("'fo''o'"), .stringLiteral("fo'o"))
     }
 
     func test_recognizes_numeric_literals() {
-        XCTAssertEqual(LiteralValue.from("1.2"), .numericLiteral("1.2"))
-        XCTAssertEqual(LiteralValue.from("0xdeadbeef"), .numericLiteral("0xdeadbeef"))
+        XCTAssertEqual(LiteralValue("1.2"), .numericLiteral("1.2"))
+        XCTAssertEqual(LiteralValue("0xdeadbeef"), .numericLiteral("0xdeadbeef"))
     }
 
     func test_recognizes_blob_literals() {
-        XCTAssertEqual(LiteralValue.from("X'deadbeef'"), .blobLiteral("deadbeef"))
-        XCTAssertEqual(LiteralValue.from("x'deadbeef'"), .blobLiteral("deadbeef"))
+        XCTAssertEqual(LiteralValue("X'deadbeef'"), .blobLiteral("deadbeef"))
+        XCTAssertEqual(LiteralValue("x'deadbeef'"), .blobLiteral("deadbeef"))
     }
 
     func test_description_TRUE() {

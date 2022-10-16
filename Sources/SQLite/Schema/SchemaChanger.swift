@@ -109,6 +109,7 @@ public class SchemaChanger: CustomStringConvertible {
     }
 
     private let connection: Connection
+    private let schemaReader: SchemaReader
     private let version: SQLiteVersion
     static let tempPrefix = "tmp_"
     typealias Block = () throws -> Void
@@ -127,6 +128,7 @@ public class SchemaChanger: CustomStringConvertible {
 
     init(connection: Connection, version: SQLiteVersion) {
         self.connection = connection
+        schemaReader = connection.schemaReader
         self.version = version
     }
 
@@ -196,8 +198,8 @@ public class SchemaChanger: CustomStringConvertible {
     private func copyTable(from: String, to: String, options: Options = .default, operation: Operation?) throws {
         let fromDefinition = TableDefinition(
             name: from,
-            columns: try connection.columnInfo(table: from),
-            indexes: try connection.indexInfo(table: from)
+            columns: try schemaReader.columnDefinitions(table: from),
+            indexes: try schemaReader.indexDefinitions(table: from)
         )
         let toDefinition   = fromDefinition
                 .apply(.renameTable(to))

@@ -10,6 +10,29 @@ struct TableDefinition: Equatable {
     }
 }
 
+// https://sqlite.org/schematab.html#interpretation_of_the_schema_table
+public struct ObjectDefinition: Equatable {
+    public enum ObjectType: String {
+        case table, index, view, trigger
+    }
+    public let type: ObjectType
+
+    // The name of the object
+    public let name: String
+
+    // The name of a table or view that the object is associated with.
+    //  * For a table or view, a copy of the name column.
+    //  * For an index, the name of the table that is indexed
+    //  * For a trigger, the column stores the name of the table or view that causes the trigger to fire.
+    public let tableName: String
+
+    // The page number of the root b-tree page for tables and indexes, otherwise 0 or NULL
+    public let rootpage: Int64
+
+    // SQL text that describes the object (NULL for the internal indexes)
+    public let sql: String?
+}
+
 // https://sqlite.org/syntax/column-def.html
 // column-name -> type-name -> column-constraint*
 public struct ColumnDefinition: Equatable {
@@ -29,8 +52,8 @@ public struct ColumnDefinition: Equatable {
             rawValue
         }
 
-        static func from(_ string: String) -> Affinity {
-            Affinity.allCases.first { $0.rawValue.lowercased() == string.lowercased() } ?? TEXT
+        init(_ string: String) {
+            self = Affinity.allCases.first { $0.rawValue.lowercased() == string.lowercased() } ?? .TEXT
         }
     }
 
@@ -41,8 +64,9 @@ public struct ColumnDefinition: Equatable {
         case IGNORE
         case REPLACE
 
-        static func from(_ string: String) -> OnConflict? {
-            OnConflict.allCases.first { $0.rawValue == string }
+        init?(_ string: String) {
+            guard let value = (OnConflict.allCases.first { $0.rawValue == string }) else { return nil }
+            self = value
         }
     }
 
@@ -59,17 +83,20 @@ public struct ColumnDefinition: Equatable {
         }
 
         init?(sql: String) {
-            if let match = PrimaryKey.pattern.firstMatch(in: sql, range: NSRange(location: 0, length: sql.count)) {
-                let conflict = match.range(at: 1)
-                var onConflict: ColumnDefinition.OnConflict?
-                if conflict.location != NSNotFound {
-                    onConflict = .from((sql as NSString).substring(with: conflict))
-                }
-                let autoIncrement = match.range(at: 2).location != NSNotFound
-                self.init(autoIncrement: autoIncrement, onConflict: onConflict)
-            } else {
+            guard let match = PrimaryKey.pattern.firstMatch(
+                in: sql,
+                range: NSRange(location: 0, length: sql.count)) else {
                 return nil
             }
+            let conflict = match.range(at: 1)
+            let onConflict: ColumnDefinition.OnConflict?
+            if conflict.location != NSNotFound {
+                onConflict = OnConflict((sql as NSString).substring(with: conflict))
+            } else {
+                onConflict = nil
+            }
+            let autoIncrement = match.range(at: 2).location != NSNotFound
+            self.init(autoIncrement: autoIncrement, onConflict: onConflict)
         }
     }
 
@@ -138,28 +165,19 @@ public enum LiteralValue: Equatable, CustomStringConvertible {
     case CURRENT_TIMESTAMP
     // swiftlint:enable identifier_name
 
-    static func from(_ string: String?) -> LiteralValue {
-        func parse(_ value: String) -> LiteralValue {
-            if let match = singleQuote.firstMatch(in: value, range: NSRange(location: 0, length: value.count)) {
-                return stringLiteral((value as NSString).substring(with: match.range(at: 1)).replacingOccurrences(of: "''", with: "'"))
-            } else if let match = doubleQuote.firstMatch(in: value, range: NSRange(location: 0, length: value.count)) {
-                return stringLiteral((value as NSString).substring(with: match.range(at: 1)).replacingOccurrences(of: "\"\"", with: "\""))
-            } else if let match = blob.firstMatch(in: value, range: NSRange(location: 0, length: value.count)) {
-                return blobLiteral((value as NSString).substring(with: match.range(at: 1)))
-            } else {
-                return numericLiteral(value)
-            }
+    init(_ string: String?) {
+        guard let string = string else {
+            self = .NULL
+            return
         }
-        guard let string = string else { return NULL }
-
         switch string {
-        case "NULL": return NULL
-        case "TRUE": return TRUE
-        case "FALSE": return FALSE
-        case "CURRENT_TIME": return CURRENT_TIME
-        case "CURRENT_TIMESTAMP": return CURRENT_TIMESTAMP
-        case "CURRENT_DATE": return CURRENT_DATE
-        default: return parse(string)
+        case "NULL": self = .NULL
+        case "TRUE": self = .TRUE
+        case "FALSE": self = .FALSE
+        case "CURRENT_TIME": self = .CURRENT_TIME
+        case "CURRENT_TIMESTAMP": self = .CURRENT_TIMESTAMP
+        case "CURRENT_DATE": self = .CURRENT_DATE
+        default: self = LiteralValue.parse(string)
         }
     }
 
@@ -182,6 +200,17 @@ public enum LiteralValue: Equatable, CustomStringConvertible {
             return nil
         } else {
             return block(self)
+        }
+    }
+    private static func parse(_ string: String) -> LiteralValue {
+        if let match = LiteralValue.singleQuote.firstMatch(in: string, range: NSRange(location: 0, length: string.count)) {
+            return .stringLiteral((string as NSString).substring(with: match.range(at: 1)).replacingOccurrences(of: "''", with: "'"))
+        } else if let match = LiteralValue.doubleQuote.firstMatch(in: string, range: NSRange(location: 0, length: string.count)) {
+            return .stringLiteral((string as NSString).substring(with: match.range(at: 1)).replacingOccurrences(of: "\"\"", with: "\""))
+        } else if let match = LiteralValue.blob.firstMatch(in: string, range: NSRange(location: 0, length: string.count)) {
+            return .blobLiteral((string as NSString).substring(with: match.range(at: 1)))
+        } else {
+            return .numericLiteral(string)
         }
     }
 }
@@ -259,9 +288,9 @@ public struct IndexDefinition: Equatable {
 }
 
 public struct ForeignKeyError: CustomStringConvertible {
-    let from: String
-    let rowId: Int64
-    let to: String
+    public let from: String
+    public let rowId: Int64
+    public let to: String
 
     public var description: String {
         "\(from) [\(rowId)] => \(to)"
@@ -270,7 +299,7 @@ public struct ForeignKeyError: CustomStringConvertible {
 
 extension TableDefinition {
     func toSQL(temporary: Bool = false) -> String {
-        assert(columns.count > 0, "no columns to create")
+        precondition(columns.count > 0, "no columns to create")
 
         return ([
             "CREATE",
@@ -285,8 +314,8 @@ extension TableDefinition {
     }
 
     func copySQL(to: TableDefinition) -> String {
-        assert(columns.count > 0, "no columns to copy")
-        assert(columns.count == to.columns.count, "column counts don't match")
+        precondition(columns.count > 0)
+        precondition(columns.count == to.columns.count, "column counts don't match")
         return "INSERT INTO \(to.name.quote()) (\(to.quotedColumnList)) SELECT \(quotedColumnList) FROM \(name.quote())"
     }
 }

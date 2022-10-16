@@ -3,6 +3,7 @@ import XCTest
 
 class SchemaChangerTests: SQLiteTestCase {
     var schemaChanger: SchemaChanger!
+    var schemaReader: SchemaReader!
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -10,32 +11,33 @@ class SchemaChangerTests: SQLiteTestCase {
 
         try insertUsers("bob")
 
+        schemaReader = SchemaReader(connection: db)
         schemaChanger = SchemaChanger(connection: db)
     }
 
     func test_empty_migration_does_not_change_column_definitions() throws {
-        let previous = try db.columnInfo(table: "users")
+        let previous = try schemaReader.columnDefinitions(table: "users")
         try schemaChanger.alter(table: "users") { _ in
         }
-        let current = try db.columnInfo(table: "users")
+        let current = try schemaReader.columnDefinitions(table: "users")
 
         XCTAssertEqual(previous, current)
     }
 
     func test_empty_migration_does_not_change_index_definitions() throws {
-        let previous = try db.indexInfo(table: "users")
+        let previous = try schemaReader.indexDefinitions(table: "users")
         try schemaChanger.alter(table: "users") { _ in
         }
-        let current = try db.indexInfo(table: "users")
+        let current = try schemaReader.indexDefinitions(table: "users")
 
         XCTAssertEqual(previous, current)
     }
 
     func test_empty_migration_does_not_change_foreign_key_definitions() throws {
-        let previous = try db.foreignKeyInfo(table: "users")
+        let previous = try schemaReader.foreignKeys(table: "users")
         try schemaChanger.alter(table: "users") { _ in
         }
-        let current = try db.foreignKeyInfo(table: "users")
+        let current = try schemaReader.foreignKeys(table: "users")
 
         XCTAssertEqual(previous, current)
     }
@@ -53,7 +55,7 @@ class SchemaChangerTests: SQLiteTestCase {
         try schemaChanger.alter(table: "users") { table in
             table.remove("age")
         }
-        let columns = try db.columnInfo(table: "users").map(\.name)
+        let columns = try schemaReader.columnDefinitions(table: "users").map(\.name)
         XCTAssertFalse(columns.contains("age"))
     }
 
@@ -63,7 +65,7 @@ class SchemaChangerTests: SQLiteTestCase {
         try schemaChanger.alter(table: "users") { table in
             table.remove("age")
         }
-        let columns = try db.columnInfo(table: "users").map(\.name)
+        let columns = try schemaReader.columnDefinitions(table: "users").map(\.name)
         XCTAssertFalse(columns.contains("age"))
     }
 
@@ -72,7 +74,7 @@ class SchemaChangerTests: SQLiteTestCase {
             table.rename("age", to: "age2")
         }
 
-        let columns = try db.columnInfo(table: "users").map(\.name)
+        let columns = try schemaReader.columnDefinitions(table: "users").map(\.name)
         XCTAssertFalse(columns.contains("age"))
         XCTAssertTrue(columns.contains("age2"))
     }
@@ -84,7 +86,7 @@ class SchemaChangerTests: SQLiteTestCase {
             table.rename("age", to: "age2")
         }
 
-        let columns = try db.columnInfo(table: "users").map(\.name)
+        let columns = try schemaReader.columnDefinitions(table: "users").map(\.name)
         XCTAssertFalse(columns.contains("age"))
         XCTAssertTrue(columns.contains("age2"))
     }
@@ -100,7 +102,7 @@ class SchemaChangerTests: SQLiteTestCase {
             table.add(newColumn)
         }
 
-        let columns = try db.columnInfo(table: "users")
+        let columns = try schemaReader.columnDefinitions(table: "users")
         XCTAssertTrue(columns.contains(newColumn))
 
         XCTAssertEqual(try db.pluck(users.select(column))?[column], "foo")
