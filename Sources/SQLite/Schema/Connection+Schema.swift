@@ -25,8 +25,10 @@ public extension Connection {
 
     // This pragma does a low-level formatting and consistency check of the database.
     // https://sqlite.org/pragma.html#pragma_integrity_check
-    func integrityCheck(table: String? = nil, maxErrors: Int? = nil) throws -> [String] {
-        try run("PRAGMA integrity_check" + (table.map { "(\($0.quote()))" } ?? ""))
+    func integrityCheck(table: String? = nil) throws -> [String] {
+        precondition(table == nil || supports(.partialIntegrityCheck), "partial integrity check not supported")
+
+        return try run("PRAGMA integrity_check" + (table.map { "(\($0.quote()))" } ?? ""))
             .compactMap { $0[0] as? String }
             .filter { $0 != "ok" }
     }

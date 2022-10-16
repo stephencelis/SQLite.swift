@@ -33,12 +33,14 @@ class ConnectionSchemaTests: SQLiteTestCase {
         XCTAssert(results.isEmpty)
     }
 
-    func test_integrityCheck_table() throws {
+    func test_partial_integrityCheck_table() throws {
+        guard db.supports(.partialIntegrityCheck) else { return }
         let results = try db.integrityCheck(table: "users")
         XCTAssert(results.isEmpty)
     }
 
     func test_integrityCheck_table_not_found() throws {
+        guard db.supports(.partialIntegrityCheck) else { return }
         XCTAssertThrowsError(try db.integrityCheck(table: "xxx")) { error in
             guard case Result.error(let message, _, _) = error else {
                 assertionFailure("invalid error type")

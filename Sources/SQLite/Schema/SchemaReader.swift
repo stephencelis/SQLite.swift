@@ -38,7 +38,7 @@ public class SchemaReader {
     public func objectDefinitions(name: String? = nil,
                                   type: ObjectDefinition.ObjectType? = nil,
                                   temp: Bool = false) throws -> [ObjectDefinition] {
-        var query: QueryType = temp ? SchemaTable.tempName : SchemaTable.name
+        var query: QueryType = connection.schemaTable(temp: temp)
         if let name = name {
             query = query.where(SchemaTable.nameColumn == name)
         }
@@ -99,9 +99,9 @@ public class SchemaReader {
                     column: row[ForeignKeyListTable.fromColumn],
                     primaryKey: row[ForeignKeyListTable.toColumn],
                     onUpdate: row[ForeignKeyListTable.onUpdateColumn] == TableBuilder.Dependency.noAction.rawValue
-                            ? nil : row[ForeignKeyListTable.onUpdateColumn],
+                        ? nil : row[ForeignKeyListTable.onUpdateColumn],
                     onDelete: row[ForeignKeyListTable.onDeleteColumn] == TableBuilder.Dependency.noAction.rawValue
-                            ? nil : row[ForeignKeyListTable.onDeleteColumn]
+                        ? nil : row[ForeignKeyListTable.onDeleteColumn]
                 )
             }
     }
@@ -110,9 +110,9 @@ public class SchemaReader {
         try objectDefinitions(type: .table)
                 .map { table in
                     TableDefinition(
-                            name: table.name,
-                            columns: try columnDefinitions(table: table.name),
-                            indexes: try indexDefinitions(table: table.name)
+                        name: table.name,
+                        columns: try columnDefinitions(table: table.name),
+                        indexes: try indexDefinitions(table: table.name)
                     )
                 }
     }
@@ -128,6 +128,10 @@ public class SchemaReader {
 private class SchemaTable {
     internal static let name = Table("sqlite_schema", database: "main")
     internal static let tempName = Table("sqlite_schema", database: "temp")
+
+    // legacy table names
+    internal static let masterName = Table("sqlite_master")
+    internal static let tempMasterName = Table("sqlite_temp_master")
 
     static let typeColumn = Expression<String>("type")
     static let nameColumn = Expression<String>("name")
@@ -179,4 +183,14 @@ private class ForeignKeyListTable {
     static let onUpdateColumn = Expression<String>("on_update")
     static let onDeleteColumn = Expression<String>("on_delete")
     static let matchColumn = Expression<String>("match")
+}
+
+private extension Connection {
+    func schemaTable(temp: Bool = false) -> Table {
+        if supports(.sqliteSchemaTable) {
+            return temp ? SchemaTable.tempName : SchemaTable.name
+        } else {
+            return temp ? SchemaTable.tempMasterName : SchemaTable.masterName
+        }
+    }
 }
