@@ -1,7 +1,7 @@
 import Foundation
 
 public extension Connection {
-    var schemaReader: SchemaReader { SchemaReader(connection: self) }
+    var schema: SchemaReader { SchemaReader(connection: self) }
 
     // There are four columns in each result row.
     // The first column is the name of the table that
@@ -14,7 +14,7 @@ public extension Connection {
     // https://sqlite.org/pragma.html#pragma_foreign_key_check
     func foreignKeyCheck(table: String? = nil) throws -> [ForeignKeyError] {
         try run("PRAGMA foreign_key_check" + (table.map { "(\($0.quote()))" } ?? ""))
-            .compactMap { row -> ForeignKeyError? in
+            .compactMap { (row: [Binding?]) -> ForeignKeyError? in
                 guard let table = row[0] as? String,
                       let rowId = row[1] as? Int64,
                       let target = row[2] as? String else { return nil }

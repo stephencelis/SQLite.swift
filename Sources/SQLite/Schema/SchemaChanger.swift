@@ -52,9 +52,9 @@ public class SchemaChanger: CustomStringConvertible {
             switch self {
             case .addColumn(let definition):
                 return "ALTER TABLE \(table.quote()) ADD COLUMN \(definition.toSQL())"
-            case .renameColumn(let from, let to) where version >= .init(major: 3, minor: 25):
+            case .renameColumn(let from, let to) where SQLiteFeature.renameColumn.isSupported(by: version):
                 return "ALTER TABLE \(table.quote()) RENAME COLUMN \(from.quote()) TO \(to.quote())"
-            case .dropColumn(let column) where version >= .init(major: 3, minor: 35):
+            case .dropColumn(let column) where SQLiteFeature.dropColumn.isSupported(by: version):
                 return "ALTER TABLE \(table.quote()) DROP COLUMN \(column.quote())"
             default: return nil
             }
@@ -128,7 +128,7 @@ public class SchemaChanger: CustomStringConvertible {
 
     init(connection: Connection, version: SQLiteVersion) {
         self.connection = connection
-        schemaReader = connection.schemaReader
+        schemaReader = connection.schema
         self.version = version
     }
 

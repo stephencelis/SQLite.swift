@@ -8,7 +8,7 @@ class SchemaReaderTests: SQLiteTestCase {
         try super.setUpWithError()
         try createUsersTable()
 
-        schemaReader = db.schemaReader
+        schemaReader = db.schema
     }
 
     func test_columnDefinitions() throws {
@@ -168,6 +168,7 @@ class SchemaReaderTests: SQLiteTestCase {
         XCTAssertEqual(tables.map { table in [table.name, table.tableName, table.type.rawValue]}, [
             ["users", "users", "table"]
         ])
+        XCTAssertTrue((try schemaReader.objectDefinitions(type: .trigger)).isEmpty)
     }
 
     func test_objectDefinitionsFilterByName() throws {
@@ -176,5 +177,6 @@ class SchemaReaderTests: SQLiteTestCase {
         XCTAssertEqual(tables.map { table in [table.name, table.tableName, table.type.rawValue]}, [
             ["users", "users", "table"]
         ])
+        XCTAssertTrue((try schemaReader.objectDefinitions(name: "xxx")).isEmpty)
     }
 }

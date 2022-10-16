@@ -38,7 +38,7 @@ public class SchemaReader {
     public func objectDefinitions(name: String? = nil,
                                   type: ObjectDefinition.ObjectType? = nil,
                                   temp: Bool = false) throws -> [ObjectDefinition] {
-        var query: QueryType = connection.schemaTable(temp: temp)
+        var query: QueryType = SchemaTable.get(for: connection, temp: temp)
         if let name = name {
             query = query.where(SchemaTable.nameColumn == name)
         }
@@ -125,14 +125,22 @@ public class SchemaReader {
     }
 }
 
-private class SchemaTable {
-    internal static let name = Table("sqlite_schema", database: "main")
-    internal static let tempName = Table("sqlite_schema", database: "temp")
+private enum SchemaTable {
+    private static let name = Table("sqlite_schema", database: "main")
+    private static let tempName = Table("sqlite_schema", database: "temp")
+    // legacy names (< 3.33.0)
+    private static let masterName = Table("sqlite_master")
+    private static let tempMasterName = Table("sqlite_temp_master")
 
-    // legacy table names
-    internal static let masterName = Table("sqlite_master")
-    internal static let tempMasterName = Table("sqlite_temp_master")
+    static func get(for connection: Connection, temp: Bool = false) -> Table {
+        if connection.supports(.sqliteSchemaTable) {
+            return temp ? SchemaTable.tempName : SchemaTable.name
+        } else {
+            return temp ? SchemaTable.tempMasterName : SchemaTable.masterName
+        }
+    }
 
+    // columns
     static let typeColumn = Expression<String>("type")
     static let nameColumn = Expression<String>("name")
     static let tableNameColumn = Expression<String>("tbl_name")
@@ -140,7 +148,7 @@ private class SchemaTable {
     static let sqlColumn = Expression<String?>("sql")
 }
 
-private class TableInfoTable {
+private enum TableInfoTable {
     static let idColumn = Expression<Int64>("cid")
     static let nameColumn = Expression<String>("name")
     static let typeColumn = Expression<String>("type")
@@ -149,7 +157,7 @@ private class TableInfoTable {
     static let primaryKeyColumn = Expression<Int64?>("pk")
 }
 
-private class IndexInfoTable {
+private enum IndexInfoTable {
     // The rank of the column within the index. (0 means left-most.)
     static let seqnoColumn = Expression<Int64>("seqno")
     // The rank of the column within the table being indexed.
@@ -159,7 +167,7 @@ private class IndexInfoTable {
     static let nameColumn = Expression<String?>("name")
 }
 
-private class IndexListTable {
+private enum IndexListTable {
     // A sequence number assigned to each index for internal tracking purposes.
     static let seqColumn = Expression<Int64>("seq")
     // The name of the index
@@ -174,7 +182,7 @@ private class IndexListTable {
     static let partialColumn = Expression<Int64>("partial")
 }
 
-private class ForeignKeyListTable {
+private enum ForeignKeyListTable {
     static let idColumn = Expression<Int64>("id")
     static let seqColumn = Expression<Int64>("seq")
     static let tableColumn = Expression<String>("table")
@@ -183,14 +191,4 @@ private class ForeignKeyListTable {
     static let onUpdateColumn = Expression<String>("on_update")
     static let onDeleteColumn = Expression<String>("on_delete")
     static let matchColumn = Expression<String>("match")
-}
-
-private extension Connection {
-    func schemaTable(temp: Bool = false) -> Table {
-        if supports(.sqliteSchemaTable) {
-            return temp ? SchemaTable.tempName : SchemaTable.name
-        } else {
-            return temp ? SchemaTable.tempMasterName : SchemaTable.masterName
-        }
-    }
 }

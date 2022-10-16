@@ -245,8 +245,9 @@ public struct IndexDefinition: Equatable {
         }
 
         func orders(sql: String) -> [String: IndexDefinition.Order] {
-            IndexDefinition.orderRe.matches(in: sql, range: NSRange(location: 0, length: sql.count))
-                    .reduce([String: IndexDefinition.Order]()) { (memo, result) in
+            IndexDefinition.orderRe
+                .matches(in: sql, range: NSRange(location: 0, length: sql.count))
+                .reduce([String: IndexDefinition.Order]()) { (memo, result) in
                         var memo2 = memo
                         let column = (sql as NSString).substring(with: result.range(at: 1))
                         memo2[column] = .DESC
