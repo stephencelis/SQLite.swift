@@ -1371,6 +1371,37 @@ try db.transaction {
 
 > _Note:_ Transactions run in a serial queue.
 
+## Querying the Schema
+
+We can obtain generic information about objects in the current schema with a `SchemaReader`:
+
+```swift
+let schema = db.schema
+```
+
+To query the data:
+
+```swift
+let indexes = try schema.objectDefinitions(type: .index)
+let tables = try schema.objectDefinitions(type: .table)
+let triggers = try schema.objectDefinitions(type: .trigger)
+```
+
+### Indexes and Columns
+
+Specialized methods are available to get more detailed information:
+
+```swift
+let indexes = try schema.indexDefinitions("users")
+let columns = try schema.columnDefinitions("users")
+
+for index in indexes {
+    print("\(index.name) columns:\(index.columns))")
+}
+for column in columns {
+    print("\(column.name) pk:\(column.primaryKey) nullable: \(column.nullable)")
+}
+```
 
 ## Altering the Schema
 
@@ -1454,11 +1485,56 @@ tables](#creating-a-table).
 
 ### Renaming Columns
 
-Added in SQLite 3.25.0, not exposed yet. [#1073](https://github.com/stephencelis/SQLite.swift/issues/1073)
+We can rename columns with the help of the `SchemaChanger` class:
+
+```swift
+let schemaChanger = SchemaChanger(connection: db)
+try schemaChanger.alter(table: "users") { table in
+    table.rename("old_name", to: "new_name")
+}
+```
 
 ### Dropping Columns
 
-Added in SQLite 3.35.0, not exposed yet. [#1073](https://github.com/stephencelis/SQLite.swift/issues/1073)
+```swift
+let schemaChanger = SchemaChanger(connection: db)
+try schemaChanger.alter(table: "users") { table in
+    table.drop("column")
+}
+```
+
+These operations will work with all versions of SQLite and use modern SQL
+operations such as `DROP COLUMN` when available.
+
+### Adding Columns (SchemaChanger)
+
+The `SchemaChanger` provides an alternative API to add new columns:
+
+```swift
+let newColumn = ColumnDefinition(
+    name: "new_text_column",
+    type: .TEXT,
+    nullable: true, 
+    defaultValue: .stringLiteral("foo")
+)
+
+let schemaChanger = SchemaChanger(connection: db)
+
+try schemaChanger.alter(table: "users") { table in
+    table.add(newColumn)
+}
+```
+
+### Renaming/dropping Tables (SchemaChanger)
+
+The `SchemaChanger` provides an alternative API to rename and drop tables:
+
+```swift
+let schemaChanger = SchemaChanger(connection: db)
+
+try schemaChanger.rename(table: "users", to: "users_new")
+try schemaChanger.drop(table: "emails")
+```
 
 ### Indexes
 
@@ -1515,7 +1591,6 @@ try db.run(users.dropIndex(email, ifExists: true))
 // DROP INDEX IF EXISTS "index_users_on_email"
 ```
 
-
 ### Dropping Tables
 
 We can build
@@ -1534,7 +1609,6 @@ The `drop` function has one additional parameter, `ifExists`, which (when
 try db.run(users.drop(ifExists: true))
 // DROP TABLE IF EXISTS "users"
 ```
-
 
 ### Migrations and Schema Versioning
 

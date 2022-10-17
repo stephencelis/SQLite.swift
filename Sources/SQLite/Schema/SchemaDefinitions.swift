@@ -31,6 +31,10 @@ public struct ObjectDefinition: Equatable {
 
     // SQL text that describes the object (NULL for the internal indexes)
     public let sql: String?
+
+    public var isInternal: Bool {
+        name.starts(with: "sqlite_") || sql == nil
+    }
 }
 
 // https://sqlite.org/syntax/column-def.html

@@ -52,7 +52,7 @@ public class SchemaReader {
             return ObjectDefinition(
                 type: type,
                 name: row[SchemaTable.nameColumn],
-                tableName: row[SchemaTable.nameColumn],
+                tableName: row[SchemaTable.tableNameColumn],
                 rootpage: row[SchemaTable.rootPageColumn] ?? 0,
                 sql: row[SchemaTable.sqlColumn]
             )

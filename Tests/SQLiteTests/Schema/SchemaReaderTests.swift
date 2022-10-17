@@ -146,7 +146,7 @@ class SchemaReaderTests: SQLiteTestCase {
 
         XCTAssertEqual(tables.map { table in [table.name, table.tableName, table.type.rawValue]}, [
             ["users", "users", "table"],
-            ["sqlite_autoindex_users_1", "sqlite_autoindex_users_1", "index"]
+            ["sqlite_autoindex_users_1", "users", "index"]
         ])
     }
 
@@ -159,6 +159,38 @@ class SchemaReaderTests: SQLiteTestCase {
         let tables2 = try schemaReader.objectDefinitions(temp: true)
         XCTAssertEqual(tables2.map { table in [table.name, table.tableName, table.type.rawValue]}, [
             ["foo", "foo", "table"]
+        ])
+    }
+
+    func test_objectDefinitions_indexes() throws {
+        let emailIndex = users.createIndex(Expression<String>("email"), unique: false, ifNotExists: true)
+        try db.run(emailIndex)
+
+        let indexes = try schemaReader.objectDefinitions(type: .index)
+            .filter { !$0.isInternal }
+
+        XCTAssertEqual(indexes.map { index in [index.name, index.tableName, index.type.rawValue, index.sql]}, [
+            ["index_users_on_email",
+             "users",
+             "index",
+             "CREATE INDEX \"index_users_on_email\" ON \"users\" (\"email\")"]
+        ])
+    }
+
+    func test_objectDefinitions_triggers() throws {
+        let trigger = """
+        CREATE TRIGGER test_trigger
+            AFTER INSERT ON users BEGIN
+                UPDATE USERS SET name = "update" WHERE id = NEW.rowid;
+            END;
+        """
+
+        try db.run(trigger)
+
+        let triggers = try schemaReader.objectDefinitions(type: .trigger)
+
+        XCTAssertEqual(triggers.map { trigger in [trigger.name, trigger.tableName, trigger.type.rawValue]}, [
+            ["test_trigger", "users", "trigger"]
         ])
     }
 
