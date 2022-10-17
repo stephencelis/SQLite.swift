@@ -1514,7 +1514,7 @@ The `SchemaChanger` provides an alternative API to add new columns:
 let newColumn = ColumnDefinition(
     name: "new_text_column",
     type: .TEXT,
-    nullable: true, 
+    nullable: true,
     defaultValue: .stringLiteral("foo")
 )
 
