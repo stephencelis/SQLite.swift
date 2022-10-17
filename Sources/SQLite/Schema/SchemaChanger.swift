@@ -99,11 +99,11 @@ public class SchemaChanger: CustomStringConvertible {
             operations.append(.addColumn(column))
         }
 
-        public func drop(_ column: String) {
+        public func drop(column: String) {
             operations.append(.dropColumn(column))
         }
 
-        public func rename(_ column: String, to: String) {
+        public func rename(column: String, to: String) {
             operations.append(.renameColumn(column, to))
         }
     }

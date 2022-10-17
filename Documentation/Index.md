@@ -1490,7 +1490,7 @@ We can rename columns with the help of the `SchemaChanger` class:
 ```swift
 let schemaChanger = SchemaChanger(connection: db)
 try schemaChanger.alter(table: "users") { table in
-    table.rename("old_name", to: "new_name")
+    table.rename(column: "old_name", to: "new_name")
 }
 ```
 
@@ -1499,7 +1499,7 @@ try schemaChanger.alter(table: "users") { table in
 ```swift
 let schemaChanger = SchemaChanger(connection: db)
 try schemaChanger.alter(table: "users") { table in
-    table.drop("column")
+    table.drop(column: "email")
 }
 ```
 

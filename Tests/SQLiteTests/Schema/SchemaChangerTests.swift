@@ -53,7 +53,7 @@ class SchemaChangerTests: SQLiteTestCase {
 
     func test_drop_column() throws {
         try schemaChanger.alter(table: "users") { table in
-            table.drop("age")
+            table.drop(column: "age")
         }
         let columns = try schema.columnDefinitions(table: "users").map(\.name)
         XCTAssertFalse(columns.contains("age"))
@@ -63,7 +63,7 @@ class SchemaChangerTests: SQLiteTestCase {
         schemaChanger = .init(connection: db, version: .init(major: 3, minor: 24)) // DROP COLUMN introduced in 3.35.0
 
         try schemaChanger.alter(table: "users") { table in
-            table.drop("age")
+            table.drop(column: "age")
         }
         let columns = try schema.columnDefinitions(table: "users").map(\.name)
         XCTAssertFalse(columns.contains("age"))
@@ -71,7 +71,7 @@ class SchemaChangerTests: SQLiteTestCase {
 
     func test_rename_column() throws {
         try schemaChanger.alter(table: "users") { table in
-            table.rename("age", to: "age2")
+            table.rename(column: "age", to: "age2")
         }
 
         let columns = try schema.columnDefinitions(table: "users").map(\.name)
@@ -83,7 +83,7 @@ class SchemaChangerTests: SQLiteTestCase {
         schemaChanger = .init(connection: db, version: .init(major: 3, minor: 24)) // RENAME COLUMN introduced in 3.25.0
 
         try schemaChanger.alter(table: "users") { table in
-            table.rename("age", to: "age2")
+            table.rename(column: "age", to: "age2")
         }
 
         let columns = try schema.columnDefinitions(table: "users").map(\.name)
