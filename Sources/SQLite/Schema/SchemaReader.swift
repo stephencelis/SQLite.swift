@@ -39,10 +39,10 @@ public class SchemaReader {
                                   type: ObjectDefinition.ObjectType? = nil,
                                   temp: Bool = false) throws -> [ObjectDefinition] {
         var query: QueryType = SchemaTable.get(for: connection, temp: temp)
-        if let name = name {
+        if let name {
             query = query.where(SchemaTable.nameColumn == name)
         }
-        if let type = type {
+        if let type {
             query = query.where(SchemaTable.typeColumn == type.rawValue)
         }
         return try connection.prepare(query).map { row -> ObjectDefinition in

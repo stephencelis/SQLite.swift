@@ -108,15 +108,15 @@ extension String {
 }
 
 func transcode(_ literal: Binding?) -> String {
-    guard let literal = literal else { return "NULL" }
-
     switch literal {
     case let blob as Blob:
         return blob.description
     case let string as String:
         return string.quote("'")
-    case let binding:
+    case let binding?:
         return "\(binding)"
+    case .none:
+        return "NULL"
     }
 }
 

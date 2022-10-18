@@ -98,7 +98,7 @@ public struct Tokenizer {
                                  separators: Set<Character> = []) -> Tokenizer {
         var arguments = [String]()
 
-        if let removeDiacritics = removeDiacritics {
+        if let removeDiacritics {
             arguments.append("remove_diacritics=\(removeDiacritics ? 1 : 0)".quote())
         }
 
@@ -208,13 +208,13 @@ open class FTSConfig {
     func options() -> Options {
         var options = Options()
         options.append(formatColumnDefinitions())
-        if let tokenizer = tokenizer {
+        if let tokenizer {
             options.append("tokenize", value: Expression<Void>(literal: tokenizer.description))
         }
         options.appendCommaSeparated("prefix", values: prefixes.sorted().map { String($0) })
         if isContentless {
             options.append("content", value: "")
-        } else if let externalContentSchema = externalContentSchema {
+        } else if let externalContentSchema {
             options.append("content", value: externalContentSchema.tableName())
         }
         return options
@@ -245,7 +245,7 @@ open class FTSConfig {
         }
 
         @discardableResult mutating func append(_ key: String, value: Expressible?) -> Options {
-            if let value = value {
+            if let value {
                 arguments.append("=".join([Expression<Void>(literal: key), value]))
             }
             return self

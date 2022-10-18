@@ -215,7 +215,7 @@ private class SQLiteEncoder: Encoder {
         }
 
         func encodeIfPresent(_ value: Int?, forKey key: SQLiteEncoder.SQLiteKeyedEncodingContainer<Key>.Key) throws {
-            if let value = value {
+            if let value {
                 try encode(value, forKey: key)
             } else if forcingNilValueSetters {
                 encoder.setters.append(Expression<Int?>(key.stringValue) <- nil)
@@ -223,7 +223,7 @@ private class SQLiteEncoder: Encoder {
         }
 
         func encodeIfPresent(_ value: Bool?, forKey key: Key) throws {
-            if let value = value {
+            if let value {
                 try encode(value, forKey: key)
             } else if forcingNilValueSetters {
                 encoder.setters.append(Expression<Bool?>(key.stringValue) <- nil)
@@ -231,7 +231,7 @@ private class SQLiteEncoder: Encoder {
         }
 
         func encodeIfPresent(_ value: Float?, forKey key: Key) throws {
-            if let value = value {
+            if let value {
                 try encode(value, forKey: key)
             } else if forcingNilValueSetters {
                 encoder.setters.append(Expression<Double?>(key.stringValue) <- nil)
@@ -239,7 +239,7 @@ private class SQLiteEncoder: Encoder {
         }
 
         func encodeIfPresent(_ value: Double?, forKey key: Key) throws {
-            if let value = value {
+            if let value {
                 try encode(value, forKey: key)
             } else if forcingNilValueSetters {
                 encoder.setters.append(Expression<Double?>(key.stringValue) <- nil)
@@ -247,7 +247,7 @@ private class SQLiteEncoder: Encoder {
         }
 
         func encodeIfPresent(_ value: String?, forKey key: MyKey) throws {
-            if let value = value {
+            if let value {
                 try encode(value, forKey: key)
             } else if forcingNilValueSetters {
                 encoder.setters.append(Expression<String?>(key.stringValue) <- nil)
@@ -270,7 +270,7 @@ private class SQLiteEncoder: Encoder {
         }
 
         func encodeIfPresent<T>(_ value: T?, forKey key: Key) throws where T: Swift.Encodable {
-            guard let value = value else {
+            guard let value else {
                 guard forcingNilValueSetters else {
                     return
                 }

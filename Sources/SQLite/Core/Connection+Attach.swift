@@ -13,7 +13,7 @@ extension Connection {
     #if SQLITE_SWIFT_SQLCIPHER
     /// See https://www.zetetic.net/sqlcipher/sqlcipher-api/#attach
     public func attach(_ location: Location, as schemaName: String, key: String? = nil) throws {
-        if let key = key {
+        if let key {
             try run("ATTACH DATABASE ? AS ? KEY ?", location.description, schemaName, key)
         } else {
             try run("ATTACH DATABASE ? AS ?", location.description, schemaName)
