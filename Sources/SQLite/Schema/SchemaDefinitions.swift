@@ -122,7 +122,7 @@ public struct ColumnDefinition: Equatable {
     public init(name: String,
                 primaryKey: PrimaryKey? = nil,
                 type: Affinity,
-                nullable: Bool = false,
+                nullable: Bool = true,
                 defaultValue: LiteralValue = .NULL,
                 references: ForeignKey? = nil) {
         self.name = name

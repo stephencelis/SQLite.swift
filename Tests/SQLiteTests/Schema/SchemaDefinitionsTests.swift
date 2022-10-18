@@ -49,6 +49,16 @@ class ColumnDefinitionTests: XCTestCase {
         XCTAssertEqual(definition.toSQL(), expected)
     }
     #endif
+
+    func testNullableByDefault() {
+        let test = ColumnDefinition(name: "test", type: .REAL)
+        XCTAssertEqual(test.name, "test")
+        XCTAssertTrue(test.nullable)
+        XCTAssertEqual(test.defaultValue, .NULL)
+        XCTAssertEqual(test.type, .REAL)
+        XCTAssertNil(test.references)
+        XCTAssertNil(test.primaryKey)
+    }
 }
 
 class AffinityTests: XCTestCase {
