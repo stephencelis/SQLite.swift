@@ -991,6 +991,15 @@ public struct RowIterator: FailableIterator {
         }
         return elements
     }
+
+    public func compactMap<T>(_ transform: (Element) throws -> T?) throws -> [T] {
+        var elements = [T]()
+        while let row = try failableNext() {
+            guard let element = try transform(row) else { continue }
+            elements.append(element)
+        }
+        return elements
+    }
 }
 
 extension Connection {
@@ -1010,6 +1019,14 @@ extension Connection {
         let expression = query.expression
         let statement = try prepare(expression.template, expression.bindings)
         return RowIterator(statement: statement, columnNames: try columnNamesForQuery(query))
+    }
+
+    public func prepareRowIterator(_ statement: String, bindings: Binding?...) throws -> RowIterator {
+        try prepare(statement, bindings).prepareRowIterator()
+    }
+
+    public func prepareRowIterator(_ statement: String, bindings: [Binding?]) throws -> RowIterator {
+        try prepare(statement, bindings).prepareRowIterator()
     }
 
     private func columnNamesForQuery(_ query: QueryType) throws -> [String: Int] {

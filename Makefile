@@ -18,6 +18,8 @@ build:
 
 lint:
 	swiftlint --strict
+lint-fix:
+	swiftlint lint fix
 
 test:
 ifdef XCPRETTY

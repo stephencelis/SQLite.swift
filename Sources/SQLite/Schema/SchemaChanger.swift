@@ -27,34 +27,61 @@ import Foundation
        12. If foreign keys constraints were originally enabled, reenable them now.
 */
 public class SchemaChanger: CustomStringConvertible {
-    enum SchemaChangeError: LocalizedError {
+    public enum Error: LocalizedError {
+        case invalidColumnDefinition(String)
         case foreignKeyError([ForeignKeyError])
 
-        var errorDescription: String? {
+        public var errorDescription: String? {
             switch self {
             case .foreignKeyError(let errors):
                 return "Foreign key errors: \(errors)"
+            case .invalidColumnDefinition(let message):
+                return "Invalid column definition: \(message)"
             }
         }
     }
 
     public enum Operation {
-        case none
-        case add(ColumnDefinition)
-        case remove(String)
+        case addColumn(ColumnDefinition)
+        case dropColumn(String)
         case renameColumn(String, String)
         case renameTable(String)
 
         /// Returns non-nil if the operation can be executed with a simple SQL statement
         func toSQL(_ table: String, version: SQLiteVersion) -> String? {
             switch self {
-            case .add(let definition):
+            case .addColumn(let definition):
                 return "ALTER TABLE \(table.quote()) ADD COLUMN \(definition.toSQL())"
-            case .renameColumn(let from, let to) where version >= (3, 25, 0):
+            case .renameColumn(let from, let to) where SQLiteFeature.renameColumn.isSupported(by: version):
                 return "ALTER TABLE \(table.quote()) RENAME COLUMN \(from.quote()) TO \(to.quote())"
-            case .remove(let column) where version >= (3, 35, 0):
+            case .dropColumn(let column) where SQLiteFeature.dropColumn.isSupported(by: version):
                 return "ALTER TABLE \(table.quote()) DROP COLUMN \(column.quote())"
             default: return nil
+            }
+        }
+
+        func validate() throws {
+            switch self {
+            case .addColumn(let definition):
+                // The new column may take any of the forms permissible in a CREATE TABLE statement, with the following restrictions:
+                // - The column may not have a PRIMARY KEY or UNIQUE constraint.
+                // - The column may not have a default value of CURRENT_TIME, CURRENT_DATE, CURRENT_TIMESTAMP, or an expression in parentheses
+                // - If a NOT NULL constraint is specified, then the column must have a default value other than NULL.
+                guard definition.primaryKey == nil else {
+                    throw Error.invalidColumnDefinition("can not add primary key column")
+                }
+                let invalidValues: [LiteralValue] = [.CURRENT_TIME, .CURRENT_DATE, .CURRENT_TIMESTAMP]
+                if invalidValues.contains(definition.defaultValue) {
+                    throw Error.invalidColumnDefinition("Invalid default value")
+                }
+                if !definition.nullable && definition.defaultValue == .NULL {
+                    throw Error.invalidColumnDefinition("NOT NULL columns must have a default value other than NULL")
+                }
+            case .dropColumn:
+                // The DROP COLUMN command only works if the column is not referenced by any other parts of the schema
+                // and is not a PRIMARY KEY and does not have a UNIQUE constraint
+                break
+            default: break
             }
         }
     }
@@ -69,19 +96,20 @@ public class SchemaChanger: CustomStringConvertible {
         }
 
         public func add(_ column: ColumnDefinition) {
-            operations.append(.add(column))
+            operations.append(.addColumn(column))
         }
 
-        public func remove(_ column: String) {
-            operations.append(.remove(column))
+        public func drop(column: String) {
+            operations.append(.dropColumn(column))
         }
 
-        public func rename(_ column: String, to: String) {
+        public func rename(column: String, to: String) {
             operations.append(.renameColumn(column, to))
         }
     }
 
     private let connection: Connection
+    private let schemaReader: SchemaReader
     private let version: SQLiteVersion
     static let tempPrefix = "tmp_"
     typealias Block = () throws -> Void
@@ -100,6 +128,7 @@ public class SchemaChanger: CustomStringConvertible {
 
     init(connection: Connection, version: SQLiteVersion) {
         self.connection = connection
+        schemaReader = connection.schema
         self.version = version
     }
 
@@ -116,7 +145,15 @@ public class SchemaChanger: CustomStringConvertible {
         try dropTable(table)
     }
 
+    // Beginning with release 3.25.0 (2018-09-15), references to the table within trigger bodies and
+    // view definitions are also renamed.
+    public func rename(table: String, to: String) throws {
+        try connection.run("ALTER TABLE \(table.quote()) RENAME TO \(to.quote())")
+    }
+
     private func run(table: String, operation: Operation) throws {
+        try operation.validate()
+
         if let sql = operation.toSQL(table, version: version) {
             try connection.run(sql)
         } else {
@@ -129,10 +166,10 @@ public class SchemaChanger: CustomStringConvertible {
             try disableRefIntegrity {
                 let tempTable = "\(SchemaChanger.tempPrefix)\(table)"
                 try moveTable(from: table, to: tempTable, options: [.temp], operation: operation)
-                try moveTable(from: tempTable, to: table)
+                try rename(table: tempTable, to: table)
                 let foreignKeyErrors = try connection.foreignKeyCheck()
                 if foreignKeyErrors.count > 0 {
-                    throw SchemaChangeError.foreignKeyError(foreignKeyErrors)
+                    throw Error.foreignKeyError(foreignKeyErrors)
                 }
             }
         }
@@ -153,22 +190,24 @@ public class SchemaChanger: CustomStringConvertible {
         try block()
     }
 
-    private func moveTable(from: String, to: String, options: Options = .default, operation: Operation = .none) throws {
+    private func moveTable(from: String, to: String, options: Options = .default, operation: Operation? = nil) throws {
         try copyTable(from: from, to: to, options: options, operation: operation)
         try dropTable(from)
     }
 
-    private func copyTable(from: String, to: String, options: Options = .default, operation: Operation) throws {
+    private func copyTable(from: String, to: String, options: Options = .default, operation: Operation?) throws {
         let fromDefinition = TableDefinition(
             name: from,
-            columns: try connection.columnInfo(table: from),
-            indexes: try connection.indexInfo(table: from)
+            columns: try schemaReader.columnDefinitions(table: from),
+            indexes: try schemaReader.indexDefinitions(table: from)
         )
-        let toDefinition   = fromDefinition.apply(.renameTable(to)).apply(operation)
+        let toDefinition   = fromDefinition
+                .apply(.renameTable(to))
+                .apply(operation)
 
         try createTable(definition: toDefinition, options: options)
         try createTableIndexes(definition: toDefinition)
-        if case .remove = operation {
+        if case .dropColumn = operation {
             try copyTableContents(from: fromDefinition.apply(operation), to: toDefinition)
         } else {
             try copyTableContents(from: fromDefinition, to: toDefinition)
@@ -221,11 +260,11 @@ extension IndexDefinition {
 }
 
 extension TableDefinition {
-    func apply(_ operation: SchemaChanger.Operation) -> TableDefinition {
+    func apply(_ operation: SchemaChanger.Operation?) -> TableDefinition {
         switch operation {
         case .none: return self
-        case .add: fatalError("Use 'ALTER TABLE ADD COLUMN (...)'")
-        case .remove(let column):
+        case .addColumn: fatalError("Use 'ALTER TABLE ADD COLUMN (...)'")
+        case .dropColumn(let column):
             return TableDefinition(name: name,
                 columns: columns.filter { $0.name != column },
                 indexes: indexes.filter { !$0.columns.contains(column) }

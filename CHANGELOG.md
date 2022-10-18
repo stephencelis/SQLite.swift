@@ -1,6 +1,7 @@
 0.14.0 (tbd), [diff][diff-0.14.0]
 ========================================
 
+* Support more complex schema changes and queries ([#1073][], [#1146][] [#1148][])
 * Support `ATTACH`/`DETACH` ([#30][], [#1142][])
 * Support `WITH` clause ([#1139][])
 * Add `Value` conformance for `NSURL` ([#1110][], [#1141][])
@@ -160,6 +161,7 @@
 [#866]: https://github.com/stephencelis/SQLite.swift/pull/866
 [#881]: https://github.com/stephencelis/SQLite.swift/pull/881
 [#919]: https://github.com/stephencelis/SQLite.swift/pull/919
+[#1073]: https://github.com/stephencelis/SQLite.swift/issues/1073
 [#1075]: https://github.com/stephencelis/SQLite.swift/pull/1075
 [#1077]: https://github.com/stephencelis/SQLite.swift/issues/1077
 [#1094]: https://github.com/stephencelis/SQLite.swift/pull/1094
@@ -185,3 +187,5 @@
 [#1141]: https://github.com/stephencelis/SQLite.swift/pull/1141
 [#1142]: https://github.com/stephencelis/SQLite.swift/pull/1142
 [#1144]: https://github.com/stephencelis/SQLite.swift/pull/1144
+[#1146]: https://github.com/stephencelis/SQLite.swift/pull/1146
+[#1148]: https://github.com/stephencelis/SQLite.swift/pull/1148

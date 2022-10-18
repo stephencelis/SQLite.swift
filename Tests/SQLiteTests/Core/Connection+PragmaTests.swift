@@ -19,7 +19,7 @@ class ConnectionPragmaTests: SQLiteTestCase {
     }
 
     func test_sqlite_version() {
-        XCTAssertTrue(db.sqliteVersion >= (3, 0, 0))
+        XCTAssertTrue(db.sqliteVersion >= .init(major: 3, minor: 0))
     }
 
     func test_foreignKeys_defaults_to_false() {
