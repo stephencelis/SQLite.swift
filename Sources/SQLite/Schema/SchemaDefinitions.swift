@@ -154,7 +154,6 @@ public enum LiteralValue: Equatable, CustomStringConvertible {
 
     // If there is no explicit DEFAULT clause attached to a column definition, then the default value of the
     // column is NULL
-    // swiftlint:disable identifier_name
     case NULL
 
     // Beginning with SQLite 3.23.0 (2018-04-02), SQLite recognizes the identifiers "TRUE" and
@@ -164,6 +163,7 @@ public enum LiteralValue: Equatable, CustomStringConvertible {
     // The boolean identifiers TRUE and FALSE are usually just aliases for the integer values 1 and 0, respectively.
     case TRUE
     case FALSE
+    // swiftlint:disable identifier_name
     case CURRENT_TIME
     case CURRENT_DATE
     case CURRENT_TIMESTAMP
