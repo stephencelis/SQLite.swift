@@ -99,5 +99,5 @@ db.createAggregation("customConcat",
                      initialValue: "users:",
                      reduce: reduce,
                      result: { $0 })
-let result = db.prepare("SELECT customConcat(email) FROM users").scalar() as! String
+let result = try db.prepare("SELECT customConcat(email) FROM users").scalar() as! String
 print(result)
