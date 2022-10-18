@@ -3,6 +3,7 @@
 
 * Support more complex schema changes and queries ([#1073][], [#1146][] [#1148][])
 * Support `ATTACH`/`DETACH` ([#30][], [#1142][])
+* Expose connection flags (via `URIQueryParameter`) to open db ([#1074][]))
 * Support `WITH` clause ([#1139][])
 * Add `Value` conformance for `NSURL` ([#1110][], [#1141][])
 * Add decoding for `UUID` ([#1137][])
@@ -164,6 +165,7 @@
 [#881]: https://github.com/stephencelis/SQLite.swift/pull/881
 [#919]: https://github.com/stephencelis/SQLite.swift/pull/919
 [#1073]: https://github.com/stephencelis/SQLite.swift/issues/1073
+[#1074]: https://github.com/stephencelis/SQLite.swift/issues/1074
 [#1075]: https://github.com/stephencelis/SQLite.swift/pull/1075
 [#1077]: https://github.com/stephencelis/SQLite.swift/issues/1077
 [#1094]: https://github.com/stephencelis/SQLite.swift/pull/1094
