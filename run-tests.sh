@@ -8,9 +8,9 @@ if [ -n "$BUILD_SCHEME" ]; then
     fi
 elif [ -n "$VALIDATOR_SUBSPEC" ]; then
     if [ "$VALIDATOR_SUBSPEC" == "none" ]; then
-      pod lib lint --no-subspecs --fail-fast
+      pod lib lint --no-subspecs --fail-fast --platforms=ios,osx,tvos
     else
-      pod lib lint --subspec="${VALIDATOR_SUBSPEC}" --fail-fast
+      pod lib lint --subspec="${VALIDATOR_SUBSPEC}" --fail-fast --platforms=ios,osx,tvos
     fi
 elif [ -n "$CARTHAGE_PLATFORM" ]; then
     cd Tests/Carthage && make test CARTHAGE_PLATFORM="$CARTHAGE_PLATFORM"
