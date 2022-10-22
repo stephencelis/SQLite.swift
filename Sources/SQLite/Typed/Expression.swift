@@ -64,31 +64,31 @@ public struct Expression<Datatype>: ExpressionType {
 
 }
 
-public protocol Expressible {
+public protocol Expressible: CustomStringConvertible {
 
     var expression: Expression<Void> { get }
 
 }
 
 extension Expressible {
+    public var description: String {
+        asSQL()
+    }
 
     // naïve compiler for statements that can’t be bound, e.g., CREATE TABLE
     func asSQL() -> String {
         let expressed = expression
-        var idx = 0
-        return expressed.template.reduce("") { template, character in
-            let transcoded: String
+        return expressed.template.reduce(("", 0)) { memo, character in
+            let (template, index) = memo
 
             if character == "?" {
-                transcoded = transcode(expressed.bindings[idx])
-                idx += 1
+                precondition(index < expressed.bindings.count, "not enough bindings for expression")
+                return (template + transcode(expressed.bindings[index]), index + 1)
             } else {
-                transcoded = String(character)
+                return (template + String(character), index)
             }
-            return template + transcoded
-        }
+        }.0
     }
-
 }
 
 extension ExpressionType {
