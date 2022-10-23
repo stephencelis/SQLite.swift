@@ -21,26 +21,55 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
+import Foundation
 
-public struct Blob {
+public final class Blob {
 
-    public let bytes: [UInt8]
+    public let data: NSData
 
-    public init(bytes: [UInt8]) {
-        self.bytes = bytes
+    public var bytes: UnsafeRawPointer {
+        data.bytes
     }
 
-    public init(bytes: UnsafeRawPointer, length: Int) {
-        let i8bufptr = UnsafeBufferPointer(start: bytes.assumingMemoryBound(to: UInt8.self), count: length)
-        self.init(bytes: [UInt8](i8bufptr))
+    public var length: Int {
+        data.count
+    }
+
+    public convenience init(bytes: [UInt8]) {
+        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bytes.count)
+        for idx in 0..<bytes.count {
+            buffer.advanced(by: idx).pointee = bytes[idx]
+        }
+
+        let data = NSData(
+            bytesNoCopy: UnsafeMutableRawPointer(buffer),
+            length: bytes.count,
+            freeWhenDone: true
+        )
+        self.init(data: data)
+    }
+
+    public convenience init(bytes: UnsafeRawPointer, length: Int) {
+        self.init(data: NSData(bytes: bytes, length: length))
+    }
+
+    public init(data: NSData) {
+        self.data = data
     }
 
     public func toHex() -> String {
-        bytes.map {
-            ($0 < 16 ? "0" : "") + String($0, radix: 16, uppercase: false)
-        }.joined(separator: "")
-    }
+        let bytes = bytes.assumingMemoryBound(to: UInt8.self)
 
+        var hex = ""
+        for idx in 0..<length {
+            let byte = bytes.advanced(by: idx).pointee
+            if byte < 16 {
+                hex += "0"
+            }
+            hex += String(byte, radix: 16, uppercase: false)
+        }
+        return hex
+    }
 }
 
 extension Blob: CustomStringConvertible {

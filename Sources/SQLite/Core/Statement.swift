@@ -103,7 +103,7 @@ public final class Statement {
         if value == nil {
             sqlite3_bind_null(handle, Int32(idx))
         } else if let value = value as? Blob {
-            sqlite3_bind_blob(handle, Int32(idx), value.bytes, Int32(value.bytes.count), SQLITE_TRANSIENT)
+            sqlite3_bind_blob(handle, Int32(idx), value.bytes, Int32(value.length), SQLITE_TRANSIENT)
         } else if let value = value as? Double {
             sqlite3_bind_double(handle, Int32(idx), value)
         } else if let value = value as? Int64 {

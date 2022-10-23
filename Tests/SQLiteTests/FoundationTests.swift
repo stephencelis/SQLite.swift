@@ -5,7 +5,7 @@ class FoundationTests: XCTestCase {
     func testDataFromBlob() {
         let data = Data([1, 2, 3])
         let blob = data.datatypeValue
-        XCTAssertEqual([1, 2, 3], blob.bytes)
+        XCTAssertEqual([1, 2, 3], blob.byteArray)
     }
 
     func testBlobToData() {

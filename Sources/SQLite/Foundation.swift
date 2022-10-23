@@ -31,13 +31,11 @@ extension Data: Value {
     }
 
     public static func fromDatatypeValue(_ dataValue: Blob) -> Data {
-        Data(dataValue.bytes)
+        dataValue.data as Data
     }
 
     public var datatypeValue: Blob {
-        withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> Blob in
-            Blob(bytes: pointer.baseAddress!, length: count)
-        }
+        Blob(data: self as NSData)
     }
 
 }
