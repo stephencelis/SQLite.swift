@@ -19,7 +19,7 @@ class CipherTests: XCTestCase {
 
         // db2
         let key2 = keyData()
-        try db2.key(Blob(bytes: key2.bytes, length: key2.length))
+        try db2.key(Blob(data: key2))
 
         try db2.run("CREATE TABLE foo (bar TEXT)")
         try db2.run("INSERT INTO foo (bar) VALUES ('world')")
@@ -47,7 +47,7 @@ class CipherTests: XCTestCase {
 
     func test_data_rekey() throws {
         let newKey = keyData()
-        try db2.rekey(Blob(bytes: newKey.bytes, length: newKey.length))
+        try db2.rekey(Blob(data: newKey))
         XCTAssertEqual(1, try db2.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
@@ -108,12 +108,12 @@ class CipherTests: XCTestCase {
         XCTAssertEqual(1, try conn.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
-    private func keyData(length: Int = 64) -> NSMutableData {
+    private func keyData(length: Int = 64) -> NSData {
         let keyData = NSMutableData(length: length)!
         let result  = SecRandomCopyBytes(kSecRandomDefault, length,
                                          keyData.mutableBytes.assumingMemoryBound(to: UInt8.self))
         XCTAssertEqual(0, result)
-        return keyData
+        return NSData(data: keyData)
     }
 }
 #endif
