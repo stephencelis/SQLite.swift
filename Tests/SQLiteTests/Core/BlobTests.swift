@@ -34,4 +34,8 @@ class BlobTests: XCTestCase {
         XCTAssertEqual(blob1, blob2)
         XCTAssertNotEqual(blob1, blob3)
     }
+
+    func XXX_test_init_with_mutable_data_fails() {
+        _ = Blob(data: NSMutableData())
+    }
 }

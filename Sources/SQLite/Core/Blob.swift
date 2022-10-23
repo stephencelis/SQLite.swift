@@ -27,8 +27,8 @@ public final class Blob {
 
     public let data: NSData
 
-    public var bytes: UnsafeRawPointer {
-        data.bytes
+    public var bytes: UnsafePointer<UInt8> {
+        data.bytes.assumingMemoryBound(to: UInt8.self)
     }
 
     public var length: Int {
@@ -64,7 +64,6 @@ public final class Blob {
 
     public func toHex() -> String {
         guard length > 0 else { return "" }
-        let bytes = bytes.assumingMemoryBound(to: UInt8.self)
 
         var hex = ""
         for idx in 0..<length {
