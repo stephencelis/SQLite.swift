@@ -5,8 +5,12 @@ class BlobTests: XCTestCase {
 
     func test_toHex() {
         let blob = Blob(bytes: [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100, 150, 250, 255])
-
         XCTAssertEqual(blob.toHex(), "000a141e28323c46505a6496faff")
+    }
+
+    func test_toHex_empty() {
+        let blob = Blob(bytes: [])
+        XCTAssertEqual(blob.toHex(), "")
     }
 
     func test_init_array() {
@@ -19,6 +23,16 @@ class BlobTests: XCTestCase {
         pointer.initialize(repeating: 42, count: 3)
         let blob = Blob(bytes: pointer, length: 3)
         XCTAssertEqual(blob.byteArray, [42, 42, 42])
+    }
+
+    func test_equality() {
+        let blob1 = Blob(bytes: [42, 42, 42])
+        let blob2 = Blob(bytes: [42, 42, 42])
+        let blob3 = Blob(bytes: [42, 42, 43])
+
+        XCTAssertEqual(Blob(bytes: []), Blob(bytes: []))
+        XCTAssertEqual(blob1, blob2)
+        XCTAssertNotEqual(blob1, blob3)
     }
 }
 

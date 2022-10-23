@@ -36,6 +36,10 @@ public final class Blob {
     }
 
     public convenience init(bytes: [UInt8]) {
+        guard bytes.count > 0 else {
+            self.init(data: NSData())
+            return
+        }
         let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bytes.count)
         for idx in 0..<bytes.count {
             buffer.advanced(by: idx).pointee = bytes[idx]
@@ -54,10 +58,12 @@ public final class Blob {
     }
 
     public init(data: NSData) {
+        precondition(!(data is NSMutableData), "Blob cannot be initialized with mutable data")
         self.data = data
     }
 
     public func toHex() -> String {
+        guard length > 0 else { return "" }
         let bytes = bytes.assumingMemoryBound(to: UInt8.self)
 
         var hex = ""
@@ -85,5 +91,5 @@ extension Blob: Equatable {
 }
 
 public func ==(lhs: Blob, rhs: Blob) -> Bool {
-    lhs.bytes == rhs.bytes
+    lhs.data == rhs.data
 }
