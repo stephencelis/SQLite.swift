@@ -31,7 +31,7 @@ class StatementTests: SQLiteTestCase {
         try db.run(blobs.create { $0.column(blobColumn) })
         try db.run(blobs.insert(blobColumn <- Blob(bytes: [])))
         let blobValue = try db.scalar(blobs.select(blobColumn).limit(1, offset: 0))
-        XCTAssertEqual([], blobValue.byteArray)
+        XCTAssertEqual([], [UInt8](blobValue.data))
     }
 
     func test_prepareRowIterator() throws {
@@ -71,5 +71,4 @@ class StatementTests: SQLiteTestCase {
         // truncate succeeds
         try db.run("DROP TABLE users")
     }
-
 }

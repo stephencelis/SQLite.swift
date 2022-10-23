@@ -15,14 +15,14 @@ class BlobTests: XCTestCase {
 
     func test_init_array() {
         let blob = Blob(bytes: [42, 42, 42])
-        XCTAssertEqual(blob.byteArray, [42, 42, 42])
+        XCTAssertEqual([UInt8](blob.data), [42, 42, 42])
     }
 
     func test_init_unsafeRawPointer() {
         let pointer = UnsafeMutablePointer<UInt8>.allocate(capacity: 3)
         pointer.initialize(repeating: 42, count: 3)
         let blob = Blob(bytes: pointer, length: 3)
-        XCTAssertEqual(blob.byteArray, [42, 42, 42])
+        XCTAssertEqual([UInt8](blob.data), [42, 42, 42])
     }
 
     func test_equality() {
@@ -33,11 +33,5 @@ class BlobTests: XCTestCase {
         XCTAssertEqual(Blob(bytes: []), Blob(bytes: []))
         XCTAssertEqual(blob1, blob2)
         XCTAssertNotEqual(blob1, blob3)
-    }
-}
-
-extension Blob {
-    var byteArray: [UInt8] {
-        [UInt8](data)
     }
 }
