@@ -40,17 +40,7 @@ public final class Blob {
             self.init(data: NSData())
             return
         }
-        let buffer = UnsafeMutablePointer<UInt8>.allocate(capacity: bytes.count)
-        for idx in 0..<bytes.count {
-            buffer.advanced(by: idx).pointee = bytes[idx]
-        }
-
-        let data = NSData(
-            bytesNoCopy: UnsafeMutableRawPointer(buffer),
-            length: bytes.count,
-            freeWhenDone: true
-        )
-        self.init(data: data)
+        self.init(data: NSData(bytes: bytes, length: bytes.count))
     }
 
     public convenience init(bytes: UnsafeRawPointer, length: Int) {
