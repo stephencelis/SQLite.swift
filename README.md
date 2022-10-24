@@ -19,6 +19,7 @@ syntax _and_ intent.
  - [Well-documented][See Documentation]
  - Extensively tested
  - [SQLCipher][] support via CocoaPods
+ - [Schema query/migration][]
  - Works on [Linux](Documentation/Linux.md) (with some limitations)
  - Active support at
    [StackOverflow](https://stackoverflow.com/questions/tagged/sqlite.swift),
@@ -27,6 +28,7 @@ syntax _and_ intent.
 
 [SQLCipher]: https://www.zetetic.net/sqlcipher/
 [Full-text search]: Documentation/Index.md#full-text-search
+[Schema query/migration]: Documentation/Index.md#querying-the-schema
 [See Documentation]: Documentation/Index.md#sqliteswift-documentation
 
 
@@ -115,17 +117,10 @@ interactively, from the Xcode project’s playground.
 
 ![SQLite.playground Screen Shot](Documentation/Resources/playground@2x.png)
 
-For a more comprehensive example, see
-[this article][Create a Data Access Layer with SQLite.swift and Swift 2]
-and the [companion repository][SQLiteDataAccessLayer2].
-
-
-[Create a Data Access Layer with SQLite.swift and Swift 2]: https://masteringswift.blogspot.com/2015/09/create-data-access-layer-with.html
-[SQLiteDataAccessLayer2]: https://github.com/hoffmanjon/SQLiteDataAccessLayer2/tree/master
-
 ## Installation
 
-> _Note:_ Version 0.11.6 and later requires Swift 5 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.2) or greater. Version 0.11.5 requires Swift 4.2 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.1) or greater.
+> _Note:_ Version 0.11.6 and later requires Swift 5 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.2) or greater.
+> Version 0.11.5 requires Swift 4.2 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.1) or greater.
 
 ### Swift Package Manager
 
