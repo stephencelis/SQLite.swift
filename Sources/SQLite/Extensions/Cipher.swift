@@ -32,7 +32,7 @@ extension Connection {
     }
 
     public func key(_ key: Blob, db: String = "main") throws {
-        try _key_v2(db: db, keyPointer: key.bytes, keySize: key.bytes.count)
+        try _key_v2(db: db, keyPointer: key.bytes, keySize: key.length)
     }
 
     /// Same as `key(_ key: String, db: String = "main")`, running "PRAGMA cipher_migrate;"
@@ -53,7 +53,7 @@ extension Connection {
 
     /// Same as `[`keyAndMigrate(_ key: String, db: String = "main")` accepting byte array as key
     public func keyAndMigrate(_ key: Blob, db: String = "main") throws {
-        try _key_v2(db: db, keyPointer: key.bytes, keySize: key.bytes.count, migrate: true)
+        try _key_v2(db: db, keyPointer: key.bytes, keySize: key.length, migrate: true)
     }
 
     /// Change the key on an open database. NB: only works if the database is already encrypted.
@@ -68,7 +68,7 @@ extension Connection {
     }
 
     public func rekey(_ key: Blob, db: String = "main") throws {
-        try _rekey_v2(db: db, keyPointer: key.bytes, keySize: key.bytes.count)
+        try _rekey_v2(db: db, keyPointer: key.bytes, keySize: key.length)
     }
 
     /// Converts a non-encrypted database to an encrypted one.

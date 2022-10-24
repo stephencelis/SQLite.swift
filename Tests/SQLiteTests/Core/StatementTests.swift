@@ -22,7 +22,7 @@ class StatementTests: SQLiteTestCase {
         let statement = try db.prepare("SELECT email FROM users")
         XCTAssert(try statement.step())
         let blob = statement.row[0] as Blob
-        XCTAssertEqual("alice@example.com", String(bytes: blob.bytes, encoding: .utf8)!)
+        XCTAssertEqual("alice@example.com", String(data: blob.data as Data, encoding: .utf8)!)
     }
 
     func test_zero_sized_blob_returns_null() throws {
@@ -31,7 +31,7 @@ class StatementTests: SQLiteTestCase {
         try db.run(blobs.create { $0.column(blobColumn) })
         try db.run(blobs.insert(blobColumn <- Blob(bytes: [])))
         let blobValue = try db.scalar(blobs.select(blobColumn).limit(1, offset: 0))
-        XCTAssertEqual([], blobValue.bytes)
+        XCTAssertEqual([], [UInt8](blobValue.data))
     }
 
     func test_prepareRowIterator() throws {
@@ -71,5 +71,4 @@ class StatementTests: SQLiteTestCase {
         // truncate succeeds
         try db.run("DROP TABLE users")
     }
-
 }
