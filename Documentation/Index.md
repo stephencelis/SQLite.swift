@@ -2125,15 +2125,7 @@ using the following functions.
         }
     }
     ```
-    Statements with results may be iterated over, using a `RowIterator` if
-    useful.
     
-    ```swift
-    let emailColumn = Expression<String>("email")
-    let stmt = try db.prepare("SELECT id, email FROM users")
-    let emails = try! stmt.prepareRowIterator().map { $0[emailColumn] }
-    ```
-
   - `run` prepares a single `Statement` object from a SQL string, optionally
     binds values to it (using the statement’s `bind` function), executes,
     and returns the statement.
