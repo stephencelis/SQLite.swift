@@ -236,8 +236,8 @@ extension Statement: FailableIterator {
 }
 
 extension Statement {
-    public func prepareRowIterator() -> RowIterator {
-        return RowIterator(statement: self, columnNames: self.columnNameMap)
+    func prepareRowIterator() -> RowIterator {
+        RowIterator(statement: self, columnNames: columnNameMap)
     }
 
     var columnNameMap: [String: Int] {

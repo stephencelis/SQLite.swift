@@ -1,5 +1,5 @@
 import XCTest
-import SQLite
+@testable import SQLite
 
 #if SQLITE_SWIFT_STANDALONE
 import sqlite3
