@@ -19,6 +19,7 @@ syntax _and_ intent.
  - [Well-documented][See Documentation]
  - Extensively tested
  - [SQLCipher][] support via CocoaPods
+ - [Schema query/migration][]
  - Works on [Linux](Documentation/Linux.md) (with some limitations)
  - Active support at
    [StackOverflow](https://stackoverflow.com/questions/tagged/sqlite.swift),
@@ -27,6 +28,7 @@ syntax _and_ intent.
 
 [SQLCipher]: https://www.zetetic.net/sqlcipher/
 [Full-text search]: Documentation/Index.md#full-text-search
+[Schema query/migration]: Documentation/Index.md#querying-the-schema
 [See Documentation]: Documentation/Index.md#sqliteswift-documentation
 
 
@@ -115,17 +117,10 @@ interactively, from the Xcode project’s playground.
 
 ![SQLite.playground Screen Shot](Documentation/Resources/playground@2x.png)
 
-For a more comprehensive example, see
-[this article][Create a Data Access Layer with SQLite.swift and Swift 2]
-and the [companion repository][SQLiteDataAccessLayer2].
-
-
-[Create a Data Access Layer with SQLite.swift and Swift 2]: https://masteringswift.blogspot.com/2015/09/create-data-access-layer-with.html
-[SQLiteDataAccessLayer2]: https://github.com/hoffmanjon/SQLiteDataAccessLayer2/tree/master
-
 ## Installation
 
-> _Note:_ Version 0.11.6 and later requires Swift 5 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.2) or greater. Version 0.11.5 requires Swift 4.2 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.1) or greater.
+> _Note:_ Version 0.11.6 and later requires Swift 5 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.2) or greater.
+> Version 0.11.5 requires Swift 4.2 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.1) or greater.
 
 ### Swift Package Manager
 
@@ -136,7 +131,7 @@ Swift code.
 
   ```swift
   dependencies: [
-      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.13.3")
+      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.14.0")
   ]
   ```
 
@@ -160,7 +155,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.13.3
+    github "stephencelis/SQLite.swift" ~> 0.14.0
     ```
 
  3. Run `carthage update` and
@@ -191,7 +186,7 @@ SQLite.swift with CocoaPods:
     use_frameworks!
 
     target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.13.3'
+        pod 'SQLite.swift', '~> 0.14.0'
     end
     ```
 
@@ -250,7 +245,7 @@ device:
 [Submit a pull request]: https://github.com/stephencelis/SQLite.swift/fork
 
 
-## Author
+## Original author
 
  - [Stephen Celis](mailto:stephen@stephencelis.com)
    ([@stephencelis](https://twitter.com/stephencelis))
@@ -267,19 +262,14 @@ These projects enhance or use SQLite.swift:
 
  - [SQLiteMigrationManager.swift][] (inspired by
    [FMDBMigrationManager][])
- - [Delta: Math helper](https://apps.apple.com/app/delta-math-helper/id1436506800)
-   (see [Delta/Utils/Database.swift](https://github.com/GroupeMINASTE/Delta-iOS/blob/master/Delta/Utils/Database.swift) for production implementation example)
-
 
 ## Alternatives
 
 Looking for something else? Try another Swift wrapper (or [FMDB][]):
 
- - [Camembert](https://github.com/remirobert/Camembert)
  - [GRDB](https://github.com/groue/GRDB.swift)
  - [SQLiteDB](https://github.com/FahimF/SQLiteDB)
  - [Squeal](https://github.com/nerdyc/Squeal)
- - [SwiftData](https://github.com/ryanfowler/SwiftData)
 
 [Swift]: https://swift.org/
 [SQLite3]: https://www.sqlite.org

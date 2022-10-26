@@ -52,6 +52,7 @@ for user in try Array(rowIterator) {
 
 /// also with `map()`
 let mapRowIterator = try db.prepareRowIterator(users)
+
 let userIds = try mapRowIterator.map { $0[id] }
 
 /// using `failableNext()` on `RowIterator`

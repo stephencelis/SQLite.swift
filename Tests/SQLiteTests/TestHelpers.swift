@@ -12,7 +12,7 @@ class SQLiteTestCase: XCTestCase {
         trace = [String: Int]()
 
         db.trace { SQL in
-            print(SQL)
+            // print("SQL: \(SQL)")
             self.trace[SQL, default: 0] += 1
         }
     }
