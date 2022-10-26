@@ -1,4 +1,4 @@
-0.14.0 (tbd), [diff][diff-0.14.0]
+0.14.0 (27-10-2022), [diff][diff-0.14.0]
 ========================================
 For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
 

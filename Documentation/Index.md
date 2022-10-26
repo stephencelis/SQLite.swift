@@ -50,7 +50,7 @@
     - [Schema Changer](#schemachanger)
       - [Renaming Columns](#renaming-columns)
       - [Dropping Columns](#dropping-columns)
-      - [Renaming/dropping tables](#renamingdropping-tables)
+      - [Renaming/dropping Tables](#renamingdropping-tables)
     - [Indexes](#indexes)
       - [Creating Indexes](#creating-indexes)
       - [Dropping Indexes](#dropping-indexes)
@@ -173,7 +173,7 @@ See the [sqlite3 podspec][sqlite3pod] for more details.
 #### Using SQLite.swift with SQLCipher
 
 If you want to use [SQLCipher][] with SQLite.swift you can require the
-`SQLCipher` subspec in your Podfile:
+`SQLCipher` subspec in your Podfile (SPM is not supported yet, see [#1084](/issues/1084)):
 
 ```ruby
 target 'YourAppTargetName' do
@@ -2183,7 +2183,7 @@ try db.detach("external")
 // DETACH DATABASE 'external'
 ```
 
-When compiled for SQLCipher, you can additionally pass a `key` parameter to `attach`:
+When compiled for SQLCipher, we can additionally pass a `key` parameter to `attach`:
 
 ```swift
 try db.attach(.uri("encrypted.sqlite"), as: "encrypted", key: "secret")
