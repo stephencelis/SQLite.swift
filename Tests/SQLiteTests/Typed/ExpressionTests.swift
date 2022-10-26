@@ -18,6 +18,11 @@ class ExpressionTests: XCTestCase {
         XCTAssertEqual(expression.asSQL(), expression.description)
     }
 
+    func test_builtin_unambiguously_custom_string_convertible() {
+        let integer: Int = 45
+        XCTAssertEqual(integer.description, "45")
+    }
+
     func test_init_literal() {
         let expression = Expression<String>(literal: "literal")
         XCTAssertEqual(expression.template, "literal")

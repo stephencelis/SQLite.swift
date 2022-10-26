@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-public protocol ExpressionType: Expressible { // extensions cannot have inheritance clauses
+public protocol ExpressionType: Expressible, CustomStringConvertible { // extensions cannot have inheritance clauses
 
     associatedtype UnderlyingType = Void
 
@@ -47,6 +47,9 @@ extension ExpressionType {
         self.init(expression.template, expression.bindings)
     }
 
+    public var description: String {
+        asSQL()
+    }
 }
 
 /// An `Expression` represents a raw SQL fragment and any associated bindings.
@@ -64,16 +67,13 @@ public struct Expression<Datatype>: ExpressionType {
 
 }
 
-public protocol Expressible: CustomStringConvertible {
+public protocol Expressible {
 
     var expression: Expression<Void> { get }
 
 }
 
 extension Expressible {
-    public var description: String {
-        asSQL()
-    }
 
     // naïve compiler for statements that can’t be bound, e.g., CREATE TABLE
     func asSQL() -> String {

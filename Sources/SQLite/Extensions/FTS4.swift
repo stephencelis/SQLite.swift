@@ -117,7 +117,7 @@ public struct Tokenizer {
 
     // https://sqlite.org/fts5.html#the_experimental_trigram_tokenizer
     public static func Trigram(caseSensitive: Bool = false) -> Tokenizer {
-        return Tokenizer("trigram", ["case_sensitive", caseSensitive ? "1" : "0"])
+        Tokenizer("trigram", ["case_sensitive", caseSensitive ? "1" : "0"])
     }
 
     public static func Custom(_ name: String) -> Tokenizer {
@@ -236,18 +236,12 @@ open class FTSConfig {
             }
         }
 
-        @discardableResult mutating func append(_ key: String, value: CustomStringConvertible?) -> Options {
-            append(key, value: value?.description)
+        @discardableResult mutating func append(_ key: String, value: String) -> Options {
+            append(key, value: Expression<String>(value))
         }
 
-        @discardableResult mutating func append(_ key: String, value: String?) -> Options {
-            append(key, value: value.map { Expression<String>($0) })
-        }
-
-        @discardableResult mutating func append(_ key: String, value: Expressible?) -> Options {
-            if let value = value {
-                arguments.append("=".join([Expression<Void>(literal: key), value]))
-            }
+        @discardableResult mutating func append(_ key: String, value: Expressible) -> Options {
+            arguments.append("=".join([Expression<Void>(literal: key), value]))
             return self
         }
     }
@@ -256,26 +250,16 @@ open class FTSConfig {
 /// Configuration for the [FTS4](https://www.sqlite.org/fts3.html) extension.
 open class FTS4Config: FTSConfig {
     /// [The matchinfo= option](https://www.sqlite.org/fts3.html#section_6_4)
-    public enum MatchInfo: CustomStringConvertible {
+    public enum MatchInfo: String {
         case fts3
-        public var description: String {
-            "fts3"
-        }
     }
 
     /// [FTS4 options](https://www.sqlite.org/fts3.html#fts4_options)
-    public enum Order: CustomStringConvertible {
+    public enum Order: String {
         /// Data structures are optimized for returning results in ascending order by docid (default)
         case asc
         /// FTS4 stores its data in such a way as to optimize returning results in descending order by docid.
         case desc
-
-        public var description: String {
-            switch self {
-            case .asc: return "asc"
-            case .desc: return "desc"
-            }
-        }
     }
 
     var compressFunction: String?
@@ -322,11 +306,21 @@ open class FTS4Config: FTSConfig {
         for (column, _) in (columnDefinitions.filter { $0.options.contains(.unindexed) }) {
             options.append("notindexed", value: column)
         }
-        options.append("languageid", value: languageId)
-        options.append("compress", value: compressFunction)
-        options.append("uncompress", value: uncompressFunction)
-        options.append("matchinfo", value: matchInfo)
-        options.append("order", value: order)
+        if let languageId = languageId {
+            options.append("languageid", value: languageId)
+        }
+        if let compressFunction = compressFunction {
+            options.append("compress", value: compressFunction)
+        }
+        if let uncompressFunction = uncompressFunction {
+            options.append("uncompress", value: uncompressFunction)
+        }
+        if let matchInfo = matchInfo {
+            options.append("matchinfo", value: matchInfo.rawValue)
+        }
+        if let order = order {
+            options.append("order", value: order.rawValue)
+        }
         return options
     }
 }

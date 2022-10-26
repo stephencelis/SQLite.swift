@@ -33,21 +33,13 @@ extension Module {
 /// **Note:** this is currently only applicable when using SQLite.swift together with a FTS5-enabled version
 /// of SQLite.
 open class FTS5Config: FTSConfig {
-    public enum Detail: CustomStringConvertible {
+    public enum Detail: String {
         /// store rowid, column number, term offset
         case full
         /// store rowid, column number
         case column
         /// store rowid
         case none
-
-        public var description: String {
-            switch self {
-            case .full: return "full"
-            case .column: return "column"
-            case .none: return "none"
-            }
-        }
     }
 
     var detail: Detail?
@@ -77,11 +69,15 @@ open class FTS5Config: FTSConfig {
 
     override func options() -> Options {
         var options = super.options()
-        options.append("content_rowid", value: contentRowId)
+        if let contentRowId = contentRowId {
+            options.append("content_rowid", value: contentRowId)
+        }
         if let columnSize = columnSize {
             options.append("columnsize", value: Expression<Int>(value: columnSize))
         }
-        options.append("detail", value: detail)
+        if let detail = detail {
+            options.append("detail", value: detail.rawValue)
+        }
         return options
     }
 
