@@ -135,6 +135,20 @@ class SchemaChangerTests: SQLiteTestCase {
         }
     }
 
+    func test_drop_table_if_exists_true() throws {
+        try schemaChanger.drop(table: "xxx", ifExists: true)
+    }
+
+    func test_drop_table_if_exists_false() throws {
+        XCTAssertThrowsError(try schemaChanger.drop(table: "xxx", ifExists: false)) { error in
+            if case Result.error(let message, _, _) =  error {
+                XCTAssertEqual(message, "no such table: xxx")
+            } else {
+                XCTFail("unexpected error \(error)")
+            }
+        }
+    }
+
     func test_rename_table() throws {
         try schemaChanger.rename(table: "users", to: "users_new")
         let users_new = Table("users_new")

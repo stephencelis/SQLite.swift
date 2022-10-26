@@ -41,14 +41,19 @@
   - [Updating Rows](#updating-rows)
   - [Deleting Rows](#deleting-rows)
   - [Transactions and Savepoints](#transactions-and-savepoints)
+  - [Querying the Schema](#querying-the-schema)
   - [Altering the Schema](#altering-the-schema)
     - [Renaming Tables](#renaming-tables)
+    - [Dropping Tables](#dropping-tables)
     - [Adding Columns](#adding-columns)
       - [Added Column Constraints](#added-column-constraints)
+    - [Schema Changer](#schemachanger)
+      - [Renaming Columns](#renaming-columns)
+      - [Dropping Columns](#dropping-columns)
+      - [Renaming/dropping tables](#renamingdropping-tables)
     - [Indexes](#indexes)
       - [Creating Indexes](#creating-indexes)
       - [Dropping Indexes](#dropping-indexes)
-    - [Dropping Tables](#dropping-tables)
     - [Migrations and Schema Versioning](#migrations-and-schema-versioning)
   - [Custom Types](#custom-types)
     - [Date-Time Values](#date-time-values)
@@ -1409,7 +1414,6 @@ for column in columns {
 SQLite.swift comes with several functions (in addition to `Table.create`) for
 altering a database schema in a type-safe manner.
 
-
 ### Renaming Tables
 
 We can build an `ALTER TABLE … RENAME TO` statement by calling the `rename`
@@ -1420,6 +1424,24 @@ try db.run(users.rename(Table("users_old")))
 // ALTER TABLE "users" RENAME TO "users_old"
 ```
 
+### Dropping Tables
+
+We can build
+[`DROP TABLE` statements](https://www.sqlite.org/lang_droptable.html)
+by calling the `dropTable` function on a `SchemaType`.
+
+```swift
+try db.run(users.drop())
+// DROP TABLE "users"
+```
+
+The `drop` function has one additional parameter, `ifExists`, which (when
+`true`) adds an `IF EXISTS` clause to the statement.
+
+```swift
+try db.run(users.drop(ifExists: true))
+// DROP TABLE IF EXISTS "users"
+```
 
 ### Adding Columns
 
@@ -1484,32 +1506,13 @@ tables](#creating-a-table).
     // ALTER TABLE "posts" ADD COLUMN "user_id" INTEGER REFERENCES "users" ("id")
     ```
 
-### Renaming Columns
+### SchemaChanger
 
-We can rename columns with the help of the `SchemaChanger` class:
+Version 0.14.0 introduces `SchemaChanger`, an alternative API to perform more complex
+migrations such as renaming columns. These operations work with all versions of
+SQLite but use SQL statements such as `ALTER TABLE RENAME COLUMN` when available.
 
-```swift
-let schemaChanger = SchemaChanger(connection: db)
-try schemaChanger.alter(table: "users") { table in
-    table.rename(column: "old_name", to: "new_name")
-}
-```
-
-### Dropping Columns
-
-```swift
-let schemaChanger = SchemaChanger(connection: db)
-try schemaChanger.alter(table: "users") { table in
-    table.drop(column: "email")
-}
-```
-
-These operations will work with all versions of SQLite and use modern SQL
-operations such as `DROP COLUMN` when available.
-
-### Adding Columns (SchemaChanger)
-
-The `SchemaChanger` provides an alternative API to add new columns:
+#### Adding Columns
 
 ```swift
 let newColumn = ColumnDefinition(
@@ -1526,15 +1529,31 @@ try schemaChanger.alter(table: "users") { table in
 }
 ```
 
-### Renaming/dropping Tables (SchemaChanger)
+#### Renaming Columns
 
-The `SchemaChanger` provides an alternative API to rename and drop tables:
+```swift
+let schemaChanger = SchemaChanger(connection: db)
+try schemaChanger.alter(table: "users") { table in
+    table.rename(column: "old_name", to: "new_name")
+}
+```
+
+#### Dropping Columns
+
+```swift
+let schemaChanger = SchemaChanger(connection: db)
+try schemaChanger.alter(table: "users") { table in
+    table.drop(column: "email")
+}
+```
+
+#### Renaming/dropping Tables
 
 ```swift
 let schemaChanger = SchemaChanger(connection: db)
 
 try schemaChanger.rename(table: "users", to: "users_new")
-try schemaChanger.drop(table: "emails")
+try schemaChanger.drop(table: "emails", ifExists: false)
 ```
 
 ### Indexes
@@ -1590,25 +1609,6 @@ The `dropIndex` function has one additional parameter, `ifExists`, which
 ```swift
 try db.run(users.dropIndex(email, ifExists: true))
 // DROP INDEX IF EXISTS "index_users_on_email"
-```
-
-### Dropping Tables
-
-We can build
-[`DROP TABLE` statements](https://www.sqlite.org/lang_droptable.html)
-by calling the `dropTable` function on a `SchemaType`.
-
-```swift
-try db.run(users.drop())
-// DROP TABLE "users"
-```
-
-The `drop` function has one additional parameter, `ifExists`, which (when
-`true`) adds an `IF EXISTS` clause to the statement.
-
-```swift
-try db.run(users.drop(ifExists: true))
-// DROP TABLE IF EXISTS "users"
 ```
 
 ### Migrations and Schema Versioning

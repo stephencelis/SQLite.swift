@@ -1,5 +1,6 @@
 0.14.0 (tbd), [diff][diff-0.14.0]
 ========================================
+For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
 
 * Support more complex schema changes and queries ([#1073][], [#1146][] [#1148][])
 * Support `ATTACH`/`DETACH` ([#30][], [#1142][])

@@ -141,8 +141,8 @@ public class SchemaChanger: CustomStringConvertible {
         }
     }
 
-    public func drop(table: String) throws {
-        try dropTable(table)
+    public func drop(table: String, ifExists: Bool = true) throws {
+        try dropTable(table, ifExists: ifExists)
     }
 
     // Beginning with release 3.25.0 (2018-09-15), references to the table within trigger bodies and
@@ -192,7 +192,7 @@ public class SchemaChanger: CustomStringConvertible {
 
     private func moveTable(from: String, to: String, options: Options = .default, operation: Operation? = nil) throws {
         try copyTable(from: from, to: to, options: options, operation: operation)
-        try dropTable(from)
+        try dropTable(from, ifExists: true)
     }
 
     private func copyTable(from: String, to: String, options: Options = .default, operation: Operation?) throws {
@@ -225,8 +225,8 @@ public class SchemaChanger: CustomStringConvertible {
         }
     }
 
-    private func dropTable(_ table: String) throws {
-        try connection.run("DROP TABLE IF EXISTS \(table.quote())")
+    private func dropTable(_ table: String, ifExists: Bool) throws {
+        try connection.run("DROP TABLE \(ifExists ? "IF EXISTS" : "") \(table.quote())")
     }
 
     private func copyTableContents(from: TableDefinition, to: TableDefinition) throws {
