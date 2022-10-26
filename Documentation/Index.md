@@ -9,6 +9,7 @@
     - [Connecting to a Database](#connecting-to-a-database)
       - [Read-Write Databases](#read-write-databases)
       - [Read-Only Databases](#read-only-databases)
+      - [In a Shared Group Container](#in-a-shared-group-container)
       - [In-Memory Databases](#in-memory-databases)
       - [URI parameters](#uri-parameters)
       - [Thread-Safety](#thread-safety)
@@ -173,7 +174,7 @@ See the [sqlite3 podspec][sqlite3pod] for more details.
 #### Using SQLite.swift with SQLCipher
 
 If you want to use [SQLCipher][] with SQLite.swift you can require the
-`SQLCipher` subspec in your Podfile (SPM is not supported yet, see [#1084](/issues/1084)):
+`SQLCipher` subspec in your Podfile (SPM is not supported yet, see [#1084](https://github.com/stephencelis/SQLite.swift/issues/1084)):
 
 ```ruby
 target 'YourAppTargetName' do
@@ -329,6 +330,13 @@ let db = try Connection(path, readonly: true)
 > [2](https://stackoverflow.com/questions/34614968/ios-how-to-copy-pre-seeded-database-at-the-first-running-app-with-sqlite-swift).
 > We welcome changes to the above sample code to show how to successfully copy and use a bundled "seed"
 > database for writing in an app.
+
+#### In a shared group container
+
+It is not recommend to store databases in a [shared group container],
+some users have reported crashes ([#1042](https://github.com/stephencelis/SQLite.swift/issues/1042)).
+
+[shared group container]: https://developer.apple.com/documentation/foundation/filemanager/1412643-containerurl#
 
 #### In-Memory Databases
 
