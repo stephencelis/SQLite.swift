@@ -277,10 +277,10 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
 
 [GitHubActionBadge]: https://img.shields.io/github/workflow/status/stephencelis/SQLite.swift/Build%20and%20test
 
-[CocoaPodsVersionBadge]: https://cocoapod-badges.herokuapp.com/v/SQLite.swift/badge.png
+[CocoaPodsVersionBadge]: https://img.shields.io/cocoapods/v/SQLite.swift.svg?style=flat
 [CocoaPodsVersionLink]: https://cocoapods.org/pods/SQLite.swift
 
-[PlatformBadge]: https://cocoapod-badges.herokuapp.com/p/SQLite.swift/badge.png
+[PlatformBadge]: https://img.shields.io/cocoapods/p/SQLite.swift.svg?style=flat
 [PlatformLink]: https://cocoapods.org/pods/SQLite.swift
 
 [CartagheBadge]: https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat
