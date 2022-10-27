@@ -1533,7 +1533,7 @@ let newColumn = ColumnDefinition(
 let schemaChanger = SchemaChanger(connection: db)
 
 try schemaChanger.alter(table: "users") { table in
-    table.add(newColumn)
+    table.add(column: newColumn)
 }
 ```
 

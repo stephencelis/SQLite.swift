@@ -99,7 +99,7 @@ class SchemaChangerTests: SQLiteTestCase {
                                          defaultValue: .stringLiteral("foo"))
 
         try schemaChanger.alter(table: "users") { table in
-            table.add(newColumn)
+            table.add(column: newColumn)
         }
 
         let columns = try schema.columnDefinitions(table: "users")
@@ -114,7 +114,7 @@ class SchemaChangerTests: SQLiteTestCase {
                                          type: .TEXT)
 
         XCTAssertThrowsError(try schemaChanger.alter(table: "users") { table in
-            table.add(newColumn)
+            table.add(column: newColumn)
         }) { error in
             if case SchemaChanger.Error.invalidColumnDefinition(_) = error {
                 XCTAssertEqual("Invalid column definition: can not add primary key column", error.localizedDescription)

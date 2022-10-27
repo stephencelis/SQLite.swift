@@ -115,7 +115,7 @@ print(columns)
 
 let schemaChanger = SchemaChanger(connection: db)
 try schemaChanger.alter(table: "users") { table in
-    table.add(ColumnDefinition(name: "age", type: .INTEGER))
+    table.add(column: ColumnDefinition(name: "age", type: .INTEGER))
     table.rename(column: "email", to: "electronic_mail")
     table.drop(column: "name")
 }

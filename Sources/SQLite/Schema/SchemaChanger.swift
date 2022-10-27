@@ -95,7 +95,7 @@ public class SchemaChanger: CustomStringConvertible {
             self.name = name
         }
 
-        public func add(_ column: ColumnDefinition) {
+        public func add(column: ColumnDefinition) {
             operations.append(.addColumn(column))
         }
 
