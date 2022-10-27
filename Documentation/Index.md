@@ -49,9 +49,10 @@
     - [Adding Columns](#adding-columns)
       - [Added Column Constraints](#added-column-constraints)
     - [Schema Changer](#schemachanger)
+      - [Adding Columns](#adding-columns)
       - [Renaming Columns](#renaming-columns)
       - [Dropping Columns](#dropping-columns)
-      - [Renaming/dropping Tables](#renamingdropping-tables)
+      - [Renaming/Dropping Tables](#renamingdropping-tables)
     - [Indexes](#indexes)
       - [Creating Indexes](#creating-indexes)
       - [Dropping Indexes](#dropping-indexes)
@@ -1555,7 +1556,7 @@ try schemaChanger.alter(table: "users") { table in
 }
 ```
 
-#### Renaming/dropping Tables
+#### Renaming/Dropping Tables
 
 ```swift
 let schemaChanger = SchemaChanger(connection: db)
