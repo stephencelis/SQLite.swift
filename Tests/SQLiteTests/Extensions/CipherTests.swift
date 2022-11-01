@@ -19,7 +19,7 @@ class CipherTests: XCTestCase {
 
         // db2
         let key2 = keyData()
-        try db2.key(Blob(data: key2))
+        try db2.key(Blob(bytes: key2.bytes, length: key2.length))
 
         try db2.run("CREATE TABLE foo (bar TEXT)")
         try db2.run("INSERT INTO foo (bar) VALUES ('world')")
@@ -47,7 +47,7 @@ class CipherTests: XCTestCase {
 
     func test_data_rekey() throws {
         let newKey = keyData()
-        try db2.rekey(Blob(data: newKey))
+        try db2.rekey(Blob(bytes: newKey.bytes, length: newKey.length))
         XCTAssertEqual(1, try db2.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
@@ -79,12 +79,11 @@ class CipherTests: XCTestCase {
         // sqlite> CREATE TABLE foo (bar TEXT);
         // sqlite> INSERT INTO foo (bar) VALUES ('world');
         guard let cipherVersion: String = db1.cipherVersion,
-            cipherVersion.starts(with: "3.") || cipherVersion.starts(with: "4.")
-            else { return }
+            cipherVersion.starts(with: "3.") || cipherVersion.starts(with: "4.") else { return }
 
         let encryptedFile = cipherVersion.starts(with: "3.") ?
-            fixture("encrypted-3.x", withExtension: "sqlite") :
-            fixture("encrypted-4.x", withExtension: "sqlite")
+                fixture("encrypted-3.x", withExtension: "sqlite") :
+                fixture("encrypted-4.x", withExtension: "sqlite")
 
         try FileManager.default.setAttributes([FileAttributeKey.immutable: 1], ofItemAtPath: encryptedFile)
         XCTAssertFalse(FileManager.default.isWritableFile(atPath: encryptedFile))

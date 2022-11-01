@@ -1,3 +1,8 @@
+0.14.1 (01-11-2022), [diff][diff-0.14.1]
+========================================
+
+* Reverted `Blob` changes (See [#1167][] for rationale).
+
 0.14.0 (27-10-2022), [diff][diff-0.14.0]
 ========================================
 For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
@@ -129,6 +134,7 @@ For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
 [diff-0.13.2]: https://github.com/stephencelis/SQLite.swift/compare/0.13.1...0.13.2
 [diff-0.13.3]: https://github.com/stephencelis/SQLite.swift/compare/0.13.2...0.13.3
 [diff-0.14.0]: https://github.com/stephencelis/SQLite.swift/compare/0.13.3...0.14.0
+[diff-0.14.1]: https://github.com/stephencelis/SQLite.swift/compare/0.14.0...0.14.1
 
 [#30]: https://github.com/stephencelis/SQLite.swift/issues/30
 [#142]: https://github.com/stephencelis/SQLite.swift/issues/142

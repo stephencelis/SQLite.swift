@@ -103,10 +103,10 @@ public final class Statement {
         switch value {
         case .none:
             sqlite3_bind_null(handle, Int32(idx))
-        case let value as Blob where value.length == 0:
+        case let value as Blob where value.bytes.count == 0:
             sqlite3_bind_zeroblob(handle, Int32(idx), 0)
         case let value as Blob:
-            sqlite3_bind_blob(handle, Int32(idx), value.bytes, Int32(value.length), SQLITE_TRANSIENT)
+            sqlite3_bind_blob(handle, Int32(idx), value.bytes, Int32(value.bytes.count), SQLITE_TRANSIENT)
         case let value as Double:
             sqlite3_bind_double(handle, Int32(idx), value)
         case let value as Int64:
