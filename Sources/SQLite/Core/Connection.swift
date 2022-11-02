@@ -741,7 +741,7 @@ extension Context {
     func set(result: Binding?) {
         switch result {
         case let blob as Blob:
-            sqlite3_result_blob(self, blob.bytes, Int32(blob.length), nil)
+            sqlite3_result_blob(self, blob.bytes, Int32(blob.bytes.count), nil)
         case let double as Double:
             sqlite3_result_double(self, double)
         case let int as Int64:

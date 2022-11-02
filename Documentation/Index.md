@@ -90,7 +90,7 @@ process of downloading, compiling, and linking dependencies.
 
   ```swift
   dependencies: [
-    .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.14.0")
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.14.1")
   ]
   ```
 
@@ -111,7 +111,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.14.0
+    github "stephencelis/SQLite.swift" ~> 0.14.1
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -141,7 +141,7 @@ install SQLite.swift with Carthage:
     use_frameworks!
 
     target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.14.0'
+        pod 'SQLite.swift', '~> 0.14.1'
     end
     ```
 
@@ -155,7 +155,7 @@ with the OS you can require the `standalone` subspec:
 
 ```ruby
 target 'YourAppTargetName' do
-  pod 'SQLite.swift/standalone', '~> 0.14.0'
+  pod 'SQLite.swift/standalone', '~> 0.14.1'
 end
 ```
 
@@ -165,7 +165,7 @@ dependency to sqlite3 or one of its subspecs:
 
 ```ruby
 target 'YourAppTargetName' do
-  pod 'SQLite.swift/standalone', '~> 0.14.0'
+  pod 'SQLite.swift/standalone', '~> 0.14.1'
   pod 'sqlite3/fts5', '= 3.15.0'  # SQLite 3.15.0 with FTS5 enabled
 end
 ```
@@ -181,7 +181,7 @@ If you want to use [SQLCipher][] with SQLite.swift you can require the
 target 'YourAppTargetName' do
   # Make sure you only require the subspec, otherwise you app might link against
   # the system SQLite, which means the SQLCipher-specific methods won't work.
-  pod 'SQLite.swift/SQLCipher', '~> 0.14.0'
+  pod 'SQLite.swift/SQLCipher', '~> 0.14.1'
 end
 ```
 
