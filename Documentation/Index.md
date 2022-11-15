@@ -658,6 +658,11 @@ using the following functions.
     t.foreignKey(user_id, references: users, id, delete: .setNull)
     // FOREIGN KEY("user_id") REFERENCES "users"("id") ON DELETE SET NULL
     ```
+    
+    ```swift
+    t.foreignKey((user_id, user_type), references: users, (id, type), delete: .setNull)
+    // FOREIGN KEY("user_id", "user_type") REFERENCES "users"("id", "type") ON DELETE SET NULL
+    ```
 
 <!-- TODO
 ### Creating a Table from a Select Statement
