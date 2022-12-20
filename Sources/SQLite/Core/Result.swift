@@ -56,7 +56,7 @@ extension Result: CustomStringConvertible {
             } else {
                 return "\(message) (code: \(errorCode))"
             }
-        case let .extendedError(message,  extendedCode, statement):
+        case let .extendedError(message, extendedCode, statement):
             if let statement = statement {
                 return "\(message) (\(statement)) (extended code: \(extendedCode))"
             } else {

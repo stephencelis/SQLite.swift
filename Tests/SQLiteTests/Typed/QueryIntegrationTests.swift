@@ -235,7 +235,7 @@ class QueryIntegrationTests: SQLiteTestCase {
         do {
             try db.run(users.insert(email <- "alice@example.com"))
             XCTFail("expected error")
-        } catch let Result.extendedError(_,  extendedCode, _) where extendedCode == 2_067 {
+        } catch let Result.extendedError(_, extendedCode, _) where extendedCode == 2_067 {
             // SQLITE_CONSTRAINT_UNIQUE expected
         } catch let error {
             XCTFail("unexpected error: \(error)")

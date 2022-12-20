@@ -162,7 +162,7 @@ public final class Connection {
             sqlite3_extended_result_codes(handle, usesExtendedErrorCodes ? 1 : 0)
         }
     }
-    
+
     // MARK: - Execute
 
     /// Executes a batch of SQL statements.
