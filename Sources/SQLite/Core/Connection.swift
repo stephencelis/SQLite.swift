@@ -156,6 +156,13 @@ public final class Connection {
         Int(sqlite3_total_changes(handle))
     }
 
+    /// Whether or not the database will return extended error codes when errors are handled.
+    public var usesExtendedErrorCodes: Bool = false {
+        didSet {
+            sqlite3_extended_result_codes(handle, usesExtendedErrorCodes ? 1 : 0)
+        }
+    }
+    
     // MARK: - Execute
 
     /// Executes a batch of SQL statements.

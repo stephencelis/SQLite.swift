@@ -229,6 +229,19 @@ class QueryIntegrationTests: SQLiteTestCase {
         }
     }
 
+    func test_extendedErrorCodes_catchConstraintError() throws {
+        db.usesExtendedErrorCodes = true
+        try db.run(users.insert(email <- "alice@example.com"))
+        do {
+            try db.run(users.insert(email <- "alice@example.com"))
+            XCTFail("expected error")
+        } catch let Result.extendedError(_,  extendedCode, _) where extendedCode == 2_067 {
+            // SQLITE_CONSTRAINT_UNIQUE expected
+        } catch let error {
+            XCTFail("unexpected error: \(error)")
+        }
+    }
+
     // https://github.com/stephencelis/SQLite.swift/issues/285
     func test_order_by_random() throws {
         try insertUsers(["a", "b", "c'"])
