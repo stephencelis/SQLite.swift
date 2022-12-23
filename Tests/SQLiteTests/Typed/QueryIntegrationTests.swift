@@ -302,7 +302,7 @@ class QueryIntegrationTests: SQLiteTestCase {
 
         // There should be at least one row in the result.
         let row = try XCTUnwrap(rows.makeIterator().next())
-        
+
         // Verify the column names
         XCTAssertEqual(row.columnNames.count, 3)
         XCTAssertNotNil(row[id])
