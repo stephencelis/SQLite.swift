@@ -53,4 +53,17 @@ class ResultTests: XCTestCase {
         XCTAssertEqual("not an error (SELECT 1) (code: 21)",
             Result(errorCode: SQLITE_MISUSE, connection: connection, statement: statement)?.description)
     }
+
+    func test_init_extended_with_other_code_returns_error() {
+        connection.usesExtendedErrorCodes = true
+        if case .some(.extendedError(let message, let extendedCode, let statement)) =
+            Result(errorCode: SQLITE_MISUSE, connection: connection, statement: nil) {
+            XCTAssertEqual("not an error", message)
+            XCTAssertEqual(extendedCode, 0)
+            XCTAssertNil(statement)
+            XCTAssert(connection === connection)
+        } else {
+            XCTFail("no error")
+        }
+    }
 }

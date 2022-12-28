@@ -111,6 +111,10 @@ class ConnectionTests: SQLiteTestCase {
         XCTAssertEqual(2, db.totalChanges)
     }
 
+    func test_useExtendedErrorCodes_returnsFalseDefault() throws {
+        XCTAssertFalse(db.usesExtendedErrorCodes)
+    }
+
     func test_prepare_preparesAndReturnsStatements() throws {
         _ = try db.prepare("SELECT * FROM users WHERE admin = 0")
         _ = try db.prepare("SELECT * FROM users WHERE admin = ?", 0)
