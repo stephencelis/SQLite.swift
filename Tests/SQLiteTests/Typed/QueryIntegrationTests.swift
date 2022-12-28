@@ -276,6 +276,39 @@ class QueryIntegrationTests: SQLiteTestCase {
 
         XCTAssertEqual(21, sum)
     }
+
+    /// Verify that `*` is properly expanded in a SELECT statement following a WITH clause.
+    func test_with_glob_expansion() throws {
+        let names = Table("names")
+        let name = Expression<String>("name")
+        try db.run(names.create { builder in
+            builder.column(email)
+            builder.column(name)
+        })
+
+        try db.run(users.insert(email <- "alice@example.com"))
+        try db.run(names.insert(email <- "alice@example.com", name <- "Alice"))
+
+        // WITH intermediate AS ( SELECT ... ) SELECT * FROM intermediate
+        let intermediate = Table("intermediate")
+        let rows = try db.prepare(
+            intermediate
+                .with(intermediate,
+                      as: users
+                        .select([id, users[email], name])
+                        .join(names, on: names[email] == users[email])
+                        .where(users[email] == "alice@example.com")
+                     ))
+
+        // There should be at least one row in the result.
+        let row = try XCTUnwrap(rows.makeIterator().next())
+
+        // Verify the column names
+        XCTAssertEqual(row.columnNames.count, 3)
+        XCTAssertNotNil(row[id])
+        XCTAssertNotNil(row[name])
+        XCTAssertNotNil(row[email])
+    }
 }
 
 extension Connection {
