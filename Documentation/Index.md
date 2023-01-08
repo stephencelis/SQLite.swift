@@ -691,7 +691,7 @@ do {
 }
 ```
 
-Multiple rows can be inserted at once by similarily calling `insertMany` with an array of
+Multiple rows can be inserted at once by similarly calling `insertMany` with an array of
 per-row [setters](#setters).
 
 ```swift

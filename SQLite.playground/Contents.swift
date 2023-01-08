@@ -65,7 +65,7 @@ do {
     // Handle error
 }
 
-/// define a virtual tabe for the FTS index
+/// define a virtual table for the FTS index
 let emails = VirtualTable("emails")
 
 let subject = Expression<String>("subject")
