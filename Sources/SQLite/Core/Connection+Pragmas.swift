@@ -7,7 +7,7 @@ public extension Connection {
     /// See SQLite [PRAGMA user_version](https://sqlite.org/pragma.html#pragma_user_version)
     var userVersion: UserVersion? {
         get {
-            (try? scalar("PRAGMA user_version") as? Int64).map(Int32.init)
+            (try? scalar("PRAGMA user_version") as? Int64)?.map(Int32.init)
         }
         set {
             _ = try? run("PRAGMA user_version = \(newValue ?? 0)")
