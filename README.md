@@ -275,7 +275,7 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
 [SQLite3]: https://www.sqlite.org
 [SQLite.swift]: https://github.com/stephencelis/SQLite.swift
 
-[GitHubActionBadge]: https://img.shields.io/github/workflow/status/stephencelis/SQLite.swift/Build%20and%20test
+[GitHubActionBadge]: https://img.shields.io/github/actions/workflow/status/stephencelis/SQLite.swift/build.yml?branch=master
 
 [CocoaPodsVersionBadge]: https://img.shields.io/cocoapods/v/SQLite.swift.svg?style=flat
 [CocoaPodsVersionLink]: https://cocoapods.org/pods/SQLite.swift
