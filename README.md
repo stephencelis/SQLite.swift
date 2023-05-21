@@ -90,7 +90,7 @@ API.
 // Wrap everything in a do...catch to handle errors
 do {
     // ...
-    
+
     let stmt = try db.prepare("INSERT INTO users (email) VALUES (?)")
     for email in ["betty@icloud.com", "cathy@icloud.com"] {
         try stmt.run(email)
@@ -118,9 +118,6 @@ interactively, from the Xcode project’s playground.
 ![SQLite.playground Screen Shot](Documentation/Resources/playground@2x.png)
 
 ## Installation
-
-> _Note:_ Version 0.11.6 and later requires Swift 5 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.2) or greater.
-> Version 0.11.5 requires Swift 4.2 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.1) or greater.
 
 ### Swift Package Manager
 

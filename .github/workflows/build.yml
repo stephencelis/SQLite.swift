@@ -9,6 +9,8 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: "Select Xcode"
+      # Currently only works with Xcode 14.2:
+      # https://github.com/CocoaPods/CocoaPods/issues/11839
       run: |
         xcode-select -p
         sudo xcode-select -s /Applications/Xcode_14.2.app/Contents/Developer
