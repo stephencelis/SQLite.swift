@@ -38,6 +38,7 @@ public func *(_: Expression<Binding>?, _: Expression<Binding>?) -> Expression<Vo
     Expression(literal: "*")
 }
 
+// swiftlint:disable:next type_name
 public protocol _OptionalType {
 
     associatedtype WrappedType

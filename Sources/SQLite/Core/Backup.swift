@@ -140,7 +140,7 @@ public final class Backup {
     /// - Parameter pagesToCopy: The maximal number of pages to copy in one step
     ///
     /// - Throws: `Result.Error` if step fails.
-    //
+    ///
     /// See: <https://www.sqlite.org/c3ref/backup_finish.html#sqlite3backupstep>
     public func step(pagesToCopy pages: Pages = .all) throws {
         let status = sqlite3_backup_step(handle, pages.number)
