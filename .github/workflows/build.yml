@@ -1,7 +1,7 @@
 name: Build and test
 on: [push, pull_request]
 env:
-  IOS_SIMULATOR: iPhone 12
+  IOS_SIMULATOR: "iPhone 14"
   IOS_VERSION: "16.4"
 jobs:
   build:
