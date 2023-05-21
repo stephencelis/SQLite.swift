@@ -414,7 +414,7 @@ public final class Connection {
     ///   times it’s been called for this lock. If it returns `true`, it will
     ///   try again. If it returns `false`, no further attempts will be made.
     public func busyHandler(_ callback: ((_ tries: Int) -> Bool)?) {
-        guard let callback = callback else {
+        guard let callback else {
             sqlite3_busy_handler(handle, nil, nil)
             busyHandler = nil
             return
@@ -449,7 +449,7 @@ public final class Connection {
     @available(watchOS, deprecated: 3.0)
     @available(tvOS, deprecated: 10.0)
     fileprivate func trace_v1(_ callback: ((String) -> Void)?) {
-        guard let callback = callback else {
+        guard let callback else {
             sqlite3_trace(handle, nil /* xCallback */, nil /* pCtx */)
             trace = nil
             return
@@ -458,7 +458,7 @@ public final class Connection {
             callback(String(cString: pointer.assumingMemoryBound(to: UInt8.self)))
         }
         sqlite3_trace(handle, { (context: UnsafeMutableRawPointer?, SQL: UnsafePointer<Int8>?) in
-                    if let context = context, let SQL = SQL {
+                    if let context, let SQL {
                         unsafeBitCast(context, to: Trace.self)(SQL)
                     }
             },
@@ -469,7 +469,7 @@ public final class Connection {
 
     @available(iOS 10.0, OSX 10.12, tvOS 10.0, watchOS 3.0, *)
     fileprivate func trace_v2(_ callback: ((String) -> Void)?) {
-        guard let callback = callback else {
+        guard let callback else {
             // If the X callback is NULL or if the M mask is zero, then tracing is disabled.
             sqlite3_trace_v2(handle, 0 /* mask */, nil /* xCallback */, nil /* pCtx */)
             trace = nil
@@ -485,7 +485,7 @@ public final class Connection {
                  // callback was invoked. The C argument is a copy of the context pointer.
                  // The P and X arguments are pointers whose meanings depend on T.
                  (_: UInt32, context: UnsafeMutableRawPointer?, pointer: UnsafeMutableRawPointer?, _: UnsafeMutableRawPointer?) in
-                 if let pointer = pointer,
+                 if let pointer,
                     let expandedSQL = sqlite3_expanded_sql(OpaquePointer(pointer)) {
                      unsafeBitCast(context, to: Trace.self)(expandedSQL)
                      sqlite3_free(expandedSQL)
@@ -507,7 +507,7 @@ public final class Connection {
     ///   `.Insert`, `.Update`, or `.Delete`), database name, table name, and
     ///   rowid.
     public func updateHook(_ callback: ((_ operation: Operation, _ db: String, _ table: String, _ rowid: Int64) -> Void)?) {
-        guard let callback = callback else {
+        guard let callback else {
             sqlite3_update_hook(handle, nil, nil)
             updateHook = nil
             return
@@ -535,7 +535,7 @@ public final class Connection {
     ///   committed. If this callback throws, the transaction will be rolled
     ///   back.
     public func commitHook(_ callback: (() throws -> Void)?) {
-        guard let callback = callback else {
+        guard let callback else {
             sqlite3_commit_hook(handle, nil, nil)
             commitHook = nil
             return
@@ -562,7 +562,7 @@ public final class Connection {
     /// - Parameter callback: A callback invoked when a transaction is rolled
     ///   back.
     public func rollbackHook(_ callback: (() -> Void)?) {
-        guard let callback = callback else {
+        guard let callback else {
             sqlite3_rollback_hook(handle, nil, nil)
             rollbackHook = nil
             return
@@ -650,7 +650,7 @@ public final class Connection {
         try check(sqlite3_create_collation_v2(handle, collation, SQLITE_UTF8,
             unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { (callback: UnsafeMutableRawPointer?, _,
                                                                      lhs: UnsafeRawPointer?, _, rhs: UnsafeRawPointer?) in /* xCompare */
-            if let lhs = lhs, let rhs = rhs {
+            if let lhs, let rhs {
                 return unsafeBitCast(callback, to: Collation.self)(lhs, rhs)
             } else {
                 fatalError("sqlite3_create_collation_v2 callback called with NULL pointer")

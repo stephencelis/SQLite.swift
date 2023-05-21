@@ -38,6 +38,7 @@ public func *(_: Expression<Binding>?, _: Expression<Binding>?) -> Expression<Vo
     Expression(literal: "*")
 }
 
+// swiftlint:disable:next type_name
 public protocol _OptionalType {
 
     associatedtype WrappedType
@@ -108,7 +109,7 @@ extension String {
 }
 
 func transcode(_ literal: Binding?) -> String {
-    guard let literal = literal else { return "NULL" }
+    guard let literal else { return "NULL" }
 
     switch literal {
     case let blob as Blob:

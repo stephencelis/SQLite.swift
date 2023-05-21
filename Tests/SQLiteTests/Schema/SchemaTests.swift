@@ -72,6 +72,7 @@ class SchemaTests: XCTestCase {
     }
 
     // thoroughness test for ambiguity
+    // swiftlint:disable:next function_body_length
     func test_column_compilesColumnDefinitionExpression() {
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"int64\" INTEGER NOT NULL)",
@@ -390,6 +391,7 @@ class SchemaTests: XCTestCase {
         )
     }
 
+    // swiftlint:disable:next function_body_length
     func test_column_withStringExpression_compilesCollatedColumnDefinitionExpression() {
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"string\" TEXT NOT NULL COLLATE RTRIM)",

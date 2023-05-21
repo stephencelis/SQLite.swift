@@ -13,7 +13,7 @@ public class SchemaReader {
     // column name, data type, whether or not the column can be NULL, and the default value for the column. The
     // "pk" column in the result set is zero for columns that are not part of the primary key, and is the
     // index of the column in the primary key for columns that are part of the primary key.
-    public func columnDefinitions(table: String) throws  -> [ColumnDefinition] {
+    public func columnDefinitions(table: String) throws -> [ColumnDefinition] {
         func parsePrimaryKey(column: String) throws -> ColumnDefinition.PrimaryKey? {
             try createTableSQL(name: table).flatMap { .init(sql: $0) }
         }
@@ -39,10 +39,10 @@ public class SchemaReader {
                                   type: ObjectDefinition.ObjectType? = nil,
                                   temp: Bool = false) throws -> [ObjectDefinition] {
         var query: QueryType = SchemaTable.get(for: connection, temp: temp)
-        if let name = name {
+        if let name {
             query = query.where(SchemaTable.nameColumn == name)
         }
-        if let type = type {
+        if let type {
             query = query.where(SchemaTable.typeColumn == type.rawValue)
         }
         return try connection.prepare(query).map { row -> ObjectDefinition in

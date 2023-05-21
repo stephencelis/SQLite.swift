@@ -1,20 +1,19 @@
 name: Build and test
 on: [push, pull_request]
 env:
-  IOS_SIMULATOR: iPhone 12
-  IOS_VERSION: "15.2"
+  IOS_SIMULATOR: "iPhone 14"
+  IOS_VERSION: "16.2"
 jobs:
   build:
-    runs-on: macos-11
+    runs-on: macos-13
     steps:
     - uses: actions/checkout@v2
-    - name: Install
+    - name: "Select Xcode"
+      # Currently only works with Xcode 14.2:
+      # https://github.com/CocoaPods/CocoaPods/issues/11839
       run: |
-        gem update bundler
-        gem install xcpretty --no-document
-        brew update
-        brew outdated carthage || brew upgrade carthage
-        brew outdated swiftlint || brew upgrade swiftlint
+        xcode-select -p
+        sudo xcode-select -s /Applications/Xcode_14.2.app/Contents/Developer
     - name: "Lint"
       run: make lint
     - name: "Run tests (PACKAGE_MANAGER_COMMAND: test)"

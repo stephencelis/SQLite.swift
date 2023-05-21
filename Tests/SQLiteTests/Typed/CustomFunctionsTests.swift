@@ -5,8 +5,8 @@ import SQLite
 #if !os(Linux)
 
 class CustomFunctionNoArgsTests: SQLiteTestCase {
-    typealias FunctionNoOptional              = ()  -> Expression<String>
-    typealias FunctionResultOptional          = ()  -> Expression<String?>
+    typealias FunctionNoOptional              = () -> Expression<String>
+    typealias FunctionResultOptional          = () -> Expression<String?>
 
     func testFunctionNoOptional() throws {
         let _: FunctionNoOptional = try db.createFunction("test", deterministic: true) {
@@ -26,9 +26,9 @@ class CustomFunctionNoArgsTests: SQLiteTestCase {
 }
 
 class CustomFunctionWithOneArgTests: SQLiteTestCase {
-    typealias FunctionNoOptional              = (Expression<String>)  -> Expression<String>
+    typealias FunctionNoOptional              = (Expression<String>) -> Expression<String>
     typealias FunctionLeftOptional            = (Expression<String?>) -> Expression<String>
-    typealias FunctionResultOptional          = (Expression<String>)  -> Expression<String?>
+    typealias FunctionResultOptional          = (Expression<String>) -> Expression<String?>
     typealias FunctionLeftResultOptional      = (Expression<String?>) -> Expression<String?>
 
     func testFunctionNoOptional() throws {
@@ -65,12 +65,12 @@ class CustomFunctionWithOneArgTests: SQLiteTestCase {
 }
 
 class CustomFunctionWithTwoArgsTests: SQLiteTestCase {
-    typealias FunctionNoOptional              = (Expression<String>, Expression<String>)  -> Expression<String>
-    typealias FunctionLeftOptional            = (Expression<String?>, Expression<String>)  -> Expression<String>
+    typealias FunctionNoOptional              = (Expression<String>, Expression<String>) -> Expression<String>
+    typealias FunctionLeftOptional            = (Expression<String?>, Expression<String>) -> Expression<String>
     typealias FunctionRightOptional           = (Expression<String>, Expression<String?>) -> Expression<String>
-    typealias FunctionResultOptional          = (Expression<String>, Expression<String>)  -> Expression<String?>
+    typealias FunctionResultOptional          = (Expression<String>, Expression<String>) -> Expression<String?>
     typealias FunctionLeftRightOptional       = (Expression<String?>, Expression<String?>) -> Expression<String>
-    typealias FunctionLeftResultOptional      = (Expression<String?>, Expression<String>)  -> Expression<String?>
+    typealias FunctionLeftResultOptional      = (Expression<String?>, Expression<String>) -> Expression<String?>
     typealias FunctionRightResultOptional     = (Expression<String>, Expression<String?>) -> Expression<String?>
     typealias FunctionLeftRightResultOptional = (Expression<String?>, Expression<String?>) -> Expression<String?>
 

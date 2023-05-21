@@ -77,9 +77,6 @@
 
 ## Installation
 
-> _Note:_ SQLite.swift requires Swift 5 (and
-> [Xcode 10.2](https://developer.apple.com/xcode/downloads/)) or greater.
-
 ### Swift Package Manager
 
 The [Swift Package Manager][] is a tool for managing the distribution of
@@ -1142,11 +1139,11 @@ let query = managers
 chain.with(chain, recursive: true, as: query)
 // WITH RECURSIVE
 //   "chain" AS (
-//     SELECT * FROM "managers" WHERE "id" = 8 
-//     UNION 
-//     SELECT * from "chain" 
+//     SELECT * FROM "managers" WHERE "id" = 8
+//     UNION
+//     SELECT * from "chain"
 //     JOIN "managers" ON "chain"."manager_id" = "managers"."id"
-//   ) 
+//   )
 // SELECT * FROM "chain"
 ```
 
@@ -1156,7 +1153,7 @@ Column names and a materialization hint can optionally be provided.
 // Add a "level" column to the query representing manager's position in the chain
 let level = Expression<Int64>("level")
 
-let queryWithLevel = 
+let queryWithLevel =
     managers
         .select(id, managerId, 0)
         .where(id == 8)
@@ -1166,18 +1163,18 @@ let queryWithLevel =
                 .join(managers, on: chain[managerId] == managers[id])
         )
 
-chain.with(chain, 
-           columns: [id, managerId, level], 
+chain.with(chain,
+           columns: [id, managerId, level],
            recursive: true,
            hint: .materialize,
            as: queryWithLevel)
 // WITH RECURSIVE
 //   "chain" ("id", "manager_id", "level") AS MATERIALIZED (
-//     SELECT ("id", "manager_id", 0) FROM "managers" WHERE "id" = 8 
-//     UNION 
-//     SELECT ("manager"."id", "manager"."manager_id", "level" + 1) FROM "chain" 
+//     SELECT ("id", "manager_id", 0) FROM "managers" WHERE "id" = 8
+//     UNION
+//     SELECT ("manager"."id", "manager"."manager_id", "level" + 1) FROM "chain"
 //     JOIN "managers" ON "chain"."manager_id" = "managers"."id"
-//   ) 
+//   )
 // SELECT * FROM "chain"
 ```
 
@@ -1266,7 +1263,7 @@ let count = try db.scalar(users.filter(name != nil).count)
 We can upsert rows into a table by calling a [query’s](#queries) `upsert`
 function with a list of [setters](#setters)—typically [typed column
 expressions](#expressions) and values (which can also be expressions)—each
-joined by the `<-` operator. Upserting is like inserting, except if there is a 
+joined by the `<-` operator. Upserting is like inserting, except if there is a
 conflict on the specified column value, SQLite will perform an update on the row instead.
 
 ```swift
@@ -1957,7 +1954,7 @@ for row in stmt.bind(kUTTypeImage) { /* ... */ }
 ```
 
 > _Note:_ Prepared queries can be reused, and long lived prepared queries should be `reset()` after each use. Otherwise, the transaction (either [implicit or explicit](https://www.sqlite.org/lang_transaction.html#implicit_versus_explicit_transactions)) will be held open until the query is reset or finalized. This can affect performance. Statements are reset automatically during `deinit`.
-> 
+>
 > ```swift
 > someObj.statement = try db.prepare("SELECT * FROM attachments WHERE typeConformsTo(UTI, ?)")
 > for row in someObj.statement.bind(kUTTypeImage) { /* ... */ }
@@ -2134,7 +2131,7 @@ using the following functions.
         }
     }
     ```
-    
+
   - `run` prepares a single `Statement` object from a SQL string, optionally
     binds values to it (using the statement’s `bind` function), executes,
     and returns the statement.

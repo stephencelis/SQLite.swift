@@ -22,6 +22,10 @@ DerivedData
 # Carthage
 /Carthage/
 
+# Makefile
+bin/
+
 # Swift Package Manager
 .build
 Packages/
+.swiftpm/

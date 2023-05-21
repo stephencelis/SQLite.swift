@@ -1,9 +1,12 @@
+opt_in_rules:
+  - shorthand_optional_binding
 disabled_rules: # rule identifiers to exclude from running
   - todo
   - operator_whitespace
   - large_tuple
   - closure_parameter_position
   - inclusive_language  # sqlite_master etc.
+  - blanket_disable_command
 included: # paths to include during linting. `--path` is ignored if present. takes precendence over `excluded`.
   - Sources
   - Tests
@@ -26,8 +29,8 @@ identifier_name:
     - SQLITE_TRANSIENT
 
 type_body_length:
-  warning: 260
-  error: 260
+  warning: 350
+  error: 350
 
 function_body_length:
   warning: 60

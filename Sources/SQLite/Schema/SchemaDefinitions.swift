@@ -170,7 +170,7 @@ public enum LiteralValue: Equatable, CustomStringConvertible {
     // swiftlint:enable identifier_name
 
     init(_ string: String?) {
-        guard let string = string else {
+        guard let string else {
             self = .NULL
             return
         }

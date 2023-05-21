@@ -6,8 +6,8 @@ disabled_rules:
   - identifier_name
 
 type_body_length:
-  warning: 800
-  error: 800
+  warning: 1000
+  error: 1000
 
 function_body_length:
   warning: 200

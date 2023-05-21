@@ -1,4 +1,4 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.7
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
@@ -6,10 +6,10 @@ import PackageDescription
 let package = Package(
     name: "test",
     platforms: [
-        .iOS(.v9),
-        .macOS(.v10_10),
-        .watchOS(.v3),
-        .tvOS(.v9)
+        .iOS(.v11),
+        .macOS(.v10_13),
+        .watchOS(.v4),
+        .tvOS(.v11)
     ],
     dependencies: [
         // for testing from same repository
@@ -18,9 +18,6 @@ let package = Package(
         // .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.14.1")
     ],
     targets: [
-        .target(
-            name: "test",
-            dependencies: [.product(name: "SQLite", package: "SQLite.swift")]
-	)
+        .executableTarget(name: "test", dependencies: [.product(name: "SQLite", package: "SQLite.swift")])
     ]
 )
