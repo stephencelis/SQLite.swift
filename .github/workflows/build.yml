@@ -11,7 +11,7 @@ jobs:
     - name: "Select Xcode"
       run: |
         xcode-select -p
-        xcode-select -s /Applications/Xcode-14.3.app/Contents/Developer
+        xcode-select -s /Applications/Xcode_14.3.app/Contents/Developer
         xcode-select -p
     - name: "Lint"
       run: make lint
