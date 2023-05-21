@@ -109,7 +109,7 @@ extension String {
 }
 
 func transcode(_ literal: Binding?) -> String {
-    guard let literal = literal else { return "NULL" }
+    guard let literal else { return "NULL" }
 
     switch literal {
     case let blob as Blob:

@@ -98,7 +98,7 @@ public struct Tokenizer {
                                  separators: Set<Character> = []) -> Tokenizer {
         var arguments = [String]()
 
-        if let removeDiacritics = removeDiacritics {
+        if let removeDiacritics {
             arguments.append("remove_diacritics=\(removeDiacritics ? 1 : 0)".quote())
         }
 
@@ -208,13 +208,13 @@ open class FTSConfig {
     func options() -> Options {
         var options = Options()
         options.append(formatColumnDefinitions())
-        if let tokenizer = tokenizer {
+        if let tokenizer {
             options.append("tokenize", value: Expression<Void>(literal: tokenizer.description))
         }
         options.appendCommaSeparated("prefix", values: prefixes.sorted().map { String($0) })
         if isContentless {
             options.append("content", value: "")
-        } else if let externalContentSchema = externalContentSchema {
+        } else if let externalContentSchema {
             options.append("content", value: externalContentSchema.tableName())
         }
         return options
@@ -306,19 +306,19 @@ open class FTS4Config: FTSConfig {
         for (column, _) in (columnDefinitions.filter { $0.options.contains(.unindexed) }) {
             options.append("notindexed", value: column)
         }
-        if let languageId = languageId {
+        if let languageId {
             options.append("languageid", value: languageId)
         }
-        if let compressFunction = compressFunction {
+        if let compressFunction {
             options.append("compress", value: compressFunction)
         }
-        if let uncompressFunction = uncompressFunction {
+        if let uncompressFunction {
             options.append("uncompress", value: uncompressFunction)
         }
-        if let matchInfo = matchInfo {
+        if let matchInfo {
             options.append("matchinfo", value: matchInfo.rawValue)
         }
-        if let order = order {
+        if let order {
             options.append("order", value: order.rawValue)
         }
         return options

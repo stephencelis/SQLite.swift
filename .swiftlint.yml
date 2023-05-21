@@ -1,3 +1,5 @@
+opt_in_rules:
+  - shorthand_optional_binding
 disabled_rules: # rule identifiers to exclude from running
   - todo
   - operator_whitespace

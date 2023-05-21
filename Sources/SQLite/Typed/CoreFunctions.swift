@@ -100,7 +100,7 @@ extension ExpressionType where UnderlyingType == Double {
     ///
     /// - Returns: A copy of the expression wrapped with the `round` function.
     public func round(_ precision: Int? = nil) -> Expression<UnderlyingType> {
-        guard let precision = precision else {
+        guard let precision else {
             return Function.round.wrap([self])
         }
         return Function.round.wrap([self, Int(precision)])
@@ -120,7 +120,7 @@ extension ExpressionType where UnderlyingType == Double? {
     ///
     /// - Returns: A copy of the expression wrapped with the `round` function.
     public func round(_ precision: Int? = nil) -> Expression<UnderlyingType> {
-        guard let precision = precision else {
+        guard let precision else {
             return Function.round.wrap(self)
         }
         return Function.round.wrap([self, Int(precision)])
@@ -250,7 +250,7 @@ extension ExpressionType where UnderlyingType == String {
     /// - Returns: A copy of the expression appended with a `LIKE` query against
     ///   the given pattern.
     public func like(_ pattern: String, escape character: Character? = nil) -> Expression<Bool> {
-        guard let character = character else {
+        guard let character else {
             return "LIKE".infix(self, pattern)
         }
         return Expression("(\(template) LIKE ? ESCAPE ?)", bindings + [pattern, String(character)])
@@ -274,7 +274,7 @@ extension ExpressionType where UnderlyingType == String {
     /// - Returns: A copy of the expression appended with a `LIKE` query against
     ///   the given pattern.
     public func like(_ pattern: Expression<String>, escape character: Character? = nil) -> Expression<Bool> {
-        guard let character = character else {
+        guard let character else {
             return Function.like.infix(self, pattern)
         }
         let like: Expression<Bool> =  Function.like.infix(self, pattern, wrap: false)
@@ -349,7 +349,7 @@ extension ExpressionType where UnderlyingType == String {
     ///
     /// - Returns: A copy of the expression wrapped with the `ltrim` function.
     public func ltrim(_ characters: Set<Character>? = nil) -> Expression<UnderlyingType> {
-        guard let characters = characters else {
+        guard let characters else {
             return Function.ltrim.wrap(self)
         }
         return Function.ltrim.wrap([self, String(characters)])
@@ -367,7 +367,7 @@ extension ExpressionType where UnderlyingType == String {
     ///
     /// - Returns: A copy of the expression wrapped with the `rtrim` function.
     public func rtrim(_ characters: Set<Character>? = nil) -> Expression<UnderlyingType> {
-        guard let characters = characters else {
+        guard let characters else {
             return Function.rtrim.wrap(self)
         }
         return Function.rtrim.wrap([self, String(characters)])
@@ -385,7 +385,7 @@ extension ExpressionType where UnderlyingType == String {
     ///
     /// - Returns: A copy of the expression wrapped with the `trim` function.
     public func trim(_ characters: Set<Character>? = nil) -> Expression<UnderlyingType> {
-        guard let characters = characters else {
+        guard let characters else {
             return Function.trim.wrap([self])
         }
         return Function.trim.wrap([self, String(characters)])
@@ -409,7 +409,7 @@ extension ExpressionType where UnderlyingType == String {
     }
 
     public func substring(_ location: Int, length: Int? = nil) -> Expression<UnderlyingType> {
-        guard let length = length else {
+        guard let length else {
             return Function.substr.wrap([self, location])
         }
         return Function.substr.wrap([self, location, length])
@@ -475,7 +475,7 @@ extension ExpressionType where UnderlyingType == String? {
     /// - Returns: A copy of the expression appended with a `LIKE` query against
     ///   the given pattern.
     public func like(_ pattern: String, escape character: Character? = nil) -> Expression<Bool?> {
-        guard let character = character else {
+        guard let character else {
             return Function.like.infix(self, pattern)
         }
         return Expression("(\(template) LIKE ? ESCAPE ?)", bindings + [pattern, String(character)])
@@ -499,7 +499,7 @@ extension ExpressionType where UnderlyingType == String? {
     /// - Returns: A copy of the expression appended with a `LIKE` query against
     ///   the given pattern.
     public func like(_ pattern: Expression<String>, escape character: Character? = nil) -> Expression<Bool?> {
-        guard let character = character else {
+        guard let character else {
             return Function.like.infix(self, pattern)
         }
         let like: Expression<Bool> = Function.like.infix(self, pattern, wrap: false)
@@ -574,7 +574,7 @@ extension ExpressionType where UnderlyingType == String? {
     ///
     /// - Returns: A copy of the expression wrapped with the `ltrim` function.
     public func ltrim(_ characters: Set<Character>? = nil) -> Expression<UnderlyingType> {
-        guard let characters = characters else {
+        guard let characters else {
             return Function.ltrim.wrap(self)
         }
         return Function.ltrim.wrap([self, String(characters)])
@@ -592,7 +592,7 @@ extension ExpressionType where UnderlyingType == String? {
     ///
     /// - Returns: A copy of the expression wrapped with the `rtrim` function.
     public func rtrim(_ characters: Set<Character>? = nil) -> Expression<UnderlyingType> {
-        guard let characters = characters else {
+        guard let characters else {
             return Function.rtrim.wrap(self)
         }
         return Function.rtrim.wrap([self, String(characters)])
@@ -610,7 +610,7 @@ extension ExpressionType where UnderlyingType == String? {
     ///
     /// - Returns: A copy of the expression wrapped with the `trim` function.
     public func trim(_ characters: Set<Character>? = nil) -> Expression<UnderlyingType> {
-        guard let characters = characters else {
+        guard let characters else {
             return Function.trim.wrap(self)
         }
         return Function.trim.wrap([self, String(characters)])
@@ -649,7 +649,7 @@ extension ExpressionType where UnderlyingType == String? {
     ///
     /// - Returns: A copy of the expression wrapped with the `substr` function.
     public func substring(_ location: Int, length: Int? = nil) -> Expression<UnderlyingType> {
-        guard let length = length else {
+        guard let length else {
             return Function.substr.wrap([self, location])
         }
         return Function.substr.wrap([self, location, length])
@@ -726,7 +726,7 @@ extension String {
     /// - Returns: A copy of the expression appended with a `LIKE` query against
     ///   the given pattern.
     public func like(_ pattern: Expression<String>, escape character: Character? = nil) -> Expression<Bool> {
-        guard let character = character else {
+        guard let character else {
             return Function.like.infix(self, pattern)
         }
         let like: Expression<Bool> = Function.like.infix(self, pattern, wrap: false)
