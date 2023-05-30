@@ -57,7 +57,19 @@ public struct ColumnDefinition: Equatable {
         }
 
         init(_ string: String) {
-            self = Affinity.allCases.first { $0.rawValue.lowercased() == string.lowercased() } ?? .TEXT
+            let test = string.uppercased()
+            // https://sqlite.org/datatype3.html#determination_of_column_affinity
+            if test.contains("INT") { // Rule 1
+                self = .INTEGER
+            } else if ["CHAR", "CLOB", "TEXT"].first(where: {test.contains($0)}) != nil { // Rule 2
+                self = .TEXT
+            } else if string.contains("BLOB") { // Rule 3
+                self = .BLOB
+            } else if ["REAL", "FLOA", "DOUB"].first(where: {test.contains($0)}) != nil { // Rule 4
+                self = .REAL
+            } else { // Rule 5
+                self = .NUMERIC
+            }
         }
     }
 
