@@ -25,7 +25,7 @@ public class SchemaReader {
             .map { (row: Row) -> ColumnDefinition in
                 ColumnDefinition(
                     name: row[TableInfoTable.nameColumn],
-                    primaryKey: row[TableInfoTable.primaryKeyColumn] == 1 ?
+                    primaryKey: (row[TableInfoTable.primaryKeyColumn] ?? 0) > 0 ?
                         try parsePrimaryKey(column: row[TableInfoTable.nameColumn]) : nil,
                     type: ColumnDefinition.Affinity(row[TableInfoTable.typeColumn]),
                     nullable: row[TableInfoTable.notNullColumn] == 0,

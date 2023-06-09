@@ -90,6 +90,43 @@ class SchemaReaderTests: SQLiteTestCase {
         )
     }
 
+    func test_columnDefinitions_composite_primary_keys() throws {
+        try db.run("""
+        CREATE TABLE t (
+          col1 INTEGER,
+          col2 INTEGER,
+          col3 INTEGER,
+          PRIMARY KEY (col1, col2)
+        );
+        """)
+
+        XCTAssertEqual(
+            try schemaReader.columnDefinitions(table: "t"), [
+            ColumnDefinition(
+                    name: "col1",
+                    primaryKey: .init(autoIncrement: false),
+                    type: .INTEGER,
+                    nullable: true,
+                    defaultValue: .NULL,
+                    references: nil),
+            ColumnDefinition(
+                    name: "col2",
+                    primaryKey: .init(autoIncrement: false),
+                    type: .INTEGER,
+                    nullable: true,
+                    defaultValue: .NULL,
+                    references: nil),
+            ColumnDefinition(
+                    name: "col3",
+                    primaryKey: nil,
+                    type: .INTEGER,
+                    nullable: true,
+                    defaultValue: .NULL,
+                    references: nil)
+            ]
+        )
+    }
+
     func test_indexDefinitions_no_index() throws {
         let indexes = try schemaReader.indexDefinitions(table: "users")
         XCTAssertTrue(indexes.isEmpty)
