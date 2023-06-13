@@ -463,12 +463,119 @@ public final class TableBuilder {
         foreignKey(composite, references, update, delete)
     }
 
+    public func foreignKey<T: Value, U: Value>(_ composite: (Expression<T?>, Expression<U?>),
+                                               references table: QueryType, _ other: (Expression<T>, Expression<U>),
+                                               update: Dependency? = nil, delete: Dependency? = nil) {
+        let composite = ", ".join([composite.0, composite.1])
+        let references = (table, ", ".join([other.0, other.1]))
+
+        foreignKey(composite, references, update, delete)
+    }
+    
+    public func foreignKey<T: Value, U: Value>(_ composite: (Expression<T>, Expression<U?>),
+                                               references table: QueryType, _ other: (Expression<T>, Expression<U>),
+                                               update: Dependency? = nil, delete: Dependency? = nil) {
+        let composite = ", ".join([composite.0, composite.1])
+        let references = (table, ", ".join([other.0, other.1]))
+
+        foreignKey(composite, references, update, delete)
+    }
+    
+    public func foreignKey<T: Value, U: Value>(_ composite: (Expression<T?>, Expression<U>),
+                                               references table: QueryType, _ other: (Expression<T>, Expression<U>),
+                                               update: Dependency? = nil, delete: Dependency? = nil) {
+        let composite = ", ".join([composite.0, composite.1])
+        let references = (table, ", ".join([other.0, other.1]))
+
+        foreignKey(composite, references, update, delete)
+    }
+    
     public func foreignKey<T: Value, U: Value, V: Value>(_ composite: (Expression<T>, Expression<U>, Expression<V>),
                                                          references table: QueryType,
                                                          _ other: (Expression<T>, Expression<U>, Expression<V>),
                                                          update: Dependency? = nil, delete: Dependency? = nil) {
         let composite = ", ".join([composite.0, composite.1, composite.2])
         let references = (table, ", ".join([other.0, other.1, other.2]))
+
+        foreignKey(composite, references, update, delete)
+    }
+    
+    public func foreignKey<T: Value, U: Value, V: Value>(_ composite: (Expression<T?>, Expression<U>, Expression<V>),
+                                                         references table: QueryType,
+                                                         _ other: (Expression<T>, Expression<U>, Expression<V>),
+                                                         update: Dependency? = nil, delete: Dependency? = nil) {
+        let composite = ", ".join([composite.0, composite.1, composite.2])
+        let references = (table, ", ".join([other.0, other.1, other.2]))
+
+        foreignKey(composite, references, update, delete)
+    }
+    
+    public func foreignKey<T: Value, U: Value, V: Value>(_ composite: (Expression<T>, Expression<U?>, Expression<V>),
+                                                         references table: QueryType,
+                                                         _ other: (Expression<T>, Expression<U>, Expression<V>),
+                                                         update: Dependency? = nil, delete: Dependency? = nil) {
+        let composite = ", ".join([composite.0, composite.1, composite.2])
+        let references = (table, ", ".join([other.0, other.1, other.2]))
+
+        foreignKey(composite, references, update, delete)
+    }
+    
+    public func foreignKey<T: Value, U: Value, V: Value>(_ composite: (Expression<T>, Expression<U>, Expression<V?>),
+                                                         references table: QueryType,
+                                                         _ other: (Expression<T>, Expression<U>, Expression<V>),
+                                                         update: Dependency? = nil, delete: Dependency? = nil) {
+        let composite = ", ".join([composite.0, composite.1, composite.2])
+        let references = (table, ", ".join([other.0, other.1, other.2]))
+
+        foreignKey(composite, references, update, delete)
+    }
+    
+    public func foreignKey<T: Value, U: Value, V: Value>(_ composite: (Expression<T?>, Expression<U?>, Expression<V>),
+                                                         references table: QueryType,
+                                                         _ other: (Expression<T>, Expression<U>, Expression<V>),
+                                                         update: Dependency? = nil, delete: Dependency? = nil) {
+        let composite = ", ".join([composite.0, composite.1, composite.2])
+        let references = (table, ", ".join([other.0, other.1, other.2]))
+
+        foreignKey(composite, references, update, delete)
+    }
+    
+    public func foreignKey<T: Value, U: Value, V: Value>(_ composite: (Expression<T>, Expression<U?>, Expression<V?>),
+                                                         references table: QueryType,
+                                                         _ other: (Expression<T>, Expression<U>, Expression<V>),
+                                                         update: Dependency? = nil, delete: Dependency? = nil) {
+        let composite = ", ".join([composite.0, composite.1, composite.2])
+        let references = (table, ", ".join([other.0, other.1, other.2]))
+
+        foreignKey(composite, references, update, delete)
+    }
+    
+    public func foreignKey<T: Value, U: Value, V: Value>(_ composite: (Expression<T?>, Expression<U>, Expression<V?>),
+                                                         references table: QueryType,
+                                                         _ other: (Expression<T>, Expression<U>, Expression<V>),
+                                                         update: Dependency? = nil, delete: Dependency? = nil) {
+        let composite = ", ".join([composite.0, composite.1, composite.2])
+        let references = (table, ", ".join([other.0, other.1, other.2]))
+
+        foreignKey(composite, references, update, delete)
+    }
+    
+    public func foreignKey<T: Value, U: Value, V: Value>(_ composite: (Expression<T?>, Expression<U?>, Expression<V?>),
+                                                         references table: QueryType,
+                                                         _ other: (Expression<T>, Expression<U>, Expression<V>),
+                                                         update: Dependency? = nil, delete: Dependency? = nil) {
+        let composite = ", ".join([composite.0, composite.1, composite.2])
+        let references = (table, ", ".join([other.0, other.1, other.2]))
+
+        foreignKey(composite, references, update, delete)
+    }
+    
+    public func foreignKey<T: Value, U: Value, V: Value, W: Value>(_ composite: (Expression<T>, Expression<U>, Expression<V>, Expression<W?>),
+                                                         references table: QueryType,
+                                                         _ other: (Expression<T>, Expression<U>, Expression<V>, Expression<W>),
+                                                         update: Dependency? = nil, delete: Dependency? = nil) {
+        let composite = ", ".join([composite.0, composite.1, composite.2, composite.3])
+        let references = (table, ", ".join([other.0, other.1, other.2, other.3]))
 
         foreignKey(composite, references, update, delete)
     }
