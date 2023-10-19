@@ -520,6 +520,8 @@ private class SQLiteDecoder: Decoder {
                 }
                 return try JSONDecoder().decode(type, from: data)
             }
+
+            return nil
         }
 
         func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: Key) throws
