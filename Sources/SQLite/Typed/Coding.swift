@@ -495,19 +495,22 @@ private class SQLiteDecoder: Decoder {
             try? row.get(Expression(key.stringValue))
         }
 
-        func decode<T>(_ type: T.Type, forKey key: Key) throws -> T? where T: Swift.Decodable {
+        func decodeIfPresent<T>(_ type: T.Type, forKey key: Key) throws -> T? where T: Swift.Decodable {
             switch type {
             case is Data.Type:
-                let data = try row.get(Expression<Data>(key.stringValue))
-                return data as? T
+                if let data = try? row.get(Expression<Data>(key.stringValue)) {
+                    return data as? T
+                }
             case is Date.Type:
-                let date = try row.get(Expression<Date>(key.stringValue))
-                return date as? T
+                if let date = try? row.get(Expression<Date>(key.stringValue)) {
+                    return date as? T
+                }
             case is UUID.Type:
-                let uuid = try row.get(Expression<UUID>(key.stringValue))
-                return uuid as? T
+                if let uuid = try? row.get(Expression<UUID>(key.stringValue)) {
+                    return uuid as? T
+                }
             default:
-                guard let JSONString = try row.get(Expression<String?>(key.stringValue)) else {
+                guard let JSONString = try? row.get(Expression<String?>(key.stringValue)) else {
                     throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: codingPath,
                                                                                  debugDescription: "an unsupported type was found"))
                 }
