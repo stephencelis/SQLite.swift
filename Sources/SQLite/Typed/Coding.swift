@@ -498,17 +498,11 @@ private class SQLiteDecoder: Decoder {
         func decodeIfPresent<T>(_ type: T.Type, forKey key: Key) throws -> T? where T: Swift.Decodable {
             switch type {
             case is Data.Type:
-                if let data = try? row.get(Expression<Data>(key.stringValue)) {
-                    return data as? T
-                }
+                return try? row.get(Expression<Data>(key.stringValue)) as? T
             case is Date.Type:
-                if let date = try? row.get(Expression<Date>(key.stringValue)) {
-                    return date as? T
-                }
+                return try? row.get(Expression<Date>(key.stringValue)) as? T
             case is UUID.Type:
-                if let uuid = try? row.get(Expression<UUID>(key.stringValue)) {
-                    return uuid as? T
-                }
+                return try? row.get(Expression<UUID>(key.stringValue)) as? T
             default:
                 guard let JSONString = try? row.get(Expression<String?>(key.stringValue)) else {
                     throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: codingPath,
@@ -520,8 +514,6 @@ private class SQLiteDecoder: Decoder {
                 }
                 return try JSONDecoder().decode(type, from: data)
             }
-
-            return nil
         }
 
         func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: Key) throws
