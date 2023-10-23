@@ -471,6 +471,51 @@ private class SQLiteDecoder: Decoder {
             }
         }
 
+        func decodeIfPresent(_ type: Bool.Type, forKey key: Key) throws -> Bool? {
+            try? row.get(Expression(key.stringValue))
+        }
+
+        func decodeIfPresent(_ type: Int.Type, forKey key: Key) throws -> Int? {
+            try? row.get(Expression(key.stringValue))
+        }
+
+        func decodeIfPresent(_ type: Int64.Type, forKey key: Key) throws -> Int64? {
+            try? row.get(Expression(key.stringValue))
+        }
+
+        func decodeIfPresent(_ type: Float.Type, forKey key: Key) throws -> Float? {
+            try? Float(row.get(Expression<Double>(key.stringValue)))
+        }
+
+        func decodeIfPresent(_ type: Double.Type, forKey key: Key) throws -> Double? {
+            try? row.get(Expression(key.stringValue))
+        }
+
+        func decodeIfPresent(_ type: String.Type, forKey key: Key) throws -> String? {
+            try? row.get(Expression(key.stringValue))
+        }
+
+        func decodeIfPresent<T>(_ type: T.Type, forKey key: Key) throws -> T? where T: Swift.Decodable {
+            switch type {
+            case is Data.Type:
+                return try? row.get(Expression<Data>(key.stringValue)) as? T
+            case is Date.Type:
+                return try? row.get(Expression<Date>(key.stringValue)) as? T
+            case is UUID.Type:
+                return try? row.get(Expression<UUID>(key.stringValue)) as? T
+            default:
+                guard let JSONString = try? row.get(Expression<String?>(key.stringValue)) else {
+                    throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: codingPath,
+                                                                                 debugDescription: "an unsupported type was found"))
+                }
+                guard let data = JSONString.data(using: .utf8) else {
+                    throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath,
+                                                                            debugDescription: "invalid utf8 data found"))
+                }
+                return try JSONDecoder().decode(type, from: data)
+            }
+        }
+
         func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: Key) throws
         -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
             throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath,
