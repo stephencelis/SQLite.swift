@@ -166,7 +166,7 @@ extension ExpressionType where UnderlyingType: Value, UnderlyingType.Datatype: N
     ///     salary.average
     ///     // avg("salary")
     ///
-    /// - Returns: A copy of the expression wrapped with the `min` aggregate
+    /// - Returns: A copy of the expression wrapped with the `avg` aggregate
     ///   function.
     public var average: Expression<Double?> {
         Function.avg.wrap(self)
@@ -179,7 +179,7 @@ extension ExpressionType where UnderlyingType: Value, UnderlyingType.Datatype: N
     ///     salary.sum
     ///     // sum("salary")
     ///
-    /// - Returns: A copy of the expression wrapped with the `min` aggregate
+    /// - Returns: A copy of the expression wrapped with the `sum` aggregate
     ///   function.
     public var sum: Expression<UnderlyingType?> {
         Function.sum.wrap(self)
@@ -192,7 +192,7 @@ extension ExpressionType where UnderlyingType: Value, UnderlyingType.Datatype: N
     ///     salary.total
     ///     // total("salary")
     ///
-    /// - Returns: A copy of the expression wrapped with the `min` aggregate
+    /// - Returns: A copy of the expression wrapped with the `total` aggregate
     ///   function.
     public var total: Expression<Double> {
         Function.total.wrap(self)
