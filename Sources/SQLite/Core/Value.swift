@@ -39,7 +39,7 @@ public protocol Value: Expressible { // extensions cannot have inheritance claus
 
     static var declaredDatatype: String { get }
 
-    static func fromDatatypeValue(_ datatypeValue: Datatype) -> ValueType
+    static func fromDatatypeValue(_ datatypeValue: Datatype) throws -> ValueType
 
     var datatypeValue: Datatype { get }
 
