@@ -1097,7 +1097,7 @@ extension Connection {
     public func scalar<V: Value>(_ query: ScalarQuery<V?>) throws -> V.ValueType? {
         let expression = query.expression
         guard let value = try scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
-        return V.fromDatatypeValue(value)
+        return try V.fromDatatypeValue(value)
     }
 
     public func scalar<V: Value>(_ query: Select<V>) throws -> V {
@@ -1108,7 +1108,7 @@ extension Connection {
     public func scalar<V: Value>(_ query: Select<V?>) throws -> V.ValueType? {
         let expression = query.expression
         guard let value = try scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
-        return V.fromDatatypeValue(value)
+        return try V.fromDatatypeValue(value)
     }
 
     public func pluck(_ query: QueryType) throws -> Row? {
@@ -1200,9 +1200,9 @@ public struct Row {
     }
 
     public func get<V: Value>(_ column: Expression<V?>) throws -> V? {
-        func valueAtIndex(_ idx: Int) -> V? {
+        func valueAtIndex(_ idx: Int) throws -> V? {
             guard let value = values[idx] as? V.Datatype else { return nil }
-            return V.fromDatatypeValue(value) as? V
+            return try V.fromDatatypeValue(value) as? V
         }
 
         guard let idx = columnNames[column.template] else {
@@ -1224,10 +1224,10 @@ public struct Row {
                     similar: columnNames.keys.filter(similar).sorted()
                 )
             }
-            return valueAtIndex(columnNames[firstIndex].value)
+            return try valueAtIndex(columnNames[firstIndex].value)
         }
 
-        return valueAtIndex(idx)
+        return try valueAtIndex(idx)
     }
 
     public subscript<T: Value>(column: Expression<T>) -> T {

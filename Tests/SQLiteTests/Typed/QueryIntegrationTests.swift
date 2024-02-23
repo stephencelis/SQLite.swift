@@ -322,6 +322,101 @@ class QueryIntegrationTests: SQLiteTestCase {
         XCTAssertNotNil(row[name])
         XCTAssertNotNil(row[email])
     }
+
+    func test_select_ntile_function() throws {
+        let users = Table("users")
+
+        try insertUser("Joey")
+        try insertUser("Timmy")
+        try insertUser("Jimmy")
+        try insertUser("Billy")
+
+        let bucket = ntile(1, id.asc)
+        try db.prepare(users.select(id, bucket)).forEach {
+            XCTAssertEqual($0[bucket], 1) // only 1 window
+        }
+    }
+
+    func test_select_cume_dist_function() throws {
+        let users = Table("users")
+
+        try insertUser("Joey")
+        try insertUser("Timmy")
+        try insertUser("Jimmy")
+        try insertUser("Billy")
+
+        let cumeDist = cumeDist(email)
+        let results = try db.prepare(users.select(id, cumeDist)).map {
+            $0[cumeDist]
+        }
+        XCTAssertEqual([0.25, 0.5, 0.75, 1], results)
+    }
+
+    func test_select_window_row_number() throws {
+        let users = Table("users")
+
+        try insertUser("Billy")
+        try insertUser("Jimmy")
+        try insertUser("Joey")
+        try insertUser("Timmy")
+
+        let rowNumber = rowNumber(email.asc)
+        var expectedRowNum = 1
+        try db.prepare(users.select(id, rowNumber)).forEach {
+            // should retrieve row numbers in order of INSERT above
+            XCTAssertEqual($0[rowNumber], expectedRowNum)
+            expectedRowNum += 1
+        }
+    }
+
+    func test_select_window_ranking() throws {
+        let users = Table("users")
+
+        try insertUser("Billy")
+        try insertUser("Jimmy")
+        try insertUser("Joey")
+        try insertUser("Timmy")
+
+        let percentRank = percentRank(email)
+        let actualPercentRank: [Int] = try db.prepare(users.select(id, percentRank)).map {
+            Int($0[percentRank] * 100)
+        }
+        XCTAssertEqual([0, 33, 66, 100], actualPercentRank)
+
+        let rank = rank(email)
+        let actualRank: [Int] = try db.prepare(users.select(id, rank)).map {
+            $0[rank]
+        }
+        XCTAssertEqual([1, 2, 3, 4], actualRank)
+
+        let denseRank = denseRank(email)
+        let actualDenseRank: [Int] = try db.prepare(users.select(id, denseRank)).map {
+            $0[denseRank]
+        }
+        XCTAssertEqual([1, 2, 3, 4], actualDenseRank)
+    }
+
+    func test_select_window_values() throws {
+        let users = Table("users")
+
+        try insertUser("Billy")
+        try insertUser("Jimmy")
+        try insertUser("Joey")
+        try insertUser("Timmy")
+
+        let firstValue = email.firstValue(email.desc)
+        try db.prepare(users.select(id, firstValue)).forEach {
+            XCTAssertEqual($0[firstValue], "Timmy@example.com") // should grab last email alphabetically
+        }
+
+        let lastValue = email.lastValue(email.asc)
+        var row = try db.pluck(users.select(id, lastValue))!
+        XCTAssertEqual(row[lastValue], "Billy@example.com")
+
+        let nthValue = email.value(1, email.asc)
+        row = try db.pluck(users.select(id, nthValue))!
+        XCTAssertEqual(row[nthValue], "Billy@example.com")
+    }
 }
 
 extension Connection {
