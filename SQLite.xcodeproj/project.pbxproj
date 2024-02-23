@@ -211,13 +211,6 @@
 		DB7C5DA728D7C9B6006395CF /* SQLiteVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7C5DA528D7C9B6006395CF /* SQLiteVersion.swift */; };
 		DB7C5DA828D7C9B6006395CF /* SQLiteVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7C5DA528D7C9B6006395CF /* SQLiteVersion.swift */; };
 		DB7C5DA928D7C9B6006395CF /* SQLiteVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7C5DA528D7C9B6006395CF /* SQLiteVersion.swift */; };
-		EAE1E1542B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */; };
-		EAE1E1552B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */; };
-		EAE1E1562B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */; };
-		EAE1E1572B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */; };
-		EAE1E1582B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */; };
-		EAE1E1592B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */; };
-		EAE1E15A2B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */; };
 		EE247AD71C3F04ED00AE3E12 /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE247ADE1C3F04ED00AE3E12 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE247AD31C3F04ED00AE3E12 /* SQLite.framework */; };
 		EE247B031C3F06E900AE3E12 /* Blob.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEE1C3F06E900AE3E12 /* Blob.swift */; };
@@ -347,7 +340,6 @@
 		DB58B21028FB864300F8EEA4 /* SchemaReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaReader.swift; sourceTree = "<group>"; };
 		DB58B21528FC7C4600F8EEA4 /* SQLiteFeature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteFeature.swift; sourceTree = "<group>"; };
 		DB7C5DA528D7C9B6006395CF /* SQLiteVersion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteVersion.swift; sourceTree = "<group>"; };
-		EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		EE247AD31C3F04ED00AE3E12 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE247AD61C3F04ED00AE3E12 /* SQLite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQLite.h; sourceTree = "<group>"; };
 		EE247AD81C3F04ED00AE3E12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -554,7 +546,6 @@
 				EE247AF71C3F06E900AE3E12 /* Foundation.swift */,
 				EE247AF81C3F06E900AE3E12 /* Helpers.swift */,
 				EE247AD81C3F04ED00AE3E12 /* Info.plist */,
-				EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */,
 				EE247AED1C3F06E900AE3E12 /* Core */,
 				EE247AF41C3F06E900AE3E12 /* Extensions */,
 				EE247AF91C3F06E900AE3E12 /* Typed */,
@@ -901,7 +892,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAE1E1582B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -909,7 +899,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAE1E1592B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */,
 				3DF7B79828846FED005DD8CA /* Resources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -918,7 +907,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAE1E15A2B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -926,7 +914,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAE1E1542B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -934,7 +921,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAE1E1552B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */,
 				3DF7B79628846FCC005DD8CA /* Resources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -943,7 +929,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAE1E1562B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -951,7 +936,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAE1E1572B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */,
 				3DF7B79928847055005DD8CA /* Resources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
