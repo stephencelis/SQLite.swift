@@ -15,7 +15,7 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "DEB306B82B61CEF500F9D46B"
-               BuildableName = "SQLite visionOS.framework"
+               BuildableName = "SQLite.framework"
                BlueprintName = "SQLite visionOS"
                ReferencedContainer = "container:SQLite.xcodeproj">
             </BuildableReference>
@@ -55,7 +55,7 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "DEB306B82B61CEF500F9D46B"
-            BuildableName = "SQLite visionOS.framework"
+            BuildableName = "SQLite.framework"
             BlueprintName = "SQLite visionOS"
             ReferencedContainer = "container:SQLite.xcodeproj">
          </BuildableReference>
