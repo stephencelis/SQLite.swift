@@ -19,9 +19,9 @@ Pod::Spec.new do |s|
   s.swift_versions = ['5']
 
   ios_deployment_target = '17.0'
-  tvos_deployment_target = '11.0'
-  osx_deployment_target = '10.13'
-  watchos_deployment_target = '4.0'
+  tvos_deployment_target = '17.0'
+  osx_deployment_target = '14.0'
+  watchos_deployment_target = '10.0'
 
   s.ios.deployment_target = ios_deployment_target
   s.tvos.deployment_target = tvos_deployment_target
@@ -32,6 +32,11 @@ Pod::Spec.new do |s|
     ss.source_files = 'Sources/SQLite/**/*.{c,h,m,swift}'
     ss.exclude_files = 'Sources/**/Cipher.swift'
     ss.library = 'sqlite3'
+    
+    ss.ios.deployment_target = ios_deployment_target
+    ss.tvos.deployment_target = tvos_deployment_target
+    ss.osx.deployment_target = osx_deployment_target
+    ss.watchos.deployment_target = watchos_deployment_target
 
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
@@ -51,6 +56,11 @@ Pod::Spec.new do |s|
       'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_SWIFT_STANDALONE=1'
     }
     ss.dependency 'sqlite3'
+    
+    ss.ios.deployment_target = ios_deployment_target
+    ss.tvos.deployment_target = tvos_deployment_target
+    ss.osx.deployment_target = osx_deployment_target
+    ss.watchos.deployment_target = watchos_deployment_target
 
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
@@ -68,6 +78,11 @@ Pod::Spec.new do |s|
       'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1 SQLITE_SWIFT_SQLCIPHER=1'
     }
     ss.dependency 'SQLCipher', '>= 4.0.0'
+    
+    ss.ios.deployment_target = ios_deployment_target
+    ss.tvos.deployment_target = tvos_deployment_target
+    ss.osx.deployment_target = osx_deployment_target
+    ss.watchos.deployment_target = watchos_deployment_target
 
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
