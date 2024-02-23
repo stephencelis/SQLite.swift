@@ -40,7 +40,7 @@ class SchemaReaderTests: SQLiteTestCase {
                              references: nil),
             ColumnDefinition(name: "admin",
                              primaryKey: nil,
-                             type: .TEXT,
+                             type: .NUMERIC,
                              nullable: false,
                              defaultValue: .numericLiteral("0"),
                              references: nil),
@@ -51,7 +51,7 @@ class SchemaReaderTests: SQLiteTestCase {
                              references: .init(table: "users", column: "manager_id", primaryKey: "id", onUpdate: nil, onDelete: nil)),
             ColumnDefinition(name: "created_at",
                              primaryKey: nil,
-                             type: .TEXT,
+                             type: .NUMERIC,
                              nullable: true,
                              defaultValue: .NULL,
                              references: nil)
@@ -170,6 +170,44 @@ class SchemaReaderTests: SQLiteTestCase {
         XCTAssertEqual(foreignKeys, [
             .init(table: "users", column: "test_id", primaryKey: "id", onUpdate: nil, onDelete: nil)
         ])
+    }
+
+    func test_foreignKeys_references_column() throws {
+        let sql = """
+          CREATE TABLE artist(
+            artistid    INTEGER PRIMARY KEY,
+            artistname  TEXT
+          );
+          CREATE TABLE track(
+            trackid     INTEGER,
+            trackname   TEXT,
+            trackartist INTEGER REFERENCES artist(artistid)
+          );
+          """
+        try db.execute(sql)
+        let trackColumns = try db.schema.foreignKeys(table: "track")
+        XCTAssertEqual(trackColumns.map { $0.toSQL() }.joined(separator: "\n"), """
+            REFERENCES "artist" ("artistid")
+            """)
+    }
+
+    func test_foreignKeys_references_null_column() throws {
+        let sql = """
+          CREATE TABLE artist(
+            artistid    INTEGER PRIMARY KEY,
+            artistname  TEXT
+          );
+          CREATE TABLE track(
+            trackid     INTEGER,
+            trackname   TEXT,
+            trackartist INTEGER REFERENCES artist
+          );
+          """
+        try db.execute(sql)
+        let trackColumns = try db.schema.foreignKeys(table: "track")
+        XCTAssertEqual(trackColumns.map { $0.toSQL() }.joined(separator: "\n"), """
+            REFERENCES "artist"
+            """)
     }
 
     func test_tableDefinitions() throws {

@@ -85,4 +85,34 @@ class RowTests: XCTestCase {
             }
         }
     }
+
+    public func test_get_datatype_throws() {
+        // swiftlint:disable nesting
+        struct MyType: Value {
+            enum MyError: Error {
+                case failed
+            }
+
+            public static var declaredDatatype: String {
+                Blob.declaredDatatype
+            }
+
+            public static func fromDatatypeValue(_ dataValue: Blob) throws -> Data {
+                throw MyError.failed
+            }
+
+            public var datatypeValue: Blob {
+                return Blob(bytes: [])
+            }
+        }
+
+        let row = Row(["\"foo\"": 0], [Blob(bytes: [])])
+        XCTAssertThrowsError(try row.get(Expression<MyType>("foo"))) { error in
+            if case MyType.MyError.failed = error {
+                XCTAssertTrue(true)
+            } else {
+                XCTFail("unexpected error: \(error)")
+            }
+        }
+    }
 }

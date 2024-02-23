@@ -187,7 +187,7 @@ private enum ForeignKeyListTable {
     static let seqColumn = Expression<Int64>("seq")
     static let tableColumn = Expression<String>("table")
     static let fromColumn = Expression<String>("from")
-    static let toColumn = Expression<String>("to")
+    static let toColumn = Expression<String?>("to") // when null, use primary key
     static let onUpdateColumn = Expression<String>("on_update")
     static let onDeleteColumn = Expression<String>("on_delete")
     static let matchColumn = Expression<String>("match")

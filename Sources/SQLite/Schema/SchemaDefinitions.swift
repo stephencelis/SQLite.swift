@@ -57,7 +57,19 @@ public struct ColumnDefinition: Equatable {
         }
 
         init(_ string: String) {
-            self = Affinity.allCases.first { $0.rawValue.lowercased() == string.lowercased() } ?? .TEXT
+            let test = string.uppercased()
+            // https://sqlite.org/datatype3.html#determination_of_column_affinity
+            if test.contains("INT") { // Rule 1
+                self = .INTEGER
+            } else if ["CHAR", "CLOB", "TEXT"].first(where: {test.contains($0)}) != nil { // Rule 2
+                self = .TEXT
+            } else if string.contains("BLOB") { // Rule 3
+                self = .BLOB
+            } else if ["REAL", "FLOA", "DOUB"].first(where: {test.contains($0)}) != nil { // Rule 4
+                self = .REAL
+            } else { // Rule 5
+                self = .NUMERIC
+            }
         }
     }
 
@@ -107,7 +119,7 @@ public struct ColumnDefinition: Equatable {
     public struct ForeignKey: Equatable {
         let table: String
         let column: String
-        let primaryKey: String
+        let primaryKey: String?
         let onUpdate: String?
         let onDelete: String?
     }
@@ -365,7 +377,7 @@ extension ColumnDefinition.ForeignKey {
         ([
             "REFERENCES",
             table.quote(),
-            "(\(primaryKey.quote()))",
+            primaryKey.map { "(\($0.quote()))" },
             onUpdate.map { "ON UPDATE \($0)" },
             onDelete.map { "ON DELETE \($0)" }
         ] as [String?]).compactMap { $0 }
