@@ -40,7 +40,7 @@ class SchemaReaderTests: SQLiteTestCase {
                              references: nil),
             ColumnDefinition(name: "admin",
                              primaryKey: nil,
-                             type: .TEXT,
+                             type: .NUMERIC,
                              nullable: false,
                              defaultValue: .numericLiteral("0"),
                              references: nil),
@@ -51,7 +51,7 @@ class SchemaReaderTests: SQLiteTestCase {
                              references: .init(table: "users", column: "manager_id", primaryKey: "id", onUpdate: nil, onDelete: nil)),
             ColumnDefinition(name: "created_at",
                              primaryKey: nil,
-                             type: .TEXT,
+                             type: .NUMERIC,
                              nullable: true,
                              defaultValue: .NULL,
                              references: nil)

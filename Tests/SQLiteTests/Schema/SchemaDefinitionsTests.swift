@@ -71,8 +71,68 @@ class AffinityTests: XCTestCase {
         XCTAssertEqual(ColumnDefinition.Affinity("NUMERIC"), .NUMERIC)
     }
 
-    func test_returns_TEXT_for_unknown_type() {
-        XCTAssertEqual(ColumnDefinition.Affinity("baz"), .TEXT)
+    // [Determination Of Column Affinity](https://sqlite.org/datatype3.html#determination_of_column_affinity)
+    // Rule 1
+    func testIntegerAffinity() {
+        let declared = [
+            "INT",
+            "INTEGER",
+            "TINYINT",
+            "SMALLINT",
+            "MEDIUMINT",
+            "BIGINT",
+            "UNSIGNED BIG INT",
+            "INT2",
+            "INT8"
+        ]
+        XCTAssertTrue(declared.allSatisfy({ColumnDefinition.Affinity($0) == .INTEGER}))
+    }
+
+    // Rule 2
+    func testTextAffinity() {
+        let declared = [
+            "CHARACTER(20)",
+            "VARCHAR(255)",
+            "VARYING CHARACTER(255)",
+            "NCHAR(55)",
+            "NATIVE CHARACTER(70)",
+            "NVARCHAR(100)",
+            "TEXT",
+            "CLOB"
+        ]
+        XCTAssertTrue(declared.allSatisfy({ColumnDefinition.Affinity($0) == .TEXT}))
+    }
+
+    // Rule 3
+    func testBlobAffinity() {
+        XCTAssertEqual(ColumnDefinition.Affinity("BLOB"), .BLOB)
+    }
+
+    // Rule 4
+    func testRealAffinity() {
+        let declared = [
+            "REAL",
+            "DOUBLE",
+            "DOUBLE PRECISION",
+            "FLOAT"
+        ]
+        XCTAssertTrue(declared.allSatisfy({ColumnDefinition.Affinity($0) == .REAL}))
+    }
+
+    // Rule 5
+    func testNumericAffinity() {
+        let declared = [
+            "NUMERIC",
+            "DECIMAL(10,5)",
+            "BOOLEAN",
+            "DATE",
+            "DATETIME"
+        ]
+        XCTAssertTrue(declared.allSatisfy({ColumnDefinition.Affinity($0) == .NUMERIC}))
+    }
+
+    func test_returns_NUMERIC_for_unknown_type() {
+        XCTAssertEqual(ColumnDefinition.Affinity("baz"), .NUMERIC)
     }
 }
 
