@@ -212,11 +212,8 @@
 		DB7C5DA828D7C9B6006395CF /* SQLiteVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7C5DA528D7C9B6006395CF /* SQLiteVersion.swift */; };
 		DB7C5DA928D7C9B6006395CF /* SQLiteVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7C5DA528D7C9B6006395CF /* SQLiteVersion.swift */; };
 		EAE1E1542B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */; };
-		EAE1E1552B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */; };
 		EAE1E1562B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */; };
-		EAE1E1572B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */; };
 		EAE1E1582B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */; };
-		EAE1E1592B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */; };
 		EAE1E15A2B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE1E1532B473B0C0048B157 /* PrivacyInfo.xcprivacy */; };
 		EE247AD71C3F04ED00AE3E12 /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE247ADE1C3F04ED00AE3E12 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE247AD31C3F04ED00AE3E12 /* SQLite.framework */; };
@@ -909,7 +906,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAE1E1592B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */,
 				3DF7B79828846FED005DD8CA /* Resources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -934,7 +930,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAE1E1552B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */,
 				3DF7B79628846FCC005DD8CA /* Resources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -951,7 +946,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				EAE1E1572B473B0C0048B157 /* PrivacyInfo.xcprivacy in Resources */,
 				3DF7B79928847055005DD8CA /* Resources in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
