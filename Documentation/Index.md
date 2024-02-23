@@ -64,6 +64,7 @@
   - [Other Operators](#other-operators)
   - [Core SQLite Functions](#core-sqlite-functions)
   - [Aggregate SQLite Functions](#aggregate-sqlite-functions)
+  - [Window SQLite Functions](#window-sqlite-functions)
   - [Date and Time Functions](#date-and-time-functions)
   - [Custom SQL Functions](#custom-sql-functions)
   - [Custom Collations](#custom-collations)
@@ -1870,6 +1871,11 @@ have been surfaced in and type-audited for SQLite.swift.
 Most of SQLite’s
 [aggregate functions](https://www.sqlite.org/lang_aggfunc.html) have been
 surfaced in and type-audited for SQLite.swift.
+
+## Window SQLite Functions
+
+Most of SQLite's [window functions](https://www.sqlite.org/windowfunctions.html) have been
+surfaced in and type-audited for SQLite.swift. Currently only `OVER (ORDER BY ...)` windowing is possible. 
 
 ## Date and Time functions
 
