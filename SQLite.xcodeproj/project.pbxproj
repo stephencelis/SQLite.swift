@@ -218,6 +218,9 @@
 		DB7C5DA728D7C9B6006395CF /* SQLiteVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7C5DA528D7C9B6006395CF /* SQLiteVersion.swift */; };
 		DB7C5DA828D7C9B6006395CF /* SQLiteVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7C5DA528D7C9B6006395CF /* SQLiteVersion.swift */; };
 		DB7C5DA928D7C9B6006395CF /* SQLiteVersion.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB7C5DA528D7C9B6006395CF /* SQLiteVersion.swift */; };
+		DBB93D5A2A22A373009BB96E /* SchemaReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB93D592A22A373009BB96E /* SchemaReaderTests.swift */; };
+		DBB93D5B2A22A373009BB96E /* SchemaReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB93D592A22A373009BB96E /* SchemaReaderTests.swift */; };
+		DBB93D5C2A22A373009BB96E /* SchemaReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB93D592A22A373009BB96E /* SchemaReaderTests.swift */; };
 		EE247AD71C3F04ED00AE3E12 /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE247ADE1C3F04ED00AE3E12 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE247AD31C3F04ED00AE3E12 /* SQLite.framework */; };
 		EE247B031C3F06E900AE3E12 /* Blob.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEE1C3F06E900AE3E12 /* Blob.swift */; };
@@ -349,6 +352,7 @@
 		DB58B21028FB864300F8EEA4 /* SchemaReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaReader.swift; sourceTree = "<group>"; };
 		DB58B21528FC7C4600F8EEA4 /* SQLiteFeature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteFeature.swift; sourceTree = "<group>"; };
 		DB7C5DA528D7C9B6006395CF /* SQLiteVersion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteVersion.swift; sourceTree = "<group>"; };
+		DBB93D592A22A373009BB96E /* SchemaReaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaReaderTests.swift; sourceTree = "<group>"; };
 		EE247AD31C3F04ED00AE3E12 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE247AD61C3F04ED00AE3E12 /* SQLite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQLite.h; sourceTree = "<group>"; };
 		EE247AD81C3F04ED00AE3E12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -493,6 +497,7 @@
 		19A17B56FBA20E7245BC8AC0 /* Schema */ = {
 			isa = PBXGroup;
 			children = (
+				DBB93D592A22A373009BB96E /* SchemaReaderTests.swift */,
 				19A176174862D0F0139B3987 /* SchemaDefinitionsTests.swift */,
 				19A17FDB0B0CFB8987906FD0 /* SchemaChangerTests.swift */,
 				19A17CA1DF7D0F7C9A94C51C /* Connection+SchemaTests.swift */,
@@ -1010,6 +1015,7 @@
 				19A17FACE8E4D54A50BA934E /* FTS5Tests.swift in Sources */,
 				19A177909023B7B940C5805E /* FTSIntegrationTests.swift in Sources */,
 				19A17E1DD976D5CE80018749 /* FTS4Tests.swift in Sources */,
+				DBB93D5C2A22A373009BB96E /* SchemaReaderTests.swift in Sources */,
 				19A17411403D60640467209E /* ExpressionTests.swift in Sources */,
 				19A17CA4D7B63D845428A9C5 /* StatementTests.swift in Sources */,
 				19A17885B646CB0201BE4BD5 /* QueryTests.swift in Sources */,
@@ -1134,6 +1140,7 @@
 				19A178DA2BB5970778CCAF13 /* FTS5Tests.swift in Sources */,
 				19A1755C49154C87304C9146 /* FTSIntegrationTests.swift in Sources */,
 				19A17444861E1443143DEB44 /* FTS4Tests.swift in Sources */,
+				DBB93D5A2A22A373009BB96E /* SchemaReaderTests.swift in Sources */,
 				19A17DD33C2E43DD6EE05A60 /* ExpressionTests.swift in Sources */,
 				19A17D6EC40BC35A5DC81BA8 /* StatementTests.swift in Sources */,
 				19A17E3F47DA087E2B76D087 /* QueryTests.swift in Sources */,
@@ -1216,6 +1223,7 @@
 				19A1776BD5127DFDF847FF1F /* FTS5Tests.swift in Sources */,
 				19A173088B85A7E18E8582A7 /* FTSIntegrationTests.swift in Sources */,
 				19A178767223229E61C5066F /* FTS4Tests.swift in Sources */,
+				DBB93D5B2A22A373009BB96E /* SchemaReaderTests.swift in Sources */,
 				19A1781CBA8968ABD3E00877 /* ExpressionTests.swift in Sources */,
 				19A17923494236793893BF72 /* StatementTests.swift in Sources */,
 				19A17A52BF29D27C9AA229E7 /* QueryTests.swift in Sources */,

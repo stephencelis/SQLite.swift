@@ -119,7 +119,7 @@ public struct ColumnDefinition: Equatable {
     public struct ForeignKey: Equatable {
         let table: String
         let column: String
-        let primaryKey: String
+        let primaryKey: String?
         let onUpdate: String?
         let onDelete: String?
     }
@@ -377,7 +377,7 @@ extension ColumnDefinition.ForeignKey {
         ([
             "REFERENCES",
             table.quote(),
-            "(\(primaryKey.quote()))",
+            primaryKey.map { "(\($0.quote()))" },
             onUpdate.map { "ON UPDATE \($0)" },
             onDelete.map { "ON DELETE \($0)" }
         ] as [String?]).compactMap { $0 }

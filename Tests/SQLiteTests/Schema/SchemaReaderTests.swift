@@ -172,6 +172,44 @@ class SchemaReaderTests: SQLiteTestCase {
         ])
     }
 
+    func test_foreignKeys_references_column() throws {
+        let sql = """
+          CREATE TABLE artist(
+            artistid    INTEGER PRIMARY KEY,
+            artistname  TEXT
+          );
+          CREATE TABLE track(
+            trackid     INTEGER,
+            trackname   TEXT,
+            trackartist INTEGER REFERENCES artist(artistid)
+          );
+          """
+        try db.execute(sql)
+        let trackColumns = try db.schema.foreignKeys(table: "track")
+        XCTAssertEqual(trackColumns.map { $0.toSQL() }.joined(separator: "\n"), """
+            REFERENCES "artist" ("artistid")
+            """)
+    }
+
+    func test_foreignKeys_references_null_column() throws {
+        let sql = """
+          CREATE TABLE artist(
+            artistid    INTEGER PRIMARY KEY,
+            artistname  TEXT
+          );
+          CREATE TABLE track(
+            trackid     INTEGER,
+            trackname   TEXT,
+            trackartist INTEGER REFERENCES artist
+          );
+          """
+        try db.execute(sql)
+        let trackColumns = try db.schema.foreignKeys(table: "track")
+        XCTAssertEqual(trackColumns.map { $0.toSQL() }.joined(separator: "\n"), """
+            REFERENCES "artist"
+            """)
+    }
+
     func test_tableDefinitions() throws {
         let tables = try schemaReader.tableDefinitions()
         XCTAssertEqual(tables.count, 1)
