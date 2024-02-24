@@ -221,6 +221,10 @@
 		DBB93D5A2A22A373009BB96E /* SchemaReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB93D592A22A373009BB96E /* SchemaReaderTests.swift */; };
 		DBB93D5B2A22A373009BB96E /* SchemaReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB93D592A22A373009BB96E /* SchemaReaderTests.swift */; };
 		DBB93D5C2A22A373009BB96E /* SchemaReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = DBB93D592A22A373009BB96E /* SchemaReaderTests.swift */; };
+		EAE5A0372B893C43007C7EA4 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE5A0362B893C43007C7EA4 /* PrivacyInfo.xcprivacy */; };
+		EAE5A0382B893C43007C7EA4 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE5A0362B893C43007C7EA4 /* PrivacyInfo.xcprivacy */; };
+		EAE5A0392B893C43007C7EA4 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE5A0362B893C43007C7EA4 /* PrivacyInfo.xcprivacy */; };
+		EAE5A03A2B893C43007C7EA4 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = EAE5A0362B893C43007C7EA4 /* PrivacyInfo.xcprivacy */; };
 		EE247AD71C3F04ED00AE3E12 /* SQLite.h in Headers */ = {isa = PBXBuildFile; fileRef = EE247AD61C3F04ED00AE3E12 /* SQLite.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		EE247ADE1C3F04ED00AE3E12 /* SQLite.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE247AD31C3F04ED00AE3E12 /* SQLite.framework */; };
 		EE247B031C3F06E900AE3E12 /* Blob.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEE1C3F06E900AE3E12 /* Blob.swift */; };
@@ -353,6 +357,7 @@
 		DB58B21528FC7C4600F8EEA4 /* SQLiteFeature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteFeature.swift; sourceTree = "<group>"; };
 		DB7C5DA528D7C9B6006395CF /* SQLiteVersion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteVersion.swift; sourceTree = "<group>"; };
 		DBB93D592A22A373009BB96E /* SchemaReaderTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaReaderTests.swift; sourceTree = "<group>"; };
+		EAE5A0362B893C43007C7EA4 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		EE247AD31C3F04ED00AE3E12 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		EE247AD61C3F04ED00AE3E12 /* SQLite.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SQLite.h; sourceTree = "<group>"; };
 		EE247AD81C3F04ED00AE3E12 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -560,6 +565,7 @@
 				EE247AD61C3F04ED00AE3E12 /* SQLite.h */,
 				EE247AF71C3F06E900AE3E12 /* Foundation.swift */,
 				EE247AF81C3F06E900AE3E12 /* Helpers.swift */,
+				EAE5A0362B893C43007C7EA4 /* PrivacyInfo.xcprivacy */,
 				EE247AD81C3F04ED00AE3E12 /* Info.plist */,
 				EE247AED1C3F06E900AE3E12 /* Core */,
 				EE247AF41C3F06E900AE3E12 /* Extensions */,
@@ -908,6 +914,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAE5A0392B893C43007C7EA4 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -923,6 +930,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAE5A03A2B893C43007C7EA4 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -930,6 +938,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAE5A0372B893C43007C7EA4 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -945,6 +954,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				EAE5A0382B893C43007C7EA4 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
