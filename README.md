@@ -128,7 +128,7 @@ Swift code.
 
   ```swift
   dependencies: [
-      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.14.1")
+      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.0")
   ]
   ```
 
@@ -152,7 +152,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.14.1
+    github "stephencelis/SQLite.swift" ~> 0.15.0
     ```
 
  3. Run `carthage update` and
