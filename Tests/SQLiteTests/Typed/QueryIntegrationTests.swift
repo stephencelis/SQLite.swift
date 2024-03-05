@@ -152,6 +152,33 @@ class QueryIntegrationTests: SQLiteTestCase {
          XCTAssertEqual(values.count, 2)
     }
 
+    func test_insert_custom_encodable_type() throws {
+        struct TestTypeWithOptionalArray: Codable {
+            var myInt: Int
+            var myString: String
+            var myOptionalArray: [Int]?
+        }
+
+        let table = Table("custom_codable")
+        try db.run(table.create { builder in
+            builder.column(Expression<Int?>("myInt"))
+            builder.column(Expression<String?>("myString"))
+            builder.column(Expression<String?>("myOptionalArray"))
+        })
+
+        let customType = TestTypeWithOptionalArray(myInt: 13, myString: "foo", myOptionalArray: [1, 2, 3])
+        try db.run(table.insert(customType))
+        let rows = try db.prepare(table)
+        let values: [TestTypeWithOptionalArray] = try rows.map({ try $0.decode() })
+        XCTAssertEqual(values.count, 1, "return one optional custom type")
+
+        let customTypeWithNil = TestTypeWithOptionalArray(myInt: 123, myString: "String", myOptionalArray: nil)
+        try db.run(table.insert(customTypeWithNil))
+        let rowsNil = try db.prepare(table)
+        let valuesNil: [TestTypeWithOptionalArray] = try rowsNil.map({ try $0.decode() })
+        XCTAssertEqual(valuesNil.count, 2, "return two custom objects, including one that contains a nil optional")
+    }
+
     func test_upsert() throws {
         try XCTSkipUnless(db.satisfiesMinimumVersion(minor: 24))
         let fetchAge = { () throws -> Int? in
