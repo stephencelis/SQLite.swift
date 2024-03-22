@@ -504,9 +504,8 @@ private class SQLiteDecoder: Decoder {
             case is UUID.Type:
                 return try? row.get(Expression<UUID>(key.stringValue)) as? T
             default:
-                guard let JSONString = try? row.get(Expression<String?>(key.stringValue)) else {
-                    throw DecodingError.typeMismatch(type, DecodingError.Context(codingPath: codingPath,
-                                                                                 debugDescription: "an unsupported type was found"))
+                guard let JSONString = try row.get(Expression<String?>(key.stringValue)) else {
+                    return nil
                 }
                 guard let data = JSONString.data(using: .utf8) else {
                     throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath,
