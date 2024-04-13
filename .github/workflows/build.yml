@@ -1,11 +1,11 @@
 name: Build and test
 on: [push, pull_request]
 env:
-  IOS_SIMULATOR: "iPhone 14"
-  IOS_VERSION: "16.2"
+  IOS_SIMULATOR: "iPhone 15"
+  IOS_VERSION: "17.2"
 jobs:
   build:
-    runs-on: macos-13
+    runs-on: macos-14
     steps:
     - uses: actions/checkout@v2
     - name: "Select Xcode"
@@ -13,7 +13,7 @@ jobs:
       # https://github.com/CocoaPods/CocoaPods/issues/11839
       run: |
         xcode-select -p
-        sudo xcode-select -s /Applications/Xcode_14.2.app/Contents/Developer
+        sudo xcode-select -s /Applications/Xcode_15.3.app/Contents/Developer
     - name: "Lint"
       run: make lint
     - name: "Run tests (PACKAGE_MANAGER_COMMAND: test)"
@@ -63,6 +63,10 @@ jobs:
     - name: "Run tests (CARTHAGE_PLATFORM: tvOS)"
       env:
         CARTHAGE_PLATFORM: tvOS
+      run: ./run-tests.sh
+    - name: "Run tests (CARTHAGE_PLATFORM: visionOS)"
+      env:
+        CARTHAGE_PLATFORM: visionOS
       run: ./run-tests.sh
   build-linux:
     runs-on: ubuntu-latest
