@@ -1,3 +1,11 @@
+0.15.1 (14-04-2024), [diff][diff-0.15.1]
+========================================
+
+* Update CoreFunctions.swift fix typo ([#1249][])
+* Fix #1247 support nil case when decoding optionals ([#1248][])
+* Change deployment targets for Xcode 15 and add dependency on custom Cocoapods fork ([#1255][])
+* Add VisionOS support ([#1237][])
+
 0.15.0 (24-02-2024), [diff][diff-0.15.0]
 ========================================
 
@@ -155,6 +163,7 @@ For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
 [diff-0.14.0]: https://github.com/stephencelis/SQLite.swift/compare/0.13.3...0.14.0
 [diff-0.14.1]: https://github.com/stephencelis/SQLite.swift/compare/0.14.0...0.14.1
 [diff-0.15.0]: https://github.com/stephencelis/SQLite.swift/compare/0.14.0...0.15.0
+[diff-0.15.1]: https://github.com/stephencelis/SQLite.swift/compare/0.15.0...0.15.1
 
 [#30]: https://github.com/stephencelis/SQLite.swift/issues/30
 [#142]: https://github.com/stephencelis/SQLite.swift/issues/142
@@ -235,3 +244,7 @@ For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
 [#1218]: https://github.com/stephencelis/SQLite.swift/pull/1218
 [#1210]: https://github.com/stephencelis/SQLite.swift/pull/1210
 [#1245]: https://github.com/stephencelis/SQLite.swift/pull/1245
+[#1249]: https://github.com/stephencelis/SQLite.swift/pull/1249
+[#1248]: https://github.com/stephencelis/SQLite.swift/pull/1248
+[#1255]: https://github.com/stephencelis/SQLite.swift/pull/1255
+[#1237]: https://github.com/stephencelis/SQLite.swift/pull/1237
