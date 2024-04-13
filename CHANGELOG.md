@@ -1,6 +1,20 @@
-0.15.0 (unreleased)
+0.15.0 (24-02-2024), [diff][diff-0.15.0]
 ========================================
 
+* Fix incorrect behavior when preparing `SELECT *` preceded by a `WITH` ([#1179][])
+* Adds support for returning extended error codes ([#1178][])
+* Fix typos ([#1182][])
+* fix Xcode build error ([#1192][])
+* Make the IndexDefinition properties public ([#1196][])
+* Fix GitHub Actions build badge ([#1200][])
+* Run CI on macOS 13 ([#1206][])
+* SchemaReader: return the correct column definition for a composite primary key ([#1217][])
+* Add optional support for decoding ([#1224][])
+* make fromDatatypeValue throw ([#1242][])
+* Implements built-in window functions ([#1228][])
+* Fix column affinity parsing to match how SQLite determines affinity ([#1218][])
+* Handle FK definitions w/o key references ([#1210][])
+* Add privacy manifest ([#1245][])
 * New minimum deployment targets: iOS/tvOS 11.0, watchOS 4.0
 
 0.14.1 (01-11-2022), [diff][diff-0.14.1]
@@ -14,7 +28,7 @@ For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
 
 * Support more complex schema changes and queries ([#1073][], [#1146][] [#1148][])
 * Support `ATTACH`/`DETACH` ([#30][], [#1142][])
-* Expose connection flags (via `URIQueryParameter`) to open db ([#1074][]))
+* Expose connection flags (via `URIQueryParameter`) to open db ([#1074][])
 * Support `WITH` clause ([#1139][])
 * Add `Value` conformance for `NSURL` ([#1110][], [#1141][])
 * Add decoding for `UUID` ([#1137][])
@@ -140,6 +154,7 @@ For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
 [diff-0.13.3]: https://github.com/stephencelis/SQLite.swift/compare/0.13.2...0.13.3
 [diff-0.14.0]: https://github.com/stephencelis/SQLite.swift/compare/0.13.3...0.14.0
 [diff-0.14.1]: https://github.com/stephencelis/SQLite.swift/compare/0.14.0...0.14.1
+[diff-0.15.0]: https://github.com/stephencelis/SQLite.swift/compare/0.14.0...0.15.0
 
 [#30]: https://github.com/stephencelis/SQLite.swift/issues/30
 [#142]: https://github.com/stephencelis/SQLite.swift/issues/142
@@ -206,3 +221,17 @@ For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
 [#1146]: https://github.com/stephencelis/SQLite.swift/pull/1146
 [#1148]: https://github.com/stephencelis/SQLite.swift/pull/1148
 [#1167]: https://github.com/stephencelis/SQLite.swift/pull/1167
+[#1179]: https://github.com/stephencelis/SQLite.swift/pull/1179
+[#1178]: https://github.com/stephencelis/SQLite.swift/pull/1178
+[#1182]: https://github.com/stephencelis/SQLite.swift/pull/1182
+[#1192]: https://github.com/stephencelis/SQLite.swift/pull/1192
+[#1196]: https://github.com/stephencelis/SQLite.swift/pull/1196
+[#1200]: https://github.com/stephencelis/SQLite.swift/pull/1200
+[#1206]: https://github.com/stephencelis/SQLite.swift/pull/1206
+[#1217]: https://github.com/stephencelis/SQLite.swift/pull/1217
+[#1224]: https://github.com/stephencelis/SQLite.swift/pull/1224
+[#1242]: https://github.com/stephencelis/SQLite.swift/pull/1242
+[#1228]: https://github.com/stephencelis/SQLite.swift/pull/1228
+[#1218]: https://github.com/stephencelis/SQLite.swift/pull/1218
+[#1210]: https://github.com/stephencelis/SQLite.swift/pull/1210
+[#1245]: https://github.com/stephencelis/SQLite.swift/pull/1245

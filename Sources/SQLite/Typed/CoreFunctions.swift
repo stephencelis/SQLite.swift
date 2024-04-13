@@ -224,7 +224,7 @@ extension ExpressionType where UnderlyingType == String {
     ///
     ///     let name = Expression<String>("name")
     ///     name.uppercaseString
-    ///     // lower("name")
+    ///     // upper("name")
     ///
     /// - Returns: A copy of the expression wrapped with the `upper` function.
     public var uppercaseString: Expression<UnderlyingType> {
