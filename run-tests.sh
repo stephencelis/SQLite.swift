@@ -7,7 +7,7 @@ if [ -n "$BUILD_SCHEME" ]; then
         make test BUILD_SCHEME="$BUILD_SCHEME"
     fi
 elif [ -n "$VALIDATOR_SUBSPEC" ]; then
-    bundle install
+    bundle install --deployment
     if [ "$VALIDATOR_SUBSPEC" == "none" ]; then
       bundle exec pod lib lint --no-subspecs --fail-fast
     else
