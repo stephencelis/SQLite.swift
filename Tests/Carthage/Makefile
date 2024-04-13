@@ -1,4 +1,4 @@
-CARTHAGE := /usr/local/bin/carthage
+CARTHAGE := $(shell which carthage)
 CARTHAGE_PLATFORM := iOS
 CARTHAGE_CONFIGURATION := Release
 CARTHAGE_DIR := Carthage
