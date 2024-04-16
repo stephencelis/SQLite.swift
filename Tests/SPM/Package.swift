@@ -15,7 +15,7 @@ let package = Package(
         // for testing from same repository
         .package(path: "../..")
         // normally this would be:
-        // .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.1")
+        // .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.2")
     ],
     targets: [
         .executableTarget(name: "test", dependencies: [.product(name: "SQLite", package: "SQLite.swift")])

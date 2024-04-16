@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "SQLite.swift"
-  s.version          = "0.15.1"
+  s.version          = "0.15.2"
   s.summary          = "A type-safe, Swift-language layer over SQLite3."
 
   s.description      = <<-DESC
@@ -22,11 +22,13 @@ Pod::Spec.new do |s|
   tvos_deployment_target = '12.0'
   osx_deployment_target = '10.13'
   watchos_deployment_target = '4.0'
+  visionos_deployment_target = '1.0'
 
   s.ios.deployment_target = ios_deployment_target
   s.tvos.deployment_target = tvos_deployment_target
   s.osx.deployment_target = osx_deployment_target
   s.watchos.deployment_target = watchos_deployment_target
+  s.visionos.deployment_target = visionos_deployment_target
 
   s.subspec 'standard' do |ss|
     ss.source_files = 'Sources/SQLite/**/*.{c,h,m,swift}'
@@ -37,6 +39,7 @@ Pod::Spec.new do |s|
     ss.tvos.deployment_target = tvos_deployment_target
     ss.osx.deployment_target = osx_deployment_target
     ss.watchos.deployment_target = watchos_deployment_target
+    ss.visionos.deployment_target = visionos_deployment_target
 
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
@@ -61,6 +64,7 @@ Pod::Spec.new do |s|
     ss.tvos.deployment_target = tvos_deployment_target
     ss.osx.deployment_target = osx_deployment_target
     ss.watchos.deployment_target = watchos_deployment_target
+    ss.visionos.deployment_target = visionos_deployment_target
 
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
@@ -83,6 +87,7 @@ Pod::Spec.new do |s|
     ss.tvos.deployment_target = tvos_deployment_target
     ss.osx.deployment_target = osx_deployment_target
     ss.watchos.deployment_target = watchos_deployment_target
+    ss.visionos.deployment_target = visionos_deployment_target
 
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
