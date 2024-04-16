@@ -87,7 +87,7 @@ Pod::Spec.new do |s|
     ss.tvos.deployment_target = tvos_deployment_target
     ss.osx.deployment_target = osx_deployment_target
     ss.watchos.deployment_target = watchos_deployment_target
-    ss.visionos.deployment_target = visionos_deployment_target
+    #ss.visionos.deployment_target = visionos_deployment_target # Not supported by SQLCipher for now
 
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
