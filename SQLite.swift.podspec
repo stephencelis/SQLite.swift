@@ -34,6 +34,7 @@ Pod::Spec.new do |s|
     ss.source_files = 'Sources/SQLite/**/*.{c,h,m,swift}'
     ss.exclude_files = 'Sources/**/Cipher.swift'
     ss.library = 'sqlite3'
+    ss.resource_bundle = { 'SQLite.swift' => 'Sources/SQLite/PrivacyInfo.xcprivacy' }
     
     ss.ios.deployment_target = ios_deployment_target
     ss.tvos.deployment_target = tvos_deployment_target
@@ -53,6 +54,7 @@ Pod::Spec.new do |s|
   s.subspec 'standalone' do |ss|
     ss.source_files = 'Sources/SQLite/**/*.{c,h,m,swift}'
     ss.exclude_files = 'Sources/**/Cipher.swift'
+    ss.resource_bundle = { 'SQLite.swift' => 'Sources/SQLite/PrivacyInfo.xcprivacy' }
 
     ss.xcconfig = {
       'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_STANDALONE',
@@ -77,6 +79,8 @@ Pod::Spec.new do |s|
 
   s.subspec 'SQLCipher' do |ss|
     ss.source_files = 'Sources/SQLite/**/*.{c,h,m,swift}'
+    ss.resource_bundle = { 'SQLite.swift' => 'Sources/SQLite/PrivacyInfo.xcprivacy' }
+
     ss.xcconfig = {
       'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_SQLCIPHER',
       'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1 SQLITE_SWIFT_SQLCIPHER=1'
