@@ -1,3 +1,7 @@
+0.15.3 (19-04-2024), [diff][diff-0.15.3]
+========================================
+* Update `podspec` to include privacy manifest ([#1265][])
+
 0.15.2 (16-04-2024), [diff][diff-0.15.2]
 ========================================
 * fix: visionos to cocoapods ([#1260][])
@@ -254,3 +258,4 @@ For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
 [#1255]: https://github.com/stephencelis/SQLite.swift/pull/1255
 [#1237]: https://github.com/stephencelis/SQLite.swift/pull/1237
 [#1260]: https://github.com/stephencelis/SQLite.swift/pull/1260
+[#1265]: https://github.com/stephencelis/SQLite.swift/pull/1265
