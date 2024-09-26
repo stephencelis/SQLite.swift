@@ -13,19 +13,19 @@ import SQLite3
 class QueryTests: XCTestCase {
 
     let users = Table("users")
-    let id = Expression<Int64>("id")
-    let email = Expression<String>("email")
-    let age = Expression<Int?>("age")
-    let admin = Expression<Bool>("admin")
-    let optionalAdmin = Expression<Bool?>("admin")
+    let id = SQLite.Expression<Int64>("id")
+    let email = SQLite.Expression<String>("email")
+    let age = SQLite.Expression<Int?>("age")
+    let admin = SQLite.Expression<Bool>("admin")
+    let optionalAdmin = SQLite.Expression<Bool?>("admin")
 
     let posts = Table("posts")
-    let userId = Expression<Int64>("user_id")
-    let categoryId = Expression<Int64>("category_id")
-    let published = Expression<Bool>("published")
+    let userId = SQLite.Expression<Int64>("user_id")
+    let categoryId = SQLite.Expression<Int64>("category_id")
+    let published = SQLite.Expression<Bool>("published")
 
     let categories = Table("categories")
-    let tag = Expression<String>("tag")
+    let tag = SQLite.Expression<String>("tag")
 
     func test_select_withExpression_compilesSelectClause() {
         assertSQL("SELECT \"email\" FROM \"users\"", users.select(email))
@@ -217,7 +217,7 @@ class QueryTests: XCTestCase {
     }
 
     func test_alias_aliasesTable() {
-        let managerId = Expression<Int64>("manager_id")
+        let managerId = SQLite.Expression<Int64>("manager_id")
 
         let managers = users.alias("managers")
 
@@ -422,7 +422,7 @@ class QueryTests: XCTestCase {
 
     func test_upsert_encodable() throws {
         let emails = Table("emails")
-        let string = Expression<String>("string")
+        let string = SQLite.Expression<String>("string")
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
                                 date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let insert = try emails.upsert(value, onConflictOf: string)

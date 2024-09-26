@@ -134,4 +134,7 @@ class SetterTests: XCTestCase {
         assertSQL("\"intOptional\" = (\"intOptional\" - 1)", intOptional--)
     }
 
+    func test_setter_custom_string_convertible() {
+        XCTAssertEqual("\"int\" = \"int\"", (int <- int).description)
+    }
 }

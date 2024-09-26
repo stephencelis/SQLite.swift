@@ -34,13 +34,13 @@ class WindowFunctionsTests: XCTestCase {
     func test_lag_wrapsExpressionWithOverClause() {
         assertSQL("lag(\"int\", 0) OVER (ORDER BY \"int\" DESC)", int.lag(int.desc))
         assertSQL("lag(\"int\", 7) OVER (ORDER BY \"int\" DESC)", int.lag(offset: 7, int.desc))
-        assertSQL("lag(\"int\", 1, 3) OVER (ORDER BY \"int\" DESC)", int.lag(offset: 1, default: Expression<Int>(value: 3), int.desc))
+        assertSQL("lag(\"int\", 1, 3) OVER (ORDER BY \"int\" DESC)", int.lag(offset: 1, default: SQLite.Expression<Int>(value: 3), int.desc))
     }
 
     func test_lead_wrapsExpressionWithOverClause() {
         assertSQL("lead(\"int\", 0) OVER (ORDER BY \"int\" DESC)", int.lead(int.desc))
         assertSQL("lead(\"int\", 7) OVER (ORDER BY \"int\" DESC)", int.lead(offset: 7, int.desc))
-        assertSQL("lead(\"int\", 1, 3) OVER (ORDER BY \"int\" DESC)", int.lead(offset: 1, default: Expression<Int>(value: 3), int.desc))
+        assertSQL("lead(\"int\", 1, 3) OVER (ORDER BY \"int\" DESC)", int.lead(offset: 1, default: SQLite.Expression<Int>(value: 3), int.desc))
     }
 
     func test_firstValue_wrapsExpressionWithOverClause() {

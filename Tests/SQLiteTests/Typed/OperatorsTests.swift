@@ -356,7 +356,7 @@ class OperatorsTests: XCTestCase {
     }
 
     func test_precedencePreserved() {
-        let n = Expression<Int>(value: 1)
+        let n = SQLite.Expression<Int>(value: 1)
         assertSQL("(((1 = 1) AND (1 = 1)) OR (1 = 1))", (n == n && n == n) || n == n)
         assertSQL("((1 = 1) AND ((1 = 1) OR (1 = 1)))", n == n && (n == n || n == n))
     }
