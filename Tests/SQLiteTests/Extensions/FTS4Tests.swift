@@ -35,9 +35,9 @@ class FTS4Tests: XCTestCase {
     }
 
     func test_match_onVirtualTableAsExpression_compilesMatchExpression() {
-        assertSQL("(\"virtual_table\" MATCH 'string')", virtualTable.match("string") as Expression<Bool>)
-        assertSQL("(\"virtual_table\" MATCH \"string\")", virtualTable.match(string) as Expression<Bool>)
-        assertSQL("(\"virtual_table\" MATCH \"stringOptional\")", virtualTable.match(stringOptional) as Expression<Bool?>)
+        assertSQL("(\"virtual_table\" MATCH 'string')", virtualTable.match("string") as SQLite.Expression<Bool>)
+        assertSQL("(\"virtual_table\" MATCH \"string\")", virtualTable.match(string) as SQLite.Expression<Bool>)
+        assertSQL("(\"virtual_table\" MATCH \"stringOptional\")", virtualTable.match(stringOptional) as SQLite.Expression<Bool?>)
     }
 
     func test_match_onVirtualTableAsQueryType_compilesMatchExpression() {

@@ -75,6 +75,12 @@ extension Setter: Expressible {
 
 }
 
+extension Setter: CustomStringConvertible {
+    public var description: String {
+        asSQL()
+    }
+}
+
 public func <-<V: Value>(column: Expression<V>, value: Expression<V>) -> Setter {
     Setter(column: column, value: value)
 }
