@@ -12,8 +12,8 @@ class CoreFunctionsTests: XCTestCase {
     }
 
     func test_random_generatesExpressionWithRandomFunction() {
-        assertSQL("random()", Expression<Int64>.random())
-        assertSQL("random()", Expression<Int>.random())
+        assertSQL("random()", SQLite.Expression<Int64>.random())
+        assertSQL("random()", SQLite.Expression<Int>.random())
     }
 
     func test_length_wrapsStringExpressionWithLengthFunction() {
@@ -38,14 +38,14 @@ class CoreFunctionsTests: XCTestCase {
         assertSQL("(\"string\" LIKE '%\\%' ESCAPE '\\')", string.like("%\\%", escape: "\\"))
         assertSQL("(\"stringOptional\" LIKE '_\\_' ESCAPE '\\')", stringOptional.like("_\\_", escape: "\\"))
 
-        assertSQL("(\"string\" LIKE \"a\")", string.like(Expression<String>("a")))
-        assertSQL("(\"stringOptional\" LIKE \"a\")", stringOptional.like(Expression<String>("a")))
+        assertSQL("(\"string\" LIKE \"a\")", string.like(SQLite.Expression<String>("a")))
+        assertSQL("(\"stringOptional\" LIKE \"a\")", stringOptional.like(SQLite.Expression<String>("a")))
 
-        assertSQL("(\"string\" LIKE \"a\" ESCAPE '\\')", string.like(Expression<String>("a"), escape: "\\"))
-        assertSQL("(\"stringOptional\" LIKE \"a\" ESCAPE '\\')", stringOptional.like(Expression<String>("a"), escape: "\\"))
+        assertSQL("(\"string\" LIKE \"a\" ESCAPE '\\')", string.like(SQLite.Expression<String>("a"), escape: "\\"))
+        assertSQL("(\"stringOptional\" LIKE \"a\" ESCAPE '\\')", stringOptional.like(SQLite.Expression<String>("a"), escape: "\\"))
 
-        assertSQL("('string' LIKE \"a\")", "string".like(Expression<String>("a")))
-        assertSQL("('string' LIKE \"a\" ESCAPE '\\')", "string".like(Expression<String>("a"), escape: "\\"))
+        assertSQL("('string' LIKE \"a\")", "string".like(SQLite.Expression<String>("a")))
+        assertSQL("('string' LIKE \"a\" ESCAPE '\\')", "string".like(SQLite.Expression<String>("a"), escape: "\\"))
     }
 
     func test_glob_buildsExpressionWithGlobOperator() {

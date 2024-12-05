@@ -74,29 +74,29 @@ class SQLiteTestCase: XCTestCase {
 
 }
 
-let bool = Expression<Bool>("bool")
-let boolOptional = Expression<Bool?>("boolOptional")
+let bool = SQLite.Expression<Bool>("bool")
+let boolOptional = SQLite.Expression<Bool?>("boolOptional")
 
-let data = Expression<Blob>("blob")
-let dataOptional = Expression<Blob?>("blobOptional")
+let data = SQLite.Expression<Blob>("blob")
+let dataOptional = SQLite.Expression<Blob?>("blobOptional")
 
-let date = Expression<Date>("date")
-let dateOptional = Expression<Date?>("dateOptional")
+let date = SQLite.Expression<Date>("date")
+let dateOptional = SQLite.Expression<Date?>("dateOptional")
 
-let double = Expression<Double>("double")
-let doubleOptional = Expression<Double?>("doubleOptional")
+let double = SQLite.Expression<Double>("double")
+let doubleOptional = SQLite.Expression<Double?>("doubleOptional")
 
-let int = Expression<Int>("int")
-let intOptional = Expression<Int?>("intOptional")
+let int = SQLite.Expression<Int>("int")
+let intOptional = SQLite.Expression<Int?>("intOptional")
 
-let int64 = Expression<Int64>("int64")
-let int64Optional = Expression<Int64?>("int64Optional")
+let int64 = SQLite.Expression<Int64>("int64")
+let int64Optional = SQLite.Expression<Int64?>("int64Optional")
 
-let string = Expression<String>("string")
-let stringOptional = Expression<String?>("stringOptional")
+let string = SQLite.Expression<String>("string")
+let stringOptional = SQLite.Expression<String?>("stringOptional")
 
-let uuid = Expression<UUID>("uuid")
-let uuidOptional = Expression<UUID?>("uuidOptional")
+let uuid = SQLite.Expression<UUID>("uuid")
+let uuidOptional = SQLite.Expression<UUID?>("uuidOptional")
 
 let testUUIDValue = UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!
 
