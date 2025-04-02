@@ -1,6 +1,6 @@
 import Foundation
 
-public struct SQLiteVersion: Comparable, CustomStringConvertible {
+public struct SQLiteVersion: Sendable, Comparable, CustomStringConvertible {
     public let major: Int
     public let minor: Int
     public var point: Int = 0
@@ -17,6 +17,6 @@ public struct SQLiteVersion: Comparable, CustomStringConvertible {
         lhs.tuple == rhs.tuple
     }
 
-    static var zero: SQLiteVersion = .init(major: 0, minor: 0)
+    static let zero: SQLiteVersion = .init(major: 0, minor: 0)
     private var tuple: (Int, Int, Int) { (major, minor, point) }
 }
