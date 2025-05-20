@@ -43,19 +43,31 @@ public class SchemaChanger: CustomStringConvertible {
 
     public enum Operation {
         case addColumn(ColumnDefinition)
+        case addIndex(IndexDefinition)
         case dropColumn(String)
         case renameColumn(String, String)
         case renameTable(String)
+        case createTable(columns: [ColumnDefinition])
 
         /// Returns non-nil if the operation can be executed with a simple SQL statement
         func toSQL(_ table: String, version: SQLiteVersion) -> String? {
             switch self {
             case .addColumn(let definition):
                 return "ALTER TABLE \(table.quote()) ADD COLUMN \(definition.toSQL())"
+            case .addIndex(let definition):
+                let unique = definition.unique ? "UNIQUE" : ""
+                let columns = definition.columns.joined(separator: ", ")
+                let `where` = definition.where.map { " WHERE " + $0 } ?? ""
+
+                return "CREATE \(unique) INDEX \(definition.name) ON \(definition.table) (\(columns)) \(`where`)"
             case .renameColumn(let from, let to) where SQLiteFeature.renameColumn.isSupported(by: version):
                 return "ALTER TABLE \(table.quote()) RENAME COLUMN \(from.quote()) TO \(to.quote())"
             case .dropColumn(let column) where SQLiteFeature.dropColumn.isSupported(by: version):
                 return "ALTER TABLE \(table.quote()) DROP COLUMN \(column.quote())"
+            case .createTable(let columns):
+                return "CREATE TABLE \(table.quote()) (" +
+                    columns.map { $0.toSQL() }.joined(separator: ", ") +
+                ")"
             default: return nil
             }
         }
@@ -108,12 +120,39 @@ public class SchemaChanger: CustomStringConvertible {
         }
     }
 
+    public class CreateTableDefinition {
+        fileprivate var columnDefinitions: [ColumnDefinition] = []
+        fileprivate var indexDefinitions: [IndexDefinition] = []
+
+        let name: String
+
+        init(name: String) {
+            self.name = name
+        }
+
+        public func add(column: ColumnDefinition) {
+            columnDefinitions.append(column)
+        }
+
+        public func add(index: IndexDefinition) {
+            indexDefinitions.append(index)
+        }
+
+        var operations: [Operation] {
+            precondition(!columnDefinitions.isEmpty)
+            return [
+                .createTable(columns: columnDefinitions)
+            ] + indexDefinitions.map { .addIndex($0) }
+        }
+    }
+
     private let connection: Connection
     private let schemaReader: SchemaReader
     private let version: SQLiteVersion
     static let tempPrefix = "tmp_"
     typealias Block = () throws -> Void
     public typealias AlterTableDefinitionBlock = (AlterTableDefinition) -> Void
+    public typealias CreateTableDefinitionBlock = (CreateTableDefinition) -> Void
 
     struct Options: OptionSet {
         let rawValue: Int
@@ -137,6 +176,15 @@ public class SchemaChanger: CustomStringConvertible {
         block(alterTableDefinition)
 
         for operation in alterTableDefinition.operations {
+            try run(table: table, operation: operation)
+        }
+    }
+
+    public func create(table: String, ifNotExists: Bool = false, block: CreateTableDefinitionBlock) throws {
+        let createTableDefinition = CreateTableDefinition(name: table)
+        block(createTableDefinition)
+
+        for operation in createTableDefinition.operations {
             try run(table: table, operation: operation)
         }
     }
@@ -263,6 +311,7 @@ extension TableDefinition {
     func apply(_ operation: SchemaChanger.Operation?) -> TableDefinition {
         switch operation {
         case .none: return self
+        case .createTable, .addIndex: fatalError()
         case .addColumn: fatalError("Use 'ALTER TABLE ADD COLUMN (...)'")
         case .dropColumn(let column):
             return TableDefinition(name: name,

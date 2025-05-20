@@ -154,4 +154,50 @@ class SchemaChangerTests: SQLiteTestCase {
         let users_new = Table("users_new")
         XCTAssertEqual((try db.scalar(users_new.count)) as Int, 1)
     }
+
+    func test_create_table() throws {
+        try schemaChanger.create(table: "foo") { table in
+            table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+            table.add(column: .init(name: "name", type: .TEXT, nullable: false))
+            table.add(column: .init(name: "age", type: .INTEGER))
+
+            table.add(index: .init(table: table.name,
+                                   name: "nameIndex",
+                                   unique: true,
+                                   columns: ["name"],
+                                   where: nil,
+                                   orders: nil))
+        }
+
+        // make sure new table can be queried
+        let foo = Table("foo")
+        XCTAssertEqual((try db.scalar(foo.count)) as Int, 0)
+
+        let columns = try schema.columnDefinitions(table: "foo")
+        XCTAssertEqual(columns, [
+            ColumnDefinition(name: "id",
+                             primaryKey: .init(autoIncrement: true, onConflict: nil),
+                             type: .INTEGER,
+                             nullable: true,
+                             defaultValue: .NULL,
+                             references: nil),
+            ColumnDefinition(name: "name",
+                             primaryKey: nil,
+                             type: .TEXT,
+                             nullable: false,
+                             defaultValue: .NULL,
+                             references: nil),
+            ColumnDefinition(name: "age",
+                             primaryKey: nil,
+                             type: .INTEGER,
+                             nullable: true,
+                             defaultValue: .NULL,
+                             references: nil)
+        ])
+
+        let indexes = try schema.indexDefinitions(table: "foo")
+        XCTAssertEqual(indexes, [
+            IndexDefinition(table: "foo", name: "nameIndex", unique: true, columns: ["name"], where: nil, orders: nil)
+        ])
+    }
 }

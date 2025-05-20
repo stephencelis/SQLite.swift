@@ -35,7 +35,7 @@ lint: $(SWIFTLINT)
 	$< --strict
 
 lint-fix: $(SWIFTLINT)
-	$< lint fix
+	$< --fix
 
 clean:
 	$(XCODEBUILD) $(BUILD_ARGUMENTS) clean

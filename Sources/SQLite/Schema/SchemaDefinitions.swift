@@ -270,12 +270,15 @@ public struct IndexDefinition: Equatable {
                         return memo2
             }
         }
+
+        let orders = indexSQL.flatMap(orders)
+
         self.init(table: table,
                   name: name,
                   unique: unique,
                   columns: columns,
                   where: indexSQL.flatMap(wherePart),
-                  orders: indexSQL.flatMap(orders))
+                  orders: (orders?.isEmpty ?? false) ? nil : orders)
     }
 
     public let table: String
