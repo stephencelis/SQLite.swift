@@ -93,7 +93,7 @@ public struct ColumnDefinition: Equatable {
         // swiftlint:disable:next force_try
         static let pattern = try! NSRegularExpression(pattern: "PRIMARY KEY\\s*(?:ASC|DESC)?\\s*(?:ON CONFLICT (\\w+)?)?\\s*(AUTOINCREMENT)?")
 
-        init(autoIncrement: Bool = true, onConflict: OnConflict? = nil) {
+        public init(autoIncrement: Bool = true, onConflict: OnConflict? = nil) {
             self.autoIncrement = autoIncrement
             self.onConflict = onConflict
         }
