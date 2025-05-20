@@ -11,7 +11,7 @@ elif [ -n "$VALIDATOR_SUBSPEC" ]; then
     if [ "$VALIDATOR_SUBSPEC" == "none" ]; then
       bundle exec pod lib lint --no-subspecs --fail-fast
     else
-      bundle exec pod lib lint --subspec="${VALIDATOR_SUBSPEC}" --fail-fast
+      bundle exec pod lib lint --subspec="${VALIDATOR_SUBSPEC}" --fail-fast --platforms=macos,ios,tvos,watchos
     fi
 elif [ -n "$CARTHAGE_PLATFORM" ]; then
     cd Tests/Carthage && make test CARTHAGE_PLATFORM="$CARTHAGE_PLATFORM"
