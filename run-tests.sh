@@ -24,5 +24,5 @@ elif [ -n "$CARTHAGE_PLATFORM" ]; then
 elif [ -n "$SPM" ]; then
     cd Tests/SPM && swift "${SPM}"
 elif [ -n "${PACKAGE_MANAGER_COMMAND}" ]; then
-    swift "${PACKAGE_MANAGER_COMMAND}"
+    swift ${PACKAGE_MANAGER_COMMAND}
 fi
