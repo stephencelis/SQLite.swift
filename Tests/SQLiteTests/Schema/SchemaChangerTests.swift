@@ -201,6 +201,36 @@ class SchemaChangerTests: SQLiteTestCase {
         ])
     }
 
+    func test_create_table_add_column_expression() throws {
+        try schemaChanger.create(table: "foo") { table in
+            table.add(expression: Expression<String>("name"))
+            table.add(expression: Expression<Int>("age"))
+            table.add(expression: Expression<Double?>("salary"))
+        }
+
+        let columns = try schema.columnDefinitions(table: "foo")
+        XCTAssertEqual(columns, [
+            ColumnDefinition(name: "name",
+                             primaryKey: nil,
+                             type: .TEXT,
+                             nullable: false,
+                             defaultValue: .NULL,
+                             references: nil),
+            ColumnDefinition(name: "age",
+                             primaryKey: nil,
+                             type: .INTEGER,
+                             nullable: false,
+                             defaultValue: .NULL,
+                             references: nil),
+            ColumnDefinition(name: "salary",
+                             primaryKey: nil,
+                             type: .REAL,
+                             nullable: true,
+                             defaultValue: .NULL,
+                             references: nil)
+            ])
+    }
+
     func test_create_table_if_not_exists() throws {
         try schemaChanger.create(table: "foo") { table in
             table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))

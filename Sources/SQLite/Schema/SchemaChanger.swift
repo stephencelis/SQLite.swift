@@ -136,6 +136,14 @@ public class SchemaChanger: CustomStringConvertible {
             columnDefinitions.append(column)
         }
 
+        public func add<T>(expression: Expression<T>) where T: Value {
+            add(column: .init(name: columnName(for: expression), type: .init(expression: expression), nullable: false))
+        }
+
+        public func add<T>(expression: Expression<T?>) where T: Value {
+            add(column: .init(name: columnName(for: expression), type: .init(expression: expression), nullable: true))
+        }
+
         public func add(index: IndexDefinition) {
             indexDefinitions.append(index)
         }
@@ -145,6 +153,13 @@ public class SchemaChanger: CustomStringConvertible {
             return [
                 .createTable(columns: columnDefinitions, ifNotExists: ifNotExists)
             ] + indexDefinitions.map { .addIndex($0) }
+        }
+
+        private func columnName<T>(for expression: Expression<T>) -> String {
+            switch LiteralValue(expression.template) {
+            case .stringLiteral(let string): return string
+            default: fatalError("expression is not a literal string value")
+            }
         }
     }
 
@@ -329,5 +344,15 @@ extension TableDefinition {
         case .renameTable(let to):
             return TableDefinition(name: to, columns: columns, indexes: indexes.map { $0.renameTable(to: to) })
         }
+    }
+}
+
+extension ColumnDefinition.Affinity {
+    init<T>(expression: Expression<T>) where T: Value {
+        self.init(T.declaredDatatype)
+    }
+
+    init<T>(expression: Expression<T?>) where T: Value {
+        self.init(T.declaredDatatype)
     }
 }
