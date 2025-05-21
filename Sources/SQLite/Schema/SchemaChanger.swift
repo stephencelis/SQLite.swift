@@ -47,7 +47,7 @@ public class SchemaChanger: CustomStringConvertible {
         case dropColumn(String)
         case renameColumn(String, String)
         case renameTable(String)
-        case createTable(columns: [ColumnDefinition])
+        case createTable(columns: [ColumnDefinition], ifNotExists: Bool)
 
         /// Returns non-nil if the operation can be executed with a simple SQL statement
         func toSQL(_ table: String, version: SQLiteVersion) -> String? {
@@ -64,8 +64,8 @@ public class SchemaChanger: CustomStringConvertible {
                 return "ALTER TABLE \(table.quote()) RENAME COLUMN \(from.quote()) TO \(to.quote())"
             case .dropColumn(let column) where SQLiteFeature.dropColumn.isSupported(by: version):
                 return "ALTER TABLE \(table.quote()) DROP COLUMN \(column.quote())"
-            case .createTable(let columns):
-                return "CREATE TABLE \(table.quote()) (" +
+            case .createTable(let columns, let ifNotExists):
+                return "CREATE TABLE \(ifNotExists ? " IF NOT EXISTS " : "") \(table.quote()) (" +
                     columns.map { $0.toSQL() }.joined(separator: ", ") +
                 ")"
             default: return nil
@@ -125,9 +125,11 @@ public class SchemaChanger: CustomStringConvertible {
         fileprivate var indexDefinitions: [IndexDefinition] = []
 
         let name: String
+        let ifNotExists: Bool
 
-        init(name: String) {
+        init(name: String, ifNotExists: Bool) {
             self.name = name
+            self.ifNotExists = ifNotExists
         }
 
         public func add(column: ColumnDefinition) {
@@ -141,7 +143,7 @@ public class SchemaChanger: CustomStringConvertible {
         var operations: [Operation] {
             precondition(!columnDefinitions.isEmpty)
             return [
-                .createTable(columns: columnDefinitions)
+                .createTable(columns: columnDefinitions, ifNotExists: ifNotExists)
             ] + indexDefinitions.map { .addIndex($0) }
         }
     }
@@ -181,7 +183,7 @@ public class SchemaChanger: CustomStringConvertible {
     }
 
     public func create(table: String, ifNotExists: Bool = false, block: CreateTableDefinitionBlock) throws {
-        let createTableDefinition = CreateTableDefinition(name: table)
+        let createTableDefinition = CreateTableDefinition(name: table, ifNotExists: ifNotExists)
         block(createTableDefinition)
 
         for operation in createTableDefinition.operations {

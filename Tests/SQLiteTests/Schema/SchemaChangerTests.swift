@@ -200,4 +200,26 @@ class SchemaChangerTests: SQLiteTestCase {
             IndexDefinition(table: "foo", name: "nameIndex", unique: true, columns: ["name"], where: nil, orders: nil)
         ])
     }
+
+    func test_create_table_if_not_exists() throws {
+        try schemaChanger.create(table: "foo") { table in
+            table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+        }
+
+        try schemaChanger.create(table: "foo", ifNotExists: true) { table in
+            table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+        }
+
+        XCTAssertThrowsError(
+            try schemaChanger.create(table: "foo", ifNotExists: false) { table in
+                table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+            }
+        ) { error in
+            if case Result.error(_, let code, _) = error {
+                XCTAssertEqual(code, 1)
+            } else {
+                XCTFail("unexpected error: \(error)")
+            }
+        }
+    }
 }
