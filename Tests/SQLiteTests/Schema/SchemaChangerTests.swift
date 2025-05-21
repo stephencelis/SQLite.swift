@@ -252,4 +252,18 @@ class SchemaChangerTests: SQLiteTestCase {
             }
         }
     }
+
+    func test_create_table_if_not_exists_with_index() throws {
+        try schemaChanger.create(table: "foo") { table in
+            table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+            table.add(column: .init(name: "name", type: .TEXT))
+            table.add(index: .init(table: "foo", name: "name_index", unique: true, columns: ["name"], indexSQL: nil))
+        }
+
+        // ifNotExists needs to apply to index creation as well
+        try schemaChanger.create(table: "foo", ifNotExists: true) { table in
+            table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+            table.add(index: .init(table: "foo", name: "name_index", unique: true, columns: ["name"], indexSQL: nil))
+        }
+    }
 }

@@ -43,7 +43,7 @@ public class SchemaChanger: CustomStringConvertible {
 
     public enum Operation {
         case addColumn(ColumnDefinition)
-        case addIndex(IndexDefinition)
+        case addIndex(IndexDefinition, ifNotExists: Bool)
         case dropColumn(String)
         case renameColumn(String, String)
         case renameTable(String)
@@ -54,12 +54,8 @@ public class SchemaChanger: CustomStringConvertible {
             switch self {
             case .addColumn(let definition):
                 return "ALTER TABLE \(table.quote()) ADD COLUMN \(definition.toSQL())"
-            case .addIndex(let definition):
-                let unique = definition.unique ? "UNIQUE" : ""
-                let columns = definition.columns.joined(separator: ", ")
-                let `where` = definition.where.map { " WHERE " + $0 } ?? ""
-
-                return "CREATE \(unique) INDEX \(definition.name) ON \(definition.table) (\(columns)) \(`where`)"
+            case .addIndex(let definition, let ifNotExists):
+                return definition.toSQL(ifNotExists: ifNotExists)
             case .renameColumn(let from, let to) where SQLiteFeature.renameColumn.isSupported(by: version):
                 return "ALTER TABLE \(table.quote()) RENAME COLUMN \(from.quote()) TO \(to.quote())"
             case .dropColumn(let column) where SQLiteFeature.dropColumn.isSupported(by: version):
@@ -152,7 +148,7 @@ public class SchemaChanger: CustomStringConvertible {
             precondition(!columnDefinitions.isEmpty)
             return [
                 .createTable(columns: columnDefinitions, ifNotExists: ifNotExists)
-            ] + indexDefinitions.map { .addIndex($0) }
+            ] + indexDefinitions.map { .addIndex($0, ifNotExists: ifNotExists) }
         }
 
         private func columnName<T>(for expression: Expression<T>) -> String {
