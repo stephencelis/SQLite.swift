@@ -12,9 +12,6 @@ elif [ -n "$VALIDATOR_SUBSPEC" ]; then
       none)
         bundle exec pod lib lint --no-subspecs --fail-fast
         ;;
-      standalone)
-        bundle exec pod lib lint --subspec="${VALIDATOR_SUBSPEC}" --fail-fast --platforms=macos,ios,tvos,watchos
-        ;;
       *)
         bundle exec pod lib lint --subspec="${VALIDATOR_SUBSPEC}" --fail-fast
         ;;
