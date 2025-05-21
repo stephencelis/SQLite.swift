@@ -18,17 +18,11 @@ Pod::Spec.new do |s|
   s.default_subspec  = 'standard'
   s.swift_versions = ['5']
 
-  ios_deployment_target = '12.0'
-  tvos_deployment_target = '12.0'
-  osx_deployment_target = '10.13'
-  watchos_deployment_target = '4.0'
-  visionos_deployment_target = '1.0'
-
-  s.ios.deployment_target = ios_deployment_target
-  s.tvos.deployment_target = tvos_deployment_target
-  s.osx.deployment_target = osx_deployment_target
-  s.watchos.deployment_target = watchos_deployment_target
-  s.visionos.deployment_target = visionos_deployment_target
+  s.ios.deployment_target = '12.0'
+  s.tvos.deployment_target = '12.0'
+  s.osx.deployment_target = '10.13'
+  s.watchos.deployment_target = '4.0'
+  s.visionos.deployment_target = '1.0'
 
   s.subspec 'standard' do |ss|
     ss.source_files = 'Sources/SQLite/**/*.{c,h,m,swift}'
@@ -36,18 +30,9 @@ Pod::Spec.new do |s|
     ss.library = 'sqlite3'
     ss.resource_bundle = { 'SQLite.swift' => 'Sources/SQLite/PrivacyInfo.xcprivacy' }
     
-    ss.ios.deployment_target = ios_deployment_target
-    ss.tvos.deployment_target = tvos_deployment_target
-    ss.osx.deployment_target = osx_deployment_target
-    ss.watchos.deployment_target = watchos_deployment_target
-    ss.visionos.deployment_target = visionos_deployment_target
-
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
       test_spec.source_files = 'Tests/SQLiteTests/*.swift'
-      test_spec.ios.deployment_target = ios_deployment_target
-      test_spec.tvos.deployment_target = tvos_deployment_target
-      test_spec.osx.deployment_target = osx_deployment_target
     end
   end
 
@@ -62,18 +47,9 @@ Pod::Spec.new do |s|
     }
     ss.dependency 'sqlite3'
     
-    ss.ios.deployment_target = ios_deployment_target
-    ss.tvos.deployment_target = tvos_deployment_target
-    ss.osx.deployment_target = osx_deployment_target
-    ss.watchos.deployment_target = watchos_deployment_target
-    ss.visionos.deployment_target = visionos_deployment_target
-
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
       test_spec.source_files = 'Tests/SQLiteTests/*.swift'
-      test_spec.ios.deployment_target = ios_deployment_target
-      test_spec.tvos.deployment_target = tvos_deployment_target
-      test_spec.osx.deployment_target = osx_deployment_target
     end
   end
 
@@ -87,18 +63,9 @@ Pod::Spec.new do |s|
     }
     ss.dependency 'SQLCipher', '>= 4.0.0'
     
-    ss.ios.deployment_target = ios_deployment_target
-    ss.tvos.deployment_target = tvos_deployment_target
-    ss.osx.deployment_target = osx_deployment_target
-    ss.watchos.deployment_target = watchos_deployment_target
-    #ss.visionos.deployment_target = visionos_deployment_target # Not supported by SQLCipher for now
-
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
       test_spec.source_files = 'Tests/SQLiteTests/*.swift'
-      test_spec.ios.deployment_target = ios_deployment_target
-      test_spec.tvos.deployment_target = tvos_deployment_target
-      test_spec.osx.deployment_target = osx_deployment_target
     end
   end
 end
