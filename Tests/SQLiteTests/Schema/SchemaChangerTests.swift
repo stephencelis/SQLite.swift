@@ -158,7 +158,7 @@ class SchemaChangerTests: SQLiteTestCase {
     func test_create_table() throws {
         try schemaChanger.create(table: "foo") { table in
             table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
-            table.add(column: .init(name: "name", type: .TEXT, nullable: false))
+            table.add(column: .init(name: "name", type: .TEXT, nullable: false, unique: true))
             table.add(column: .init(name: "age", type: .INTEGER))
 
             table.add(index: .init(table: table.name,
@@ -179,25 +179,28 @@ class SchemaChangerTests: SQLiteTestCase {
                              primaryKey: .init(autoIncrement: true, onConflict: nil),
                              type: .INTEGER,
                              nullable: true,
+                             unique: false,
                              defaultValue: .NULL,
                              references: nil),
             ColumnDefinition(name: "name",
                              primaryKey: nil,
                              type: .TEXT,
                              nullable: false,
+                             unique: true,
                              defaultValue: .NULL,
                              references: nil),
             ColumnDefinition(name: "age",
                              primaryKey: nil,
                              type: .INTEGER,
                              nullable: true,
+                             unique: false,
                              defaultValue: .NULL,
                              references: nil)
         ])
 
-        let indexes = try schema.indexDefinitions(table: "foo")
+        let indexes = try schema.indexDefinitions(table: "foo").filter { !$0.isInternal }
         XCTAssertEqual(indexes, [
-            IndexDefinition(table: "foo", name: "nameIndex", unique: true, columns: ["name"], where: nil, orders: nil)
+            IndexDefinition(table: "foo", name: "nameIndex", unique: true, columns: ["name"], where: nil, orders: nil, origin: .createIndex)
         ])
     }
 

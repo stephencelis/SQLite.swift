@@ -128,6 +128,7 @@ public struct ColumnDefinition: Equatable {
     public let primaryKey: PrimaryKey?
     public let type: Affinity
     public let nullable: Bool
+    public let unique: Bool
     public let defaultValue: LiteralValue
     public let references: ForeignKey?
 
@@ -135,12 +136,14 @@ public struct ColumnDefinition: Equatable {
                 primaryKey: PrimaryKey? = nil,
                 type: Affinity,
                 nullable: Bool = true,
+                unique: Bool = false,
                 defaultValue: LiteralValue = .NULL,
                 references: ForeignKey? = nil) {
         self.name = name
         self.primaryKey = primaryKey
         self.type = type
         self.nullable = nullable
+        self.unique = unique
         self.defaultValue = defaultValue
         self.references = references
     }
@@ -244,16 +247,18 @@ public struct IndexDefinition: Equatable {
 
     public enum Order: String { case ASC, DESC }
 
-    public init(table: String, name: String, unique: Bool = false, columns: [String], `where`: String? = nil, orders: [String: Order]? = nil) {
+    public init(table: String, name: String, unique: Bool = false, columns: [String], `where`: String? = nil,
+                orders: [String: Order]? = nil, origin: Origin? = nil) {
         self.table = table
         self.name = name
         self.unique = unique
         self.columns = columns
         self.where = `where`
         self.orders = orders
+        self.origin = origin
     }
 
-    init (table: String, name: String, unique: Bool, columns: [String], indexSQL: String?) {
+    init (table: String, name: String, unique: Bool, columns: [String], indexSQL: String?, origin: Origin? = nil) {
         func wherePart(sql: String) -> String? {
             IndexDefinition.whereRe.firstMatch(in: sql, options: [], range: NSRange(location: 0, length: sql.count)).map {
                 (sql as NSString).substring(with: $0.range(at: 1))
@@ -278,7 +283,8 @@ public struct IndexDefinition: Equatable {
                   unique: unique,
                   columns: columns,
                   where: indexSQL.flatMap(wherePart),
-                  orders: (orders?.isEmpty ?? false) ? nil : orders)
+                  orders: (orders?.isEmpty ?? false) ? nil : orders,
+                  origin: origin)
     }
 
     public let table: String
@@ -287,6 +293,13 @@ public struct IndexDefinition: Equatable {
     public let columns: [String]
     public let `where`: String?
     public let orders: [String: Order]?
+    public let origin: Origin?
+
+    public enum Origin: String {
+        case uniqueConstraint = "u" // index created from a "CREATE TABLE (... UNIQUE)" column constraint
+        case createIndex = "c"      // index created explicitly via "CREATE INDEX ..."
+        case primaryKey = "pk"      // index created from a "CREATE TABLE PRIMARY KEY" column constraint
+    }
 
     enum IndexError: LocalizedError {
         case tooLong(String, String)
@@ -298,6 +311,13 @@ public struct IndexDefinition: Equatable {
                      "\(IndexDefinition.maxIndexLength) characters"
             }
         }
+    }
+
+    // Indices with names of the form "sqlite_autoindex_TABLE_N" that are used to implement UNIQUE and PRIMARY KEY
+    // constraints on ordinary tables.
+    // https://sqlite.org/fileformat2.html#intschema
+    var isInternal: Bool {
+        name.starts(with: "sqlite_autoindex_")
     }
 
     func validate() throws {
@@ -348,6 +368,7 @@ extension ColumnDefinition {
             defaultValue.map { "DEFAULT \($0)" },
             primaryKey.map { $0.toSQL() },
             nullable ? nil : "NOT NULL",
+            unique ? "UNIQUE" : nil,
             references.map { $0.toSQL() }
         ].compactMap { $0 }
          .joined(separator: " ")
