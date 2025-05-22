@@ -375,4 +375,9 @@ class SchemaChangerTests: SQLiteTestCase {
                              references: .init(fromColumn: "foo_id", toTable: "foo", toColumn: "id", onUpdate: nil, onDelete: nil))
         ], barColumns)
     }
+
+    func test_run_arbitrary_sql() throws {
+        try schemaChanger.run("DROP TABLE users")
+        XCTAssertEqual(0, try schema.objectDefinitions(name: "users", type: .table).count)
+    }
 }

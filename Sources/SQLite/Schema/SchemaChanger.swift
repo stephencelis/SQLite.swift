@@ -224,8 +224,9 @@ public class SchemaChanger: CustomStringConvertible {
     }
 
     // Runs arbitrary SQL. Should only be used if no predefined operations exist.
-    public func run(sql: String) throws {
-        try connection.run(sql)
+    @discardableResult
+    public func run(_ sql: String, _ bindings: Binding?...) throws -> Statement {
+        return try connection.run(sql, bindings)
     }
 
     private func run(table: String, operation: Operation) throws {
