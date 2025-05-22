@@ -1,6 +1,6 @@
 GIT
   remote: https://github.com/jberkel/CocoaPods.git
-  revision: 899f273f298ea20de2378687ea55331004b39371
+  revision: 32a90c184bc5dc9ec8b7b9b8ad08e98b7253dec2
   branch: watchos-fourflusher
   specs:
     cocoapods (1.16.2)
