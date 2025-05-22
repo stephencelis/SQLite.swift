@@ -269,4 +269,38 @@ class SchemaChangerTests: SQLiteTestCase {
             table.add(index: .init(table: "foo", name: "name_index", unique: true, columns: ["name"], indexSQL: nil))
         }
     }
+
+    func test_create_table_with_foreign_key_reference() throws {
+        try schemaChanger.create(table: "foo") { table in
+            table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+        }
+
+        try schemaChanger.create(table: "bars") { table in
+            table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+            table.add(column: .init(name: "foo_id",
+                                    type: .INTEGER,
+                                    nullable: false,
+                                    references: .init(toTable: "foo", toColumn: "id")))
+        }
+
+        let barColumns = try schema.columnDefinitions(table: "bars")
+
+        XCTAssertEqual([
+            ColumnDefinition(name: "id",
+                             primaryKey: .init(autoIncrement: true, onConflict: nil),
+                             type: .INTEGER,
+                             nullable: true,
+                             unique: false,
+                             defaultValue: .NULL,
+                             references: nil),
+
+            ColumnDefinition(name: "foo_id",
+                             primaryKey: nil,
+                             type: .INTEGER,
+                             nullable: false,
+                             unique: false,
+                             defaultValue: .NULL,
+                             references: .init(fromColumn: "foo_id", toTable: "foo", toColumn: "id", onUpdate: nil, onDelete: nil))
+        ], barColumns)
+    }
 }

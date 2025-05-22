@@ -19,7 +19,7 @@ public class SchemaReader {
         }
 
         let foreignKeys: [String: [ColumnDefinition.ForeignKey]] =
-            Dictionary(grouping: try foreignKeys(table: table), by: { $0.column })
+            Dictionary(grouping: try foreignKeys(table: table), by: { $0.fromColumn })
 
         let columnDefinitions = try connection.prepareRowIterator("PRAGMA table_info(\(table.quote()))")
             .map { (row: Row) -> ColumnDefinition in
@@ -111,9 +111,9 @@ public class SchemaReader {
         try connection.prepareRowIterator("PRAGMA foreign_key_list(\(table.quote()))")
             .map { row in
                 ColumnDefinition.ForeignKey(
-                    table: row[ForeignKeyListTable.tableColumn],
-                    column: row[ForeignKeyListTable.fromColumn],
-                    primaryKey: row[ForeignKeyListTable.toColumn],
+                    fromColumn: row[ForeignKeyListTable.fromColumn],
+                    toTable: row[ForeignKeyListTable.tableColumn],
+                    toColumn: row[ForeignKeyListTable.toColumn],
                     onUpdate: row[ForeignKeyListTable.onUpdateColumn] == TableBuilder.Dependency.noAction.rawValue
                         ? nil : row[ForeignKeyListTable.onUpdateColumn],
                     onDelete: row[ForeignKeyListTable.onDeleteColumn] == TableBuilder.Dependency.noAction.rawValue

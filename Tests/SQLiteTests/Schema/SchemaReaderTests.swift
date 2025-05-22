@@ -54,7 +54,7 @@ class SchemaReaderTests: SQLiteTestCase {
                              nullable: true,
                              unique: false,
                              defaultValue: .NULL,
-                             references: .init(table: "users", column: "manager_id", primaryKey: "id", onUpdate: nil, onDelete: nil)),
+                             references: .init(fromColumn: "manager_id", toTable: "users", toColumn: "id", onUpdate: nil, onDelete: nil)),
             ColumnDefinition(name: "created_at",
                              primaryKey: nil,
                              type: .NUMERIC,
@@ -194,7 +194,7 @@ class SchemaReaderTests: SQLiteTestCase {
 
         let foreignKeys = try schemaReader.foreignKeys(table: "test_links")
         XCTAssertEqual(foreignKeys, [
-            .init(table: "users", column: "test_id", primaryKey: "id", onUpdate: nil, onDelete: nil)
+            .init(fromColumn: "test_id", toTable: "users", toColumn: "id", onUpdate: nil, onDelete: nil)
         ])
     }
 

@@ -117,11 +117,24 @@ public struct ColumnDefinition: Equatable {
     }
 
     public struct ForeignKey: Equatable {
-        let table: String
-        let column: String
-        let primaryKey: String?
+        let fromColumn: String
+        let toTable: String
+        // when null, use primary key of "toTable"
+        let toColumn: String?
         let onUpdate: String?
         let onDelete: String?
+
+        public init(toTable: String, toColumn: String? = nil, onUpdate: String? = nil, onDelete: String? = nil) {
+            self.init(fromColumn: "", toTable: toTable, toColumn: toColumn, onUpdate: onUpdate, onDelete: onDelete)
+        }
+
+        public init(fromColumn: String, toTable: String, toColumn: String? = nil, onUpdate: String? = nil, onDelete: String? = nil) {
+            self.fromColumn = fromColumn
+            self.toTable = toTable
+            self.toColumn = toColumn
+            self.onUpdate = onUpdate
+            self.onDelete = onDelete
+        }
     }
 
     public let name: String
@@ -400,8 +413,8 @@ extension ColumnDefinition.ForeignKey {
     func toSQL() -> String {
         ([
             "REFERENCES",
-            table.quote(),
-            primaryKey.map { "(\($0.quote()))" },
+            toTable.quote(),
+            toColumn.map { "(\($0.quote()))" },
             onUpdate.map { "ON UPDATE \($0)" },
             onDelete.map { "ON DELETE \($0)" }
         ] as [String?]).compactMap { $0 }
