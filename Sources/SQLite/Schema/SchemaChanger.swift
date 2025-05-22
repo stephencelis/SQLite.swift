@@ -110,6 +110,10 @@ public class SchemaChanger: CustomStringConvertible {
             operations.append(.addColumn(column))
         }
 
+        public func add(index: IndexDefinition, ifNotExists: Bool = false) {
+            operations.append(.addIndex(index, ifNotExists: ifNotExists))
+        }
+
         public func drop(column: String) {
             operations.append(.dropColumn(column))
         }

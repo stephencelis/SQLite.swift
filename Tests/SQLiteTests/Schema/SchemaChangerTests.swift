@@ -124,6 +124,40 @@ class SchemaChangerTests: SQLiteTestCase {
         }
     }
 
+    func test_add_index() throws {
+        try schemaChanger.alter(table: "users") { table in
+            table.add(index: .init(table: table.name, name: "age_index", unique: false, columns: ["age"], indexSQL: nil))
+        }
+
+        let indexes = try schema.indexDefinitions(table: "users").filter { !$0.isInternal }
+        XCTAssertEqual([
+            IndexDefinition(table: "users",
+                            name: "age_index",
+                            unique: false,
+                            columns: ["age"],
+                            where: nil,
+                            orders: nil,
+                            origin: .createIndex)
+        ], indexes)
+    }
+
+    func test_add_index_if_not_exists() throws {
+        let index = IndexDefinition(table: "users", name: "age_index", unique: false, columns: ["age"], indexSQL: nil)
+        try schemaChanger.alter(table: "users") { table in
+            table.add(index: index)
+        }
+
+        try schemaChanger.alter(table: "users") { table in
+            table.add(index: index, ifNotExists: true)
+        }
+
+        XCTAssertThrowsError(
+            try schemaChanger.alter(table: "users") { table in
+                table.add(index: index, ifNotExists: false)
+            }
+        )
+    }
+
     func test_drop_index() throws {
         try db.execute("""
             CREATE INDEX age_index ON users(age)
