@@ -54,6 +54,13 @@ Pod::Spec.new do |s|
   end
 
   s.subspec 'SQLCipher' do |ss|
+    # Disable unsupported visionOS
+    # https://github.com/sqlcipher/sqlcipher/issues/483
+    ss.ios.deployment_target = s.deployment_target(:ios)
+    ss.tvos.deployment_target = s.deployment_target(:tvos)
+    ss.osx.deployment_target = s.deployment_target(:osx)
+    ss.watchos.deployment_target = s.deployment_target(:watchos)
+
     ss.source_files = 'Sources/SQLite/**/*.{c,h,m,swift}'
     ss.resource_bundle = { 'SQLite.swift' => 'Sources/SQLite/PrivacyInfo.xcprivacy' }
 
