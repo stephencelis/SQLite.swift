@@ -45,6 +45,7 @@ public class SchemaChanger: CustomStringConvertible {
         case addColumn(ColumnDefinition)
         case addIndex(IndexDefinition, ifNotExists: Bool)
         case dropColumn(String)
+        case dropIndex(String, ifExists: Bool)
         case renameColumn(String, String)
         case renameTable(String)
         case createTable(columns: [ColumnDefinition], ifNotExists: Bool)
@@ -60,6 +61,8 @@ public class SchemaChanger: CustomStringConvertible {
                 return "ALTER TABLE \(table.quote()) RENAME COLUMN \(from.quote()) TO \(to.quote())"
             case .dropColumn(let column) where SQLiteFeature.dropColumn.isSupported(by: version):
                 return "ALTER TABLE \(table.quote()) DROP COLUMN \(column.quote())"
+            case .dropIndex(let name, let ifExists):
+                return "DROP INDEX \(ifExists ? " IF EXISTS " : "") \(name.quote())"
             case .createTable(let columns, let ifNotExists):
                 return "CREATE TABLE \(ifNotExists ? " IF NOT EXISTS " : "") \(table.quote()) (" +
                     columns.map { $0.toSQL() }.joined(separator: ", ") +
@@ -109,6 +112,10 @@ public class SchemaChanger: CustomStringConvertible {
 
         public func drop(column: String) {
             operations.append(.dropColumn(column))
+        }
+
+        public func drop(index: String, ifExists: Bool = false) {
+            operations.append(.dropIndex(index, ifExists: ifExists))
         }
 
         public func rename(column: String, to: String) {
@@ -324,8 +331,9 @@ extension TableDefinition {
     func apply(_ operation: SchemaChanger.Operation?) -> TableDefinition {
         switch operation {
         case .none: return self
-        case .createTable, .addIndex: fatalError()
+        case .createTable, .addIndex, .dropIndex: fatalError()
         case .addColumn: fatalError("Use 'ALTER TABLE ADD COLUMN (...)'")
+
         case .dropColumn(let column):
             return TableDefinition(name: name,
                 columns: columns.filter { $0.name != column },

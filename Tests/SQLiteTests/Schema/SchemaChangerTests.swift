@@ -124,6 +124,44 @@ class SchemaChangerTests: SQLiteTestCase {
         }
     }
 
+    func test_drop_index() throws {
+        try db.execute("""
+            CREATE INDEX age_index ON users(age)
+        """)
+
+        try schemaChanger.alter(table: "users") { table in
+            table.drop(index: "age_index")
+        }
+        let indexes = try schema.indexDefinitions(table: "users").filter { !$0.isInternal }
+        XCTAssertEqual(0, indexes.count)
+    }
+
+    func test_drop_index_if_exists() throws {
+        try db.execute("""
+            CREATE INDEX age_index ON users(age)
+        """)
+
+        try schemaChanger.alter(table: "users") { table in
+            table.drop(index: "age_index")
+        }
+
+        try schemaChanger.alter(table: "users") { table in
+            table.drop(index: "age_index", ifExists: true)
+        }
+
+        XCTAssertThrowsError(
+            try schemaChanger.alter(table: "users") { table in
+                table.drop(index: "age_index", ifExists: false)
+            }
+        ) { error in
+            if case Result.error(let message, _, _) =  error {
+                XCTAssertEqual(message, "no such index: age_index")
+            } else {
+                XCTFail("unexpected error \(error)")
+            }
+        }
+    }
+
     func test_drop_table() throws {
         try schemaChanger.drop(table: "users")
         XCTAssertThrowsError(try db.scalar(users.count)) { error in
