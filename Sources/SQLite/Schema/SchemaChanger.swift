@@ -100,7 +100,7 @@ public class SchemaChanger: CustomStringConvertible {
     public class AlterTableDefinition {
         fileprivate var operations: [Operation] = []
 
-        let name: String
+        public let name: String
 
         init(name: String) {
             self.name = name
@@ -221,6 +221,11 @@ public class SchemaChanger: CustomStringConvertible {
     // view definitions are also renamed.
     public func rename(table: String, to: String) throws {
         try connection.run("ALTER TABLE \(table.quote()) RENAME TO \(to.quote())")
+    }
+
+    // Runs arbitrary SQL. Should only be used if no predefined operations exist.
+    public func run(sql: String) throws {
+        try connection.run(sql)
     }
 
     private func run(table: String, operation: Operation) throws {
