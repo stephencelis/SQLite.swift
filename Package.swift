@@ -9,7 +9,7 @@ let targets: [Target] = [
     .target(
         name: "SQLite",
         dependencies: [
-            .product(name: "SwiftToolchainCSQLite", package: "swift-toolchain-sqlite")
+            .product(name: "SwiftToolchainCSQLite", package: "swift-toolchain-sqlite", condition: .when(platforms: [.linux, .windows]))
         ],
         exclude: [
             "Info.plist"
