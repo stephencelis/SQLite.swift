@@ -124,6 +124,78 @@ class SchemaChangerTests: SQLiteTestCase {
         }
     }
 
+    func test_add_index() throws {
+        try schemaChanger.alter(table: "users") { table in
+            table.add(index: .init(table: table.name, name: "age_index", unique: false, columns: ["age"], indexSQL: nil))
+        }
+
+        let indexes = try schema.indexDefinitions(table: "users").filter { !$0.isInternal }
+        XCTAssertEqual([
+            IndexDefinition(table: "users",
+                            name: "age_index",
+                            unique: false,
+                            columns: ["age"],
+                            where: nil,
+                            orders: nil,
+                            origin: .createIndex)
+        ], indexes)
+    }
+
+    func test_add_index_if_not_exists() throws {
+        let index = IndexDefinition(table: "users", name: "age_index", unique: false, columns: ["age"], indexSQL: nil)
+        try schemaChanger.alter(table: "users") { table in
+            table.add(index: index)
+        }
+
+        try schemaChanger.alter(table: "users") { table in
+            table.add(index: index, ifNotExists: true)
+        }
+
+        XCTAssertThrowsError(
+            try schemaChanger.alter(table: "users") { table in
+                table.add(index: index, ifNotExists: false)
+            }
+        )
+    }
+
+    func test_drop_index() throws {
+        try db.execute("""
+            CREATE INDEX age_index ON users(age)
+        """)
+
+        try schemaChanger.alter(table: "users") { table in
+            table.drop(index: "age_index")
+        }
+        let indexes = try schema.indexDefinitions(table: "users").filter { !$0.isInternal }
+        XCTAssertEqual(0, indexes.count)
+    }
+
+    func test_drop_index_if_exists() throws {
+        try db.execute("""
+            CREATE INDEX age_index ON users(age)
+        """)
+
+        try schemaChanger.alter(table: "users") { table in
+            table.drop(index: "age_index")
+        }
+
+        try schemaChanger.alter(table: "users") { table in
+            table.drop(index: "age_index", ifExists: true)
+        }
+
+        XCTAssertThrowsError(
+            try schemaChanger.alter(table: "users") { table in
+                table.drop(index: "age_index", ifExists: false)
+            }
+        ) { error in
+            if case Result.error(let message, _, _) =  error {
+                XCTAssertEqual(message, "no such index: age_index")
+            } else {
+                XCTFail("unexpected error \(error)")
+            }
+        }
+    }
+
     func test_drop_table() throws {
         try schemaChanger.drop(table: "users")
         XCTAssertThrowsError(try db.scalar(users.count)) { error in
@@ -153,5 +225,159 @@ class SchemaChangerTests: SQLiteTestCase {
         try schemaChanger.rename(table: "users", to: "users_new")
         let users_new = Table("users_new")
         XCTAssertEqual((try db.scalar(users_new.count)) as Int, 1)
+    }
+
+    func test_create_table() throws {
+        try schemaChanger.create(table: "foo") { table in
+            table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+            table.add(column: .init(name: "name", type: .TEXT, nullable: false, unique: true))
+            table.add(column: .init(name: "age", type: .INTEGER))
+
+            table.add(index: .init(table: table.name,
+                                   name: "nameIndex",
+                                   unique: true,
+                                   columns: ["name"],
+                                   where: nil,
+                                   orders: nil))
+        }
+
+        // make sure new table can be queried
+        let foo = Table("foo")
+        XCTAssertEqual((try db.scalar(foo.count)) as Int, 0)
+
+        let columns = try schema.columnDefinitions(table: "foo")
+        XCTAssertEqual(columns, [
+            ColumnDefinition(name: "id",
+                             primaryKey: .init(autoIncrement: true, onConflict: nil),
+                             type: .INTEGER,
+                             nullable: true,
+                             unique: false,
+                             defaultValue: .NULL,
+                             references: nil),
+            ColumnDefinition(name: "name",
+                             primaryKey: nil,
+                             type: .TEXT,
+                             nullable: false,
+                             unique: true,
+                             defaultValue: .NULL,
+                             references: nil),
+            ColumnDefinition(name: "age",
+                             primaryKey: nil,
+                             type: .INTEGER,
+                             nullable: true,
+                             unique: false,
+                             defaultValue: .NULL,
+                             references: nil)
+        ])
+
+        let indexes = try schema.indexDefinitions(table: "foo").filter { !$0.isInternal }
+        XCTAssertEqual(indexes, [
+            IndexDefinition(table: "foo", name: "nameIndex", unique: true, columns: ["name"], where: nil, orders: nil, origin: .createIndex)
+        ])
+    }
+
+    func test_create_table_add_column_expression() throws {
+        try schemaChanger.create(table: "foo") { table in
+            table.add(expression: Expression<String>("name"))
+            table.add(expression: Expression<Int>("age"))
+            table.add(expression: Expression<Double?>("salary"))
+        }
+
+        let columns = try schema.columnDefinitions(table: "foo")
+        XCTAssertEqual(columns, [
+            ColumnDefinition(name: "name",
+                             primaryKey: nil,
+                             type: .TEXT,
+                             nullable: false,
+                             defaultValue: .NULL,
+                             references: nil),
+            ColumnDefinition(name: "age",
+                             primaryKey: nil,
+                             type: .INTEGER,
+                             nullable: false,
+                             defaultValue: .NULL,
+                             references: nil),
+            ColumnDefinition(name: "salary",
+                             primaryKey: nil,
+                             type: .REAL,
+                             nullable: true,
+                             defaultValue: .NULL,
+                             references: nil)
+            ])
+    }
+
+    func test_create_table_if_not_exists() throws {
+        try schemaChanger.create(table: "foo") { table in
+            table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+        }
+
+        try schemaChanger.create(table: "foo", ifNotExists: true) { table in
+            table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+        }
+
+        XCTAssertThrowsError(
+            try schemaChanger.create(table: "foo", ifNotExists: false) { table in
+                table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+            }
+        ) { error in
+            if case Result.error(_, let code, _) = error {
+                XCTAssertEqual(code, 1)
+            } else {
+                XCTFail("unexpected error: \(error)")
+            }
+        }
+    }
+
+    func test_create_table_if_not_exists_with_index() throws {
+        try schemaChanger.create(table: "foo") { table in
+            table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+            table.add(column: .init(name: "name", type: .TEXT))
+            table.add(index: .init(table: "foo", name: "name_index", unique: true, columns: ["name"], indexSQL: nil))
+        }
+
+        // ifNotExists needs to apply to index creation as well
+        try schemaChanger.create(table: "foo", ifNotExists: true) { table in
+            table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+            table.add(index: .init(table: "foo", name: "name_index", unique: true, columns: ["name"], indexSQL: nil))
+        }
+    }
+
+    func test_create_table_with_foreign_key_reference() throws {
+        try schemaChanger.create(table: "foo") { table in
+            table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+        }
+
+        try schemaChanger.create(table: "bars") { table in
+            table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+            table.add(column: .init(name: "foo_id",
+                                    type: .INTEGER,
+                                    nullable: false,
+                                    references: .init(toTable: "foo", toColumn: "id")))
+        }
+
+        let barColumns = try schema.columnDefinitions(table: "bars")
+
+        XCTAssertEqual([
+            ColumnDefinition(name: "id",
+                             primaryKey: .init(autoIncrement: true, onConflict: nil),
+                             type: .INTEGER,
+                             nullable: true,
+                             unique: false,
+                             defaultValue: .NULL,
+                             references: nil),
+
+            ColumnDefinition(name: "foo_id",
+                             primaryKey: nil,
+                             type: .INTEGER,
+                             nullable: false,
+                             unique: false,
+                             defaultValue: .NULL,
+                             references: .init(fromColumn: "foo_id", toTable: "foo", toColumn: "id", onUpdate: nil, onDelete: nil))
+        ], barColumns)
+    }
+
+    func test_run_arbitrary_sql() throws {
+        try schemaChanger.run("DROP TABLE users")
+        XCTAssertEqual(0, try schema.objectDefinitions(name: "users", type: .table).count)
     }
 }

@@ -43,19 +43,30 @@ public class SchemaChanger: CustomStringConvertible {
 
     public enum Operation {
         case addColumn(ColumnDefinition)
+        case addIndex(IndexDefinition, ifNotExists: Bool)
         case dropColumn(String)
+        case dropIndex(String, ifExists: Bool)
         case renameColumn(String, String)
         case renameTable(String)
+        case createTable(columns: [ColumnDefinition], ifNotExists: Bool)
 
         /// Returns non-nil if the operation can be executed with a simple SQL statement
         func toSQL(_ table: String, version: SQLiteVersion) -> String? {
             switch self {
             case .addColumn(let definition):
                 return "ALTER TABLE \(table.quote()) ADD COLUMN \(definition.toSQL())"
+            case .addIndex(let definition, let ifNotExists):
+                return definition.toSQL(ifNotExists: ifNotExists)
             case .renameColumn(let from, let to) where SQLiteFeature.renameColumn.isSupported(by: version):
                 return "ALTER TABLE \(table.quote()) RENAME COLUMN \(from.quote()) TO \(to.quote())"
             case .dropColumn(let column) where SQLiteFeature.dropColumn.isSupported(by: version):
                 return "ALTER TABLE \(table.quote()) DROP COLUMN \(column.quote())"
+            case .dropIndex(let name, let ifExists):
+                return "DROP INDEX \(ifExists ? " IF EXISTS " : "") \(name.quote())"
+            case .createTable(let columns, let ifNotExists):
+                return "CREATE TABLE \(ifNotExists ? " IF NOT EXISTS " : "") \(table.quote()) (" +
+                    columns.map { $0.toSQL() }.joined(separator: ", ") +
+                ")"
             default: return nil
             }
         }
@@ -89,7 +100,7 @@ public class SchemaChanger: CustomStringConvertible {
     public class AlterTableDefinition {
         fileprivate var operations: [Operation] = []
 
-        let name: String
+        public let name: String
 
         init(name: String) {
             self.name = name
@@ -99,12 +110,63 @@ public class SchemaChanger: CustomStringConvertible {
             operations.append(.addColumn(column))
         }
 
+        public func add(index: IndexDefinition, ifNotExists: Bool = false) {
+            operations.append(.addIndex(index, ifNotExists: ifNotExists))
+        }
+
         public func drop(column: String) {
             operations.append(.dropColumn(column))
         }
 
+        public func drop(index: String, ifExists: Bool = false) {
+            operations.append(.dropIndex(index, ifExists: ifExists))
+        }
+
         public func rename(column: String, to: String) {
             operations.append(.renameColumn(column, to))
+        }
+    }
+
+    public class CreateTableDefinition {
+        fileprivate var columnDefinitions: [ColumnDefinition] = []
+        fileprivate var indexDefinitions: [IndexDefinition] = []
+
+        let name: String
+        let ifNotExists: Bool
+
+        init(name: String, ifNotExists: Bool) {
+            self.name = name
+            self.ifNotExists = ifNotExists
+        }
+
+        public func add(column: ColumnDefinition) {
+            columnDefinitions.append(column)
+        }
+
+        public func add<T>(expression: Expression<T>) where T: Value {
+            add(column: .init(name: columnName(for: expression), type: .init(expression: expression), nullable: false))
+        }
+
+        public func add<T>(expression: Expression<T?>) where T: Value {
+            add(column: .init(name: columnName(for: expression), type: .init(expression: expression), nullable: true))
+        }
+
+        public func add(index: IndexDefinition) {
+            indexDefinitions.append(index)
+        }
+
+        var operations: [Operation] {
+            precondition(!columnDefinitions.isEmpty)
+            return [
+                .createTable(columns: columnDefinitions, ifNotExists: ifNotExists)
+            ] + indexDefinitions.map { .addIndex($0, ifNotExists: ifNotExists) }
+        }
+
+        private func columnName<T>(for expression: Expression<T>) -> String {
+            switch LiteralValue(expression.template) {
+            case .stringLiteral(let string): return string
+            default: fatalError("expression is not a literal string value")
+            }
         }
     }
 
@@ -114,6 +176,7 @@ public class SchemaChanger: CustomStringConvertible {
     static let tempPrefix = "tmp_"
     typealias Block = () throws -> Void
     public typealias AlterTableDefinitionBlock = (AlterTableDefinition) -> Void
+    public typealias CreateTableDefinitionBlock = (CreateTableDefinition) -> Void
 
     struct Options: OptionSet {
         let rawValue: Int
@@ -141,6 +204,15 @@ public class SchemaChanger: CustomStringConvertible {
         }
     }
 
+    public func create(table: String, ifNotExists: Bool = false, block: CreateTableDefinitionBlock) throws {
+        let createTableDefinition = CreateTableDefinition(name: table, ifNotExists: ifNotExists)
+        block(createTableDefinition)
+
+        for operation in createTableDefinition.operations {
+            try run(table: table, operation: operation)
+        }
+    }
+
     public func drop(table: String, ifExists: Bool = true) throws {
         try dropTable(table, ifExists: ifExists)
     }
@@ -149,6 +221,12 @@ public class SchemaChanger: CustomStringConvertible {
     // view definitions are also renamed.
     public func rename(table: String, to: String) throws {
         try connection.run("ALTER TABLE \(table.quote()) RENAME TO \(to.quote())")
+    }
+
+    // Runs arbitrary SQL. Should only be used if no predefined operations exist.
+    @discardableResult
+    public func run(_ sql: String, _ bindings: Binding?...) throws -> Statement {
+        return try connection.run(sql, bindings)
     }
 
     private func run(table: String, operation: Operation) throws {
@@ -263,7 +341,9 @@ extension TableDefinition {
     func apply(_ operation: SchemaChanger.Operation?) -> TableDefinition {
         switch operation {
         case .none: return self
+        case .createTable, .addIndex, .dropIndex: fatalError()
         case .addColumn: fatalError("Use 'ALTER TABLE ADD COLUMN (...)'")
+
         case .dropColumn(let column):
             return TableDefinition(name: name,
                 columns: columns.filter { $0.name != column },
@@ -278,5 +358,15 @@ extension TableDefinition {
         case .renameTable(let to):
             return TableDefinition(name: to, columns: columns, indexes: indexes.map { $0.renameTable(to: to) })
         }
+    }
+}
+
+extension ColumnDefinition.Affinity {
+    init<T>(expression: Expression<T>) where T: Value {
+        self.init(T.declaredDatatype)
+    }
+
+    init<T>(expression: Expression<T?>) where T: Value {
+        self.init(T.declaredDatatype)
     }
 }

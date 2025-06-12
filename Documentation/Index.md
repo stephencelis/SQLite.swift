@@ -63,6 +63,7 @@
       - [Renaming Columns](#renaming-columns)
       - [Dropping Columns](#dropping-columns)
       - [Renaming/Dropping Tables](#renamingdropping-tables)
+      - [Creating Tables](#creating-tables)      
     - [Indexes](#indexes)
       - [Creating Indexes](#creating-indexes)
       - [Dropping Indexes](#dropping-indexes)
@@ -1582,6 +1583,16 @@ let schemaChanger = SchemaChanger(connection: db)
 try schemaChanger.rename(table: "users", to: "users_new")
 try schemaChanger.drop(table: "emails", ifExists: false)
 ```
+
+#### Creating Tables
+
+```swift
+let schemaChanger = SchemaChanger(connection: db)
+
+try schemaChanger.create(table: "users") { table in 
+    table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
+    table.add(column: .init(name: "name", type: .TEXT, nullable: false))            
+} 
 
 ### Indexes
 

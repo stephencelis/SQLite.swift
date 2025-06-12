@@ -11,7 +11,7 @@ class ColumnDefinitionTests: XCTestCase {
 
         ("\"other_id\" INTEGER NOT NULL REFERENCES \"other_table\" (\"some_id\")",
         ColumnDefinition(name: "other_id", primaryKey: nil, type: .INTEGER, nullable: false, defaultValue: .NULL,
-                         references: .init(table: "other_table", column: "", primaryKey: "some_id", onUpdate: nil, onDelete: nil))),
+                         references: .init(fromColumn: "", toTable: "other_table", toColumn: "some_id", onUpdate: nil, onDelete: nil))),
 
         ("\"text\" TEXT",
         ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, nullable: true, defaultValue: .NULL, references: nil)),
@@ -245,9 +245,9 @@ class ForeignKeyDefinitionTests: XCTestCase {
     func test_toSQL() {
         XCTAssertEqual(
             ColumnDefinition.ForeignKey(
-                table: "foo",
-                column: "bar",
-                primaryKey: "bar_id",
+                fromColumn: "bar",
+                toTable: "foo",
+                toColumn: "bar_id",
                 onUpdate: nil,
                 onDelete: "SET NULL"
             ).toSQL(), """
