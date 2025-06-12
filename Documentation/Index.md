@@ -1592,7 +1592,8 @@ let schemaChanger = SchemaChanger(connection: db)
 try schemaChanger.create(table: "users") { table in 
     table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
     table.add(column: .init(name: "name", type: .TEXT, nullable: false))            
-} 
+}
+``` 
 
 ### Indexes
 
