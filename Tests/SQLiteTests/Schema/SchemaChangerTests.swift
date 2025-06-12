@@ -278,9 +278,9 @@ class SchemaChangerTests: SQLiteTestCase {
 
     func test_create_table_add_column_expression() throws {
         try schemaChanger.create(table: "foo") { table in
-            table.add(expression: Expression<String>("name"))
-            table.add(expression: Expression<Int>("age"))
-            table.add(expression: Expression<Double?>("salary"))
+            table.add(expression: SQLite.Expression<String>("name"))
+            table.add(expression: SQLite.Expression<Int>("age"))
+            table.add(expression: SQLite.Expression<Double?>("salary"))
         }
 
         let columns = try schema.columnDefinitions(table: "foo")
