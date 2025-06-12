@@ -8,15 +8,18 @@ if [ -n "$BUILD_SCHEME" ]; then
     fi
 elif [ -n "$VALIDATOR_SUBSPEC" ]; then
     bundle install
-    if [ "$VALIDATOR_SUBSPEC" == "none" ]; then
-      bundle exec pod lib lint --no-subspecs --fail-fast
-    else
-      bundle exec pod lib lint --subspec="${VALIDATOR_SUBSPEC}" --fail-fast
-    fi
+    case "$VALIDATOR_SUBSPEC" in
+      none)
+        bundle exec pod lib lint --no-subspecs --fail-fast
+        ;;
+      *)
+        bundle exec pod lib lint --subspec="${VALIDATOR_SUBSPEC}" --fail-fast
+        ;;
+      esac
 elif [ -n "$CARTHAGE_PLATFORM" ]; then
     cd Tests/Carthage && make test CARTHAGE_PLATFORM="$CARTHAGE_PLATFORM"
 elif [ -n "$SPM" ]; then
-    cd Tests/SPM && swift ${SPM}
+    cd Tests/SPM && swift "${SPM}"
 elif [ -n "${PACKAGE_MANAGER_COMMAND}" ]; then
     swift ${PACKAGE_MANAGER_COMMAND}
 fi

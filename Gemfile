@@ -1,3 +1,4 @@
 source "https://rubygems.org"
 
-gem 'cocoapods', :git => 'https://github.com/SagarSDagdu/CocoaPods.git', tag: '1.15.2.1-sagard'
+# https://github.com/CocoaPods/CocoaPods/pull/12816
+gem 'cocoapods', :git => 'https://github.com/jberkel/CocoaPods.git', branch: 'watchos-fourflusher'
