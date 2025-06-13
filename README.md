@@ -128,7 +128,7 @@ Swift code.
 
   ```swift
   dependencies: [
-      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.3")
+      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.4")
   ]
   ```
 
@@ -152,7 +152,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.15.3
+    github "stephencelis/SQLite.swift" ~> 0.15.4
     ```
 
  3. Run `carthage update` and
@@ -183,7 +183,7 @@ SQLite.swift with CocoaPods:
     use_frameworks!
 
     target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.14.0'
+        pod 'SQLite.swift', '~> 0.15.0'
     end
     ```
 
@@ -226,8 +226,6 @@ device:
 
 ## Communication
 
-[See the planning document] for a roadmap and existing feature requests.
-
 [Read the contributing guidelines][]. The _TL;DR_ (but please; _R_):
 
  - Need **help** or have a **general question**? [Ask on Stack
@@ -235,7 +233,6 @@ device:
  - Found a **bug** or have a **feature request**? [Open an issue][].
  - Want to **contribute**? [Submit a pull request][].
 
-[See the planning document]: /Documentation/Planning.md
 [Read the contributing guidelines]: ./CONTRIBUTING.md#contributing
 [Ask on Stack Overflow]: https://stackoverflow.com/questions/tagged/sqlite.swift
 [Open an issue]: https://github.com/stephencelis/SQLite.swift/issues/new
@@ -266,7 +263,6 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
 
  - [GRDB](https://github.com/groue/GRDB.swift)
  - [SQLiteDB](https://github.com/FahimF/SQLiteDB)
- - [Squeal](https://github.com/nerdyc/Squeal)
 
 [Swift]: https://swift.org/
 [SQLite3]: https://www.sqlite.org
