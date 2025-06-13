@@ -266,7 +266,6 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
 
  - [GRDB](https://github.com/groue/GRDB.swift)
  - [SQLiteDB](https://github.com/FahimF/SQLiteDB)
- - [Squeal](https://github.com/nerdyc/Squeal)
 
 [Swift]: https://swift.org/
 [SQLite3]: https://www.sqlite.org
