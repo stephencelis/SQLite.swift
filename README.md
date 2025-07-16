@@ -42,9 +42,9 @@ do {
     let db = try Connection("path/to/db.sqlite3")
 
     let users = Table("users")
-    let id = Expression<Int64>("id")
-    let name = Expression<String?>("name")
-    let email = Expression<String>("email")
+    let id = SQLite.Expression<Int64>("id")
+    let name = SQLite.Expression<String?>("name")
+    let email = SQLite.Expression<String>("email")
 
     try db.run(users.create { t in
         t.column(id, primaryKey: true)
@@ -82,6 +82,9 @@ do {
     print (error)
 }
 ```
+
+Note that `Expression` should be written as `SQLite.Expression` to avoid
+conflicts with the `SwiftUI.Expression` if you are using SwiftUI too.
 
 SQLite.swift also works as a lightweight, Swift-friendly wrapper over the C
 API.
