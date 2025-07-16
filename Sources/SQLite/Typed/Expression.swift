@@ -105,6 +105,10 @@ extension ExpressionType {
         " ".join([self, Expression<Void>(literal: "DESC")])
     }
 
+    public func `as`(_ name: String) -> Expressible {
+        " ".join([self, Expression<Void>(literal: "AS \(name)")])
+    }
+
 }
 
 extension ExpressionType where UnderlyingType: Value {
