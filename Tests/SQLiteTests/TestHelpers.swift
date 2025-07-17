@@ -164,14 +164,4 @@ struct TestOptionalCodable: Codable, Equatable {
     let double: Double?
     let date: Date?
     let uuid: UUID?
-
-    init(int: Int?, string: String?, bool: Bool?, float: Float?, double: Double?, date: Date?, uuid: UUID?) {
-        self.int = int
-        self.string = string
-        self.bool = bool
-        self.float = float
-        self.double = double
-        self.date = date
-        self.uuid = uuid
-    }
 }

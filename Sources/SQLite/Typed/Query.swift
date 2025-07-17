@@ -1055,7 +1055,7 @@ extension Connection {
             }
 
             func expandGlob(_ namespace: Bool) -> (QueryType) throws -> Void {
-                { (queryType: QueryType) throws -> Void in
+                { (queryType: QueryType) throws in
                     var query = type(of: queryType).init(queryType.clauses.from.name, database: queryType.clauses.from.database)
                     query.clauses.select = queryType.clauses.select
                     query.clauses.with = strip(queryType.clauses.with)
