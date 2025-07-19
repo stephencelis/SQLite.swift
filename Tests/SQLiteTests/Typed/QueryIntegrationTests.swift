@@ -272,8 +272,8 @@ class QueryIntegrationTests: SQLiteTestCase {
     // https://github.com/stephencelis/SQLite.swift/issues/285
     func test_order_by_random() throws {
         try insertUsers(["a", "b", "c'"])
-        let result = Array(try db.prepare(users.select(email).order(SQLite.Expression<Int>.random()).limit(1)))
-        XCTAssertEqual(1, result.count)
+		let resultCount = try db.prepare(users.select(email).order(SQLite.Expression<Int>.random()).limit(1)).count
+        XCTAssertEqual(1, resultCount)
     }
 
     func test_with_recursive() throws {
