@@ -214,7 +214,7 @@ class QueryIntegrationTests: SQLiteTestCase {
         let query2 = users.filter(email == "sally@example.com")
 
         let actualIDs: [_] = try db.prepare(query1.union(query2)).map { $0[self.id] }
-        XCTAssertEqual(expectedIDs,actualIDs)
+        XCTAssertEqual(expectedIDs, actualIDs)
 
         let query3 = users.select(users[*], SQLite.Expression<Int>(literal: "1 AS weight")).filter(email == "sally@example.com")
         let query4 = users.select(users[*], SQLite.Expression<Int>(literal: "2 AS weight")).filter(email == "alice@example.com")
