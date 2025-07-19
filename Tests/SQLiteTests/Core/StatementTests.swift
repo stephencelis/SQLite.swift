@@ -21,7 +21,7 @@ class StatementTests: SQLiteTestCase {
         try insertUsers("alice")
         let statement = try db.prepare("SELECT email FROM users")
         XCTAssert(try statement.step())
-        let blob = statement.row[0] as Blob
+        let blob = try statement.row.getValue(0) as Blob
         XCTAssertEqual("alice@example.com", String(bytes: blob.bytes, encoding: .utf8)!)
     }
 

@@ -175,7 +175,7 @@ class ConnectionTests: SQLiteTestCase {
         try backup.step()
 
         let users = try target.prepare("SELECT email FROM users ORDER BY email")
-        XCTAssertEqual(users.map { $0[0] as? String }, ["alice@example.com", "betsy@example.com"])
+		XCTAssertEqual(users.map { $0.getValue(0) as String? }, ["alice@example.com", "betsy@example.com"])
     }
 
     func test_transaction_beginsAndCommitsTransactions() throws {

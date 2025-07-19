@@ -1,7 +1,49 @@
 import XCTest
 @testable import SQLite
 
+struct CursorWithStringArray: CursorProtocol {
+	let elements: [Binding?]
+	init(elements: [Binding?]) {
+		self.elements = elements
+	}
+
+	func getValue(_ idx: Int) throws -> Binding? {
+		elements[idx]
+	}
+	func getValue(_ idx: Int) throws -> Double {
+		guard let value = elements[idx] as? Double else {
+			throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+		}
+		return value
+	}
+	func getValue(_ idx: Int) throws -> Int64 {
+		guard let value = elements[idx] as? Int64 else {
+			throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+		}
+		return value
+	}
+	func getValue(_ idx: Int) throws -> String {
+		guard let value = elements[idx] as? String else {
+			throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+		}
+		return value
+	}
+	func getValue(_ idx: Int) throws -> Blob {
+		guard let value = elements[idx] as? Blob else {
+			throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+		}
+		return value
+	}
+}
+
+extension Row {
+	init(_ columnNames: [String: Int], _ values: [Binding?]) {
+		self.init(columnNames, CursorWithStringArray(elements: values))
+	}
+}
+
 class RowTests: XCTestCase {
+
 
     public func test_get_value() throws {
         let row = Row(["\"foo\"": 0], ["value"])
@@ -32,14 +74,14 @@ class RowTests: XCTestCase {
     }
 
     public func test_get_value_optional_nil() throws {
-        let row = Row(["\"foo\"": 0], [nil])
+		let row = Row(["\"foo\"": 0], [String?.none])
         let result = try row.get(SQLite.Expression<String?>("foo"))
 
         XCTAssertNil(result)
     }
 
     public func test_get_value_optional_nil_subscript() {
-        let row = Row(["\"foo\"": 0], [nil])
+        let row = Row(["\"foo\"": 0], [String?.none])
         let result = row[SQLite.Expression<String?>("foo")]
 
         XCTAssertNil(result)

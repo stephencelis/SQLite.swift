@@ -1004,15 +1004,17 @@ public struct RowIterator: FailableIterator {
 
 extension Connection {
 
-    public func prepare(_ query: QueryType) throws -> AnySequence<Row> {
+    public func prepare(_ query: QueryType) throws -> LazySequence<AnyIterator<Row>> {
         let expression = query.expression
         let statement = try prepare(expression.template, expression.bindings)
 
         let columnNames = try columnNamesForQuery(query)
 
-        return AnySequence {
-            AnyIterator { statement.next().map { Row(columnNames, $0) } }
-        }
+		return AnyIterator {
+			statement.next().map {
+				Row(columnNames, $0)
+			}
+		}.lazy
     }
 
     public func prepareRowIterator(_ query: QueryType) throws -> RowIterator {
@@ -1172,9 +1174,9 @@ public struct Row {
 
     let columnNames: [String: Int]
 
-    fileprivate let values: [Binding?]
+	fileprivate let values: any CursorProtocol
 
-    internal init(_ columnNames: [String: Int], _ values: [Binding?]) {
+    init(_ columnNames: [String: Int], _ values: some CursorProtocol) {
         self.columnNames = columnNames
         self.values = values
     }
@@ -1183,7 +1185,7 @@ public struct Row {
         guard let idx = columnNames[column.quote()] else {
             return false
         }
-        return values[idx] != nil
+		return (try? values.getValue(idx)) != nil
     }
 
     /// Returns a row’s value for the given column.
@@ -1201,7 +1203,9 @@ public struct Row {
 
     public func get<V: Value>(_ column: Expression<V?>) throws -> V? {
         func valueAtIndex(_ idx: Int) throws -> V? {
-            guard let value = values[idx] as? V.Datatype else { return nil }
+            guard
+				let value = try (values.getValue(idx) as V.Datatype?) ?? (values.getValue(idx) as Binding? as? V.Datatype)
+			else { return nil }
             return try V.fromDatatypeValue(value) as? V
         }
 
@@ -1237,7 +1241,7 @@ public struct Row {
 
     public subscript<T: Value>(column: Expression<T?>) -> T? {
         // swiftlint:disable:next force_try
-        try! get(column)
+        try? get(column)
     }
 }
 

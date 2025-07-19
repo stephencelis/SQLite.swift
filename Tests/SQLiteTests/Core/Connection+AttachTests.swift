@@ -29,7 +29,7 @@ class ConnectionAttachTests: SQLiteTestCase {
 
         // query data
         let rows = try db.prepare(table.select(name)).map { $0[name] }
-        XCTAssertEqual(["test"], rows)
+        XCTAssertEqual(["test"], Array(rows))
 
         try db.detach(schemaName)
     }
@@ -44,7 +44,7 @@ class ConnectionAttachTests: SQLiteTestCase {
         let email = SQLite.Expression<String>("email")
 
         let rows = try db.prepare(table.select(email)).map { $0[email] }
-        XCTAssertEqual(["foo@bar.com"], rows)
+        XCTAssertEqual(["foo@bar.com"], Array(rows))
 
         try db.detach(schemaName)
     }
