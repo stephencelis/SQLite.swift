@@ -1160,22 +1160,22 @@ public struct Row {
 
     let columnNames: [String: Int]
 
-	fileprivate let values: any CursorProtocol
+    fileprivate let values: any CursorProtocol
 
     init(_ columnNames: [String: Int], _ values: some CursorProtocol) {
         self.columnNames = columnNames
         self.values = values
     }
 
-	init(_ columnNames: [String: Int], _ values: [Binding?]) {
-		self.init(columnNames, CursorWithBindingArray(elements: values))
-	}
+    init(_ columnNames: [String: Int], _ values: [Binding?]) {
+        self.init(columnNames, CursorWithBindingArray(elements: values))
+    }
 
     func hasValue(for column: String) -> Bool {
         guard let idx = columnNames[column.quote()] else {
             return false
         }
-		return (try? values.getValue(idx)) != nil
+        return (try? values.getValue(idx)) != nil
     }
 
     /// Returns a row’s value for the given column.

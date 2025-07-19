@@ -31,7 +31,7 @@ class RowTests: XCTestCase {
     }
 
     public func test_get_value_optional_nil() throws {
-		let row = Row(["\"foo\"": 0], [String?.none])
+        let row = Row(["\"foo\"": 0], [String?.none])
         let result = try row.get(SQLite.Expression<String?>("foo"))
 
         XCTAssertNil(result)

@@ -28,7 +28,7 @@ class ConnectionAttachTests: SQLiteTestCase {
         _ = try db.run(table.insert(name <- "test"))
 
         // query data
-		let rows: [_] = try db.prepare(table.select(name)).map { $0[name] }
+        let rows: [_] = try db.prepare(table.select(name)).map { $0[name] }
         XCTAssertEqual(["test"], rows)
 
         try db.detach(schemaName)
