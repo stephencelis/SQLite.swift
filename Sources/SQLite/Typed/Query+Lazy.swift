@@ -23,35 +23,35 @@
 //
 
 extension Array where Element == LazySequence<AnyIterator<Row>> {
-	@available(swift, deprecated: 1, message: "Please use return value of prepare as Array directly")
-	public init(_ values: Element) {
-		preconditionFailure("Please use return value of prepare as Array directly")
-	}
+    @available(swift, deprecated: 1, message: "Please use return value of prepare as Array directly")
+    public init(_ values: Element) {
+        preconditionFailure("Please use return value of prepare as Array directly")
+    }
 }
 
 extension Connection {
-	@_disfavoredOverload
-	public func prepare(_ query: QueryType) throws -> [Row] {
-		let expression = query.expression
-		let statement = try prepare(expression.template, expression.bindings)
+    @_disfavoredOverload
+    public func prepare(_ query: QueryType) throws -> [Row] {
+        let expression = query.expression
+        let statement = try prepare(expression.template, expression.bindings)
 
-		let columnNames = try columnNamesForQuery(query)
+        let columnNames = try columnNamesForQuery(query)
 
-		return Array(AnyIterator {
-			statement.next().map { cursor in
-				Row(columnNames, (0..<columnNames.count).map({
-					try? cursor.getValue($0) as Binding?
-				}))
-			}
-		})
-	}
+        return Array(AnyIterator {
+            statement.next().map { cursor in
+                Row(columnNames, (0..<columnNames.count).map({
+                    try? cursor.getValue($0) as Binding?
+                }))
+            }
+        })
+    }
 
-	public func prepare(_ query: QueryType) throws -> LazySequence<AnyIterator<Row>> {
-		let expression = query.expression
-		let statement = try prepare(expression.template, expression.bindings)
+    public func prepare(_ query: QueryType) throws -> LazySequence<AnyIterator<Row>> {
+        let expression = query.expression
+        let statement = try prepare(expression.template, expression.bindings)
 
-		let columnNames = try columnNamesForQuery(query)
+        let columnNames = try columnNamesForQuery(query)
 
-		return AnyIterator { statement.next().map { Row(columnNames, $0) } }.lazy
-	}
+        return AnyIterator { statement.next().map { Row(columnNames, $0) } }.lazy
+    }
 }

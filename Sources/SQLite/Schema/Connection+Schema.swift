@@ -15,7 +15,7 @@ public extension Connection {
     func foreignKeyCheck(table: String? = nil) throws -> [ForeignKeyError] {
         try run("PRAGMA foreign_key_check" + (table.map { "(\($0.quote()))" } ?? ""))
             .compactMap { (row: Cursor) -> ForeignKeyError? in
-				guard let table = row.getValue(0) as String?,
+                guard let table = row.getValue(0) as String?,
                       let rowId = row.getValue(1) as Int64?,
                       let target = row.getValue(2) as String? else { return nil }
 

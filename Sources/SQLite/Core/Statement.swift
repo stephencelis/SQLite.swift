@@ -166,7 +166,7 @@ public final class Statement {
 
         reset(clearBindings: false)
         _ = try step()
-		return try row.getValue(0)
+        return try row.getValue(0)
     }
 
     /// - Parameter bindings: A list of parameters to bind to the statement.
@@ -259,83 +259,83 @@ extension Statement: CustomStringConvertible {
 }
 
 public protocol CursorProtocol {
-	func getValue(_ idx: Int) throws -> Binding?
-	func getValue(_ idx: Int) throws -> Double
-	func getValue(_ idx: Int) throws -> Int64
-	func getValue(_ idx: Int) throws -> String
-	func getValue(_ idx: Int) throws -> Blob
+    func getValue(_ idx: Int) throws -> Binding?
+    func getValue(_ idx: Int) throws -> Double
+    func getValue(_ idx: Int) throws -> Int64
+    func getValue(_ idx: Int) throws -> String
+    func getValue(_ idx: Int) throws -> Blob
 }
 
 extension CursorProtocol {
-	public func getValue<T: Binding>(_ idx: Int) -> T? {
-		switch T.self {
-		case is Double.Type:
-			return try? getValue(idx) as Double as? T
-		case is Int64.Type:
-			return try? getValue(idx) as Int64 as? T
-		case is String.Type:
-			return try? getValue(idx) as String as? T
-		case is Blob.Type:
-			return try? getValue(idx) as Blob as? T
-		default:
-			return nil
-		}
-	}
+    public func getValue<T: Binding>(_ idx: Int) -> T? {
+        switch T.self {
+        case is Double.Type:
+            return try? getValue(idx) as Double as? T
+        case is Int64.Type:
+            return try? getValue(idx) as Int64 as? T
+        case is String.Type:
+            return try? getValue(idx) as String as? T
+        case is Blob.Type:
+            return try? getValue(idx) as Blob as? T
+        default:
+            return nil
+        }
+    }
 
-	public func getValue(_ idx: Int) throws -> Bool {
-		try Bool.fromDatatypeValue(getValue(idx))
-	}
+    public func getValue(_ idx: Int) throws -> Bool {
+        try Bool.fromDatatypeValue(getValue(idx))
+    }
 
-	public func getValue(_ idx: Int) throws -> Int {
-		try Int.fromDatatypeValue(getValue(idx))
-	}
+    public func getValue(_ idx: Int) throws -> Int {
+        try Int.fromDatatypeValue(getValue(idx))
+    }
 }
 
 struct CursorWithBindingArray: CursorProtocol {
-	let elements: [Binding?]
-	init(elements: [Binding?]) {
-		self.elements = elements
-	}
+    let elements: [Binding?]
+    init(elements: [Binding?]) {
+        self.elements = elements
+    }
 
-	func getValue(_ idx: Int) throws -> Binding? {
-		elements[idx]
-	}
-	func getValue(_ idx: Int) throws -> Double {
-		guard let value = elements[idx] as? Double else {
-			throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
-		}
-		return value
-	}
-	func getValue(_ idx: Int) throws -> Int64 {
-		guard let value = elements[idx] as? Int64 else {
-			throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
-		}
-		return value
-	}
-	func getValue(_ idx: Int) throws -> String {
-		guard let value = elements[idx] as? String else {
-			throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
-		}
-		return value
-	}
-	func getValue(_ idx: Int) throws -> Blob {
-		guard let value = elements[idx] as? Blob else {
-			throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
-		}
-		return value
-	}
+    func getValue(_ idx: Int) throws -> Binding? {
+        elements[idx]
+    }
+    func getValue(_ idx: Int) throws -> Double {
+        guard let value = elements[idx] as? Double else {
+            throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+        }
+        return value
+    }
+    func getValue(_ idx: Int) throws -> Int64 {
+        guard let value = elements[idx] as? Int64 else {
+            throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+        }
+        return value
+    }
+    func getValue(_ idx: Int) throws -> String {
+        guard let value = elements[idx] as? String else {
+            throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+        }
+        return value
+    }
+    func getValue(_ idx: Int) throws -> Blob {
+        guard let value = elements[idx] as? Blob else {
+            throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+        }
+        return value
+    }
 }
 
 public struct Cursor: CursorProtocol {
     fileprivate let statement: Statement
-	fileprivate var handle: OpaquePointer {
-		statement.handle!
-	}
+    fileprivate var handle: OpaquePointer {
+        statement.handle!
+    }
 
     fileprivate let columnCount: Int
 
     fileprivate init(_ statement: Statement) {
-		self.statement = statement
+        self.statement = statement
         columnCount = statement.columnCount
     }
 
@@ -348,9 +348,9 @@ public struct Cursor: CursorProtocol {
     }
 
     public func getValue(_ idx: Int) throws -> String {
-		guard let text = sqlite3_column_text(handle, Int32(idx)) else {
-			throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
-		}
+        guard let text = sqlite3_column_text(handle, Int32(idx)) else {
+            throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+        }
         return String(cString: UnsafePointer(text))
     }
 
