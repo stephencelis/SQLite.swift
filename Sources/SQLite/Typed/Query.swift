@@ -1003,16 +1003,6 @@ public struct RowIterator: FailableIterator {
 }
 
 extension Connection {
-
-    public func prepare(_ query: QueryType) throws -> LazySequence<AnyIterator<Row>> {
-        let expression = query.expression
-        let statement = try prepare(expression.template, expression.bindings)
-
-        let columnNames = try columnNamesForQuery(query)
-
-		return AnyIterator { statement.next().map { Row(columnNames, $0) } }.lazy
-    }
-
     public func prepareRowIterator(_ query: QueryType) throws -> RowIterator {
         let expression = query.expression
         let statement = try prepare(expression.template, expression.bindings)
@@ -1027,7 +1017,7 @@ extension Connection {
         try prepare(statement, bindings).prepareRowIterator()
     }
 
-    private func columnNamesForQuery(_ query: QueryType) throws -> [String: Int] {
+    func columnNamesForQuery(_ query: QueryType) throws -> [String: Int] {
         var (columnNames, idx) = ([String: Int](), 0)
         column: for each in query.clauses.select.columns {
             var names = each.expression.template.split { $0 == "." }.map(String.init)
@@ -1176,6 +1166,10 @@ public struct Row {
         self.columnNames = columnNames
         self.values = values
     }
+
+	init(_ columnNames: [String: Int], _ values: [Binding?]) {
+		self.init(columnNames, CursorWithBindingArray(elements: values))
+	}
 
     func hasValue(for column: String) -> Bool {
         guard let idx = columnNames[column.quote()] else {

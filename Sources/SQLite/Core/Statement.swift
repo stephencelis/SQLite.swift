@@ -291,6 +291,41 @@ extension CursorProtocol {
 	}
 }
 
+struct CursorWithBindingArray: CursorProtocol {
+	let elements: [Binding?]
+	init(elements: [Binding?]) {
+		self.elements = elements
+	}
+
+	func getValue(_ idx: Int) throws -> Binding? {
+		elements[idx]
+	}
+	func getValue(_ idx: Int) throws -> Double {
+		guard let value = elements[idx] as? Double else {
+			throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+		}
+		return value
+	}
+	func getValue(_ idx: Int) throws -> Int64 {
+		guard let value = elements[idx] as? Int64 else {
+			throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+		}
+		return value
+	}
+	func getValue(_ idx: Int) throws -> String {
+		guard let value = elements[idx] as? String else {
+			throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+		}
+		return value
+	}
+	func getValue(_ idx: Int) throws -> Blob {
+		guard let value = elements[idx] as? Blob else {
+			throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+		}
+		return value
+	}
+}
+
 public struct Cursor: CursorProtocol {
     fileprivate let statement: Statement
 	fileprivate var handle: OpaquePointer {
