@@ -69,8 +69,8 @@ class FTSIntegrationTests: SQLiteTestCase {
 
     func testTrigramIndex() throws {
         try createTrigramIndex()
-        let matcheCount = try db.prepare(index.match("Paul")).count
-        XCTAssertEqual(1, matcheCount)
+		let matches: [_] = try db.prepare(index.match("Paul"))
+        XCTAssertEqual(1, matches.count)
     }
 
     private func createOrSkip(_ createIndex: (Connection) throws -> Void) throws {

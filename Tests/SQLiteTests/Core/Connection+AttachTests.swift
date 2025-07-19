@@ -28,8 +28,8 @@ class ConnectionAttachTests: SQLiteTestCase {
         _ = try db.run(table.insert(name <- "test"))
 
         // query data
-        let rows = try db.prepare(table.select(name)).map { $0[name] }
-        XCTAssertEqual(["test"], Array(rows))
+		let rows: [_] = try db.prepare(table.select(name)).map { $0[name] }
+        XCTAssertEqual(["test"], rows)
 
         try db.detach(schemaName)
     }
@@ -43,8 +43,8 @@ class ConnectionAttachTests: SQLiteTestCase {
         let table = Table("tests", database: schemaName)
         let email = SQLite.Expression<String>("email")
 
-        let rows = try db.prepare(table.select(email)).map { $0[email] }
-        XCTAssertEqual(["foo@bar.com"], Array(rows))
+        let rows: [_] = try db.prepare(table.select(email)).map { $0[email] }
+        XCTAssertEqual(["foo@bar.com"], rows)
 
         try db.detach(schemaName)
     }

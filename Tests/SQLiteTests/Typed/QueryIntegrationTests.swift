@@ -213,8 +213,8 @@ class QueryIntegrationTests: SQLiteTestCase {
         let query1 = users.filter(email == "alice@example.com")
         let query2 = users.filter(email == "sally@example.com")
 
-		let actualIDs = try db.prepare(query1.union(query2)).map { $0[self.id] }
-        XCTAssertEqual(expectedIDs, Array(actualIDs))
+		let actualIDs: [_] = try db.prepare(query1.union(query2)).map { $0[self.id] }
+        XCTAssertEqual(expectedIDs,actualIDs)
 
         let query3 = users.select(users[*], SQLite.Expression<Int>(literal: "1 AS weight")).filter(email == "sally@example.com")
         let query4 = users.select(users[*], SQLite.Expression<Int>(literal: "2 AS weight")).filter(email == "alice@example.com")
@@ -226,8 +226,8 @@ class QueryIntegrationTests: SQLiteTestCase {
         SELECT "users".*, 2 AS weight FROM "users" WHERE ("email" = 'alice@example.com') ORDER BY weight
         """)
 
-		let orderedIDs = try db.prepare(query3.union(query4).order(SQLite.Expression<Int>(literal: "weight"), email)).map { $0[self.id] }
-        XCTAssertEqual(Array(expectedIDs.reversed()), Array(orderedIDs))
+		let orderedIDs: [_] = try db.prepare(query3.union(query4).order(SQLite.Expression<Int>(literal: "weight"), email)).map { $0[self.id] }
+        XCTAssertEqual(expectedIDs.reversed(), orderedIDs)
     }
 
     func test_no_such_column() throws {
@@ -272,8 +272,8 @@ class QueryIntegrationTests: SQLiteTestCase {
     // https://github.com/stephencelis/SQLite.swift/issues/285
     func test_order_by_random() throws {
         try insertUsers(["a", "b", "c'"])
-		let resultCount = try db.prepare(users.select(email).order(SQLite.Expression<Int>.random()).limit(1)).count
-        XCTAssertEqual(1, resultCount)
+		let result: [_] = try db.prepare(users.select(email).order(SQLite.Expression<Int>.random()).limit(1))
+		XCTAssertEqual(1, result.count)
     }
 
     func test_with_recursive() throws {
@@ -373,10 +373,10 @@ class QueryIntegrationTests: SQLiteTestCase {
         try insertUser("Billy")
 
         let cumeDist = cumeDist(email)
-        let results = try db.prepare(users.select(id, cumeDist)).map {
+		let results: [_] = try db.prepare(users.select(id, cumeDist)).map {
             $0[cumeDist]
         }
-        XCTAssertEqual([0.25, 0.5, 0.75, 1], Array(results))
+        XCTAssertEqual([0.25, 0.5, 0.75, 1], results)
     }
 
     func test_select_window_row_number() throws {
