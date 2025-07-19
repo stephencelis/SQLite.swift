@@ -1010,11 +1010,7 @@ extension Connection {
 
         let columnNames = try columnNamesForQuery(query)
 
-		return AnyIterator {
-			statement.next().map {
-				Row(columnNames, $0)
-			}
-		}.lazy
+		return AnyIterator { statement.next().map { Row(columnNames, $0) } }.lazy
     }
 
     public func prepareRowIterator(_ query: QueryType) throws -> RowIterator {
@@ -1203,9 +1199,7 @@ public struct Row {
 
     public func get<V: Value>(_ column: Expression<V?>) throws -> V? {
         func valueAtIndex(_ idx: Int) throws -> V? {
-            guard
-				let value = try (values.getValue(idx) as V.Datatype?) ?? (values.getValue(idx) as Binding? as? V.Datatype)
-			else { return nil }
+            guard let value = try (values.getValue(idx) as V.Datatype?) ?? (values.getValue(idx) as Binding? as? V.Datatype) else { return nil }
             return try V.fromDatatypeValue(value) as? V
         }
 
@@ -1241,7 +1235,7 @@ public struct Row {
 
     public subscript<T: Value>(column: Expression<T?>) -> T? {
         // swiftlint:disable:next force_try
-        try? get(column)
+        try! get(column)
     }
 }
 

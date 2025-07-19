@@ -43,8 +43,6 @@ extension Row {
 }
 
 class RowTests: XCTestCase {
-
-
     public func test_get_value() throws {
         let row = Row(["\"foo\"": 0], ["value"])
         let result = try row.get(SQLite.Expression<String>("foo"))
