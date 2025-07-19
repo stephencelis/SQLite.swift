@@ -46,7 +46,7 @@ class CustomAggregationTests: SQLiteTestCase {
         let result = try db.prepare("SELECT mySUM1(age) AS s FROM users")
         let i = result.columnNames.firstIndex(of: "s")!
         for row in result {
-            let value = row[i] as? Int64
+            let value = row.getValue(i) as Int64?
             XCTAssertEqual(83, value)
         }
     }
@@ -70,7 +70,7 @@ class CustomAggregationTests: SQLiteTestCase {
         }
         let result = try db.prepare("SELECT mySUM2(age) AS s FROM users GROUP BY admin ORDER BY s")
         let i = result.columnNames.firstIndex(of: "s")!
-        let values = result.compactMap { $0[i] as? Int64 }
+        let values = result.compactMap { $0.getValue(i) as Int64? }
         XCTAssertTrue(values.elementsEqual([28, 55]))
     }
 
@@ -83,7 +83,7 @@ class CustomAggregationTests: SQLiteTestCase {
         let result = try db.prepare("SELECT myReduceSUM1(age) AS s FROM users")
         let i = result.columnNames.firstIndex(of: "s")!
         for row in result {
-            let value = row[i] as? Int64
+            let value = row.getValue(i) as Int64?
             XCTAssertEqual(2083, value)
         }
     }
@@ -96,7 +96,7 @@ class CustomAggregationTests: SQLiteTestCase {
         db.createAggregation("myReduceSUM2", initialValue: Int64(3000), reduce: reduce, result: { $0 })
         let result = try db.prepare("SELECT myReduceSUM2(age) AS s FROM users GROUP BY admin ORDER BY s")
         let i = result.columnNames.firstIndex(of: "s")!
-        let values = result.compactMap { $0[i] as? Int64 }
+        let values = result.compactMap { $0.getValue(i) as Int64? }
         XCTAssertTrue(values.elementsEqual([3028, 3055]))
     }
 
@@ -111,7 +111,7 @@ class CustomAggregationTests: SQLiteTestCase {
 
         let i = result.columnNames.firstIndex(of: "s")!
         for row in result {
-            let value = row[i] as? String
+            let value = row.getValue(i) as String?
             XCTAssertEqual("\(initial)Alice@example.comBob@example.comEve@example.com", value)
         }
     }
@@ -134,7 +134,7 @@ class CustomAggregationTests: SQLiteTestCase {
             let result = try! db.prepare("SELECT myReduceSUMX(age) AS s FROM users")
             let i = result.columnNames.firstIndex(of: "s")!
             for row in result {
-                let value = row[i] as? Int64
+                let value = row.getValue(i) as Int64?
                 XCTAssertEqual(1083, value)
             }
         }()

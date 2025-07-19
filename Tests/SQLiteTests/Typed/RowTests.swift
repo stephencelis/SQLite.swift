@@ -2,7 +2,6 @@ import XCTest
 @testable import SQLite
 
 class RowTests: XCTestCase {
-
     public func test_get_value() throws {
         let row = Row(["\"foo\"": 0], ["value"])
         let result = try row.get(SQLite.Expression<String>("foo"))
@@ -32,14 +31,14 @@ class RowTests: XCTestCase {
     }
 
     public func test_get_value_optional_nil() throws {
-        let row = Row(["\"foo\"": 0], [nil])
+        let row = Row(["\"foo\"": 0], [String?.none])
         let result = try row.get(SQLite.Expression<String?>("foo"))
 
         XCTAssertNil(result)
     }
 
     public func test_get_value_optional_nil_subscript() {
-        let row = Row(["\"foo\"": 0], [nil])
+        let row = Row(["\"foo\"": 0], [String?.none])
         let result = row[SQLite.Expression<String?>("foo")]
 
         XCTAssertNil(result)
