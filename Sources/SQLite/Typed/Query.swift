@@ -1168,7 +1168,7 @@ extension Connection {
 
 }
 
-public struct Row {
+public struct Row: Sendable {
 
     let columnNames: [String: Int]
 
@@ -1242,7 +1242,7 @@ public struct Row {
 }
 
 /// Determines the join operator for a query’s `JOIN` clause.
-public enum JoinType: String {
+public enum JoinType: String, Sendable {
 
     /// A `CROSS` join.
     case cross = "CROSS"
@@ -1256,7 +1256,7 @@ public enum JoinType: String {
 }
 
 /// ON CONFLICT resolutions.
-public enum OnConflict: String {
+public enum OnConflict: String, Sendable {
 
     case replace = "REPLACE"
 
@@ -1272,7 +1272,7 @@ public enum OnConflict: String {
 
 // MARK: - Private
 
-public struct QueryClauses {
+public struct QueryClauses: Sendable {
 
     var select = (distinct: false, columns: [Expression<Void>(literal: "*") as Expressible])
 

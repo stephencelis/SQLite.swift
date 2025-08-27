@@ -25,7 +25,7 @@
 /// A collating function used to compare to strings.
 ///
 /// - SeeAlso: <https://www.sqlite.org/datatype3.html#collation>
-public enum Collation {
+public enum Collation: Sendable {
 
     /// Compares string by raw data.
     case binary

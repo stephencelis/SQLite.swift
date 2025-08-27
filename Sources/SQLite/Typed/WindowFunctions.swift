@@ -1,7 +1,7 @@
 import Foundation
 
 // see https://www.sqlite.org/windowfunctions.html#builtins
-private enum WindowFunction: String {
+private enum WindowFunction: String, Sendable {
     // swiftlint:disable identifier_name
     case ntile
     case row_number

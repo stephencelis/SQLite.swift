@@ -27,7 +27,7 @@
 ///
 ///   Do not conform custom types to the Binding protocol. See the `Value`
 ///   protocol, instead.
-public protocol Binding {}
+public protocol Binding: Sendable {}
 
 public protocol Number: Binding {}
 

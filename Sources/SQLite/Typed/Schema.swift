@@ -495,7 +495,7 @@ public final class TableBuilder {
 
 }
 
-public enum PrimaryKey {
+public enum PrimaryKey: Sendable {
 
     case `default`
 
@@ -503,7 +503,7 @@ public enum PrimaryKey {
 
 }
 
-public struct Module {
+public struct Module: Sendable {
 
     fileprivate let name: String
 
@@ -592,7 +592,7 @@ private func reference(_ primary: (QueryType, Expressible)) -> Expressible {
     ])
 }
 
-private enum Modifier: String {
+private enum Modifier: String, Sendable {
 
     case unique = "UNIQUE"
 
