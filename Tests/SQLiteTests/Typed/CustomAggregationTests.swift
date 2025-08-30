@@ -14,7 +14,7 @@ import SQLite3
 #endif
 
 // https://github.com/stephencelis/SQLite.swift/issues/1071
-#if !os(Linux)
+#if !(os(Linux) || os(Android))
 
 class CustomAggregationTests: SQLiteTestCase {
     override func setUpWithError() throws {

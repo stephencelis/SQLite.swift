@@ -32,7 +32,7 @@ class ColumnDefinitionTests: XCTestCase {
                           defaultValue: .numericLiteral("123.123"), references: nil))
     ]
 
-    #if !os(Linux)
+    #if !(os(Linux) || os(Android))
     override class var defaultTestSuite: XCTestSuite {
         let suite = XCTestSuite(forTestCaseClass: ColumnDefinitionTests.self)
 
@@ -183,7 +183,7 @@ class IndexDefinitionTests: XCTestCase {
         "CREATE INDEX IF NOT EXISTS \"index_tests\" ON \"tests\" (\"test_column\")")
     ]
 
-    #if !os(Linux)
+    #if !(os(Linux) || os(Android))
     override class var defaultTestSuite: XCTestSuite {
         let suite = XCTestSuite(forTestCaseClass: IndexDefinitionTests.self)
 
