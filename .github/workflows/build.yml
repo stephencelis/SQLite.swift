@@ -1,8 +1,8 @@
 name: Build and test
 on: [push, pull_request]
 env:
-  IOS_SIMULATOR: "Any iOS Simulator Device"
-  IOS_VERSION: "18.0"
+  IOS_SIMULATOR: "iPhone 16"
+  IOS_VERSION: "18.4"
 jobs:
   build:
     runs-on: macos-15
