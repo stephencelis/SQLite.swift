@@ -29,3 +29,4 @@ bin/
 .build
 Packages/
 .swiftpm/
+Package.resolved
