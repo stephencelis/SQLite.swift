@@ -2,7 +2,7 @@
 import PackageDescription
 
 let deps: [Package.Dependency] = [
-    .github("swiftlang/swift-toolchain-sqlite", exact: "1.0.4")
+    .github("swiftlang/swift-toolchain-sqlite", exact: "1.0.7")
 ]
 
 let targets: [Target] = [
