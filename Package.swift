@@ -3,7 +3,7 @@ import PackageDescription
 
 let deps: [Package.Dependency] = [
     .github("swiftlang/swift-toolchain-sqlite", exact: "1.0.4"),
-    .github("sqlcipher/SQLCipher.swift.git", exact: "4.11.0")
+    .github("sqlcipher/SQLCipher.swift.git", from: "4.11.0")
 ]
 
 let applePlatforms: [PackageDescription.Platform] = [.iOS, .macOS, .watchOS, .tvOS, .visionOS]
@@ -78,5 +78,9 @@ extension Package.Dependency {
 
     static func github(_ repo: String, exact ver: Version) -> Package.Dependency {
         .package(url: "https://github.com/\(repo)", exact: ver)
+    }
+
+    static func github(_ repo: String, from ver: Version) -> Package.Dependency {
+        .package(url: "https://github.com/\(repo)", from: ver)
     }
 }
