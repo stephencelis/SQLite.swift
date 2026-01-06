@@ -12,13 +12,14 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "SQLite",
-            targets: ["SQLite"]
+            name: "SQLiteSwift",
+            targets: ["SQLiteSwift"]
         )
     ],
     targets: [
         .target(
-            name: "SQLite",
+            name: "SQLiteSwift",
+            path: "Sources/SQLite",
             exclude: [
                 "Info.plist"
             ]
@@ -26,7 +27,7 @@ let package = Package(
         .testTarget(
             name: "SQLiteTests",
             dependencies: [
-                "SQLite"
+                "SQLiteSwift"
             ],
             path: "Tests/SQLiteTests",
             exclude: [
@@ -39,11 +40,11 @@ let package = Package(
     ]
 )
 
-#if os(Linux) || os(Windows) || os(Android)
+// Use CSQLite on all platforms to ensure consistent SQLite configuration
+// (especially SQLITE_MAX_VARIABLE_NUMBER for Timing's long filter queries)
 package.dependencies = [
-    .package(url: "https://github.com/Timing-GmbH/CSQLite", branch: "main")
+    .package(url: "https://github.com/Timing-GmbH/CSQLite", branch: "macos")
 ]
 package.targets.first?.dependencies += [
     .product(name: "CSQLite", package: "CSQLite")
 ]
-#endif
