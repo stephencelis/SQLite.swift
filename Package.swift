@@ -43,7 +43,7 @@ let package = Package(
 // Use CSQLite on all platforms to ensure consistent SQLite configuration
 // (especially SQLITE_MAX_VARIABLE_NUMBER for Timing's long filter queries)
 package.dependencies = [
-    .package(url: "https://github.com/Timing-GmbH/CSQLite", branch: "macos")
+    .package(url: "https://github.com/Timing-GmbH/CSQLite", branch: "main")
 ]
 package.targets.first?.dependencies += [
     .product(name: "CSQLite", package: "CSQLite")
