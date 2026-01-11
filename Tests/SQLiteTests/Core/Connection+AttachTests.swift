@@ -2,9 +2,9 @@ import XCTest
 import Foundation
 @testable import SQLite
 
-#if SQLITE_SWIFT_STANDALONE
+#if canImport(sqlite3)
 import sqlite3
-#elseif SQLITE_SWIFT_SQLCIPHER
+#elseif canImport(SQLCipher)
 import SQLCipher
 #elseif canImport(SwiftToolchainCSQLite)
 import SwiftToolchainCSQLite
