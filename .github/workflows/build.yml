@@ -1,5 +1,8 @@
 name: Build and test
 on: [push, pull_request]
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress:  ${{ github.ref != 'refs/heads/master' }}
 env:
   IOS_SIMULATOR: "iPhone 16"
   IOS_VERSION: "18.4"
