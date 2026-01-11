@@ -2,16 +2,6 @@ import XCTest
 import Foundation
 @testable import SQLite
 
-#if SQLITE_SWIFT_STANDALONE
-import sqlite3
-#elseif SQLITE_SWIFT_SQLCIPHER
-import SQLCipher
-#elseif canImport(SwiftToolchainCSQLite)
-import SwiftToolchainCSQLite
-#else
-import SQLite3
-#endif
-
 class ConnectionPragmaTests: SQLiteTestCase {
     func test_userVersion() {
         db.userVersion = 2
