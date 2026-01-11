@@ -9,15 +9,15 @@ on:
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress:  ${{ github.ref != 'refs/heads/master' }}
-env:
-  IOS_SIMULATOR: "iPhone 16"
-  IOS_VERSION: "18.4"
 jobs:
   build:
     strategy:
       matrix:
         os: [macos-15, macos-26]
     runs-on: ${{ matrix.os }}
+    env:
+      IOS_SIMULATOR: ${{ matrix.os == 'macos-15' && 'iPhone 16' || 'iPhone 16e' }}
+      IOS_VERSION: ${{ matrix.os == 'macos-15' && '18.4' || '26.2' }}
     steps:
     - uses: actions/checkout@v4
     - name: "Lint"
