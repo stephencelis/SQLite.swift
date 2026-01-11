@@ -18,7 +18,7 @@ syntax _and_ intent.
  - [Full-text search][] support
  - [Well-documented][See Documentation]
  - Extensively tested
- - [SQLCipher][] support via CocoaPods
+ - [SQLCipher][] support via Swift Package Manager
  - [Schema query/migration][]
  - Works on [Linux](Documentation/Linux.md) (with some limitations)
  - Active support at

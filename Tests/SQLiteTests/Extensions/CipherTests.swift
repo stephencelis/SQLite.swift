@@ -107,6 +107,20 @@ class CipherTests: XCTestCase {
         XCTAssertEqual(1, try conn.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
+    func test_cipher_provider() throws {
+        XCTAssertEqual("commoncrypto", db1.cipherProvider)
+    }
+
+    func test_cipher_provider_version() throws {
+        XCTAssertNotNil(db1.cipherProviderVersion)
+    }
+
+    func test_cipher_fips_status() throws {
+        let fipsStatusString = db1.cipherFipsStatus
+        XCTAssertNotNil(fipsStatusString)
+        XCTAssertEqual(0, Int(fipsStatusString!))
+    }
+
     private func keyData(length: Int = 64) -> NSData {
         var bytes = [Int8](repeating: 0, count: length)
         let result  = SecRandomCopyBytes(kSecRandomDefault, length, &bytes)
