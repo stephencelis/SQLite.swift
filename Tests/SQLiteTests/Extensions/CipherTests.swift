@@ -108,11 +108,10 @@ class CipherTests: XCTestCase {
     }
 
     private func keyData(length: Int = 64) -> NSData {
-        let keyData = NSMutableData(length: length)!
-        let result  = SecRandomCopyBytes(kSecRandomDefault, length,
-                                         keyData.mutableBytes.assumingMemoryBound(to: UInt8.self))
-        XCTAssertEqual(0, result)
-        return NSData(data: keyData)
+        var bytes = [Int8](repeating: 0, count: length)
+        let result  = SecRandomCopyBytes(kSecRandomDefault, length, &bytes)
+        XCTAssertEqual(errSecSuccess, result)
+        return NSData(bytes: bytes, length: length)
     }
 }
 #endif

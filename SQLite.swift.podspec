@@ -32,7 +32,7 @@ Pod::Spec.new do |s|
     
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
-      test_spec.source_files = 'Tests/SQLiteTests/*.swift'
+      test_spec.source_files = 'Tests/SQLiteTests/**/*.swift'
     end
   end
 
@@ -49,7 +49,7 @@ Pod::Spec.new do |s|
     
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
-      test_spec.source_files = 'Tests/SQLiteTests/*.swift'
+      test_spec.source_files = 'Tests/SQLiteTests/**/*.swift'
     end
   end
 
@@ -72,7 +72,7 @@ Pod::Spec.new do |s|
     
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
-      test_spec.source_files = 'Tests/SQLiteTests/*.swift'
+      test_spec.source_files = 'Tests/SQLiteTests/**/*.swift'
     end
   end
 end

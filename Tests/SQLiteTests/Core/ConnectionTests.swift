@@ -444,4 +444,13 @@ class ConnectionTests: SQLiteTestCase {
         }
         semaphores.forEach { $0.wait() }
     }
+
+    #if SQLITE_SWIFT_STANDALONE
+    func test_standalone_version_is_recent() throws {
+        // when building standalone (= pod), we should have a more recent version
+        let conn = try Connection(.inMemory)
+        let version = conn.sqliteVersion
+        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 51))
+    }
+    #endif
 }
