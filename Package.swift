@@ -2,14 +2,12 @@
 import PackageDescription
 
 let deps: [Package.Dependency] = [
-    .github("swiftlang/swift-toolchain-sqlite", exact: "1.0.7"),
-    .github("sqlcipher/SQLCipher.swift.git", from: "4.11.0")
+    .package(url: "https://github.com/swiftlang/swift-toolchain-sqlite", from: "1.0.7"),
+    .package(url: "https://github.com/sqlcipher/SQLCipher.swift.git", from: "4.11.0")
 ]
 
 let applePlatforms: [PackageDescription.Platform] = [.iOS, .macOS, .watchOS, .tvOS, .visionOS]
-
 let sqlcipherTraitTargetCondition: TargetDependencyCondition? = .when(platforms: applePlatforms, traits: ["SQLCipher"])
-
 let sqlcipherTraitBuildSettingCondition: BuildSettingCondition? = .when(platforms: applePlatforms, traits: ["SQLCipher"])
 
 let targets: [Target] = [
@@ -73,14 +71,3 @@ let package = Package(
     targets: targets + testTargets,
     swiftLanguageModes: [.v5],
 )
-
-extension Package.Dependency {
-
-    static func github(_ repo: String, exact ver: Version) -> Package.Dependency {
-        .package(url: "https://github.com/\(repo)", exact: ver)
-    }
-
-    static func github(_ repo: String, from ver: Version) -> Package.Dependency {
-        .package(url: "https://github.com/\(repo)", from: ver)
-    }
-}
