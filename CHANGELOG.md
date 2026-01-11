@@ -1,3 +1,7 @@
+0.15.5 (tbd), [diff][diff-0.15.5]
+========================================
+* SQLCipher package manager integration ([#1336][], [#1340][])
+
 0.15.4 (13-06-2025), [diff][diff-0.15.4]
 ========================================
 * Fix cross compilation for linux on macOS fails ([#1317][])
@@ -272,3 +276,5 @@ For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
 [#1280]: https://github.com/stephencelis/SQLite.swift/pull/1280
 [#1315]: https://github.com/stephencelis/SQLite.swift/pull/1315
 [#1317]: https://github.com/stephencelis/SQLite.swift/pull/1317
+[#1336]: https://github.com/stephencelis/SQLite.swift/pull/1336
+[#1340]: https://github.com/stephencelis/SQLite.swift/pull/1340
