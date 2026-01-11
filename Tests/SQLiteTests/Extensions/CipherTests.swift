@@ -1,4 +1,4 @@
-#if SQLITE_SWIFT_SQLCIPHER
+#if SQLITE_HAS_CODEC
 import XCTest
 import SQLite
 import SQLCipher

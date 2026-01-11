@@ -7,45 +7,31 @@ let deps: [Package.Dependency] = [
 ]
 
 let applePlatforms: [PackageDescription.Platform] = [.iOS, .macOS, .watchOS, .tvOS, .visionOS]
-let sqlcipherTraitTargetCondition: TargetDependencyCondition? = .when(platforms: applePlatforms, traits: ["SQLCipher"])
 let sqlcipherTraitBuildSettingCondition: BuildSettingCondition? = .when(platforms: applePlatforms, traits: ["SQLCipher"])
+let cSettings: [CSetting] = [.define("SQLITE_HAS_CODEC", to: nil, sqlcipherTraitBuildSettingCondition)]
+let swiftSettings: [SwiftSetting] = [.define("SQLITE_HAS_CODEC", sqlcipherTraitBuildSettingCondition)]
 
 let targets: [Target] = [
     .target(
         name: "SQLite",
         dependencies: [
             .product(name: "SwiftToolchainCSQLite", package: "swift-toolchain-sqlite", condition: .when(platforms: [.linux, .windows, .android])),
-            .product(name: "SQLCipher", package: "SQLCipher.swift", condition: sqlcipherTraitTargetCondition)
+            .product(name: "SQLCipher", package: "SQLCipher.swift", condition: .when(platforms: applePlatforms, traits: ["SQLCipher"]))
         ],
-        exclude: [
-            "Info.plist"
-        ],
-        cSettings: [
-            .define("SQLITE_HAS_CODEC", to: nil, sqlcipherTraitBuildSettingCondition)
-        ],
-        swiftSettings: [
-            .define("SQLITE_HAS_CODEC", sqlcipherTraitBuildSettingCondition),
-            .define("SQLITE_SWIFT_SQLCIPHER", sqlcipherTraitBuildSettingCondition)
-        ]
+        exclude: ["Info.plist"],
+        cSettings: cSettings,
+        swiftSettings: swiftSettings
     )
 ]
 
 let testTargets: [Target] = [
     .testTarget(
         name: "SQLiteTests",
-        dependencies: [
-            "SQLite"
-        ],
+        dependencies: ["SQLite"],
         path: "Tests/SQLiteTests",
-        exclude: [
-            "Info.plist"
-        ],
-        resources: [
-            .copy("Resources")
-        ],
-        swiftSettings: [
-            .define("SQLITE_SWIFT_SQLCIPHER", sqlcipherTraitBuildSettingCondition)
-        ]
+        exclude: ["Info.plist"],
+        resources: [.copy("Resources")],
+        swiftSettings: swiftSettings
     )
 ]
 
