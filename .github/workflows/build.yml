@@ -23,6 +23,10 @@ jobs:
       env:
         PACKAGE_MANAGER_COMMAND: test -Xswiftc -warnings-as-errors
       run: ./run-tests.sh
+    - name: "Run tests (PACKAGE_MANAGER_COMMAND: test --traits SQLCipher)"
+      env:
+        PACKAGE_MANAGER_COMMAND: test -Xswiftc -warnings-as-errors --traits SQLCipher
+      run: ./run-tests.sh
     - name: "Run tests (SPM integration test)"
       env:
         SPM: run
