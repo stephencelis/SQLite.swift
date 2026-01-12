@@ -129,7 +129,7 @@ depdencies: [
 ]
 ```
 
-As of Xcode 16.4 (16F6), there's no direct way in the Xcode UI to select trait variations so you'll need to use a local wrapper package to pull in the SQLite.swift dependency with the `SQLCipher` trait enabled:
+As of Xcode 26.2 (17C52), there's no direct way in the Xcode UI to select trait variations so you'll need to use a local wrapper package to pull in the SQLite.swift dependency with the `SQLCipher` trait enabled:
 
 ```swift
 // swift-tools-version: 6.1
