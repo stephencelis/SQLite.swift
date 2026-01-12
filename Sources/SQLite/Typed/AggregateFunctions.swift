@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-private enum Function: String {
+private enum Function: String, Sendable {
     case count
     case max
     case min

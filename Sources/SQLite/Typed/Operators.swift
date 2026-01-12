@@ -24,7 +24,7 @@
 
 // TODO: use `@warn_unused_result` by the time operator functions support it
 
-private enum Operator: String {
+private enum Operator: String, Sendable {
     case plus = "+"
     case minus = "-"
     case or = "OR"

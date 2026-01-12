@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-public protocol ExpressionType: Expressible, CustomStringConvertible { // extensions cannot have inheritance clauses
+public protocol ExpressionType: Expressible, CustomStringConvertible, Sendable { // extensions cannot have inheritance clauses
 
     associatedtype UnderlyingType = Void
 
@@ -67,7 +67,7 @@ public struct Expression<Datatype>: ExpressionType {
 
 }
 
-public protocol Expressible {
+public protocol Expressible: Sendable {
 
     var expression: Expression<Void> { get }
 
