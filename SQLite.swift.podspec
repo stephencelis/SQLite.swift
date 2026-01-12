@@ -65,7 +65,7 @@ Pod::Spec.new do |s|
     ss.resource_bundle = { 'SQLite.swift' => 'Sources/SQLite/PrivacyInfo.xcprivacy' }
 
     ss.xcconfig = {
-      'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_HAS_CODEC',
+      'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLCipher',
       'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1'
     }
     ss.dependency 'SQLCipher', '>= 4.0.0'

@@ -9,7 +9,6 @@ let deps: [Package.Dependency] = [
 let applePlatforms: [PackageDescription.Platform] = [.iOS, .macOS, .watchOS, .tvOS, .visionOS]
 let sqlcipherTraitBuildSettingCondition: BuildSettingCondition? = .when(platforms: applePlatforms, traits: ["SQLCipher"])
 let cSettings: [CSetting] = [.define("SQLITE_HAS_CODEC", to: nil, sqlcipherTraitBuildSettingCondition)]
-let swiftSettings: [SwiftSetting] = [.define("SQLITE_HAS_CODEC", sqlcipherTraitBuildSettingCondition)]
 
 let targets: [Target] = [
     .target(
@@ -19,8 +18,7 @@ let targets: [Target] = [
             .product(name: "SQLCipher", package: "SQLCipher.swift", condition: .when(platforms: applePlatforms, traits: ["SQLCipher"]))
         ],
         exclude: ["Info.plist"],
-        cSettings: cSettings,
-        swiftSettings: swiftSettings
+        cSettings: cSettings
     )
 ]
 
@@ -30,8 +28,7 @@ let testTargets: [Target] = [
         dependencies: ["SQLite"],
         path: "Tests/SQLiteTests",
         exclude: ["Info.plist"],
-        resources: [.copy("Resources")],
-        swiftSettings: swiftSettings
+        resources: [.copy("Resources")]
     )
 ]
 
