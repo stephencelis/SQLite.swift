@@ -3,10 +3,10 @@
 - [SQLite.swift Documentation](#sqliteswift-documentation)
   - [Installation](#installation)
     - [Swift Package Manager](#swift-package-manager)
+        - [Using SQLite.swift with SQLCipher](#using-sqliteswift-with-sqlcipher)
     - [Carthage](#carthage)
     - [CocoaPods](#cocoapods)
       - [Requiring a specific version of SQLite](#requiring-a-specific-version-of-sqlite)
-      - [Using SQLite.swift with SQLCipher](#using-sqliteswift-with-sqlcipher)
     - [Manual](#manual)
   - [Getting Started](#getting-started)
     - [Connecting to a Database](#connecting-to-a-database)
@@ -119,7 +119,79 @@ process of downloading, compiling, and linking dependencies.
   $ swift build
   ```
 
+#### Using SQLite.swift with SQLCipher
+
+If you want to use [SQLCipher][] with SQLite.swift you can specify the `SQLCipher` trait when consuming SQLite.swift.
+
+```swift
+depdencies: [
+  .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.4", traits: ["SQLCipher"])
+]
+```
+
+As of Xcode 26.2 (17C52), there's no direct way in the Xcode UI to select trait variations so you'll need to use a local wrapper package to pull in the SQLite.swift dependency with the `SQLCipher` trait enabled:
+
+```swift
+// swift-tools-version: 6.1
+// The swift-tools-version declares the minimum version of Swift required to build this package.
+
+import PackageDescription
+
+let package = Package(
+    name: "AppDependencies",
+    platforms: [
+        .macOS(.v10_14),
+        .iOS(.v13),
+        .macCatalyst(.v13),
+        .watchOS(.v8),
+        .tvOS(.v15),
+        .visionOS(.v1)
+    ],
+    products: [
+        .library(
+            name: "AppDependencies",
+            targets: ["AppDependencies"]),
+    ],
+    dependencies: [
+        .package(
+            url: "https://github.com/stephencelis/SQLite.swift.git",
+            from: "0.15.4",
+            traits: ["SQLCipher"])
+    ],
+    targets: [
+        .target(
+            name: "AppDependencies",
+            dependencies: [
+                .product(
+                    name: "SQLite",
+                    package: "SQLite.swift")
+            ]
+        )
+    ]
+)
+```
+
+Within Xcode add your local `AppDependencies` wrapper package as a package dependency and SQLite.swift with SQLCipher functionality will be accessible.
+
+Using the `SQLCipher` trait will cause SQLite.swift to include a dependency on SQLCipher.swift and enable `Connection` methods to set and change the database key:
+
+```swift
+import SQLite
+
+let db = try Connection("path/to/encrypted.sqlite3")
+try db.key("secret")
+try db.rekey("new secret") // changes encryption key on already encrypted db
+```
+
+To encrypt an existing database:
+
+```swift
+let db = try Connection("path/to/unencrypted.sqlite3")
+try db.sqlcipher_export(.uri("encrypted.sqlite3"), key: "secret")
+```
+
 [Swift Package Manager]: https://swift.org/package-manager
+[SQLCipher]: https://www.zetetic.net/sqlcipher/
 
 ### Carthage
 
@@ -191,41 +263,9 @@ end
 
 See the [sqlite3 podspec][sqlite3pod] for more details.
 
-#### Using SQLite.swift with SQLCipher
-
-If you want to use [SQLCipher][] with SQLite.swift you can require the
-`SQLCipher` subspec in your Podfile (SPM is not supported yet, see [#1084](https://github.com/stephencelis/SQLite.swift/issues/1084)):
-
-```ruby
-target 'YourAppTargetName' do
-  # Make sure you only require the subspec, otherwise you app might link against
-  # the system SQLite, which means the SQLCipher-specific methods won't work.
-  pod 'SQLite.swift/SQLCipher', '~> 0.15.4'
-end
-```
-
-This will automatically add a dependency to the SQLCipher pod as well as
-extend `Connection` with methods to change the database key:
-
-```swift
-import SQLite
-
-let db = try Connection("path/to/encrypted.sqlite3")
-try db.key("secret")
-try db.rekey("new secret") // changes encryption key on already encrypted db
-```
-
-To encrypt an existing database:
-
-```swift
-let db = try Connection("path/to/unencrypted.sqlite3")
-try db.sqlcipher_export(.uri("encrypted.sqlite3"), key: "secret")
-```
-
 [CocoaPods]: https://cocoapods.org
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
 [sqlite3pod]: https://github.com/clemensg/sqlite3pod
-[SQLCipher]: https://www.zetetic.net/sqlcipher/
 
 ### Manual
 

@@ -1,35 +1,37 @@
-// swift-tools-version:5.9
+// swift-tools-version: 6.1
 import PackageDescription
 
 let deps: [Package.Dependency] = [
-    .github("swiftlang/swift-toolchain-sqlite", exact: "1.0.7")
+    .package(url: "https://github.com/swiftlang/swift-toolchain-sqlite", from: "1.0.7"),
+    .package(url: "https://github.com/sqlcipher/SQLCipher.swift.git", from: "4.11.0")
 ]
+
+let applePlatforms: [PackageDescription.Platform] = [.iOS, .macOS, .watchOS, .tvOS, .visionOS]
+let sqlcipherTraitBuildSettingCondition: BuildSettingCondition? = .when(platforms: applePlatforms, traits: ["SQLCipher"])
+let cSettings: [CSetting] = [.define("SQLITE_HAS_CODEC", to: nil, sqlcipherTraitBuildSettingCondition)]
+let swiftSettings: [SwiftSetting] = [.define("SQLITE_HAS_CODEC", sqlcipherTraitBuildSettingCondition)]
 
 let targets: [Target] = [
     .target(
         name: "SQLite",
         dependencies: [
-            .product(name: "SwiftToolchainCSQLite", package: "swift-toolchain-sqlite", condition: .when(platforms: [.linux, .windows, .android]))
+            .product(name: "SwiftToolchainCSQLite", package: "swift-toolchain-sqlite", condition: .when(platforms: [.linux, .windows, .android])),
+            .product(name: "SQLCipher", package: "SQLCipher.swift", condition: .when(platforms: applePlatforms, traits: ["SQLCipher"]))
         ],
-        exclude: [
-            "Info.plist"
-        ]
+        exclude: ["Info.plist"],
+        cSettings: cSettings,
+        swiftSettings: swiftSettings
     )
 ]
 
 let testTargets: [Target] = [
     .testTarget(
         name: "SQLiteTests",
-        dependencies: [
-            "SQLite"
-        ],
+        dependencies: ["SQLite"],
         path: "Tests/SQLiteTests",
-        exclude: [
-            "Info.plist"
-        ],
-        resources: [
-            .copy("Resources")
-        ]
+        exclude: ["Info.plist"],
+        resources: [.copy("Resources")],
+        swiftSettings: swiftSettings
     )
 ]
 
@@ -48,13 +50,10 @@ let package = Package(
             targets: ["SQLite"]
         )
     ],
+    traits: [
+        .trait(name: "SQLCipher", description: "Enables SQLCipher encryption when a key is supplied to Connection")
+    ],
     dependencies: deps,
-    targets: targets + testTargets
+    targets: targets + testTargets,
+    swiftLanguageModes: [.v5],
 )
-
-extension Package.Dependency {
-
-    static func github(_ repo: String, exact ver: Version) -> Package.Dependency {
-        .package(url: "https://github.com/\(repo)", exact: ver)
-    }
-}
