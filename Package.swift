@@ -38,10 +38,16 @@ let package = Package(
         .library(name: "SQLite", targets: ["SQLite"])
     ],
     traits: [
+        .trait(name: "SystemSQLite",
+              description: "Uses the system-provided SQLite (on Apple platforms)"),
+        .trait(name: "SwiftToolchainCSQLite",
+               description: "Include SQLite from the Swift toolchain"),
+        // this will note compile, just included for sake of completeness
+        .trait(name: "StandaloneSQLite",
+               description: "Assumes SQLite to be already available as 'sqlite3'"),
         .trait(name: "SQLCipher",
                description: "Enables SQLCipher encryption when a key is supplied to Connection"),
-        .trait(name: "SwiftToolchainCSQLite",
-               description: "Uses the SQLite from SwiftToolchain")
+        .default(enabledTraits: ["SystemSQLite"])
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-toolchain-sqlite", from: "1.0.7"),

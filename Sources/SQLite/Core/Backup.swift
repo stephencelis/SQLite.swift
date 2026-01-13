@@ -24,14 +24,14 @@
 
 import Foundation
 import Dispatch
-#if canImport(sqlite3)
+#if StandaloneSQLite
 import sqlite3
-#elseif canImport(SQLCipher)
+#elseif SQLCipher
 import SQLCipher
-#elseif canImport(SwiftToolchainCSQLite)
+#elseif SwiftToolchainCSQLite
 import SwiftToolchainCSQLite
 #else
-import SQLite3
+import SQLite3 // SystemSQLite
 #endif
 
 /// An object representing database backup.

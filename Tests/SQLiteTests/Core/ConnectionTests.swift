@@ -3,14 +3,14 @@ import Foundation
 import Dispatch
 @testable import SQLite
 
-#if canImport(sqlite3)
+#if StandaloneSQLite
 import sqlite3
-#elseif canImport(SQLCipher)
+#elseif SQLCipher
 import SQLCipher
-#elseif canImport(SwiftToolchainCSQLite)
+#elseif SwiftToolchainCSQLite
 import SwiftToolchainCSQLite
 #else
-import SQLite3
+import SQLite3 // SystemSQLite
 #endif
 
 class ConnectionTests: SQLiteTestCase {
@@ -445,12 +445,23 @@ class ConnectionTests: SQLiteTestCase {
         semaphores.forEach { $0.wait() }
     }
 
-    #if SQLITE_SWIFT_STANDALONE
-    func test_standalone_version_is_recent() throws {
-        // when building standalone (= pod), we should have a more recent version
+    func test_compiled_sqlite_version() throws {
         let conn = try Connection(.inMemory)
         let version = conn.sqliteVersion
-        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 51))
+
+        #if SystemSQLite
+        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 43, point: 2))
+        #elseif SwiftToolchainCSQLite
+        // 1.0.7 uses SQLite 3.50.4
+        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 50, point: 4))
+        #elseif SQLCipher
+        // 4.12.0 uses SQLite 3.51.1
+        // 4.10.0 uses SQLite 3.50.4 (last available pod)
+        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 50, point: 4))
+        #elseif StandaloneSQLite
+        // when building standalone (= pod), we should have a more recent version
+        // https://github.com/clemensg/sqlite3pod
+        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 51, point: 1))
+        #endif
     }
-    #endif
 }
