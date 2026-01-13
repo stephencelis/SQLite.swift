@@ -7,7 +7,7 @@ let target: Target = .target(
     dependencies: [
         .product(name: "SwiftToolchainCSQLite",
                  package: "swift-toolchain-sqlite",
-                 condition: .when(platforms: [.linux, .windows, .android])),
+                 condition: .when(traits: ["SwiftToolchainCSQLite"])),
         .product(name: "SQLCipher",
                  package: "SQLCipher.swift",
                  condition: .when(platforms: applePlatforms, traits: ["SQLCipher"]))
@@ -39,7 +39,9 @@ let package = Package(
     ],
     traits: [
         .trait(name: "SQLCipher",
-               description: "Enables SQLCipher encryption when a key is supplied to Connection")
+               description: "Enables SQLCipher encryption when a key is supplied to Connection"),
+        .trait(name: "SwiftToolchainCSQLite",
+               description: "Uses the SQLite from SwiftToolchain")
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-toolchain-sqlite", from: "1.0.7"),

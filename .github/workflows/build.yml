@@ -26,6 +26,10 @@ jobs:
       env:
         PACKAGE_MANAGER_COMMAND: test -Xswiftc -warnings-as-errors
       run: ./run-tests.sh
+    - name: "Run tests (PACKAGE_MANAGER_COMMAND: test --traits SwiftToolchainCSQLite)"
+      env:
+        PACKAGE_MANAGER_COMMAND: test -Xswiftc -warnings-as-errors --traits SwiftToolchainCSQLite
+      run: ./run-tests.sh
     - name: "Run tests (PACKAGE_MANAGER_COMMAND: test --traits SQLCipher)"
       env:
         PACKAGE_MANAGER_COMMAND: test -Xswiftc -warnings-as-errors --traits SQLCipher
