@@ -119,6 +119,29 @@ process of downloading, compiling, and linking dependencies.
   $ swift build
   ```
 
+#### Available traits
+
+The Swift package manager now supports [traits][], which can be used to configure
+SQLite.swift for different use cases.
+
+  ```swift
+  dependencies: [
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", 
+             from: "0.15.4",
+             traits: ["XXX"])
+  ]
+  ```
+
+| Trait                    | Description                                       |
+|--------------------------|---------------------------------------------------|
+| `SystemSQLite` (default) | Uses the system SQLite (provided by Apple)        |
+| `SwiftToolchainCSQLite`  | Embeds the SQLite provided by [swift-toolchain][] |
+| `StandaloneSQLite`       | Only used by CocoaPods                            |
+| `SQLCipher`              | Embeds [SQLCipher][] (see below)                  |
+
+[traits]: https://docs.swift.org/swiftpm/documentation/packagemanagerdocs/packagetraits/
+[swift-toolchain]: https://github.com/swiftlang/swift-toolchain-sqlite 
+
 #### Using SQLite.swift with SQLCipher
 
 If you want to use [SQLCipher][] with SQLite.swift you can specify the `SQLCipher` trait when consuming SQLite.swift.
