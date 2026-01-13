@@ -85,3 +85,5 @@ jobs:
       with:
         # Ubuntu runners low on space causes the emulator to fail to install
         free-disk-space: true
+        swift-build-flags: --traits SwiftToolchainCSQLite
+        swift-test-flags: --traits SwiftToolchainCSQLite
