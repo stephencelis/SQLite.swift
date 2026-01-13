@@ -17,7 +17,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       IOS_SIMULATOR: ${{ matrix.os == 'macos-15' && 'iPhone 16' || 'iPhone 16e' }}
-      IOS_VERSION: ${{ matrix.os == 'macos-15' && '18.4' || '26.0' }}
+      IOS_VERSION: ${{ matrix.os == 'macos-15' && '18.4' || '26.0.1' }}
     steps:
     - uses: actions/checkout@v4
     - name: "Lint"
