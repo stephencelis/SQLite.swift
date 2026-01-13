@@ -166,7 +166,7 @@ public final class Statement {
 
         reset(clearBindings: false)
         _ = try step()
-        return row[0]
+        return try row.getValue(0)
     }
 
     /// - Parameter bindings: A list of parameters to bind to the statement.
@@ -229,9 +229,9 @@ extension Array {
 }
 
 extension Statement: FailableIterator {
-    public typealias Element = [Binding?]
-    public func failableNext() throws -> [Binding?]? {
-        try step() ? Array(row) : nil
+    public typealias Element = Cursor
+    public func failableNext() throws -> Cursor? {
+        try step() ? row : nil
     }
 }
 
@@ -258,30 +258,103 @@ extension Statement: CustomStringConvertible {
 
 }
 
-public struct Cursor {
+public protocol CursorProtocol {
+    func getValue(_ idx: Int) throws -> Binding?
+    func getValue(_ idx: Int) throws -> Double
+    func getValue(_ idx: Int) throws -> Int64
+    func getValue(_ idx: Int) throws -> String
+    func getValue(_ idx: Int) throws -> Blob
+}
 
-    fileprivate let handle: OpaquePointer
+extension CursorProtocol {
+    public func getValue<T: Binding>(_ idx: Int) -> T? {
+        switch T.self {
+        case is Double.Type:
+            return try? getValue(idx) as Double as? T
+        case is Int64.Type:
+            return try? getValue(idx) as Int64 as? T
+        case is String.Type:
+            return try? getValue(idx) as String as? T
+        case is Blob.Type:
+            return try? getValue(idx) as Blob as? T
+        default:
+            return nil
+        }
+    }
+
+    public func getValue(_ idx: Int) throws -> Bool {
+        try Bool.fromDatatypeValue(getValue(idx))
+    }
+
+    public func getValue(_ idx: Int) throws -> Int {
+        try Int.fromDatatypeValue(getValue(idx))
+    }
+}
+
+struct CursorWithBindingArray: CursorProtocol {
+    let elements: [Binding?]
+    init(elements: [Binding?]) {
+        self.elements = elements
+    }
+
+    func getValue(_ idx: Int) throws -> Binding? {
+        elements[idx]
+    }
+    func getValue(_ idx: Int) throws -> Double {
+        guard let value = elements[idx] as? Double else {
+            throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+        }
+        return value
+    }
+    func getValue(_ idx: Int) throws -> Int64 {
+        guard let value = elements[idx] as? Int64 else {
+            throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+        }
+        return value
+    }
+    func getValue(_ idx: Int) throws -> String {
+        guard let value = elements[idx] as? String else {
+            throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+        }
+        return value
+    }
+    func getValue(_ idx: Int) throws -> Blob {
+        guard let value = elements[idx] as? Blob else {
+            throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+        }
+        return value
+    }
+}
+
+public struct Cursor: CursorProtocol {
+    fileprivate let statement: Statement
+    fileprivate var handle: OpaquePointer {
+        statement.handle!
+    }
 
     fileprivate let columnCount: Int
 
     fileprivate init(_ statement: Statement) {
-        handle = statement.handle!
+        self.statement = statement
         columnCount = statement.columnCount
     }
 
-    public subscript(idx: Int) -> Double {
+    public func getValue(_ idx: Int) throws -> Double {
         sqlite3_column_double(handle, Int32(idx))
     }
 
-    public subscript(idx: Int) -> Int64 {
+    public func getValue(_ idx: Int) throws -> Int64 {
         sqlite3_column_int64(handle, Int32(idx))
     }
 
-    public subscript(idx: Int) -> String {
-        String(cString: UnsafePointer(sqlite3_column_text(handle, Int32(idx))))
+    public func getValue(_ idx: Int) throws -> String {
+        guard let text = sqlite3_column_text(handle, Int32(idx)) else {
+            throw QueryError.unexpectedNullValue(name: "column at index \(idx)")
+        }
+        return String(cString: UnsafePointer(text))
     }
 
-    public subscript(idx: Int) -> Blob {
+    public func getValue(_ idx: Int) throws -> Blob {
         if let pointer = sqlite3_column_blob(handle, Int32(idx)) {
             let length = Int(sqlite3_column_bytes(handle, Int32(idx)))
             return Blob(bytes: pointer, length: length)
@@ -292,48 +365,20 @@ public struct Cursor {
         }
     }
 
-    // MARK: -
-
-    public subscript(idx: Int) -> Bool {
-        Bool.fromDatatypeValue(self[idx])
-    }
-
-    public subscript(idx: Int) -> Int {
-        Int.fromDatatypeValue(self[idx])
-    }
-
-}
-
-/// Cursors provide direct access to a statement’s current row.
-extension Cursor: Sequence {
-
-    public subscript(idx: Int) -> Binding? {
+    public func getValue(_ idx: Int) throws -> Binding? {
         switch sqlite3_column_type(handle, Int32(idx)) {
         case SQLITE_BLOB:
-            return self[idx] as Blob
+            return try getValue(idx) as Blob
         case SQLITE_FLOAT:
-            return self[idx] as Double
+            return try getValue(idx) as Double
         case SQLITE_INTEGER:
-            return self[idx] as Int64
+            return try getValue(idx) as Int64
         case SQLITE_NULL:
             return nil
         case SQLITE_TEXT:
-            return self[idx] as String
+            return try getValue(idx) as String
         case let type:
             fatalError("unsupported column type: \(type)")
         }
     }
-
-    public func makeIterator() -> AnyIterator<Binding?> {
-        var idx = 0
-        return AnyIterator {
-            if idx >= columnCount {
-                return .none
-            } else {
-                idx += 1
-                return self[idx - 1]
-            }
-        }
-    }
-
 }

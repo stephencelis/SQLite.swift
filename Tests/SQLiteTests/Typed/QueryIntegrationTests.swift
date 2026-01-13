@@ -49,7 +49,7 @@ class QueryIntegrationTests: SQLiteTestCase {
         let names = ["a", "b", "c"]
         try insertUsers(names)
 
-        let emails = try db.prepare("select email from users", []).map { $0[0] as! String  }
+        let emails = try db.prepare("select email from users", []).compactMap { try? $0.getValue(0) as String  }
 
         XCTAssertEqual(names.map({ "\($0)@example.com" }), emails.sorted())
     }
@@ -213,7 +213,7 @@ class QueryIntegrationTests: SQLiteTestCase {
         let query1 = users.filter(email == "alice@example.com")
         let query2 = users.filter(email == "sally@example.com")
 
-        let actualIDs = try db.prepare(query1.union(query2)).map { $0[id] }
+        let actualIDs: [_] = try db.prepare(query1.union(query2)).map { $0[self.id] }
         XCTAssertEqual(expectedIDs, actualIDs)
 
         let query3 = users.select(users[*], SQLite.Expression<Int>(literal: "1 AS weight")).filter(email == "sally@example.com")
@@ -226,8 +226,8 @@ class QueryIntegrationTests: SQLiteTestCase {
         SELECT "users".*, 2 AS weight FROM "users" WHERE ("email" = 'alice@example.com') ORDER BY weight
         """)
 
-        let orderedIDs = try db.prepare(query3.union(query4).order(SQLite.Expression<Int>(literal: "weight"), email)).map { $0[id] }
-        XCTAssertEqual(Array(expectedIDs.reversed()), orderedIDs)
+        let orderedIDs: [_] = try db.prepare(query3.union(query4).order(SQLite.Expression<Int>(literal: "weight"), email)).map { $0[self.id] }
+        XCTAssertEqual(expectedIDs.reversed(), orderedIDs)
     }
 
     func test_no_such_column() throws {
@@ -272,7 +272,7 @@ class QueryIntegrationTests: SQLiteTestCase {
     // https://github.com/stephencelis/SQLite.swift/issues/285
     func test_order_by_random() throws {
         try insertUsers(["a", "b", "c'"])
-        let result = Array(try db.prepare(users.select(email).order(SQLite.Expression<Int>.random()).limit(1)))
+        let result: [_] = try db.prepare(users.select(email).order(SQLite.Expression<Int>.random()).limit(1))
         XCTAssertEqual(1, result.count)
     }
 
@@ -373,7 +373,7 @@ class QueryIntegrationTests: SQLiteTestCase {
         try insertUser("Billy")
 
         let cumeDist = cumeDist(email)
-        let results = try db.prepare(users.select(id, cumeDist)).map {
+        let results: [_] = try db.prepare(users.select(id, cumeDist)).map {
             $0[cumeDist]
         }
         XCTAssertEqual([0.25, 0.5, 0.75, 1], results)
@@ -443,6 +443,28 @@ class QueryIntegrationTests: SQLiteTestCase {
         let nthValue = email.value(1, email.asc)
         row = try db.pluck(users.select(id, nthValue))!
         XCTAssertEqual(row[nthValue], "Billy@example.com")
+    }
+
+    func test_codable_cast() throws {
+        let table = Table("test_codable_cast")
+        try db.run(
+            table.create {
+                $0.column(SQLite.Expression<String?>("int"))
+                $0.column(SQLite.Expression<String?>("string"))
+                $0.column(SQLite.Expression<String?>("bool"))
+                $0.column(SQLite.Expression<String?>("float"))
+                $0.column(SQLite.Expression<String?>("double"))
+                $0.column(SQLite.Expression<String?>("date"))
+                $0.column(SQLite.Expression<String?>("uuid"))
+                $0.column(SQLite.Expression<String?>("optional"))
+                $0.column(SQLite.Expression<String?>("sub"))
+            })
+        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
+                                date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
+        try db.run(table.insert(value))
+
+        let fetchValue: TestCodable = try db.prepare(table).map { try $0.decode() }[0]
+        XCTAssertEqual(fetchValue, value)
     }
 }
 

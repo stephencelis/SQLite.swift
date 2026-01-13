@@ -1003,18 +1003,6 @@ public struct RowIterator: FailableIterator {
 }
 
 extension Connection {
-
-    public func prepare(_ query: QueryType) throws -> AnySequence<Row> {
-        let expression = query.expression
-        let statement = try prepare(expression.template, expression.bindings)
-
-        let columnNames = try columnNamesForQuery(query)
-
-        return AnySequence {
-            AnyIterator { statement.next().map { Row(columnNames, $0) } }
-        }
-    }
-
     public func prepareRowIterator(_ query: QueryType) throws -> RowIterator {
         let expression = query.expression
         let statement = try prepare(expression.template, expression.bindings)
@@ -1029,7 +1017,7 @@ extension Connection {
         try prepare(statement, bindings).prepareRowIterator()
     }
 
-    private func columnNamesForQuery(_ query: QueryType) throws -> [String: Int] {
+    func columnNamesForQuery(_ query: QueryType) throws -> [String: Int] {
         var (columnNames, idx) = ([String: Int](), 0)
         column: for each in query.clauses.select.columns {
             var names = each.expression.template.split { $0 == "." }.map(String.init)
@@ -1172,18 +1160,22 @@ public struct Row: Sendable {
 
     let columnNames: [String: Int]
 
-    fileprivate let values: [Binding?]
+    fileprivate let values: any CursorProtocol
 
-    internal init(_ columnNames: [String: Int], _ values: [Binding?]) {
+    init(_ columnNames: [String: Int], _ values: some CursorProtocol) {
         self.columnNames = columnNames
         self.values = values
+    }
+
+    init(_ columnNames: [String: Int], _ values: [Binding?]) {
+        self.init(columnNames, CursorWithBindingArray(elements: values))
     }
 
     func hasValue(for column: String) -> Bool {
         guard let idx = columnNames[column.quote()] else {
             return false
         }
-        return values[idx] != nil
+        return (try? values.getValue(idx)) != nil
     }
 
     /// Returns a row’s value for the given column.
@@ -1201,7 +1193,7 @@ public struct Row: Sendable {
 
     public func get<V: Value>(_ column: Expression<V?>) throws -> V? {
         func valueAtIndex(_ idx: Int) throws -> V? {
-            guard let value = values[idx] as? V.Datatype else { return nil }
+            guard let value = try (values.getValue(idx) as V.Datatype?) ?? (values.getValue(idx) as Binding? as? V.Datatype) else { return nil }
             return try V.fromDatatypeValue(value) as? V
         }
 
