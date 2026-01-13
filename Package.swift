@@ -48,6 +48,11 @@ let package = Package(
         .library(
             name: "SQLite",
             targets: ["SQLite"]
+        ),
+        .library(
+            name: "SQLite-Dynamic",
+            type: .dynamic,
+            targets: ["SQLite"]
         )
     ],
     traits: [
