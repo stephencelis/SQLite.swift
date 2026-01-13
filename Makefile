@@ -7,14 +7,14 @@ IOS_VERSION = 16.4
 SWIFTLINT_VERSION=0.52.2
 SWIFTLINT=bin/swiftlint-$(SWIFTLINT_VERSION)
 SWIFTLINT_URL=https://github.com/realm/SwiftLint/releases/download/$(SWIFTLINT_VERSION)/portable_swiftlint.zip
-XCBEAUTIFY_VERSION=0.20.0
+XCBEAUTIFY_VERSION=3.1.2
 XCBEAUTIFY=bin/xcbeautify-$(XCBEAUTIFY_VERSION)
 ifeq ($(shell uname), Linux)
 	XCBEAUTIFY_PLATFORM=x86_64-unknown-linux-gnu.tar.xz
 else
 	XCBEAUTIFY_PLATFORM=universal-apple-macosx.zip
 endif
-XCBEAUTIFY_URL=https://github.com/tuist/xcbeautify/releases/download/$(XCBEAUTIFY_VERSION)/xcbeautify-$(XCBEAUTIFY_VERSION)-$(XCBEAUTIFY_PLATFORM)
+XCBEAUTIFY_URL=https://github.com/cpisciotta/xcbeautify/releases/download/$(XCBEAUTIFY_VERSION)/xcbeautify-$(XCBEAUTIFY_VERSION)-$(XCBEAUTIFY_PLATFORM)
 CURL_OPTS=--fail --silent -L --retry 3
 
 ifeq ($(BUILD_SCHEME),SQLite iOS)
@@ -60,10 +60,10 @@ $(XCBEAUTIFY):
 	curl $(CURL_OPTS) $(XCBEAUTIFY_URL) -o $$FILE; \
 	case "$${FILE#*.}" in \
 	  "zip") \
-		unzip -o $$FILE xcbeautify; \
+		unzip -o $$FILE release/xcbeautify; \
 		;; \
 	  "tar.xz") \
-	  	tar -xvf $$FILE xcbeautify; \
+	  	tar -xvf $$FILE release/xcbeautify; \
 		;; \
 	  *) \
 		echo "unknown extension $${FILE#*.}!"; \
@@ -71,6 +71,6 @@ $(XCBEAUTIFY):
 		;; \
 	esac; \
 	mkdir -p bin; \
-	mv xcbeautify $@ && rm -f $$FILE;
+	mv release/xcbeautify $@ && rm -f $$FILE;
 
 .PHONY: test clean repl sloc
