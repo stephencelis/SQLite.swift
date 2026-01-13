@@ -22,6 +22,8 @@ jobs:
     - uses: actions/checkout@v4
     - name: "xcrun simctl list"
       run: "xcrun simctl list"
+    - name: Update pod repo
+      run: pod repo update
     - name: "Lint"
       run: make lint
     - name: "Run tests (PACKAGE_MANAGER_COMMAND: test)"
