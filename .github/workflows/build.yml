@@ -20,6 +20,8 @@ jobs:
       IOS_VERSION: ${{ matrix.os == 'macos-15' && '18.5' || '26.0.1' }}
     steps:
     - uses: actions/checkout@v4
+    - name: "xcrun simctl list"
+      run: "xcrun simctl list"
     - name: "Lint"
       run: make lint
     - name: "Run tests (PACKAGE_MANAGER_COMMAND: test)"
