@@ -1,4 +1,4 @@
-#if SQLITE_HAS_CODEC
+#if SQLCipher
 import SQLCipher
 
 /// Extension methods for [SQLCipher](https://www.zetetic.net/sqlcipher/).

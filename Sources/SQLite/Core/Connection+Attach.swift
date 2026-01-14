@@ -1,7 +1,7 @@
 import Foundation
 
 extension Connection {
-    #if SQLITE_HAS_CODEC
+    #if SQLCipher
     /// See https://www.zetetic.net/sqlcipher/sqlcipher-api/#attach
     public func attach(_ location: Location, as schemaName: String, key: String? = nil) throws {
         if let key {

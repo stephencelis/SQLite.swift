@@ -10,6 +10,7 @@ disabled_rules: # rule identifiers to exclude from running
 included: # paths to include during linting. `--path` is ignored if present. takes precendence over `excluded`.
   - Sources
   - Tests
+  - Package.swift
 excluded: # paths to ignore during linting. overridden by `included`.
 
 identifier_name:

@@ -17,14 +17,22 @@ jobs:
     runs-on: ${{ matrix.os }}
     env:
       IOS_SIMULATOR: ${{ matrix.os == 'macos-15' && 'iPhone 16' || 'iPhone 16e' }}
-      IOS_VERSION: ${{ matrix.os == 'macos-15' && '18.4' || '26.2' }}
+      IOS_VERSION: ${{ matrix.os == 'macos-15' && '18.5' || '26.0.1' }}
     steps:
     - uses: actions/checkout@v4
+    - name: "xcrun simctl list"
+      run: "xcrun simctl list"
+    - name: Update pod repo
+      run: pod repo update
     - name: "Lint"
       run: make lint
     - name: "Run tests (PACKAGE_MANAGER_COMMAND: test)"
       env:
         PACKAGE_MANAGER_COMMAND: test -Xswiftc -warnings-as-errors
+      run: ./run-tests.sh
+    - name: "Run tests (PACKAGE_MANAGER_COMMAND: test --traits SwiftToolchainCSQLite)"
+      env:
+        PACKAGE_MANAGER_COMMAND: test -Xswiftc -warnings-as-errors --traits SwiftToolchainCSQLite
       run: ./run-tests.sh
     - name: "Run tests (PACKAGE_MANAGER_COMMAND: test --traits SQLCipher)"
       env:
@@ -67,7 +75,7 @@ jobs:
         sudo apt-get update -qq
         sudo apt-get install -y libsqlite3-dev
     - name: Test
-      run: swift test
+      run: swift test --traits SwiftToolchainCSQLite
     - name: "Run tests (SPM integration test)"
       env:
         SPM: run
@@ -81,3 +89,4 @@ jobs:
       with:
         # Ubuntu runners low on space causes the emulator to fail to install
         free-disk-space: true
+        swift-build-flags: --traits SwiftToolchainCSQLite
