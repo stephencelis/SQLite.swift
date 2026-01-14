@@ -1,7 +1,8 @@
 import XCTest
 @testable import SQLite
 
-class FTSIntegrationTests: SQLiteTestCase {
+// Note: these tests are only run when the FTS5 trait has been enabled.
+class FTS5IntegrationTests: SQLiteTestCase {
     let email = SQLite.Expression<String>("email")
     let index = VirtualTable("index")
 
