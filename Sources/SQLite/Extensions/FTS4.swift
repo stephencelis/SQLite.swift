@@ -99,17 +99,17 @@ public struct Tokenizer {
         var arguments = [String]()
 
         if let removeDiacritics {
-            arguments.append("remove_diacritics=\(removeDiacritics ? 1 : 0)".quote())
+            arguments.append("remove_diacritics=\(removeDiacritics ? 1 : 0)")
         }
 
         if !tokenchars.isEmpty {
             let joined = tokenchars.map { String($0) }.joined(separator: "")
-            arguments.append("tokenchars=\(joined)".quote())
+            arguments.append("tokenchars=\(joined)")
         }
 
         if !separators.isEmpty {
             let joined = separators.map { String($0) }.joined(separator: "")
-            arguments.append("separators=\(joined)".quote())
+            arguments.append("separators=\(joined)")
         }
 
         return Tokenizer("unicode61", arguments)
@@ -140,7 +140,11 @@ public struct Tokenizer {
 extension Tokenizer: CustomStringConvertible {
 
     public var description: String {
-        ([name] + arguments).joined(separator: " ")
+        if arguments.isEmpty {
+            name
+        } else {
+            ([name] + arguments).joined(separator: " ").quote()
+        }
     }
 
 }

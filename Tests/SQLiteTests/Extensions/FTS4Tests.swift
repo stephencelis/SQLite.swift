@@ -21,13 +21,13 @@ class FTS4Tests: XCTestCase {
             virtualTable.create(.FTS4([string], tokenize: .Porter))
         )
         XCTAssertEqual(
-            "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(tokenize=unicode61 \"remove_diacritics=0\")",
+            "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(tokenize=\"unicode61 remove_diacritics=0\")",
             virtualTable.create(.FTS4(tokenize: .Unicode61(removeDiacritics: false)))
         )
         XCTAssertEqual(
             """
-            CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(tokenize=unicode61 \"remove_diacritics=1\"
-             \"tokenchars=.\" \"separators=X\")
+            CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(tokenize=\"unicode61 remove_diacritics=1
+             tokenchars=. separators=X\")
             """.replacingOccurrences(of: "\n", with: ""),
             virtualTable.create(.FTS4(tokenize: .Unicode61(removeDiacritics: true,
                                                            tokenchars: ["."], separators: ["X"])))
@@ -116,8 +116,8 @@ class FTS4ConfigTests: XCTestCase {
     func test_tokenizer_unicode61_with_options() {
         XCTAssertEqual(
             """
-            CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(tokenize=unicode61 \"remove_diacritics=1\"
-             \"tokenchars=.\" \"separators=X\")
+            CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(tokenize=\"unicode61 remove_diacritics=1
+             tokenchars=. separators=X\")
             """.replacingOccurrences(of: "\n", with: ""),
             sql(config.tokenizer(.Unicode61(removeDiacritics: true, tokenchars: ["."], separators: ["X"]))))
     }

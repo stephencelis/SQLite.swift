@@ -8,6 +8,9 @@ let target: Target = .target(
         .product(name: "SwiftToolchainCSQLite",
                  package: "swift-toolchain-sqlite",
                  condition: .when(traits: ["SwiftToolchainCSQLite"])),
+        .product(name: "SQLiteSwiftCSQLite",
+                 package: "CSQLite",
+                 condition: .when(traits: ["SQLiteSwiftCSQLite"])),
         .product(name: "SQLCipher",
                  package: "SQLCipher.swift",
                  condition: .when(platforms: applePlatforms, traits: ["SQLCipher"]))
@@ -43,16 +46,23 @@ let package = Package(
               description: "Uses the system-provided SQLite (on Apple platforms)"),
         .trait(name: "SwiftToolchainCSQLite",
                description: "Include SQLite from the Swift toolchain"),
+        .trait(name: "SQLiteSwiftCSQLite",
+               description: "Include SQLite from SQLite.swift, based on the toolchain version"),
         // this will note compile, just included for sake of completeness
         .trait(name: "StandaloneSQLite",
                description: "Assumes SQLite to be already available as 'sqlite3'"),
         .trait(name: "SQLCipher",
                description: "Enables SQLCipher encryption when a key is supplied to Connection"),
+        .trait(name: "FTS5",
+              description: "Enables FTS5 in the embedded SQLite (only supported by SQLiteSwiftCSQLite)"),
         .default(enabledTraits: ["SystemSQLite"])
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-toolchain-sqlite", from: "1.0.7"),
-        .package(url: "https://github.com/sqlcipher/SQLCipher.swift.git", from: "4.11.0")
+        .package(url: "https://github.com/stephencelis/CSQLite",
+                 branch: "SQLite.swift",
+                 traits: [.trait(name: "FTS5", condition: .when(traits: ["FTS5"]))]),
+        .package(url: "https://github.com/sqlcipher/SQLCipher.swift", from: "4.11.0")
     ],
     targets: [target, testTarget],
     swiftLanguageModes: [.v5],

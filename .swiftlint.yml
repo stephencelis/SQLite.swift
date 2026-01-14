@@ -12,6 +12,7 @@ included: # paths to include during linting. `--path` is ignored if present. tak
   - Tests
   - Package.swift
 excluded: # paths to ignore during linting. overridden by `included`.
+  - .build
 
 identifier_name:
   excluded:

@@ -59,13 +59,10 @@ class FTSIntegrationTests: SQLiteTestCase {
     }
 
     private func createOrSkip(_ createIndex: (Connection) throws -> Void) throws {
-        do {
-            try createIndex(db)
-        } catch let error as Result {
-            try XCTSkipIf(error.description.starts(with: "no such module:") ||
-                          error.description.starts(with: "parse error")
-            )
-            throw error
-        }
+        #if FTS5
+        try createIndex(db)
+        #else
+        throw XCTSkip("FTS5 is not enabled")
+        #endif
     }
 }

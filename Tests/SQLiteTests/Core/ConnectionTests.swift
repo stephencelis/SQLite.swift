@@ -9,6 +9,8 @@ import sqlite3
 import SQLCipher
 #elseif SwiftToolchainCSQLite
 import SwiftToolchainCSQLite
+#elseif SQLiteSwiftCSQLite
+import SQLiteSwiftCSQLite
 #else
 import SQLite3 // SystemSQLite
 #endif
@@ -453,6 +455,8 @@ class ConnectionTests: SQLiteTestCase {
         XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 43, point: 2))
         #elseif SwiftToolchainCSQLite
         // 1.0.7 uses SQLite 3.50.4
+        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 50, point: 4))
+        #elseif SQLiteSwiftCSQLite
         XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 50, point: 4))
         #elseif SQLCipher
         // 4.12.0 uses SQLite 3.51.1
