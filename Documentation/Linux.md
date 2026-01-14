@@ -5,6 +5,21 @@
 * Custom functions/aggregations are currently not supported and crash, caused by a bug in Swift.
 See [#1071](https://github.com/stephencelis/SQLite.swift/issues/1071).
 
+## Installation
+
+On Linux you should enable the `SwiftToolchainCSQLite` trait to automatically
+embed SQLite:
+
+  ```swift
+  dependencies: [
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", 
+             from: "0.15.4",
+             traits: ["SwiftToolchainCSQLite"])
+  ]
+  ```
+
+See the [main documentation](Index.md#available-traits) for a list of all available traits.
+
 ## Debugging
 
 ### Create and launch docker container

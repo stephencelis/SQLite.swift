@@ -24,52 +24,51 @@ Pod::Spec.new do |s|
   s.watchos.deployment_target = '4.0'
   s.visionos.deployment_target = '1.0'
 
+  # uses the built-in sqlite3 library
   s.subspec 'standard' do |ss|
-    ss.source_files = 'Sources/SQLite/**/*.{c,h,m,swift}'
-    ss.exclude_files = 'Sources/**/Cipher.swift'
     ss.library = 'sqlite3'
-    ss.resource_bundle = { 'SQLite.swift' => 'Sources/SQLite/PrivacyInfo.xcprivacy' }
-
-    ss.test_spec 'tests' do |test_spec|
-      test_spec.resources = 'Tests/SQLiteTests/Resources/*'
-      test_spec.source_files = 'Tests/SQLiteTests/**/*.swift'
-    end
-  end
-
-  s.subspec 'standalone' do |ss|
     ss.source_files = 'Sources/SQLite/**/*.{c,h,m,swift}'
     ss.exclude_files = 'Sources/**/Cipher.swift'
     ss.resource_bundle = { 'SQLite.swift' => 'Sources/SQLite/PrivacyInfo.xcprivacy' }
-
     ss.xcconfig = {
-      'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_STANDALONE',
-      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_SWIFT_STANDALONE=1'
+      'OTHER_SWIFT_FLAGS' => '$(inherited) -DSystemSQLite'
     }
-    ss.dependency 'sqlite3'
-
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
       test_spec.source_files = 'Tests/SQLiteTests/**/*.swift'
     end
   end
 
+  # uses SQLite from https://github.com/clemensg/sqlite3pod
+  s.subspec 'standalone' do |ss|
+    ss.dependency 'sqlite3'
+    ss.source_files = 'Sources/SQLite/**/*.{c,h,m,swift}'
+    ss.exclude_files = 'Sources/**/Cipher.swift'
+    ss.resource_bundle = { 'SQLite.swift' => 'Sources/SQLite/PrivacyInfo.xcprivacy' }
+    ss.xcconfig = {
+      'OTHER_SWIFT_FLAGS' => '$(inherited) -DStandaloneSQLite'
+    }
+    ss.test_spec 'tests' do |test_spec|
+      test_spec.resources = 'Tests/SQLiteTests/Resources/*'
+      test_spec.source_files = 'Tests/SQLiteTests/**/*.swift'
+    end
+  end
+
+  # uses SQLCipher from https://github.com/sqlcipher/sqlcipher
   s.subspec 'SQLCipher' do |ss|
+    ss.dependency 'SQLCipher', '>= 4.0.0'
     # Disable unsupported visionOS
     # https://github.com/sqlcipher/sqlcipher/issues/483
     ss.ios.deployment_target = s.deployment_target(:ios)
     ss.tvos.deployment_target = s.deployment_target(:tvos)
     ss.osx.deployment_target = s.deployment_target(:osx)
     ss.watchos.deployment_target = s.deployment_target(:watchos)
-
     ss.source_files = 'Sources/SQLite/**/*.{c,h,m,swift}'
     ss.resource_bundle = { 'SQLite.swift' => 'Sources/SQLite/PrivacyInfo.xcprivacy' }
-
     ss.xcconfig = {
-      'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_HAS_CODEC',
+      'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLCipher',
       'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1'
     }
-    ss.dependency 'SQLCipher', '>= 4.0.0'
-
     ss.test_spec 'tests' do |test_spec|
       test_spec.resources = 'Tests/SQLiteTests/Resources/*'
       test_spec.source_files = 'Tests/SQLiteTests/**/*.swift'

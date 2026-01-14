@@ -1,39 +1,29 @@
 // swift-tools-version: 6.1
 import PackageDescription
-
-let deps: [Package.Dependency] = [
-    .package(url: "https://github.com/swiftlang/swift-toolchain-sqlite", from: "1.0.7"),
-    .package(url: "https://github.com/sqlcipher/SQLCipher.swift.git", from: "4.11.0")
-]
-
 let applePlatforms: [PackageDescription.Platform] = [.iOS, .macOS, .watchOS, .tvOS, .visionOS]
-let sqlcipherTraitBuildSettingCondition: BuildSettingCondition? = .when(platforms: applePlatforms, traits: ["SQLCipher"])
-let cSettings: [CSetting] = [.define("SQLITE_HAS_CODEC", to: nil, sqlcipherTraitBuildSettingCondition)]
-let swiftSettings: [SwiftSetting] = [.define("SQLITE_HAS_CODEC", sqlcipherTraitBuildSettingCondition)]
 
-let targets: [Target] = [
-    .target(
-        name: "SQLite",
-        dependencies: [
-            .product(name: "SwiftToolchainCSQLite", package: "swift-toolchain-sqlite", condition: .when(platforms: [.linux, .windows, .android])),
-            .product(name: "SQLCipher", package: "SQLCipher.swift", condition: .when(platforms: applePlatforms, traits: ["SQLCipher"]))
-        ],
-        exclude: ["Info.plist"],
-        cSettings: cSettings,
-        swiftSettings: swiftSettings
-    )
-]
+let target: Target = .target(
+    name: "SQLite",
+    dependencies: [
+        .product(name: "SwiftToolchainCSQLite",
+                 package: "swift-toolchain-sqlite",
+                 condition: .when(traits: ["SwiftToolchainCSQLite"])),
+        .product(name: "SQLCipher",
+                 package: "SQLCipher.swift",
+                 condition: .when(platforms: applePlatforms, traits: ["SQLCipher"]))
+    ],
+    exclude: ["Info.plist"],
+    cSettings: [
+        .define("SQLITE_HAS_CODEC", .when(platforms: applePlatforms, traits: ["SQLCipher"]))
+    ]
+)
 
-let testTargets: [Target] = [
-    .testTarget(
-        name: "SQLiteTests",
-        dependencies: ["SQLite"],
-        path: "Tests/SQLiteTests",
-        exclude: ["Info.plist"],
-        resources: [.copy("Resources")],
-        swiftSettings: swiftSettings
-    )
-]
+let testTarget: Target = .testTarget(
+    name: "SQLiteTests",
+    dependencies: ["SQLite"],
+    exclude: ["Info.plist"],
+    resources: [.copy("Resources")]
+)
 
 let package = Package(
     name: "SQLite.swift",
@@ -45,20 +35,25 @@ let package = Package(
         .visionOS(.v1)
     ],
     products: [
-        .library(
-            name: "SQLite",
-            targets: ["SQLite"]
-        ),
-        .library(
-            name: "SQLite-Dynamic",
-            type: .dynamic,
-            targets: ["SQLite"]
-        )
+        .library(name: "SQLite", targets: ["SQLite"]),
+        .library(name: "SQLite-Dynamic", type: .dynamic, targets: ["SQLite"])
     ],
     traits: [
-        .trait(name: "SQLCipher", description: "Enables SQLCipher encryption when a key is supplied to Connection")
+        .trait(name: "SystemSQLite",
+              description: "Uses the system-provided SQLite (on Apple platforms)"),
+        .trait(name: "SwiftToolchainCSQLite",
+               description: "Include SQLite from the Swift toolchain"),
+        // this will note compile, just included for sake of completeness
+        .trait(name: "StandaloneSQLite",
+               description: "Assumes SQLite to be already available as 'sqlite3'"),
+        .trait(name: "SQLCipher",
+               description: "Enables SQLCipher encryption when a key is supplied to Connection"),
+        .default(enabledTraits: ["SystemSQLite"])
     ],
-    dependencies: deps,
-    targets: targets + testTargets,
+    dependencies: [
+        .package(url: "https://github.com/swiftlang/swift-toolchain-sqlite", from: "1.0.7"),
+        .package(url: "https://github.com/sqlcipher/SQLCipher.swift.git", from: "4.11.0")
+    ],
+    targets: [target, testTarget],
     swiftLanguageModes: [.v5],
 )
