@@ -457,7 +457,8 @@ class ConnectionTests: SQLiteTestCase {
         #elseif SQLCipher
         // 4.12.0 uses SQLite 3.51.1
         // 4.10.0 uses SQLite 3.50.4 (last available pod)
-        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 50, point: 4))
+        // ???    uses SQLite 3.39.4
+        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 39, point: 4))
         #elseif StandaloneSQLite
         // when building standalone (= pod), we should have a more recent version
         // https://github.com/clemensg/sqlite3pod
