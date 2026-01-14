@@ -132,14 +132,17 @@ SQLite.swift for different use cases.
   ]
   ```
 
-| Trait                    | Description                                       |
-|--------------------------|---------------------------------------------------|
-| `SystemSQLite` (default) | Uses the system SQLite (provided by Apple)        |
-| `SwiftToolchainCSQLite`  | Embeds the SQLite provided by [swift-toolchain][] |
-| `StandaloneSQLite`       | Only used by CocoaPods                            |
-| `SQLCipher`              | Embeds [SQLCipher][] (see below)                  |
+| Trait                    | Description                                         |
+|--------------------------|-----------------------------------------------------|
+| `SystemSQLite` (default) | Uses the system SQLite (provided by Apple)          |
+| `SwiftToolchainCSQLite`  | Embeds the SQLite provided by [swift-toolchain][]   |
+| `SQLiteSwiftCSQLite`     | Embeds a [custom SQLite][] based on swift-toolchain |
+| `StandaloneSQLite`       | Only used by CocoaPods                              |
+| `SQLCipher`              | Embeds [SQLCipher][] (see below)                    |
+| `FTS5`                   | Enables FTS5, only works with `SQLiteSwiftCSQLite`  |
 
 [traits]: https://docs.swift.org/swiftpm/documentation/packagemanagerdocs/packagetraits/
+[custom SQLite]: https://github.com/stephencelis/CSQLite/tree/SQLite.swift
 [swift-toolchain]: https://github.com/swiftlang/swift-toolchain-sqlite 
 
 #### Using SQLite.swift with SQLCipher

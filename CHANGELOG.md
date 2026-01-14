@@ -1,6 +1,9 @@
 0.15.5 (tbd), [diff][diff-0.15.5]
 ========================================
+* Support more package traits ([#1341][]), including FTS5 ([#1343][])
 * SQLCipher package manager integration ([#1336][], [#1340][])
+* Provide a dynamic library in SPM ([#1342][])
+* Added sendability conformance ([#1332][])
 
 0.15.4 (13-06-2025), [diff][diff-0.15.4]
 ========================================
@@ -15,7 +18,7 @@
 
 0.15.2 (16-04-2024), [diff][diff-0.15.2]
 ========================================
-* fix: visionos to cocoapods ([#1260][])
+* fix: visionos to CocoaPods ([#1260][])
 
 0.15.1 (14-04-2024), [diff][diff-0.15.1]
 ========================================
@@ -276,5 +279,9 @@ For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
 [#1280]: https://github.com/stephencelis/SQLite.swift/pull/1280
 [#1315]: https://github.com/stephencelis/SQLite.swift/pull/1315
 [#1317]: https://github.com/stephencelis/SQLite.swift/pull/1317
+[#1332]: https://github.com/stephencelis/SQLite.swift/pull/1332
 [#1336]: https://github.com/stephencelis/SQLite.swift/pull/1336
 [#1340]: https://github.com/stephencelis/SQLite.swift/pull/1340
+[#1341]: https://github.com/stephencelis/SQLite.swift/pull/1341
+[#1342]: https://github.com/stephencelis/SQLite.swift/pull/1342
+[#1343]: https://github.com/stephencelis/SQLite.swift/pull/1343

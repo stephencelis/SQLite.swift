@@ -8,6 +8,8 @@ import sqlite3
 import SQLCipher
 #elseif SwiftToolchainCSQLite
 import SwiftToolchainCSQLite
+#elseif SQLiteSwiftCSQLite
+import SQLiteSwiftCSQLite
 #else
 import SQLite3 // SystemSQLite
 #endif
