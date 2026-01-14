@@ -35,7 +35,8 @@ let package = Package(
         .visionOS(.v1)
     ],
     products: [
-        .library(name: "SQLite", targets: ["SQLite"])
+        .library(name: "SQLite", targets: ["SQLite"]),
+        .library(name: "SQLite-Dynamic", type: .dynamic, targets: ["SQLite"])
     ],
     traits: [
         .trait(name: "SystemSQLite",
