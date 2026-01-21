@@ -4,7 +4,7 @@ IOS_SIMULATOR = iPhone 14
 IOS_VERSION = 16.4
 
 # tool settings
-SWIFTLINT_VERSION=0.52.2
+SWIFTLINT_VERSION=0.63.1
 SWIFTLINT=bin/swiftlint-$(SWIFTLINT_VERSION)
 SWIFTLINT_URL=https://github.com/realm/SwiftLint/releases/download/$(SWIFTLINT_VERSION)/portable_swiftlint.zip
 XCBEAUTIFY_VERSION=3.1.2

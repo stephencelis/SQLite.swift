@@ -2,7 +2,7 @@ opt_in_rules:
   - shorthand_optional_binding
 disabled_rules: # rule identifiers to exclude from running
   - todo
-  - operator_whitespace
+  - function_name_whitespace
   - large_tuple
   - closure_parameter_position
   - inclusive_language  # sqlite_master etc.
@@ -12,7 +12,7 @@ included: # paths to include during linting. `--path` is ignored if present. tak
   - Tests
   - Package.swift
 excluded: # paths to ignore during linting. overridden by `included`.
-  - .build
+  - "*/.build/*"
 
 identifier_name:
   excluded:
