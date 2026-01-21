@@ -1,4 +1,4 @@
-0.15.5 (tbd), [diff][diff-0.15.5]
+0.15.5 (22-01-2025), [diff][diff-0.15.5]
 ========================================
 * Support more package traits ([#1341][]), including FTS5 ([#1343][])
 * SQLCipher package manager integration ([#1336][], [#1340][])
