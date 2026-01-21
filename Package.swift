@@ -16,6 +16,7 @@ let target: Target = .target(
                  condition: .when(platforms: applePlatforms, traits: ["SQLCipher"]))
     ],
     exclude: ["Info.plist"],
+    resources: [.copy("PrivacyInfo.xcprivacy")],
     cSettings: [
         .define("SQLITE_HAS_CODEC", .when(platforms: applePlatforms, traits: ["SQLCipher"]))
     ]
