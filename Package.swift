@@ -60,9 +60,7 @@ let package = Package(
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-toolchain-sqlite", from: "1.0.7"),
-        .package(url: "https://github.com/stephencelis/CSQLite",
-                 branch: "SQLite.swift",
-                 traits: [.trait(name: "FTS5", condition: .when(traits: ["FTS5"]))]),
+        .package(url: "https://github.com/stephencelis/CSQLite", from: "3.50.4", traits: [.trait(name: "FTS5", condition: .when(traits: ["FTS5"]))]),
         .package(url: "https://github.com/sqlcipher/SQLCipher.swift", from: "4.11.0")
     ],
     targets: [target, testTarget],
