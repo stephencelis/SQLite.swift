@@ -109,7 +109,7 @@ process of downloading, compiling, and linking dependencies.
 
   ```swift
   dependencies: [
-    .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.4")
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.5")
   ]
   ```
 
@@ -127,19 +127,19 @@ SQLite.swift for different use cases.
   ```swift
   dependencies: [
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", 
-             from: "0.15.4",
+             from: "0.15.5",
              traits: ["XXX"])
   ]
   ```
 
-| Trait                    | Description                                         |
-|--------------------------|-----------------------------------------------------|
-| `SystemSQLite` (default) | Uses the system SQLite (provided by Apple)          |
-| `SwiftToolchainCSQLite`  | Embeds the SQLite provided by [swift-toolchain][]   |
-| `SQLiteSwiftCSQLite`     | Embeds a [custom SQLite][] based on swift-toolchain |
-| `StandaloneSQLite`       | Only used by CocoaPods                              |
-| `SQLCipher`              | Embeds [SQLCipher][] (see below)                    |
-| `FTS5`                   | Enables FTS5, only works with `SQLiteSwiftCSQLite`  |
+| Trait                    | Description                                         | SQLite version                       |
+|--------------------------|-----------------------------------------------------|--------------------------------------|
+| `SystemSQLite` (default) | Uses the system SQLite (provided by Apple)          | macOS 15.7.x: `3.43.2`, 26: `3.50.2` |
+| `SwiftToolchainCSQLite`  | Embeds the SQLite provided by [swift-toolchain][]   | 1.0.7: `3.50.4`                      |
+| `SQLiteSwiftCSQLite`     | Embeds a [custom SQLite][] based on swift-toolchain | `3.50.4`                             |
+| `StandaloneSQLite`       | Only used by CocoaPods                              |                                      |
+| `SQLCipher`              | Embeds [SQLCipher][] (see below)                    | 4.13.0: `3.51.2`                     |
+| `FTS5`                   | Enables FTS5, only works with `SQLiteSwiftCSQLite`  |                                      |
 
 [traits]: https://docs.swift.org/swiftpm/documentation/packagemanagerdocs/packagetraits/
 [custom SQLite]: https://github.com/stephencelis/CSQLite/tree/SQLite.swift
@@ -151,7 +151,7 @@ If you want to use [SQLCipher][] with SQLite.swift you can specify the `SQLCiphe
 
 ```swift
 depdencies: [
-  .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.4", traits: ["SQLCipher"])
+  .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.5", traits: ["SQLCipher"])
 ]
 ```
 
@@ -181,7 +181,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/stephencelis/SQLite.swift.git",
-            from: "0.15.4",
+            from: "0.15.5",
             traits: ["SQLCipher"])
     ],
     targets: [
@@ -228,7 +228,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.15.4
+    github "stephencelis/SQLite.swift" ~> 0.15.5
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -258,7 +258,7 @@ install SQLite.swift with Carthage:
     use_frameworks!
 
     target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.15.4'
+        pod 'SQLite.swift', '~> 0.15.5'
     end
     ```
 
@@ -272,7 +272,7 @@ with the OS you can require the `standalone` subspec:
 
 ```ruby
 target 'YourAppTargetName' do
-  pod 'SQLite.swift/standalone', '~> 0.15.4'
+  pod 'SQLite.swift/standalone', '~> 0.15.5'
 end
 ```
 
@@ -282,7 +282,7 @@ dependency to sqlite3 or one of its subspecs:
 
 ```ruby
 target 'YourAppTargetName' do
-  pod 'SQLite.swift/standalone', '~> 0.15.4'
+  pod 'SQLite.swift/standalone', '~> 0.15.5'
   pod 'sqlite3/fts5', '= 3.15.0'  # SQLite 3.15.0 with FTS5 enabled
 end
 ```

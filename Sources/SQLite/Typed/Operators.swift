@@ -21,9 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
-
-// TODO: use `@warn_unused_result` by the time operator functions support it
-
+// swiftlint:disable file_length
 private enum Operator: String, Sendable {
     case plus = "+"
     case minus = "-"
