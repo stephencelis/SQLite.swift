@@ -29,6 +29,13 @@ let testTarget: Target = .testTarget(
     resources: [.copy("Resources")]
 )
 
+let defaultTraits: Set<String>
+#if os(Linux)
+defaultTraits = ["SwiftToolchainCSQLite"]
+#else
+defaultTraits = ["SystemSQLite"]
+#endif
+
 let package = Package(
     name: "SQLite.swift",
     platforms: [
@@ -56,7 +63,7 @@ let package = Package(
                description: "Enables SQLCipher encryption when a key is supplied to Connection"),
         .trait(name: "FTS5",
               description: "Enables FTS5 in the embedded SQLite (only supported by SQLiteSwiftCSQLite)"),
-        .default(enabledTraits: ["SystemSQLite"])
+        .default(enabledTraits: defaultTraits)
     ],
     dependencies: [
         .package(url: "https://github.com/swiftlang/swift-toolchain-sqlite", from: "1.0.7"),

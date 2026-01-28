@@ -82,7 +82,9 @@ jobs:
       run: |
         sudo apt-get update -qq
         sudo apt-get install -y libsqlite3-dev
-    - name: Test
+    - name: Test (default trait)
+      run: swift test
+    - name: Test (SwiftToolchainCSQLite)
       run: swift test --traits SwiftToolchainCSQLite
     - name: "Run tests (SPM integration test)"
       env:
