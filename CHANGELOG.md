@@ -1,3 +1,7 @@
+0.15.6 (28-01-2026), [diff][diff-0.15.6]
+========================================
+* Revert trait changes for Linux 
+
 0.15.5 (22-01-2026), [diff][diff-0.15.5]
 ========================================
 * Support more package traits ([#1341][]), including FTS5 ([#1343][])
@@ -190,6 +194,7 @@ For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
 [diff-0.15.3]: https://github.com/stephencelis/SQLite.swift/compare/0.15.2...0.15.3
 [diff-0.15.4]: https://github.com/stephencelis/SQLite.swift/compare/0.15.3...0.15.4
 [diff-0.15.5]: https://github.com/stephencelis/SQLite.swift/compare/0.15.4...0.15.5
+[diff-0.15.6]: https://github.com/stephencelis/SQLite.swift/compare/0.15.5...0.15.6
 
 [#30]: https://github.com/stephencelis/SQLite.swift/issues/30
 [#142]: https://github.com/stephencelis/SQLite.swift/issues/142
