@@ -12,8 +12,8 @@ let project = Project(
                 with: [
                     "UILaunchScreen": [
                         "UIColorName": "",
-                        "UIImageName": "",
-                    ],
+                        "UIImageName": ""
+                    ]
                 ]
             ),
             buildableFolders: [
@@ -31,6 +31,6 @@ let project = Project(
                 "SQLite-Test/Tests"
             ],
             dependencies: [.target(name: "SQLite-Test")]
-        ),
+        )
     ]
 )
