@@ -1,10 +1,13 @@
 import Testing
-@testable import SQLiteTest
+import SQLite
 
 struct SQLiteTestTests {
 
-    @Test func example() async throws {
-        // Write your test here and use APIs like `#expect(...)` to check expected conditions.
-    }
+    @Test func test_connection() async throws {
+        let connection = try SQLite.Connection(.inMemory)
+        let version = connection.sqliteVersion
 
+        #expect(version.major == 3)
+
+    }
 }

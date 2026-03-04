@@ -17,10 +17,9 @@ let project = Project(
                 ]
             ),
             buildableFolders: [
-                "SQLite-Test/Sources",
-                "SQLite-Test/Resources",
+                "SQLite-Test/Sources"
             ],
-            dependencies: []
+            dependencies: [.external(name: "SQLite")]
         ),
         .target(
             name: "SQLite-TestTests",

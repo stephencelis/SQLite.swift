@@ -30,3 +30,4 @@ bin/
 Packages/
 .swiftpm/
 Package.resolved
+Derived/

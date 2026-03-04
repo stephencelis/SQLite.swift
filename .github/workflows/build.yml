@@ -70,6 +70,12 @@ jobs:
       env:
         VALIDATOR_SUBSPEC: SQLCipher
       run: ./run-tests.sh
+    - name: "Run tests (tuist)"
+      run: |
+        brew install tuist
+        cd Tests/Tuist/SQLite-Test
+        tuist install
+        tuist test
   build-linux:
     runs-on: ubuntu-latest
     steps:
