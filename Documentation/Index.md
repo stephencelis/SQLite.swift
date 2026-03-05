@@ -190,11 +190,17 @@ let package = Package(
                 .product(
                     name: "SQLite",
                     package: "SQLite.swift")
+            ],
+            // necessary if you have other Package dependencies which explicitly link sqlite3
+            linkerSettings: [
+              .linkedFramework("SQLCipher")
             ]
         )
     ]
 )
 ```
+
+_Note: It's important to include the linkerSettings to link SQLCipher framework first if you have any other Package dependencies in your wrapper package which explicitly link standard sqlite3. This ensures SQLCipher is linked first and properly used._
 
 Within Xcode add your local `AppDependencies` wrapper package as a package dependency and SQLite.swift with SQLCipher functionality will be accessible.
 
