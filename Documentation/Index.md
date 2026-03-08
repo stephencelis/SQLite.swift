@@ -109,7 +109,7 @@ process of downloading, compiling, and linking dependencies.
 
   ```swift
   dependencies: [
-    .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.6")
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.16.0")
   ]
   ```
 
@@ -127,7 +127,7 @@ SQLite.swift for different use cases.
   ```swift
   dependencies: [
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", 
-             from: "0.15.6",
+             from: "0.16.0",
              traits: ["XXX"])
   ]
   ```
@@ -150,7 +150,7 @@ If you want to use [SQLCipher][] with SQLite.swift you can specify the `SQLCiphe
 
 ```swift
 depdencies: [
-  .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.6", traits: ["SQLCipher"])
+  .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.16.0", traits: ["SQLCipher"])
 ]
 ```
 
@@ -180,7 +180,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/stephencelis/SQLite.swift.git",
-            from: "0.15.6",
+            from: "0.16.0",
             traits: ["SQLCipher"])
     ],
     targets: [
@@ -233,7 +233,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.15.6
+    github "stephencelis/SQLite.swift" ~> 0.16.0
     ```
 
  3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
@@ -263,7 +263,7 @@ install SQLite.swift with Carthage:
     use_frameworks!
 
     target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.15.6'
+        pod 'SQLite.swift', '~> 0.16.0'
     end
     ```
 
@@ -277,7 +277,7 @@ with the OS you can require the `standalone` subspec:
 
 ```ruby
 target 'YourAppTargetName' do
-  pod 'SQLite.swift/standalone', '~> 0.15.6'
+  pod 'SQLite.swift/standalone', '~> 0.16.0'
 end
 ```
 
@@ -287,7 +287,7 @@ dependency to sqlite3 or one of its subspecs:
 
 ```ruby
 target 'YourAppTargetName' do
-  pod 'SQLite.swift/standalone', '~> 0.15.6'
+  pod 'SQLite.swift/standalone', '~> 0.16.0'
   pod 'sqlite3/fts5', '= 3.15.0'  # SQLite 3.15.0 with FTS5 enabled
 end
 ```
