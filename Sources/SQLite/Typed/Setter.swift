@@ -30,7 +30,7 @@ precedencegroup ColumnAssignment {
 
 infix operator <- : ColumnAssignment
 
-public struct Setter {
+public struct Setter: Sendable {
 
     let column: Expressible
     let value: Expressible

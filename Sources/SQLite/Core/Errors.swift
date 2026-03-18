@@ -1,6 +1,6 @@
 import Foundation
 
-public enum QueryError: Error, CustomStringConvertible {
+public enum QueryError: Error, CustomStringConvertible, Sendable {
     case noSuchTable(name: String)
     case noSuchColumn(name: String, columns: [String])
     case ambiguousColumn(name: String, similar: [String])

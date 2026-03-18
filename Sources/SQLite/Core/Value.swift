@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-public protocol Value : Expressible {
+public protocol Value: Expressible {
 
     associatedtype ValueType = Self
 

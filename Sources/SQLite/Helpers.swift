@@ -106,18 +106,6 @@ extension String {
 
 }
 
-func infix<T>(_ lhs: Expressible, _ rhs: Expressible, wrap: Bool = true, function: String = #function) -> Expression<T> {
-    return function.components(separatedBy: "(")[0].infix(lhs, rhs, wrap: wrap)
-}
-
-func wrap<T>(_ expression: Expressible, function: String = #function) -> Expression<T> {
-    return function.components(separatedBy: "(")[0].wrap(expression)
-}
-
-func wrap<T>(_ expressions: [Expressible], function: String = #function) -> Expression<T> {
-    return function.components(separatedBy: "(")[0].wrap(", ".join(expressions))
-}
-
 func transcode(_ literal: Binding?) -> String {
     guard let literal else { return "NULL" }
 

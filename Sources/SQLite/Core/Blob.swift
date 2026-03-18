@@ -22,7 +22,7 @@
 // THE SOFTWARE.
 //
 
-public struct Blob {
+public struct Blob: Sendable {
 
     public let bytes: [UInt8]
 

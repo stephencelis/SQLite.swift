@@ -30,7 +30,7 @@ public extension Connection {
         precondition(table == nil || supports(.partialIntegrityCheck), "partial integrity check not supported")
 
         return try run("PRAGMA integrity_check" + (table.map { "(\($0.quote()))" } ?? ""))
-			.compactMap { try $0.get()[0] as? String }
+			.compactMap { try ($0.get()[0] as? String) }
             .filter { $0 != "ok" }
     }
 }

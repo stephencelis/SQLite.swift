@@ -93,7 +93,7 @@ public struct ColumnDefinition: Equatable {
         // swiftlint:disable:next force_try
         static let pattern = try! NSRegularExpression(pattern: "PRIMARY KEY\\s*(?:ASC|DESC)?\\s*(?:ON CONFLICT (\\w+)?)?\\s*(AUTOINCREMENT)?")
 
-        init(autoIncrement: Bool = true, onConflict: OnConflict? = nil) {
+        public init(autoIncrement: Bool = true, onConflict: OnConflict? = nil) {
             self.autoIncrement = autoIncrement
             self.onConflict = onConflict
         }
@@ -117,17 +117,31 @@ public struct ColumnDefinition: Equatable {
     }
 
     public struct ForeignKey: Equatable {
-        let table: String
-        let column: String
-        let primaryKey: String?
+        let fromColumn: String
+        let toTable: String
+        // when null, use primary key of "toTable"
+        let toColumn: String?
         let onUpdate: String?
         let onDelete: String?
+
+        public init(toTable: String, toColumn: String? = nil, onUpdate: String? = nil, onDelete: String? = nil) {
+            self.init(fromColumn: "", toTable: toTable, toColumn: toColumn, onUpdate: onUpdate, onDelete: onDelete)
+        }
+
+        public init(fromColumn: String, toTable: String, toColumn: String? = nil, onUpdate: String? = nil, onDelete: String? = nil) {
+            self.fromColumn = fromColumn
+            self.toTable = toTable
+            self.toColumn = toColumn
+            self.onUpdate = onUpdate
+            self.onDelete = onDelete
+        }
     }
 
     public let name: String
     public let primaryKey: PrimaryKey?
     public let type: Affinity
     public let nullable: Bool
+    public let unique: Bool
     public let defaultValue: LiteralValue
     public let references: ForeignKey?
 
@@ -135,12 +149,14 @@ public struct ColumnDefinition: Equatable {
                 primaryKey: PrimaryKey? = nil,
                 type: Affinity,
                 nullable: Bool = true,
+                unique: Bool = false,
                 defaultValue: LiteralValue = .NULL,
                 references: ForeignKey? = nil) {
         self.name = name
         self.primaryKey = primaryKey
         self.type = type
         self.nullable = nullable
+        self.unique = unique
         self.defaultValue = defaultValue
         self.references = references
     }
@@ -244,16 +260,18 @@ public struct IndexDefinition: Equatable {
 
     public enum Order: String { case ASC, DESC }
 
-    public init(table: String, name: String, unique: Bool = false, columns: [String], `where`: String? = nil, orders: [String: Order]? = nil) {
+    public init(table: String, name: String, unique: Bool = false, columns: [String], `where`: String? = nil,
+                orders: [String: Order]? = nil, origin: Origin? = nil) {
         self.table = table
         self.name = name
         self.unique = unique
         self.columns = columns
         self.where = `where`
         self.orders = orders
+        self.origin = origin
     }
 
-    init (table: String, name: String, unique: Bool, columns: [String], indexSQL: String?) {
+    init (table: String, name: String, unique: Bool, columns: [String], indexSQL: String?, origin: Origin? = nil) {
         func wherePart(sql: String) -> String? {
             IndexDefinition.whereRe.firstMatch(in: sql, options: [], range: NSRange(location: 0, length: sql.count)).map {
                 (sql as NSString).substring(with: $0.range(at: 1))
@@ -270,12 +288,16 @@ public struct IndexDefinition: Equatable {
                         return memo2
             }
         }
+
+        let orders = indexSQL.flatMap(orders)
+
         self.init(table: table,
                   name: name,
                   unique: unique,
                   columns: columns,
                   where: indexSQL.flatMap(wherePart),
-                  orders: indexSQL.flatMap(orders))
+                  orders: (orders?.isEmpty ?? false) ? nil : orders,
+                  origin: origin)
     }
 
     public let table: String
@@ -284,6 +306,13 @@ public struct IndexDefinition: Equatable {
     public let columns: [String]
     public let `where`: String?
     public let orders: [String: Order]?
+    public let origin: Origin?
+
+    public enum Origin: String {
+        case uniqueConstraint = "u" // index created from a "CREATE TABLE (... UNIQUE)" column constraint
+        case createIndex = "c"      // index created explicitly via "CREATE INDEX ..."
+        case primaryKey = "pk"      // index created from a "CREATE TABLE PRIMARY KEY" column constraint
+    }
 
     enum IndexError: LocalizedError {
         case tooLong(String, String)
@@ -295,6 +324,13 @@ public struct IndexDefinition: Equatable {
                      "\(IndexDefinition.maxIndexLength) characters"
             }
         }
+    }
+
+    // Indices with names of the form "sqlite_autoindex_TABLE_N" that are used to implement UNIQUE and PRIMARY KEY
+    // constraints on ordinary tables.
+    // https://sqlite.org/fileformat2.html#intschema
+    var isInternal: Bool {
+        name.starts(with: "sqlite_autoindex_")
     }
 
     func validate() throws {
@@ -345,6 +381,7 @@ extension ColumnDefinition {
             defaultValue.map { "DEFAULT \($0)" },
             primaryKey.map { $0.toSQL() },
             nullable ? nil : "NOT NULL",
+            unique ? "UNIQUE" : nil,
             references.map { $0.toSQL() }
         ].compactMap { $0 }
          .joined(separator: " ")
@@ -376,8 +413,8 @@ extension ColumnDefinition.ForeignKey {
     func toSQL() -> String {
         ([
             "REFERENCES",
-            table.quote(),
-            primaryKey.map { "(\($0.quote()))" },
+            toTable.quote(),
+            toColumn.map { "(\($0.quote()))" },
             onUpdate.map { "ON UPDATE \($0)" },
             onDelete.map { "ON DELETE \($0)" }
         ] as [String?]).compactMap { $0 }

@@ -95,15 +95,15 @@ extension QueryType {
 }
 
 /// Materialization hints for `WITH` clause
-public enum MaterializationHint: String {
+public enum MaterializationHint: String, Sendable {
 
     case materialized = "MATERIALIZED"
 
     case notMaterialized = "NOT MATERIALIZED"
 }
 
-struct WithClauses {
-    struct Clause {
+struct WithClauses: Sendable {
+    struct Clause: Sendable {
         var alias: Table
         var columns: [Expressible]?
         var hint: MaterializationHint?

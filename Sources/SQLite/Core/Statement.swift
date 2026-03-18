@@ -203,11 +203,12 @@ extension Statement: Sequence {
         reset(clearBindings: false)
         return self
     }
+
 }
 
-public protocol FailableIterator : IteratorProtocol where Element == Swift.Result<WrappedElement, Error> {
+public protocol FailableIterator: IteratorProtocol where Element == Swift.Result<WrappedElement, Error> {
     associatedtype WrappedElement
-    
+
     func failableNext() throws -> WrappedElement?
 }
 

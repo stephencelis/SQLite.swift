@@ -1,14 +1,7 @@
 import Foundation
-#if SQLITE_SWIFT_STANDALONE
-import sqlite3
-#elseif SQLITE_SWIFT_SQLCIPHER
-import SQLCipher
-#else
-import CSQLite
-#endif
 
 extension Connection {
-    #if SQLITE_SWIFT_SQLCIPHER
+    #if SQLCipher
     /// See https://www.zetetic.net/sqlcipher/sqlcipher-api/#attach
     public func attach(_ location: Location, as schemaName: String, key: String? = nil) throws {
         if let key {

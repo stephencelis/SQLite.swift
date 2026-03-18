@@ -23,7 +23,7 @@
 //
 import Foundation
 
-private enum Function: String {
+private enum Function: String, Sendable {
     case abs
     case round
     case random

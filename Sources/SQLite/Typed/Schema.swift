@@ -136,7 +136,7 @@ extension Table {
 
     // MARK: - CREATE INDEX
 
-    public func createIndex(_ columns: Expressible..., unique: Bool = false, ifNotExists: Bool = false) -> String {
+    public func createIndex(_ columns: [Expressible], unique: Bool = false, ifNotExists: Bool = false) -> String {
         let clauses: [Expressible?] = [
             create("INDEX", indexName(columns), unique ? .unique : nil, ifNotExists),
             Expression<Void>(literal: "ON"),
@@ -147,10 +147,18 @@ extension Table {
         return " ".join(clauses.compactMap { $0 }).asSQL()
     }
 
+    public func createIndex(_ columns: Expressible..., unique: Bool = false, ifNotExists: Bool = false) -> String {
+        return createIndex(Array(columns), unique: unique, ifNotExists: ifNotExists)
+    }
+
     // MARK: - DROP INDEX
 
-    public func dropIndex(_ columns: Expressible..., ifExists: Bool = false) -> String {
+    public func dropIndex(_ columns: [Expressible], ifExists: Bool = false) -> String {
         drop("INDEX", indexName(columns), ifExists)
+    }
+
+    public func dropIndex(_ columns: Expressible..., ifExists: Bool = false) -> String {
+        dropIndex(Array(columns), ifExists: ifExists)
     }
 
     fileprivate func indexName(_ columns: [Expressible]) -> Expressible {
@@ -487,7 +495,7 @@ public final class TableBuilder {
 
 }
 
-public enum PrimaryKey {
+public enum PrimaryKey: Sendable {
 
     case `default`
 
@@ -495,7 +503,7 @@ public enum PrimaryKey {
 
 }
 
-public struct Module {
+public struct Module: Sendable {
 
     fileprivate let name: String
 
@@ -584,7 +592,7 @@ private func reference(_ primary: (QueryType, Expressible)) -> Expressible {
     ])
 }
 
-private enum Modifier: String {
+private enum Modifier: String, Sendable {
 
     case unique = "UNIQUE"
 

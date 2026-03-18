@@ -16,6 +16,9 @@ let package = Package(
             path: "Sources/SQLite",
             exclude: [
                 "Info.plist"
+            ],
+            resources: [
+                .copy("PrivacyInfo.xcprivacy")
             ]
         ),
         .testTarget(
