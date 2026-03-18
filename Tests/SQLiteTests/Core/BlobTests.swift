@@ -1,5 +1,5 @@
 import XCTest
-import SQLite
+import SQLiteSwift
 
 class BlobTests: XCTestCase {
 

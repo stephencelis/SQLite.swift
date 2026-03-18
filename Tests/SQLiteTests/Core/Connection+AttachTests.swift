@@ -1,6 +1,6 @@
 import XCTest
 import Foundation
-@testable import SQLite
+@testable import SQLiteSwift
 
 #if SQLITE_SWIFT_STANDALONE
 import sqlite3
@@ -19,7 +19,7 @@ class ConnectionAttachTests: SQLiteTestCase {
         try db.attach(.inMemory, as: schemaName)
 
         let table = Table("attached_users", database: schemaName)
-        let name = SQLite.Expression<String>("string")
+        let name = SQLiteSwift.Expression<String>("string")
 
         // create a table, insert some data
         try db.run(table.create { builder in
@@ -41,7 +41,7 @@ class ConnectionAttachTests: SQLiteTestCase {
         try db.attach(.uri(testDb, parameters: [.mode(.readOnly)]), as: schemaName)
 
         let table = Table("tests", database: schemaName)
-        let email = SQLite.Expression<String>("email")
+        let email = SQLiteSwift.Expression<String>("email")
 
         let rows = try db.prepare(table.select(email)).map { try $0.unwrapOrThrow()[email] }
         XCTAssertEqual(["foo@bar.com"], rows)

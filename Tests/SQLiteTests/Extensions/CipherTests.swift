@@ -1,6 +1,6 @@
 #if SQLITE_SWIFT_SQLCIPHER
 import XCTest
-import SQLite
+import SQLiteSwift
 import SQLCipher
 
 class CipherTests: XCTestCase {

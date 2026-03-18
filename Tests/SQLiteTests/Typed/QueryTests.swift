@@ -8,24 +8,24 @@ import CSQLite
 #else
 import SQLite3
 #endif
-@testable import SQLite
+@testable import SQLiteSwift
 
 class QueryTests: XCTestCase {
 
     let users = Table("users")
-    let id = SQLite.Expression<Int64>("id")
-    let email = SQLite.Expression<String>("email")
-    let age = SQLite.Expression<Int?>("age")
-    let admin = SQLite.Expression<Bool>("admin")
-    let optionalAdmin = SQLite.Expression<Bool?>("admin")
+    let id = SQLiteSwift.Expression<Int64>("id")
+    let email = SQLiteSwift.Expression<String>("email")
+    let age = SQLiteSwift.Expression<Int?>("age")
+    let admin = SQLiteSwift.Expression<Bool>("admin")
+    let optionalAdmin = SQLiteSwift.Expression<Bool?>("admin")
 
     let posts = Table("posts")
-    let userId = SQLite.Expression<Int64>("user_id")
-    let categoryId = SQLite.Expression<Int64>("category_id")
-    let published = SQLite.Expression<Bool>("published")
+    let userId = SQLiteSwift.Expression<Int64>("user_id")
+    let categoryId = SQLiteSwift.Expression<Int64>("category_id")
+    let published = SQLiteSwift.Expression<Bool>("published")
 
     let categories = Table("categories")
-    let tag = SQLite.Expression<String>("tag")
+    let tag = SQLiteSwift.Expression<String>("tag")
 
     func test_select_withExpression_compilesSelectClause() {
         assertSQL("SELECT \"email\" FROM \"users\"", users.select(email))
@@ -217,7 +217,7 @@ class QueryTests: XCTestCase {
     }
 
     func test_alias_aliasesTable() {
-        let managerId = SQLite.Expression<Int64>("manager_id")
+        let managerId = SQLiteSwift.Expression<Int64>("manager_id")
 
         let managers = users.alias("managers")
 
@@ -422,7 +422,7 @@ class QueryTests: XCTestCase {
 
     func test_upsert_encodable() throws {
         let emails = Table("emails")
-        let string = SQLite.Expression<String>("string")
+        let string = SQLiteSwift.Expression<String>("string")
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
                                 date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let insert = try emails.upsert(value, onConflictOf: string)

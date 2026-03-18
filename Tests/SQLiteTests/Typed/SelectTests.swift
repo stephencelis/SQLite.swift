@@ -1,5 +1,5 @@
 import XCTest
-@testable import SQLite
+@testable import SQLiteSwift
 
 class SelectTests: SQLiteTestCase {
 
@@ -24,10 +24,10 @@ class SelectTests: SQLiteTestCase {
         let usersData = Table("users_name")
         let users = Table("users")
 
-        let name = SQLite.Expression<String>("name")
-        let id = SQLite.Expression<Int64>("id")
-        let userID = SQLite.Expression<Int64>("user_id")
-        let email = SQLite.Expression<String>("email")
+        let name = SQLiteSwift.Expression<String>("name")
+        let id = SQLiteSwift.Expression<Int64>("id")
+        let userID = SQLiteSwift.Expression<Int64>("user_id")
+        let email = SQLiteSwift.Expression<String>("email")
 
         try insertUser("Joey")
         try db.run(usersData.insert(

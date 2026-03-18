@@ -8,10 +8,10 @@ import CSQLite
 #else
 import SQLite3
 #endif
-@testable import SQLite
+@testable import SQLiteSwift
 
 class FTSIntegrationTests: SQLiteTestCase {
-    let email = SQLite.Expression<String>("email")
+    let email = SQLiteSwift.Expression<String>("email")
     let index = VirtualTable("index")
 
     private func createIndex() throws {

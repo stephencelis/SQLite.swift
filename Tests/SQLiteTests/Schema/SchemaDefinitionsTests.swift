@@ -1,5 +1,5 @@
 import XCTest
-@testable import SQLite
+@testable import SQLiteSwift
 
 class ColumnDefinitionTests: XCTestCase {
     var definition: ColumnDefinition!
@@ -11,7 +11,7 @@ class ColumnDefinitionTests: XCTestCase {
 
         ("\"other_id\" INTEGER NOT NULL REFERENCES \"other_table\" (\"some_id\")",
         ColumnDefinition(name: "other_id", primaryKey: nil, type: .INTEGER, nullable: false, defaultValue: .NULL,
-                         references: .init(table: "other_table", column: "", primaryKey: "some_id", onUpdate: nil, onDelete: nil))),
+                         references: .init(fromColumn: "", toTable: "other_table", toColumn: "some_id", onUpdate: nil, onDelete: nil))),
 
         ("\"text\" TEXT",
         ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, nullable: true, defaultValue: .NULL, references: nil)),
@@ -32,7 +32,7 @@ class ColumnDefinitionTests: XCTestCase {
                           defaultValue: .numericLiteral("123.123"), references: nil))
     ]
 
-    #if !os(Linux)
+    #if !(os(Linux) || os(Android))
     override class var defaultTestSuite: XCTestSuite {
         let suite = XCTestSuite(forTestCaseClass: ColumnDefinitionTests.self)
 
@@ -183,7 +183,7 @@ class IndexDefinitionTests: XCTestCase {
         "CREATE INDEX IF NOT EXISTS \"index_tests\" ON \"tests\" (\"test_column\")")
     ]
 
-    #if !os(Linux)
+    #if !(os(Linux) || os(Android))
     override class var defaultTestSuite: XCTestSuite {
         let suite = XCTestSuite(forTestCaseClass: IndexDefinitionTests.self)
 
@@ -245,9 +245,9 @@ class ForeignKeyDefinitionTests: XCTestCase {
     func test_toSQL() {
         XCTAssertEqual(
             ColumnDefinition.ForeignKey(
-                table: "foo",
-                column: "bar",
-                primaryKey: "bar_id",
+                fromColumn: "bar",
+                toTable: "foo",
+                toColumn: "bar_id",
                 onUpdate: nil,
                 onDelete: "SET NULL"
             ).toSQL(), """

@@ -1,7 +1,7 @@
 import XCTest
 import Foundation
 import Dispatch
-@testable import SQLite
+@testable import SQLiteSwift
 
 #if SQLITE_SWIFT_STANDALONE
 import sqlite3

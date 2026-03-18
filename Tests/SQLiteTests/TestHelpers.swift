@@ -1,5 +1,11 @@
 import XCTest
-@testable import SQLite
+@testable import SQLiteSwift
+
+extension Swift.Result {
+	func unwrapOrThrow() throws -> Success {
+		try self.get()
+	}
+}
 
 class SQLiteTestCase: XCTestCase {
     private var trace: [String: Int]!
@@ -74,29 +80,29 @@ class SQLiteTestCase: XCTestCase {
 
 }
 
-let bool = SQLite.Expression<Bool>("bool")
-let boolOptional = SQLite.Expression<Bool?>("boolOptional")
+let bool = SQLiteSwift.Expression<Bool>("bool")
+let boolOptional = SQLiteSwift.Expression<Bool?>("boolOptional")
 
-let data = SQLite.Expression<Blob>("blob")
-let dataOptional = SQLite.Expression<Blob?>("blobOptional")
+let data = SQLiteSwift.Expression<Blob>("blob")
+let dataOptional = SQLiteSwift.Expression<Blob?>("blobOptional")
 
-let date = SQLite.Expression<Date>("date")
-let dateOptional = SQLite.Expression<Date?>("dateOptional")
+let date = SQLiteSwift.Expression<Date>("date")
+let dateOptional = SQLiteSwift.Expression<Date?>("dateOptional")
 
-let double = SQLite.Expression<Double>("double")
-let doubleOptional = SQLite.Expression<Double?>("doubleOptional")
+let double = SQLiteSwift.Expression<Double>("double")
+let doubleOptional = SQLiteSwift.Expression<Double?>("doubleOptional")
 
-let int = SQLite.Expression<Int>("int")
-let intOptional = SQLite.Expression<Int?>("intOptional")
+let int = SQLiteSwift.Expression<Int>("int")
+let intOptional = SQLiteSwift.Expression<Int?>("intOptional")
 
-let int64 = SQLite.Expression<Int64>("int64")
-let int64Optional = SQLite.Expression<Int64?>("int64Optional")
+let int64 = SQLiteSwift.Expression<Int64>("int64")
+let int64Optional = SQLiteSwift.Expression<Int64?>("int64Optional")
 
-let string = SQLite.Expression<String>("string")
-let stringOptional = SQLite.Expression<String?>("stringOptional")
+let string = SQLiteSwift.Expression<String>("string")
+let stringOptional = SQLiteSwift.Expression<String?>("stringOptional")
 
-let uuid = SQLite.Expression<UUID>("uuid")
-let uuidOptional = SQLite.Expression<UUID?>("uuidOptional")
+let uuid = SQLiteSwift.Expression<UUID>("uuid")
+let uuidOptional = SQLiteSwift.Expression<UUID?>("uuidOptional")
 
 let testUUIDValue = UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!
 

@@ -1,12 +1,12 @@
 import XCTest
-import SQLite
+import SQLiteSwift
 
 // https://github.com/stephencelis/SQLite.swift/issues/1071
 #if !os(Linux)
 
 class CustomFunctionNoArgsTests: SQLiteTestCase {
-    typealias FunctionNoOptional              = () -> SQLite.Expression<String>
-    typealias FunctionResultOptional          = () -> SQLite.Expression<String?>
+    typealias FunctionNoOptional              = () -> SQLiteSwift.Expression<String>
+    typealias FunctionResultOptional          = () -> SQLiteSwift.Expression<String?>
 
     func testFunctionNoOptional() throws {
         let _: FunctionNoOptional = try db.createFunction("test", deterministic: true) {
@@ -26,10 +26,10 @@ class CustomFunctionNoArgsTests: SQLiteTestCase {
 }
 
 class CustomFunctionWithOneArgTests: SQLiteTestCase {
-    typealias FunctionNoOptional              = (SQLite.Expression<String>) -> SQLite.Expression<String>
-    typealias FunctionLeftOptional            = (SQLite.Expression<String?>) -> SQLite.Expression<String>
-    typealias FunctionResultOptional          = (SQLite.Expression<String>) -> SQLite.Expression<String?>
-    typealias FunctionLeftResultOptional      = (SQLite.Expression<String?>) -> SQLite.Expression<String?>
+    typealias FunctionNoOptional              = (SQLiteSwift.Expression<String>) -> SQLiteSwift.Expression<String>
+    typealias FunctionLeftOptional            = (SQLiteSwift.Expression<String?>) -> SQLiteSwift.Expression<String>
+    typealias FunctionResultOptional          = (SQLiteSwift.Expression<String>) -> SQLiteSwift.Expression<String?>
+    typealias FunctionLeftResultOptional      = (SQLiteSwift.Expression<String?>) -> SQLiteSwift.Expression<String?>
 
     func testFunctionNoOptional() throws {
         let _: FunctionNoOptional = try db.createFunction("test", deterministic: true) { a in
@@ -65,14 +65,14 @@ class CustomFunctionWithOneArgTests: SQLiteTestCase {
 }
 
 class CustomFunctionWithTwoArgsTests: SQLiteTestCase {
-    typealias FunctionNoOptional              = (SQLite.Expression<String>, SQLite.Expression<String>) -> SQLite.Expression<String>
-    typealias FunctionLeftOptional            = (SQLite.Expression<String?>, SQLite.Expression<String>) -> SQLite.Expression<String>
-    typealias FunctionRightOptional           = (SQLite.Expression<String>, SQLite.Expression<String?>) -> SQLite.Expression<String>
-    typealias FunctionResultOptional          = (SQLite.Expression<String>, SQLite.Expression<String>) -> SQLite.Expression<String?>
-    typealias FunctionLeftRightOptional       = (SQLite.Expression<String?>, SQLite.Expression<String?>) -> SQLite.Expression<String>
-    typealias FunctionLeftResultOptional      = (SQLite.Expression<String?>, SQLite.Expression<String>) -> SQLite.Expression<String?>
-    typealias FunctionRightResultOptional     = (SQLite.Expression<String>, SQLite.Expression<String?>) -> SQLite.Expression<String?>
-    typealias FunctionLeftRightResultOptional = (SQLite.Expression<String?>, SQLite.Expression<String?>) -> SQLite.Expression<String?>
+    typealias FunctionNoOptional              = (SQLiteSwift.Expression<String>, SQLiteSwift.Expression<String>) -> SQLiteSwift.Expression<String>
+    typealias FunctionLeftOptional            = (SQLiteSwift.Expression<String?>, SQLiteSwift.Expression<String>) -> SQLiteSwift.Expression<String>
+    typealias FunctionRightOptional           = (SQLiteSwift.Expression<String>, SQLiteSwift.Expression<String?>) -> SQLiteSwift.Expression<String>
+    typealias FunctionResultOptional          = (SQLiteSwift.Expression<String>, SQLiteSwift.Expression<String>) -> SQLiteSwift.Expression<String?>
+    typealias FunctionLeftRightOptional       = (SQLiteSwift.Expression<String?>, SQLiteSwift.Expression<String?>) -> SQLiteSwift.Expression<String>
+    typealias FunctionLeftResultOptional      = (SQLiteSwift.Expression<String?>, SQLiteSwift.Expression<String>) -> SQLiteSwift.Expression<String?>
+    typealias FunctionRightResultOptional     = (SQLiteSwift.Expression<String>, SQLiteSwift.Expression<String?>) -> SQLiteSwift.Expression<String?>
+    typealias FunctionLeftRightResultOptional = (SQLiteSwift.Expression<String?>, SQLiteSwift.Expression<String?>) -> SQLiteSwift.Expression<String?>
 
     func testNoOptional() throws {
         let _: FunctionNoOptional = try db.createFunction("test", deterministic: true) { a, b in

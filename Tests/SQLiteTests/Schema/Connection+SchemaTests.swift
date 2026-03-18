@@ -1,5 +1,5 @@
 import XCTest
-@testable import SQLite
+@testable import SQLiteSwift
 
 class ConnectionSchemaTests: SQLiteTestCase {
 

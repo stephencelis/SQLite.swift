@@ -1,5 +1,5 @@
 import XCTest
-@testable import SQLite
+@testable import SQLiteSwift
 
 #if SQLITE_SWIFT_STANDALONE
 import sqlite3
@@ -27,7 +27,7 @@ class StatementTests: SQLiteTestCase {
 
     func test_zero_sized_blob_returns_null() throws {
         let blobs = Table("blobs")
-        let blobColumn = SQLite.Expression<Blob>("blob_column")
+        let blobColumn = SQLiteSwift.Expression<Blob>("blob_column")
         try db.run(blobs.create { $0.column(blobColumn) })
         try db.run(blobs.insert(blobColumn <- Blob(bytes: [])))
         let blobValue = try db.scalar(blobs.select(blobColumn).limit(1, offset: 0))
@@ -38,7 +38,7 @@ class StatementTests: SQLiteTestCase {
         let names = ["a", "b", "c"]
         try insertUsers(names)
 
-        let emailColumn = SQLite.Expression<String>("email")
+        let emailColumn = SQLiteSwift.Expression<String>("email")
         let statement = try db.prepare("SELECT email FROM users")
         let emails = try statement.prepareRowIterator().map { $0[emailColumn] }
 
