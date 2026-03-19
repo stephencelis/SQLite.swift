@@ -25,7 +25,7 @@
 import Foundation
 import Dispatch
 #if SQLITE_SWIFT_STANDALONE
-import CSQLite
+import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
 #else
