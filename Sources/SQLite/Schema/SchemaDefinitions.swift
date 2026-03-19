@@ -282,11 +282,11 @@ public struct IndexDefinition: Equatable {
             IndexDefinition.orderRe
                 .matches(in: sql, range: NSRange(location: 0, length: sql.count))
                 .reduce([String: IndexDefinition.Order]()) { (memo, result) in
-                        var memo2 = memo
-                        let column = (sql as NSString).substring(with: result.range(at: 1))
-                        memo2[column] = .DESC
-                        return memo2
-            }
+                    var memo2 = memo
+                    let column = (sql as NSString).substring(with: result.range(at: 1))
+                    memo2[column] = .DESC
+                    return memo2
+                }
         }
 
         let orders = indexSQL.flatMap(orders)
@@ -321,7 +321,7 @@ public struct IndexDefinition: Equatable {
             switch self {
             case .tooLong(let name, let table):
                 return "Index name '\(name)' on table '\(table)' is too long; the limit is " +
-                     "\(IndexDefinition.maxIndexLength) characters"
+                    "\(IndexDefinition.maxIndexLength) characters"
             }
         }
     }
@@ -363,7 +363,7 @@ extension TableDefinition {
             columns.map { $0.toSQL() }.joined(separator: ",\n"),
             ")"
         ] as [String?]).compactMap { $0 }
-         .joined(separator: " ")
+            .joined(separator: " ")
     }
 
     func copySQL(to: TableDefinition) -> String {
@@ -384,7 +384,7 @@ extension ColumnDefinition {
             unique ? "UNIQUE" : nil,
             references.map { $0.toSQL() }
         ].compactMap { $0 }
-         .joined(separator: " ")
+            .joined(separator: " ")
     }
 }
 
@@ -405,7 +405,7 @@ extension IndexDefinition {
             "(\(commaSeparatedColumns))",
             `where`.map { "WHERE \($0)" }
         ] as [String?]).compactMap { $0 }
-         .joined(separator: " ")
+            .joined(separator: " ")
     }
 }
 
@@ -418,7 +418,7 @@ extension ColumnDefinition.ForeignKey {
             onUpdate.map { "ON UPDATE \($0)" },
             onDelete.map { "ON DELETE \($0)" }
         ] as [String?]).compactMap { $0 }
-         .joined(separator: " ")
+            .joined(separator: " ")
     }
 }
 

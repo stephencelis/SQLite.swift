@@ -1,12 +1,12 @@
 import XCTest
 #if SQLITE_SWIFT_STANDALONE
-import sqlite3
+    import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
-import SQLCipher
+    import SQLCipher
 #elseif os(Linux) || os(Windows) || os(Android)
-import CSQLite
+    import CSQLite
 #else
-import SQLite3
+    import SQLite3
 #endif
 @testable import SQLiteSwift
 
@@ -31,7 +31,7 @@ class QueryIntegrationTests: SQLiteTestCase {
         _ = try db.run(users.insert(email <- "betsy@example.com", managerId <- alice))
 
         for user in try db.prepare(users.join(managers, on: managers[id] == users[managerId])) {
-			_ = try user.unwrapOrThrow()[users[managerId]]
+            _ = try user.unwrapOrThrow()[users[managerId]]
         }
     }
 
@@ -87,7 +87,7 @@ class QueryIntegrationTests: SQLiteTestCase {
         try db.run(table.insert(value))
 
         let rows = try db.prepare(table)
-		let values: [TestCodable] = try rows.map({ try $0.unwrapOrThrow().decode() })
+        let values: [TestCodable] = try rows.map({ try $0.unwrapOrThrow().decode() })
         XCTAssertEqual(values.count, 1)
         XCTAssertEqual(values[0].int, 5)
         XCTAssertEqual(values[0].string, "6")
@@ -147,9 +147,9 @@ class QueryIntegrationTests: SQLiteTestCase {
         let valueWithNils = TestOptionalCodable(int: nil, string: nil, bool: nil, float: nil, double: nil, date: nil, uuid: nil)
         try db.run(table.insertMany([value1, valueWithNils]))
 
-         let rows = try db.prepare(table)
-		let values: [TestOptionalCodable] = try rows.map({ try $0.unwrapOrThrow().decode() })
-         XCTAssertEqual(values.count, 2)
+        let rows = try db.prepare(table)
+        let values: [TestOptionalCodable] = try rows.map({ try $0.unwrapOrThrow().decode() })
+        XCTAssertEqual(values.count, 2)
     }
 
     func test_insert_custom_encodable_type() throws {
@@ -221,12 +221,12 @@ class QueryIntegrationTests: SQLiteTestCase {
 
         let sql = query3.union(query4).order(SQLiteSwift.Expression<Int>(literal: "weight")).asSQL()
         XCTAssertEqual(sql,
-        """
-        SELECT "users".*, 1 AS weight FROM "users" WHERE ("email" = 'sally@example.com') UNION \
-        SELECT "users".*, 2 AS weight FROM "users" WHERE ("email" = 'alice@example.com') ORDER BY weight
-        """)
+                       """
+                       SELECT "users".*, 1 AS weight FROM "users" WHERE ("email" = 'sally@example.com') UNION \
+                       SELECT "users".*, 2 AS weight FROM "users" WHERE ("email" = 'alice@example.com') ORDER BY weight
+                       """)
 
-		let orderedIDs = try db.prepare(query3.union(query4).order(SQLiteSwift.Expression<Int>(literal: "weight"), email)).map { try $0.unwrapOrThrow()[id] }
+        let orderedIDs = try db.prepare(query3.union(query4).order(SQLiteSwift.Expression<Int>(literal: "weight"), email)).map { try $0.unwrapOrThrow()[id] }
         XCTAssertEqual(Array(expectedIDs.reversed()), orderedIDs)
     }
 
@@ -306,12 +306,12 @@ class QueryIntegrationTests: SQLiteTestCase {
                       columns: [id, parent, value],
                       recursive: true,
                       as: nodes
-                        .where(id == 5)
-                        .union(all: true,
-                               nodes.join(ancestors, on: nodes[id] == ancestors[parent])
-                                    .select(nodes[id], nodes[parent], nodes[value])
-                              )
-                     )
+                          .where(id == 5)
+                          .union(all: true,
+                                 nodes.join(ancestors, on: nodes[id] == ancestors[parent])
+                                     .select(nodes[id], nodes[parent], nodes[value])
+                          )
+                )
         )
 
         XCTAssertEqual(21, sum)
@@ -335,10 +335,10 @@ class QueryIntegrationTests: SQLiteTestCase {
             intermediate
                 .with(intermediate,
                       as: users
-                        .select([id, users[email], name])
-                        .join(names, on: names[email] == users[email])
-                        .where(users[email] == "alice@example.com")
-                     ))
+                          .select([id, users[email], name])
+                          .join(names, on: names[email] == users[email])
+                          .where(users[email] == "alice@example.com")
+                ))
 
         // There should be at least one row in the result.
         let row = try XCTUnwrap(rows.makeIterator().next())

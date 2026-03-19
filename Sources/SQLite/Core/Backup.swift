@@ -25,11 +25,11 @@
 import Foundation
 import Dispatch
 #if SQLITE_SWIFT_STANDALONE
-import sqlite3
+    import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
-import SQLCipher
+    import SQLCipher
 #else
-import CSQLite
+    import CSQLite
 #endif
 
 /// An object representing database backup.

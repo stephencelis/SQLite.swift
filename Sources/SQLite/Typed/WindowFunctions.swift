@@ -101,7 +101,7 @@ extension ExpressionType where UnderlyingType: Value {
 public func ntile(_ size: Int, _ orderBy: Expressible) -> Expression<Int> {
 //    Expression.ntile(size, orderBy)
 
-        WindowFunction.ntile.over(value: size, orderBy)
+    WindowFunction.ntile.over(value: size, orderBy)
 }
 
 /// Builds an expression representing `row_count() OVER (ORDER BY {orderBy})`

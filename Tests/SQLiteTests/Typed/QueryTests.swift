@@ -1,12 +1,12 @@
 import XCTest
 #if SQLITE_SWIFT_STANDALONE
-import sqlite3
+    import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
-import SQLCipher
+    import SQLCipher
 #elseif os(Linux) || os(Windows) || os(Android)
-import CSQLite
+    import CSQLite
 #else
-import SQLite3
+    import SQLite3
 #endif
 @testable import SQLiteSwift
 
@@ -96,8 +96,8 @@ class QueryTests: XCTestCase {
     func test_join_whenChained_compilesAggregateJoinClause() {
         assertSQL(
             "SELECT * FROM \"users\" " +
-            "INNER JOIN \"posts\" ON (\"posts\".\"user_id\" = \"users\".\"id\") " +
-            "INNER JOIN \"categories\" ON (\"categories\".\"id\" = \"posts\".\"category_id\")",
+                "INNER JOIN \"posts\" ON (\"posts\".\"user_id\" = \"users\".\"id\") " +
+                "INNER JOIN \"categories\" ON (\"categories\".\"id\" = \"posts\".\"category_id\")",
             users.join(posts, on: posts[userId] == users[id]).join(categories, on: categories[id] == posts[categoryId])
         )
     }
@@ -143,7 +143,7 @@ class QueryTests: XCTestCase {
 
     func test_group_withSingleExpressionName_compilesGroupClause() {
         assertSQL("SELECT * FROM \"users\" GROUP BY \"age\"",
-            users.group(age))
+                  users.group(age))
     }
 
     func test_group_withVariadicExpressionNames_compilesGroupClause() {
@@ -223,7 +223,7 @@ class QueryTests: XCTestCase {
 
         assertSQL(
             "SELECT * FROM \"users\" " +
-            "INNER JOIN \"users\" AS \"managers\" ON (\"managers\".\"id\" = \"users\".\"manager_id\")",
+                "INNER JOIN \"users\" AS \"managers\" ON (\"managers\".\"id\" = \"users\".\"manager_id\")",
             users.join(managers, on: managers[id] == users[managerId])
         )
     }
@@ -355,33 +355,33 @@ class QueryTests: XCTestCase {
     }
 
     #if !os(Linux) // depends on exact JSON serialization
-    func test_insert_encodable_with_nested_encodable() throws {
-        let emails = Table("emails")
-        let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
-                                 date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
-        let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
-                                date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: "optional", sub: value1)
-        let insert = try emails.insert(value)
-        let encodedJSON = try JSONEncoder().encode(value1)
-        let encodedJSONString = String(data: encodedJSON, encoding: .utf8)!
+        func test_insert_encodable_with_nested_encodable() throws {
+            let emails = Table("emails")
+            let value1 = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
+                                     date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
+            let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
+                                    date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: "optional", sub: value1)
+            let insert = try emails.insert(value)
+            let encodedJSON = try JSONEncoder().encode(value1)
+            let encodedJSONString = String(data: encodedJSON, encoding: .utf8)!
 
-        let expectedSQL =
-            """
-            INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\", \"optional\",
-             \"sub\") VALUES (1, '2', 1, 3.0, 4.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F',
-             'optional', '\(encodedJSONString)')
-            """.replacingOccurrences(of: "\n", with: "")
+            let expectedSQL =
+                """
+                INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\", \"optional\",
+                 \"sub\") VALUES (1, '2', 1, 3.0, 4.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F',
+                 'optional', '\(encodedJSONString)')
+                """.replacingOccurrences(of: "\n", with: "")
 
-        // As JSON serialization gives a different result each time, we extract JSON and compare it by deserializing it
-        // and keep comparing the query but with the json replaced by the `JSON` string
-        let (expectedQuery, expectedJSON) = extractAndReplace(expectedSQL, regex: "\\{.*\\}", with: "JSON")
-        let (actualQuery, actualJSON) = extractAndReplace(insert.asSQL(), regex: "\\{.*\\}", with: "JSON")
-        XCTAssertEqual(expectedQuery, actualQuery)
-        XCTAssertEqual(
-            try JSONDecoder().decode(TestCodable.self, from: expectedJSON.data(using: .utf8)!),
-            try JSONDecoder().decode(TestCodable.self, from: actualJSON.data(using: .utf8)!)
-        )
-    }
+            // As JSON serialization gives a different result each time, we extract JSON and compare it by deserializing it
+            // and keep comparing the query but with the json replaced by the `JSON` string
+            let (expectedQuery, expectedJSON) = extractAndReplace(expectedSQL, regex: "\\{.*\\}", with: "JSON")
+            let (actualQuery, actualJSON) = extractAndReplace(insert.asSQL(), regex: "\\{.*\\}", with: "JSON")
+            XCTAssertEqual(expectedQuery, actualQuery)
+            XCTAssertEqual(
+                try JSONDecoder().decode(TestCodable.self, from: expectedJSON.data(using: .utf8)!),
+                try JSONDecoder().decode(TestCodable.self, from: actualJSON.data(using: .utf8)!)
+            )
+        }
     #endif
 
     func test_insert_and_search_for_UUID() throws {
@@ -510,7 +510,7 @@ class QueryTests: XCTestCase {
 
         let extractedJSON = String(sql[
             sql.index(sql.startIndex, offsetBy: expectedPrefix.count) ..<
-            sql.index(sql.endIndex, offsetBy: -expectedSuffix.count)
+                sql.index(sql.endIndex, offsetBy: -expectedSuffix.count)
         ])
         let decodedJSON = try JSONDecoder().decode(TestCodable.self, from: extractedJSON.data(using: .utf8)!)
         XCTAssertEqual(decodedJSON, value1)
