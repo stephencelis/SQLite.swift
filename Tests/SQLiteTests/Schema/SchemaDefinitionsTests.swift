@@ -7,28 +7,28 @@ class ColumnDefinitionTests: XCTestCase {
 
     static let definitions: [(String, ColumnDefinition)] = [
         ("\"id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL",
-        ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, nullable: false, defaultValue: .NULL, references: nil)),
+         ColumnDefinition(name: "id", primaryKey: .init(), type: .INTEGER, nullable: false, defaultValue: .NULL, references: nil)),
 
         ("\"other_id\" INTEGER NOT NULL REFERENCES \"other_table\" (\"some_id\")",
-        ColumnDefinition(name: "other_id", primaryKey: nil, type: .INTEGER, nullable: false, defaultValue: .NULL,
-                         references: .init(fromColumn: "", toTable: "other_table", toColumn: "some_id", onUpdate: nil, onDelete: nil))),
+         ColumnDefinition(name: "other_id", primaryKey: nil, type: .INTEGER, nullable: false, defaultValue: .NULL,
+                          references: .init(fromColumn: "", toTable: "other_table", toColumn: "some_id", onUpdate: nil, onDelete: nil))),
 
         ("\"text\" TEXT",
-        ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, nullable: true, defaultValue: .NULL, references: nil)),
+         ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, nullable: true, defaultValue: .NULL, references: nil)),
 
         ("\"text\" TEXT NOT NULL",
-        ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, nullable: false, defaultValue: .NULL, references: nil)),
+         ColumnDefinition(name: "text", primaryKey: nil, type: .TEXT, nullable: false, defaultValue: .NULL, references: nil)),
 
         ("\"text_column\" TEXT DEFAULT 'fo\"o'",
-        ColumnDefinition(name: "text_column", primaryKey: nil, type: .TEXT, nullable: true,
-        defaultValue: .stringLiteral("fo\"o"), references: nil)),
+         ColumnDefinition(name: "text_column", primaryKey: nil, type: .TEXT, nullable: true,
+                          defaultValue: .stringLiteral("fo\"o"), references: nil)),
 
         ("\"integer_column\" INTEGER DEFAULT 123",
-        ColumnDefinition(name: "integer_column", primaryKey: nil, type: .INTEGER, nullable: true,
+         ColumnDefinition(name: "integer_column", primaryKey: nil, type: .INTEGER, nullable: true,
                           defaultValue: .numericLiteral("123"), references: nil)),
 
         ("\"real_column\" REAL DEFAULT 123.123",
-        ColumnDefinition(name: "real_column", primaryKey: nil, type: .REAL, nullable: true,
+         ColumnDefinition(name: "real_column", primaryKey: nil, type: .REAL, nullable: true,
                           defaultValue: .numericLiteral("123.123"), references: nil))
     ]
 
@@ -147,40 +147,40 @@ class IndexDefinitionTests: XCTestCase {
                          columns: ["test_column"],
                          where: nil,
                          orders: nil),
-        false,
-        "CREATE INDEX \"index_tests\" ON \"tests\" (\"test_column\")"),
+         false,
+         "CREATE INDEX \"index_tests\" ON \"tests\" (\"test_column\")"),
 
         (IndexDefinition(table: "tests", name: "index_tests",
                          unique: true,
                          columns: ["test_column"],
                          where: nil,
                          orders: nil),
-        false,
-        "CREATE UNIQUE INDEX \"index_tests\" ON \"tests\" (\"test_column\")"),
+         false,
+         "CREATE UNIQUE INDEX \"index_tests\" ON \"tests\" (\"test_column\")"),
 
         (IndexDefinition(table: "tests", name: "index_tests",
                          unique: true,
                          columns: ["test_column", "bar_column"],
                          where: "test_column IS NOT NULL",
                          orders: nil),
-        false,
-        "CREATE UNIQUE INDEX \"index_tests\" ON \"tests\" (\"test_column\", \"bar_column\") WHERE test_column IS NOT NULL"),
+         false,
+         "CREATE UNIQUE INDEX \"index_tests\" ON \"tests\" (\"test_column\", \"bar_column\") WHERE test_column IS NOT NULL"),
 
         (IndexDefinition(table: "tests", name: "index_tests",
                          unique: true,
                          columns: ["test_column", "bar_column"],
                          where: nil,
                          orders: ["test_column": .DESC]),
-        false,
-        "CREATE UNIQUE INDEX \"index_tests\" ON \"tests\" (\"test_column\" DESC, \"bar_column\")"),
+         false,
+         "CREATE UNIQUE INDEX \"index_tests\" ON \"tests\" (\"test_column\" DESC, \"bar_column\")"),
 
         (IndexDefinition(table: "tests", name: "index_tests",
                          unique: false,
                          columns: ["test_column"],
                          where: nil,
                          orders: nil),
-        true,
-        "CREATE INDEX IF NOT EXISTS \"index_tests\" ON \"tests\" (\"test_column\")")
+         true,
+         "CREATE INDEX IF NOT EXISTS \"index_tests\" ON \"tests\" (\"test_column\")")
     ]
 
     #if !(os(Linux) || os(Android))
@@ -205,17 +205,17 @@ class IndexDefinitionTests: XCTestCase {
     func test_validate() {
 
         let longIndex = IndexDefinition(
-                table: "tests",
-                name: String(repeating: "x", count: 65),
-                unique: false,
-                columns: ["test_column"],
-                where: nil,
-                orders: nil)
+            table: "tests",
+            name: String(repeating: "x", count: 65),
+            unique: false,
+            columns: ["test_column"],
+            where: nil,
+            orders: nil)
 
         XCTAssertThrowsError(try longIndex.validate()) { error in
             XCTAssertEqual(error.localizedDescription,
                            "Index name 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx' " +
-                           "on table 'tests' is too long; the limit is 64 characters")
+                               "on table 'tests' is too long; the limit is 64 characters")
         }
     }
 
@@ -229,14 +229,14 @@ class IndexDefinitionTests: XCTestCase {
         let renamedIndex = index.renameTable(to: "foo")
 
         XCTAssertEqual(renamedIndex,
-           IndexDefinition(
-                table: "foo",
-                name: "index_tests_something",
-                unique: true,
-                columns: ["test_column"],
-                where: "test_column IS NOT NULL",
-                orders: nil
-           )
+                       IndexDefinition(
+                           table: "foo",
+                           name: "index_tests_something",
+                           unique: true,
+                           columns: ["test_column"],
+                           where: "test_column IS NOT NULL",
+                           orders: nil
+                       )
         )
     }
 }
@@ -251,8 +251,8 @@ class ForeignKeyDefinitionTests: XCTestCase {
                 onUpdate: nil,
                 onDelete: "SET NULL"
             ).toSQL(), """
-               REFERENCES "foo" ("bar_id") ON DELETE SET NULL
-               """
+            REFERENCES "foo" ("bar_id") ON DELETE SET NULL
+            """
         )
     }
 }
@@ -265,8 +265,8 @@ class TableDefinitionTests: XCTestCase {
         ], indexes: [])
 
         XCTAssertEqual(definition.quotedColumnList, """
-                                                    "id", "baz"
-                                                    """)
+        "id", "baz"
+        """)
     }
 
     func test_toSQL() {
@@ -275,8 +275,8 @@ class TableDefinitionTests: XCTestCase {
         ], indexes: [])
 
         XCTAssertEqual(definition.toSQL(), """
-                                           CREATE TABLE foo ( \"id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL )
-                                           """)
+        CREATE TABLE foo ( \"id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL )
+        """)
     }
 
     func test_toSQL_temp_table() {
@@ -285,8 +285,8 @@ class TableDefinitionTests: XCTestCase {
         ], indexes: [])
 
         XCTAssertEqual(definition.toSQL(temporary: true), """
-                                                          CREATE TEMPORARY TABLE foo ( \"id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL )
-                                                          """)
+        CREATE TEMPORARY TABLE foo ( \"id\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL )
+        """)
     }
 
     func test_copySQL() {
@@ -299,8 +299,8 @@ class TableDefinitionTests: XCTestCase {
         ], indexes: [])
 
         XCTAssertEqual(from.copySQL(to: to), """
-                                             INSERT INTO "to_table" ("id") SELECT "id" FROM "from_table"
-                                             """)
+        INSERT INTO "to_table" ("id") SELECT "id" FROM "from_table"
+        """)
     }
 }
 

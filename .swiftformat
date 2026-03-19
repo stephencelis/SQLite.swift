@@ -1,0 +1,15 @@
+# SwiftFormat config for SQLite.swift fork
+# Matches upstream convention: spaces, not tabs
+
+--swift-version 5.9
+--indent 4
+
+# Only run indentation conversion — keep everything else as-is
+--rules indent
+
+# Preserve existing code structure
+--ifdef preserve
+--wrap-arguments preserve
+--wrap-parameters preserve
+--wrap-collections preserve
+--wrap-conditions preserve

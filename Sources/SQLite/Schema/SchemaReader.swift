@@ -63,7 +63,7 @@ public class SchemaReader {
             query = query.where(SchemaTable.typeColumn == type.rawValue)
         }
         return try connection.prepare(query).map { wrappedRow -> ObjectDefinition in
-			let row = try wrappedRow.get()
+            let row = try wrappedRow.get()
             guard let type = ObjectDefinition.ObjectType(rawValue: row[SchemaTable.typeColumn]) else {
                 fatalError("unexpected type")
             }
@@ -125,19 +125,19 @@ public class SchemaReader {
 
     func tableDefinitions() throws -> [TableDefinition] {
         try objectDefinitions(type: .table)
-                .map { table in
-                    TableDefinition(
-                        name: table.name,
-                        columns: try columnDefinitions(table: table.name),
-                        indexes: try indexDefinitions(table: table.name)
-                    )
-                }
+            .map { table in
+                TableDefinition(
+                    name: table.name,
+                    columns: try columnDefinitions(table: table.name),
+                    indexes: try indexDefinitions(table: table.name)
+                )
+            }
     }
 
     private func createTableSQL(name: String) throws -> String? {
         try (
             objectDefinitions(name: name, type: .table) +
-            objectDefinitions(name: name, type: .table, temp: true)
+                objectDefinitions(name: name, type: .table, temp: true)
         ).compactMap(\.sql).first
     }
 

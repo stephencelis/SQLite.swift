@@ -70,14 +70,14 @@ class SchemaReaderTests: SQLiteTestCase {
 
         XCTAssertEqual(
             try schemaReader.columnDefinitions(table: "t"), [
-            ColumnDefinition(
-                name: "id",
-                primaryKey: .init(autoIncrement: true, onConflict: .IGNORE),
-                type: .INTEGER,
-                nullable: true,
-                unique: false,
-                defaultValue: .NULL,
-                references: nil)
+                ColumnDefinition(
+                    name: "id",
+                    primaryKey: .init(autoIncrement: true, onConflict: .IGNORE),
+                    type: .INTEGER,
+                    nullable: true,
+                    unique: false,
+                    defaultValue: .NULL,
+                    references: nil)
             ]
         )
     }
@@ -95,7 +95,7 @@ class SchemaReaderTests: SQLiteTestCase {
                 unique: true,
                 defaultValue: .NULL,
                 references: nil)
-            ]
+        ]
         )
     }
 
@@ -104,7 +104,7 @@ class SchemaReaderTests: SQLiteTestCase {
 
         XCTAssertEqual(
             try schemaReader.columnDefinitions(table: "t"), [
-            ColumnDefinition(
+                ColumnDefinition(
                     name: "id",
                     primaryKey: .init(autoIncrement: false),
                     type: .INTEGER,
@@ -127,21 +127,21 @@ class SchemaReaderTests: SQLiteTestCase {
 
         XCTAssertEqual(
             try schemaReader.columnDefinitions(table: "t"), [
-            ColumnDefinition(
+                ColumnDefinition(
                     name: "col1",
                     primaryKey: .init(autoIncrement: false),
                     type: .INTEGER,
                     nullable: true,
                     defaultValue: .NULL,
                     references: nil),
-            ColumnDefinition(
+                ColumnDefinition(
                     name: "col2",
                     primaryKey: .init(autoIncrement: false),
                     type: .INTEGER,
                     nullable: true,
                     defaultValue: .NULL,
                     references: nil),
-            ColumnDefinition(
+                ColumnDefinition(
                     name: "col3",
                     primaryKey: nil,
                     type: .INTEGER,
@@ -200,40 +200,40 @@ class SchemaReaderTests: SQLiteTestCase {
 
     func test_foreignKeys_references_column() throws {
         let sql = """
-          CREATE TABLE artist(
-            artistid    INTEGER PRIMARY KEY,
-            artistname  TEXT
-          );
-          CREATE TABLE track(
-            trackid     INTEGER,
-            trackname   TEXT,
-            trackartist INTEGER REFERENCES artist(artistid)
-          );
-          """
+        CREATE TABLE artist(
+          artistid    INTEGER PRIMARY KEY,
+          artistname  TEXT
+        );
+        CREATE TABLE track(
+          trackid     INTEGER,
+          trackname   TEXT,
+          trackartist INTEGER REFERENCES artist(artistid)
+        );
+        """
         try db.execute(sql)
         let trackColumns = try db.schema.foreignKeys(table: "track")
         XCTAssertEqual(trackColumns.map { $0.toSQL() }.joined(separator: "\n"), """
-            REFERENCES "artist" ("artistid")
-            """)
+        REFERENCES "artist" ("artistid")
+        """)
     }
 
     func test_foreignKeys_references_null_column() throws {
         let sql = """
-          CREATE TABLE artist(
-            artistid    INTEGER PRIMARY KEY,
-            artistname  TEXT
-          );
-          CREATE TABLE track(
-            trackid     INTEGER,
-            trackname   TEXT,
-            trackartist INTEGER REFERENCES artist
-          );
-          """
+        CREATE TABLE artist(
+          artistid    INTEGER PRIMARY KEY,
+          artistname  TEXT
+        );
+        CREATE TABLE track(
+          trackid     INTEGER,
+          trackname   TEXT,
+          trackartist INTEGER REFERENCES artist
+        );
+        """
         try db.execute(sql)
         let trackColumns = try db.schema.foreignKeys(table: "track")
         XCTAssertEqual(trackColumns.map { $0.toSQL() }.joined(separator: "\n"), """
-            REFERENCES "artist"
-            """)
+        REFERENCES "artist"
+        """)
     }
 
     func test_tableDefinitions() throws {

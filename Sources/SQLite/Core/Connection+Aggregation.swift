@@ -39,12 +39,12 @@ extension Connection {
     ///     each aggregation group. The block should return an
     ///     UnsafeMutablePointer to the fresh state variable.
     public func createAggregation<T>(
-            _ functionName: String,
-            argumentCount: UInt? = nil,
-            deterministic: Bool = false,
-            step: @escaping ([Binding?], UnsafeMutablePointer<T>) -> Void,
-            final: @escaping (UnsafeMutablePointer<T>) -> Binding?,
-            state: @escaping () -> UnsafeMutablePointer<T>) {
+        _ functionName: String,
+        argumentCount: UInt? = nil,
+        deterministic: Bool = false,
+        step: @escaping ([Binding?], UnsafeMutablePointer<T>) -> Void,
+        final: @escaping (UnsafeMutablePointer<T>) -> Binding?,
+        state: @escaping () -> UnsafeMutablePointer<T>) {
 
         let argc = argumentCount.map { Int($0) } ?? -1
         let box: Aggregate = { (stepFlag: Int, context: Context, argc: Int32, argv: Argv) in
@@ -89,12 +89,12 @@ extension Connection {
     }
 
     public func createAggregation<T: AnyObject>(
-            _ aggregate: String,
-            argumentCount: UInt? = nil,
-            deterministic: Bool = false,
-            initialValue: T,
-            reduce: @escaping (T, [Binding?]) -> T,
-            result: @escaping (T) -> Binding?
+        _ aggregate: String,
+        argumentCount: UInt? = nil,
+        deterministic: Bool = false,
+        initialValue: T,
+        reduce: @escaping (T, [Binding?]) -> T,
+        result: @escaping (T) -> Binding?
     ) {
         let step: ([Binding?], UnsafeMutablePointer<UnsafeMutableRawPointer>) -> Void = { (bindings, ptr) in
             let pointer = ptr.pointee.assumingMemoryBound(to: T.self)
@@ -121,12 +121,12 @@ extension Connection {
     }
 
     public func createAggregation<T>(
-            _ aggregate: String,
-            argumentCount: UInt? = nil,
-            deterministic: Bool = false,
-            initialValue: T,
-            reduce: @escaping (T, [Binding?]) -> T,
-            result: @escaping (T) -> Binding?
+        _ aggregate: String,
+        argumentCount: UInt? = nil,
+        deterministic: Bool = false,
+        initialValue: T,
+        reduce: @escaping (T, [Binding?]) -> T,
+        result: @escaping (T) -> Binding?
     ) {
 
         let step: ([Binding?], UnsafeMutablePointer<T>) -> Void = { (bindings, pointer) in

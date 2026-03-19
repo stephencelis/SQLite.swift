@@ -96,8 +96,8 @@ class QueryTests: XCTestCase {
     func test_join_whenChained_compilesAggregateJoinClause() {
         assertSQL(
             "SELECT * FROM \"users\" " +
-            "INNER JOIN \"posts\" ON (\"posts\".\"user_id\" = \"users\".\"id\") " +
-            "INNER JOIN \"categories\" ON (\"categories\".\"id\" = \"posts\".\"category_id\")",
+                "INNER JOIN \"posts\" ON (\"posts\".\"user_id\" = \"users\".\"id\") " +
+                "INNER JOIN \"categories\" ON (\"categories\".\"id\" = \"posts\".\"category_id\")",
             users.join(posts, on: posts[userId] == users[id]).join(categories, on: categories[id] == posts[categoryId])
         )
     }
@@ -143,7 +143,7 @@ class QueryTests: XCTestCase {
 
     func test_group_withSingleExpressionName_compilesGroupClause() {
         assertSQL("SELECT * FROM \"users\" GROUP BY \"age\"",
-            users.group(age))
+                  users.group(age))
     }
 
     func test_group_withVariadicExpressionNames_compilesGroupClause() {
@@ -223,7 +223,7 @@ class QueryTests: XCTestCase {
 
         assertSQL(
             "SELECT * FROM \"users\" " +
-            "INNER JOIN \"users\" AS \"managers\" ON (\"managers\".\"id\" = \"users\".\"manager_id\")",
+                "INNER JOIN \"users\" AS \"managers\" ON (\"managers\".\"id\" = \"users\".\"manager_id\")",
             users.join(managers, on: managers[id] == users[managerId])
         )
     }
@@ -510,7 +510,7 @@ class QueryTests: XCTestCase {
 
         let extractedJSON = String(sql[
             sql.index(sql.startIndex, offsetBy: expectedPrefix.count) ..<
-            sql.index(sql.endIndex, offsetBy: -expectedSuffix.count)
+                sql.index(sql.endIndex, offsetBy: -expectedSuffix.count)
         ])
         let decodedJSON = try JSONDecoder().decode(TestCodable.self, from: extractedJSON.data(using: .utf8)!)
         XCTAssertEqual(decodedJSON, value1)

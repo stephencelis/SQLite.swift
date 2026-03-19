@@ -37,7 +37,7 @@ public struct Blob: Sendable {
 
     public func toHex() -> String {
         bytes.map {
-           ($0 < 16 ? "0" : "") + String($0, radix: 16, uppercase: false)
+            ($0 < 16 ? "0" : "") + String($0, radix: 16, uppercase: false)
         }.joined(separator: "")
     }
 }
