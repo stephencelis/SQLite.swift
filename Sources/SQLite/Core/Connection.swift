@@ -25,11 +25,11 @@
 import Foundation
 import Dispatch
 #if SQLITE_SWIFT_STANDALONE
-    import sqlite3
+import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
-    import SQLCipher
+import SQLCipher
 #else
-    import CSQLite
+import CSQLite
 #endif
 
 /// A connection to SQLite.
@@ -450,19 +450,19 @@ public final class Connection {
             callback(String(cString: pointer.assumingMemoryBound(to: UInt8.self)))
         }
         sqlite3_trace_v2(handle, UInt32(SQLITE_TRACE_STMT) /* mask */, {
-            // A trace callback is invoked with four arguments: callback(T,C,P,X).
-            // The T argument is one of the SQLITE_TRACE constants to indicate why the
-            // callback was invoked. The C argument is a copy of the context pointer.
-            // The P and X arguments are pointers whose meanings depend on T.
-            (_: UInt32, context: UnsafeMutableRawPointer?, pointer: UnsafeMutableRawPointer?, _: UnsafeMutableRawPointer?) in
-            if let pointer,
-               let expandedSQL = sqlite3_expanded_sql(OpaquePointer(pointer)) {
-                unsafeBitCast(context, to: Trace.self)(expandedSQL)
-                sqlite3_free(expandedSQL)
-            }
-            return Int32(0) // currently ignored
-        },
-        unsafeBitCast(box, to: UnsafeMutableRawPointer.self) /* pCtx */
+                 // A trace callback is invoked with four arguments: callback(T,C,P,X).
+                 // The T argument is one of the SQLITE_TRACE constants to indicate why the
+                 // callback was invoked. The C argument is a copy of the context pointer.
+                 // The P and X arguments are pointers whose meanings depend on T.
+                 (_: UInt32, context: UnsafeMutableRawPointer?, pointer: UnsafeMutableRawPointer?, _: UnsafeMutableRawPointer?) in
+                 if let pointer,
+                    let expandedSQL = sqlite3_expanded_sql(OpaquePointer(pointer)) {
+                     unsafeBitCast(context, to: Trace.self)(expandedSQL)
+                     sqlite3_free(expandedSQL)
+                 }
+                 return Int32(0) // currently ignored
+             },
+             unsafeBitCast(box, to: UnsafeMutableRawPointer.self) /* pCtx */
         )
         trace = box
     }
@@ -618,14 +618,14 @@ public final class Connection {
             return Int32(block(lstr, rstr).rawValue)
         }
         try check(sqlite3_create_collation_v2(handle, collation, SQLITE_UTF8,
-                                              unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { (callback: UnsafeMutableRawPointer?, _,
-                                                                                                       lhs: UnsafeRawPointer?, _, rhs: UnsafeRawPointer?) in /* xCompare */
-                                                      if let lhs, let rhs {
-                                                          return unsafeBitCast(callback, to: Collation.self)(lhs, rhs)
-                                                      } else {
-                                                          fatalError("sqlite3_create_collation_v2 callback called with NULL pointer")
-                                                      }
-                                              }, nil /* xDestroy */))
+            unsafeBitCast(box, to: UnsafeMutableRawPointer.self), { (callback: UnsafeMutableRawPointer?, _,
+                                                                     lhs: UnsafeRawPointer?, _, rhs: UnsafeRawPointer?) in /* xCompare */
+            if let lhs, let rhs {
+                return unsafeBitCast(callback, to: Collation.self)(lhs, rhs)
+            } else {
+                fatalError("sqlite3_create_collation_v2 callback called with NULL pointer")
+            }
+        }, nil /* xDestroy */))
         collations[collation] = box
     }
     fileprivate typealias Collation = @convention(block) (UnsafeRawPointer, UnsafeRawPointer) -> Int32

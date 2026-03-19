@@ -303,7 +303,7 @@ class SchemaChangerTests: SQLiteTestCase {
                              nullable: true,
                              defaultValue: .NULL,
                              references: nil)
-        ])
+            ])
     }
 
     func test_create_table_if_not_exists() throws {
