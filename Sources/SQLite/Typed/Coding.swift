@@ -325,7 +325,7 @@ private class SQLiteEncoder: Encoder {
         }
 
         func nestedContainer<NestedKey>(keyedBy keyType: NestedKey.Type, forKey key: Key)
-        -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
+            -> KeyedEncodingContainer<NestedKey> where NestedKey: CodingKey {
             fatalError("encoding a nested container is not supported")
         }
 
@@ -516,7 +516,7 @@ private class SQLiteDecoder: Decoder {
         }
 
         func nestedContainer<NestedKey>(keyedBy type: NestedKey.Type, forKey key: Key) throws
-        -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
+            -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
             throw DecodingError.dataCorrupted(DecodingError.Context(codingPath: codingPath,
                                                                     debugDescription: "decoding nested containers is not supported"))
         }

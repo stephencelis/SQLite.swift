@@ -188,17 +188,17 @@ class OperatorsTests: XCTestCase {
     }
 
     func test_isOperator_withEquatableExpressions_buildsBooleanExpression() {
-       assertSQL("(\"bool\" IS \"bool\")", bool === bool)
-       assertSQL("(\"bool\" IS \"boolOptional\")", bool === boolOptional)
-       assertSQL("(\"boolOptional\" IS \"bool\")", boolOptional === bool)
-       assertSQL("(\"boolOptional\" IS \"boolOptional\")", boolOptional === boolOptional)
-       assertSQL("(\"bool\" IS 1)", bool === true)
-       assertSQL("(\"boolOptional\" IS 1)", boolOptional === true)
-       assertSQL("(1 IS \"bool\")", true === bool)
-       assertSQL("(1 IS \"boolOptional\")", true === boolOptional)
+        assertSQL("(\"bool\" IS \"bool\")", bool === bool)
+        assertSQL("(\"bool\" IS \"boolOptional\")", bool === boolOptional)
+        assertSQL("(\"boolOptional\" IS \"bool\")", boolOptional === bool)
+        assertSQL("(\"boolOptional\" IS \"boolOptional\")", boolOptional === boolOptional)
+        assertSQL("(\"bool\" IS 1)", bool === true)
+        assertSQL("(\"boolOptional\" IS 1)", boolOptional === true)
+        assertSQL("(1 IS \"bool\")", true === bool)
+        assertSQL("(1 IS \"boolOptional\")", true === boolOptional)
 
-       assertSQL("(\"boolOptional\" IS NULL)", boolOptional === nil)
-       assertSQL("(NULL IS \"boolOptional\")", nil === boolOptional)
+        assertSQL("(\"boolOptional\" IS NULL)", boolOptional === nil)
+        assertSQL("(NULL IS \"boolOptional\")", nil === boolOptional)
     }
 
     func test_isNotOperator_withEquatableExpressions_buildsBooleanExpression() {
@@ -213,7 +213,7 @@ class OperatorsTests: XCTestCase {
 
         assertSQL("(\"boolOptional\" IS NOT NULL)", boolOptional !== nil)
         assertSQL("(NULL IS NOT \"boolOptional\")", nil !== boolOptional)
-     }
+    }
 
     func test_inequalityOperator_withEquatableExpressions_buildsBooleanExpression() {
         assertSQL("(\"bool\" != \"bool\")", bool != bool)

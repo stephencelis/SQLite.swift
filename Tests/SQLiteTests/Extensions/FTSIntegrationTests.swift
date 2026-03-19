@@ -1,12 +1,12 @@
 import XCTest
 #if SQLITE_SWIFT_STANDALONE
-import sqlite3
+    import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
-import SQLCipher
+    import SQLCipher
 #elseif os(Linux) || os(Windows) || os(Android)
-import CSQLite
+    import CSQLite
 #else
-import SQLite3
+    import SQLite3
 #endif
 @testable import SQLiteSwift
 
@@ -24,7 +24,7 @@ class FTSIntegrationTests: SQLiteTestCase {
         }
 
         for user in try db.prepare(users) {
-			try db.run(index.insert(email <- try user.unwrapOrThrow()[email]))
+            try db.run(index.insert(email <- try user.unwrapOrThrow()[email]))
         }
     }
 
@@ -32,8 +32,8 @@ class FTSIntegrationTests: SQLiteTestCase {
         try createOrSkip { db in
             try db.run(index.create(.FTS5(
                 FTS5Config()
-                  .column(email)
-                  .tokenizer(.Trigram(caseSensitive: false)))
+                    .column(email)
+                    .tokenizer(.Trigram(caseSensitive: false)))
             ))
         }
 
@@ -72,7 +72,7 @@ class FTSIntegrationTests: SQLiteTestCase {
             try createIndex(db)
         } catch let error as Result {
             try XCTSkipIf(error.description.starts(with: "no such module:") ||
-                          error.description.starts(with: "parse error")
+                error.description.starts(with: "parse error")
             )
             throw error
         }

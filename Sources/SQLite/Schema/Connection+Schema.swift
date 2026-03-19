@@ -14,8 +14,8 @@ public extension Connection {
     // https://sqlite.org/pragma.html#pragma_foreign_key_check
     func foreignKeyCheck(table: String? = nil) throws -> [ForeignKeyError] {
         try run("PRAGMA foreign_key_check" + (table.map { "(\($0.quote()))" } ?? ""))
-			.compactMap { (wrappedRow: Swift.Result<[Binding?], Error>) -> ForeignKeyError? in
-				let row = try wrappedRow.get()
+            .compactMap { (wrappedRow: Swift.Result<[Binding?], Error>) -> ForeignKeyError? in
+                let row = try wrappedRow.get()
                 guard let table = row[0] as? String,
                       let rowId = row[1] as? Int64,
                       let target = row[2] as? String else { return nil }
@@ -30,7 +30,7 @@ public extension Connection {
         precondition(table == nil || supports(.partialIntegrityCheck), "partial integrity check not supported")
 
         return try run("PRAGMA integrity_check" + (table.map { "(\($0.quote()))" } ?? ""))
-			.compactMap { try ($0.get()[0] as? String) }
+            .compactMap { try ($0.get()[0] as? String) }
             .filter { $0 != "ok" }
     }
 }

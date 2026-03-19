@@ -154,7 +154,7 @@ class FTS4ConfigTests: XCTestCase {
 
     func test_config_uncompress() {
         XCTAssertEqual(
-           "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(uncompress=\"uncompress_foo\")",
+            "CREATE VIRTUAL TABLE \"virtual_table\" USING fts4(uncompress=\"uncompress_foo\")",
             sql(config.uncompress("uncompress_foo")))
     }
 

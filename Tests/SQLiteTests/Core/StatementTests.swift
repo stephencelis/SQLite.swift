@@ -2,13 +2,13 @@ import XCTest
 @testable import SQLiteSwift
 
 #if SQLITE_SWIFT_STANDALONE
-import sqlite3
+    import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
-import SQLCipher
+    import SQLCipher
 #elseif os(Linux) || os(Windows) || os(Android)
-import CSQLite
+    import CSQLite
 #else
-import SQLite3
+    import SQLite3
 #endif
 
 class StatementTests: SQLiteTestCase {

@@ -2,9 +2,9 @@ import Foundation
 
 func fixture(_ name: String, withExtension: String?) -> String {
     #if SWIFT_PACKAGE
-    let testBundle = Bundle.module
+        let testBundle = Bundle.module
     #else
-    let testBundle = Bundle(for: SQLiteTestCase.self)
+        let testBundle = Bundle(for: SQLiteTestCase.self)
     #endif
 
     for resource in [name, "Resources/\(name)"] {

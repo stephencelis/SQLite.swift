@@ -29,7 +29,7 @@ class SchemaTests: XCTestCase {
                 "\"int64Optional\" INTEGER, " +
                 "\"string\" TEXT NOT NULL, " +
                 "\"stringOptional\" TEXT" +
-            ")",
+                ")",
             table.create { t in
                 t.column(data)
                 t.column(dataOptional)
