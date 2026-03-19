@@ -1,31 +1,31 @@
 import Foundation
 
 /*
-  https://www.sqlite.org/lang_altertable.html
+    https://www.sqlite.org/lang_altertable.html
 
- The only schema altering commands directly supported by SQLite are the "rename table" and "add column"
- commands shown above.
+   The only schema altering commands directly supported by SQLite are the "rename table" and "add column"
+   commands shown above.
 
-  (SQLite 3.25.0: RENAME COLUMN)
-  (SQLite 3.35.0: DROP COLUMN)
+    (SQLite 3.25.0: RENAME COLUMN)
+    (SQLite 3.35.0: DROP COLUMN)
 
- However, applications can make other arbitrary changes to the format of a table using a
- simple sequence of operations. The steps to make arbitrary changes to the schema design of some table X are as follows:
+   However, applications can make other arbitrary changes to the format of a table using a
+   simple sequence of operations. The steps to make arbitrary changes to the schema design of some table X are as follows:
 
-      1. If foreign key constraints are enabled, disable them using PRAGMA foreign_keys=OFF.
-      2. Start a transaction.
-      3. Remember the format of all indexes and triggers associated with table X
-         (SELECT sql FROM sqlite_master WHERE tbl_name='X' AND type='index')
-      4. Use CREATE TABLE to construct a new table "new_X" that is in the desired revised format of table X.
-      5. Transfer content from X into new_X using a statement like: INSERT INTO new_X SELECT ... FROM X.
-      6. Drop the old table X: DROP TABLE X.
-      7. Change the name of new_X to X using: ALTER TABLE new_X RENAME TO X.
-      8. Use CREATE INDEX and CREATE TRIGGER to reconstruct indexes and triggers associated with table X.
-      9. If any views refer to table X in a way that is affected by the schema change, then drop those views using DROP VIEW
-     10. If foreign key constraints were originally enabled then run PRAGMA foreign_key_check
-     11. Commit the transaction started in step 2.
-     12. If foreign keys constraints were originally enabled, reenable them now.
- */
+        1. If foreign key constraints are enabled, disable them using PRAGMA foreign_keys=OFF.
+        2. Start a transaction.
+        3. Remember the format of all indexes and triggers associated with table X
+           (SELECT sql FROM sqlite_master WHERE tbl_name='X' AND type='index')
+        4. Use CREATE TABLE to construct a new table "new_X" that is in the desired revised format of table X.
+        5. Transfer content from X into new_X using a statement like: INSERT INTO new_X SELECT ... FROM X.
+        6. Drop the old table X: DROP TABLE X.
+        7. Change the name of new_X to X using: ALTER TABLE new_X RENAME TO X.
+        8. Use CREATE INDEX and CREATE TRIGGER to reconstruct indexes and triggers associated with table X.
+        9. If any views refer to table X in a way that is affected by the schema change, then drop those views using DROP VIEW
+       10. If foreign key constraints were originally enabled then run PRAGMA foreign_key_check
+       11. Commit the transaction started in step 2.
+       12. If foreign keys constraints were originally enabled, reenable them now.
+*/
 public class SchemaChanger: CustomStringConvertible {
     public enum Error: LocalizedError {
         case invalidColumnDefinition(String)
@@ -66,7 +66,7 @@ public class SchemaChanger: CustomStringConvertible {
             case .createTable(let columns, let ifNotExists):
                 return "CREATE TABLE \(ifNotExists ? " IF NOT EXISTS " : "") \(table.quote()) (" +
                     columns.map { $0.toSQL() }.joined(separator: ", ") +
-                    ")"
+                ")"
             default: return nil
             }
         }
@@ -280,8 +280,8 @@ public class SchemaChanger: CustomStringConvertible {
             indexes: try schemaReader.indexDefinitions(table: from)
         )
         let toDefinition   = fromDefinition
-            .apply(.renameTable(to))
-            .apply(operation)
+                .apply(.renameTable(to))
+                .apply(operation)
 
         try createTable(definition: toDefinition, options: options)
         try createTableIndexes(definition: toDefinition)
@@ -346,15 +346,15 @@ extension TableDefinition {
 
         case .dropColumn(let column):
             return TableDefinition(name: name,
-                                   columns: columns.filter { $0.name != column },
-                                   indexes: indexes.filter { !$0.columns.contains(column) }
+                columns: columns.filter { $0.name != column },
+                indexes: indexes.filter { !$0.columns.contains(column) }
             )
         case .renameColumn(let from, let to):
             return TableDefinition(
                 name: name,
                 columns: columns.map { $0.rename(from: from, to: to) },
                 indexes: indexes.map { $0.renameColumn(from: from, to: to) }
-            )
+        )
         case .renameTable(let to):
             return TableDefinition(name: to, columns: columns, indexes: indexes.map { $0.renameTable(to: to) })
         }

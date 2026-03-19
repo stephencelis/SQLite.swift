@@ -4,13 +4,13 @@ import Dispatch
 @testable import SQLiteSwift
 
 #if SQLITE_SWIFT_STANDALONE
-    import sqlite3
+import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
-    import SQLCipher
+import SQLCipher
 #elseif os(Linux) || os(Windows) || os(Android)
-    import CSQLite
+import CSQLite
 #else
-    import SQLite3
+import SQLite3
 #endif
 
 class ConnectionTests: SQLiteTestCase {
@@ -175,7 +175,7 @@ class ConnectionTests: SQLiteTestCase {
         try backup.step()
 
         let users = try target.prepare("SELECT email FROM users ORDER BY email")
-        XCTAssertEqual(try users.map { try $0.unwrapOrThrow()[0] as? String }, ["alice@example.com", "betsy@example.com"])
+		XCTAssertEqual(try users.map { try $0.unwrapOrThrow()[0] as? String }, ["alice@example.com", "betsy@example.com"])
     }
 
     func test_transaction_beginsAndCommitsTransactions() throws {
@@ -375,53 +375,53 @@ class ConnectionTests: SQLiteTestCase {
 
     // https://github.com/stephencelis/SQLite.swift/issues/1071
     #if !os(Linux)
-        func test_createFunction_withArrayArguments() throws {
-            db.createFunction("hello") { $0[0].map { "Hello, \($0)!" } }
+    func test_createFunction_withArrayArguments() throws {
+        db.createFunction("hello") { $0[0].map { "Hello, \($0)!" } }
 
-            XCTAssertEqual("Hello, world!", try db.scalar("SELECT hello('world')") as? String)
-            XCTAssert(try db.scalar("SELECT hello(NULL)") == nil)
+        XCTAssertEqual("Hello, world!", try db.scalar("SELECT hello('world')") as? String)
+        XCTAssert(try db.scalar("SELECT hello(NULL)") == nil)
+    }
+
+    func test_createFunction_createsQuotableFunction() throws {
+        db.createFunction("hello world") { $0[0].map { "Hello, \($0)!" } }
+
+        XCTAssertEqual("Hello, world!", try db.scalar("SELECT \"hello world\"('world')") as? String)
+        XCTAssert(try db.scalar("SELECT \"hello world\"(NULL)") == nil)
+    }
+
+    func test_createCollation_createsCollation() throws {
+        try db.createCollation("NODIACRITIC") { lhs, rhs in
+            lhs.compare(rhs, options: .diacriticInsensitive)
         }
+        XCTAssertEqual(1, try db.scalar("SELECT ? = ? COLLATE NODIACRITIC", "cafe", "café") as? Int64)
+    }
 
-        func test_createFunction_createsQuotableFunction() throws {
-            db.createFunction("hello world") { $0[0].map { "Hello, \($0)!" } }
-
-            XCTAssertEqual("Hello, world!", try db.scalar("SELECT \"hello world\"('world')") as? String)
-            XCTAssert(try db.scalar("SELECT \"hello world\"(NULL)") == nil)
+    func test_createCollation_createsQuotableCollation() throws {
+        try db.createCollation("NO DIACRITIC") { lhs, rhs in
+            lhs.compare(rhs, options: .diacriticInsensitive)
         }
+        XCTAssertEqual(1, try db.scalar("SELECT ? = ? COLLATE \"NO DIACRITIC\"", "cafe", "café") as? Int64)
+    }
 
-        func test_createCollation_createsCollation() throws {
-            try db.createCollation("NODIACRITIC") { lhs, rhs in
-                lhs.compare(rhs, options: .diacriticInsensitive)
+    func XXX_test_interrupt_interruptsLongRunningQuery() throws {
+        let semaphore = DispatchSemaphore(value: 0)
+        db.createFunction("sleep") { _ in
+            DispatchQueue.global(qos: .background).async {
+                self.db.interrupt()
+                semaphore.signal()
             }
-            XCTAssertEqual(1, try db.scalar("SELECT ? = ? COLLATE NODIACRITIC", "cafe", "café") as? Int64)
+            semaphore.wait()
+            return nil
         }
-
-        func test_createCollation_createsQuotableCollation() throws {
-            try db.createCollation("NO DIACRITIC") { lhs, rhs in
-                lhs.compare(rhs, options: .diacriticInsensitive)
-            }
-            XCTAssertEqual(1, try db.scalar("SELECT ? = ? COLLATE \"NO DIACRITIC\"", "cafe", "café") as? Int64)
-        }
-
-        func XXX_test_interrupt_interruptsLongRunningQuery() throws {
-            let semaphore = DispatchSemaphore(value: 0)
-            db.createFunction("sleep") { _ in
-                DispatchQueue.global(qos: .background).async {
-                    self.db.interrupt()
-                    semaphore.signal()
-                }
-                semaphore.wait()
-                return nil
-            }
-            let stmt = try db.prepare("SELECT sleep()")
-            XCTAssertThrowsError(try stmt.run()) { error in
-                if case Result.error(_, let code, _) = error {
-                    XCTAssertEqual(code, SQLITE_INTERRUPT)
-                } else {
-                    XCTFail("unexpected error: \(error)")
-                }
+        let stmt = try db.prepare("SELECT sleep()")
+        XCTAssertThrowsError(try stmt.run()) { error in
+            if case Result.error(_, let code, _) = error {
+                XCTAssertEqual(code, SQLITE_INTERRUPT)
+            } else {
+                XCTFail("unexpected error: \(error)")
             }
         }
+    }
     #endif
 
     func test_concurrent_access_single_connection() throws {

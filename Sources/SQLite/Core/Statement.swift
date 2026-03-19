@@ -23,11 +23,11 @@
 //
 
 #if SQLITE_SWIFT_STANDALONE
-    import sqlite3
+import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
-    import SQLCipher
+import SQLCipher
 #else
-    import CSQLite
+import CSQLite
 #endif
 
 /// A single SQL statement.
@@ -213,10 +213,10 @@ public protocol FailableIterator: IteratorProtocol where Element == Swift.Result
 }
 
 extension FailableIterator {
-    public func next() -> Swift.Result<WrappedElement, Error>? {
+	public func next() -> Swift.Result<WrappedElement, Error>? {
         do {
             guard let nextRow = try failableNext()
-            else { return nil }
+                else { return nil }
             return .success(nextRow)
         } catch {
             return .failure(error)
@@ -225,13 +225,13 @@ extension FailableIterator {
 }
 
 /*
- extension FailableIterator {
-     public func next() -> Element? {
-         // swiftlint:disable:next force_try
-         try! failableNext()
-     }
- }
-  */
+extension FailableIterator {
+    public func next() -> Element? {
+        // swiftlint:disable:next force_try
+        try! failableNext()
+    }
+}
+ */
 
 extension Array {
     public init<I: FailableIterator>(_ failableIterator: I) throws where I.WrappedElement == Element {

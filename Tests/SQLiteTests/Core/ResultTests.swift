@@ -3,13 +3,13 @@ import Foundation
 @testable import SQLiteSwift
 
 #if SQLITE_SWIFT_STANDALONE
-    import sqlite3
+import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
-    import SQLCipher
+import SQLCipher
 #elseif os(Linux) || os(Windows) || os(Android)
-    import CSQLite
+import CSQLite
 #else
-    import SQLite3
+import SQLite3
 #endif
 
 class ResultTests: XCTestCase {
@@ -45,13 +45,13 @@ class ResultTests: XCTestCase {
 
     func test_description_contains_error_code() {
         XCTAssertEqual("not an error (code: 21)",
-                       Result(errorCode: SQLITE_MISUSE, connection: connection, statement: nil)?.description)
+            Result(errorCode: SQLITE_MISUSE, connection: connection, statement: nil)?.description)
     }
 
     func test_description_contains_statement_and_error_code() throws {
         let statement = try Statement(connection, "SELECT 1")
         XCTAssertEqual("not an error (SELECT 1) (code: 21)",
-                       Result(errorCode: SQLITE_MISUSE, connection: connection, statement: statement)?.description)
+            Result(errorCode: SQLITE_MISUSE, connection: connection, statement: statement)?.description)
     }
 
     func test_init_extended_with_other_code_returns_error() {
