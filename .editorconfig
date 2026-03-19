@@ -1,0 +1,15 @@
+# This fork uses spaces (upstream convention), not tabs.
+# Xcode picks this up automatically for new edits.
+#
+# To normalize any stray tabs across the codebase:
+#   find Sources Tests/SQLiteTests -name "*.swift" -exec grep -l "$(printf '\t')" {} \; | while read f; do expand -t 4 "$f" > "$f.tmp" && mv "$f.tmp" "$f"; done
+
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+end_of_line = lf
+charset = utf-8
+insert_final_newline = true
+trim_trailing_whitespace = true

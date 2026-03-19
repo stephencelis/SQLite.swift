@@ -2,9 +2,9 @@ import XCTest
 @testable import SQLiteSwift
 
 extension Swift.Result {
-	func unwrapOrThrow() throws -> Success {
-		try self.get()
-	}
+    func unwrapOrThrow() throws -> Success {
+        try self.get()
+    }
 }
 
 class SQLiteTestCase: XCTestCase {

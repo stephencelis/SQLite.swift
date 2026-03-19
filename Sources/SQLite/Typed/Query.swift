@@ -996,7 +996,7 @@ public struct RowIterator: FailableIterator {
     public func compactMap<T>(_ transform: (WrappedElement) throws -> T?) throws -> [T] {
         var elements = [T]()
         while let row = try failableNext() {
-			guard let element = try transform(row) else { continue }
+            guard let element = try transform(row) else { continue }
             elements.append(element)
         }
         return elements
@@ -1005,14 +1005,14 @@ public struct RowIterator: FailableIterator {
 
 extension Connection {
 
-	public func prepare(_ query: QueryType) throws -> AnySequence<Swift.Result<Row, Error>> {
+    public func prepare(_ query: QueryType) throws -> AnySequence<Swift.Result<Row, Error>> {
         let expression = query.expression
         let statement = try prepare(expression.template, expression.bindings)
 
         let columnNames = try columnNamesForQuery(query)
 
         return AnySequence {
-			AnyIterator { statement.next().map { $0.map { Row(columnNames, $0) } } }
+            AnyIterator { statement.next().map { $0.map { Row(columnNames, $0) } } }
         }
     }
 

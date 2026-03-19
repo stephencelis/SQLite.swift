@@ -213,7 +213,7 @@ public protocol FailableIterator: IteratorProtocol where Element == Swift.Result
 }
 
 extension FailableIterator {
-	public func next() -> Swift.Result<WrappedElement, Error>? {
+    public func next() -> Swift.Result<WrappedElement, Error>? {
         do {
             guard let nextRow = try failableNext()
                 else { return nil }

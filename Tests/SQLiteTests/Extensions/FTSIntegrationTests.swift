@@ -24,7 +24,7 @@ class FTSIntegrationTests: SQLiteTestCase {
         }
 
         for user in try db.prepare(users) {
-			try db.run(index.insert(email <- try user.unwrapOrThrow()[email]))
+            try db.run(index.insert(email <- try user.unwrapOrThrow()[email]))
         }
     }
 

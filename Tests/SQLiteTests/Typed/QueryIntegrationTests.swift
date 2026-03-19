@@ -31,7 +31,7 @@ class QueryIntegrationTests: SQLiteTestCase {
         _ = try db.run(users.insert(email <- "betsy@example.com", managerId <- alice))
 
         for user in try db.prepare(users.join(managers, on: managers[id] == users[managerId])) {
-			_ = try user.unwrapOrThrow()[users[managerId]]
+            _ = try user.unwrapOrThrow()[users[managerId]]
         }
     }
 
@@ -87,7 +87,7 @@ class QueryIntegrationTests: SQLiteTestCase {
         try db.run(table.insert(value))
 
         let rows = try db.prepare(table)
-		let values: [TestCodable] = try rows.map({ try $0.unwrapOrThrow().decode() })
+        let values: [TestCodable] = try rows.map({ try $0.unwrapOrThrow().decode() })
         XCTAssertEqual(values.count, 1)
         XCTAssertEqual(values[0].int, 5)
         XCTAssertEqual(values[0].string, "6")
@@ -148,7 +148,7 @@ class QueryIntegrationTests: SQLiteTestCase {
         try db.run(table.insertMany([value1, valueWithNils]))
 
          let rows = try db.prepare(table)
-		let values: [TestOptionalCodable] = try rows.map({ try $0.unwrapOrThrow().decode() })
+        let values: [TestOptionalCodable] = try rows.map({ try $0.unwrapOrThrow().decode() })
          XCTAssertEqual(values.count, 2)
     }
 
@@ -226,7 +226,7 @@ class QueryIntegrationTests: SQLiteTestCase {
         SELECT "users".*, 2 AS weight FROM "users" WHERE ("email" = 'alice@example.com') ORDER BY weight
         """)
 
-		let orderedIDs = try db.prepare(query3.union(query4).order(SQLiteSwift.Expression<Int>(literal: "weight"), email)).map { try $0.unwrapOrThrow()[id] }
+        let orderedIDs = try db.prepare(query3.union(query4).order(SQLiteSwift.Expression<Int>(literal: "weight"), email)).map { try $0.unwrapOrThrow()[id] }
         XCTAssertEqual(Array(expectedIDs.reversed()), orderedIDs)
     }
 
