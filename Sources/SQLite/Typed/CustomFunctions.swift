@@ -40,13 +40,13 @@ public extension Connection {
     ///
     /// - Returns: A closure returning an SQL expression to call the function.
     func createFunction<Z: SafeValue>(_ function: String, deterministic: Bool = false, _ block: @escaping () -> Z) throws
-        -> () -> Expression<Z> {
+                    -> () -> Expression<Z> {
         let fn = try createFunction(function, 0, deterministic) { _ in block() }
         return { fn([]) }
     }
 
     func createFunction<Z: SafeValue>(_ function: String, deterministic: Bool = false, _ block: @escaping () -> Z?) throws
-        -> () -> Expression<Z?> {
+                    -> () -> Expression<Z?> {
         let fn = try createFunction(function, 0, deterministic) { _ in block() }
         return { fn([]) }
     }
@@ -54,25 +54,25 @@ public extension Connection {
     // MARK: -
 
     func createFunction<Z: SafeValue, A: SafeValue>(_ function: String, deterministic: Bool = false, _ block: @escaping (A) -> Z) throws
-        -> (Expression<A>) -> Expression<Z> {
+                    -> (Expression<A>) -> Expression<Z> {
         let fn = try createFunction(function, 1, deterministic) { args in block(value(args[0])) }
         return { arg in fn([arg]) }
     }
 
     func createFunction<Z: SafeValue, A: SafeValue>(_ function: String, deterministic: Bool = false, _ block: @escaping (A?) -> Z) throws
-        -> (Expression<A?>) -> Expression<Z> {
+                    -> (Expression<A?>) -> Expression<Z> {
         let fn = try createFunction(function, 1, deterministic) { args in block(args[0].map(value)) }
         return { arg in fn([arg]) }
     }
 
     func createFunction<Z: SafeValue, A: SafeValue>(_ function: String, deterministic: Bool = false, _ block: @escaping (A) -> Z?) throws
-        -> (Expression<A>) -> Expression<Z?> {
+                    -> (Expression<A>) -> Expression<Z?> {
         let fn = try createFunction(function, 1, deterministic) { args in block(value(args[0])) }
         return { arg in fn([arg]) }
     }
 
     func createFunction<Z: SafeValue, A: SafeValue>(_ function: String, deterministic: Bool = false, _ block: @escaping (A?) -> Z?) throws
-        -> (Expression<A?>) -> Expression<Z?> {
+                    -> (Expression<A?>) -> Expression<Z?> {
         let fn = try createFunction(function, 1, deterministic) { args in block(args[0].map(value)) }
         return { arg in fn([arg]) }
     }
@@ -80,57 +80,57 @@ public extension Connection {
     // MARK: -
 
     func createFunction<Z: SafeValue, A: SafeValue, B: SafeValue>(_ function: String, deterministic: Bool = false,
-                                                                  _ block: @escaping (A, B) -> Z) throws -> (Expression<A>, Expression<B>)
-        -> Expression<Z> {
+                                                      _ block: @escaping (A, B) -> Z) throws -> (Expression<A>, Expression<B>)
+    -> Expression<Z> {
         let fn = try createFunction(function, 2, deterministic) { args in block(value(args[0]), value(args[1])) }
         return { a, b in fn([a, b]) }
     }
 
     func createFunction<Z: SafeValue, A: SafeValue, B: SafeValue>(_ function: String, deterministic: Bool = false,
-                                                                  _ block: @escaping (A?, B) -> Z) throws
-        -> (Expression<A?>, Expression<B>) -> Expression<Z> {
+                                                      _ block: @escaping (A?, B) -> Z) throws
+                    -> (Expression<A?>, Expression<B>) -> Expression<Z> {
         let fn = try createFunction(function, 2, deterministic) { args in block(args[0].map(value), value(args[1])) }
         return { a, b in fn([a, b]) }
     }
 
     func createFunction<Z: SafeValue, A: SafeValue, B: SafeValue>(_ function: String, deterministic: Bool = false,
-                                                                  _ block: @escaping (A, B?) -> Z) throws ->
-        (Expression<A>, Expression<B?>) -> Expression<Z> {
+                                                      _ block: @escaping (A, B?) -> Z) throws ->
+            (Expression<A>, Expression<B?>) -> Expression<Z> {
         let fn = try createFunction(function, 2, deterministic) { args in block(value(args[0]), args[1].map(value)) }
         return { a, b in fn([a, b]) }
     }
 
     func createFunction<Z: SafeValue, A: SafeValue, B: SafeValue>(_ function: String, deterministic: Bool = false,
-                                                                  _ block: @escaping (A, B) -> Z?) throws
-        -> (Expression<A>, Expression<B>) -> Expression<Z?> {
+                                                      _ block: @escaping (A, B) -> Z?) throws
+                    -> (Expression<A>, Expression<B>) -> Expression<Z?> {
         let fn = try createFunction(function, 2, deterministic) { args in block(value(args[0]), value(args[1])) }
         return { a, b in fn([a, b]) }
     }
 
     func createFunction<Z: SafeValue, A: SafeValue, B: SafeValue>(_ function: String, deterministic: Bool = false,
-                                                                  _ block: @escaping (A?, B?) -> Z) throws
-        -> (Expression<A?>, Expression<B?>) -> Expression<Z> {
+                                                      _ block: @escaping (A?, B?) -> Z) throws
+                    -> (Expression<A?>, Expression<B?>) -> Expression<Z> {
         let fn = try createFunction(function, 2, deterministic) { args in block(args[0].map(value), args[1].map(value)) }
         return { a, b in fn([a, b]) }
     }
 
     func createFunction<Z: SafeValue, A: SafeValue, B: SafeValue>(_ function: String, deterministic: Bool = false,
-                                                                  _ block: @escaping (A?, B) -> Z?) throws
-        -> (Expression<A?>, Expression<B>) -> Expression<Z?> {
+                                                      _ block: @escaping (A?, B) -> Z?) throws
+                    -> (Expression<A?>, Expression<B>) -> Expression<Z?> {
         let fn = try createFunction(function, 2, deterministic) { args in block(args[0].map(value), value(args[1])) }
         return { a, b in fn([a, b]) }
     }
 
     func createFunction<Z: SafeValue, A: SafeValue, B: SafeValue>(_ function: String, deterministic: Bool = false,
-                                                                  _ block: @escaping (A, B?) -> Z?) throws
-        -> (Expression<A>, Expression<B?>) -> Expression<Z?> {
+                                                      _ block: @escaping (A, B?) -> Z?) throws
+                    -> (Expression<A>, Expression<B?>) -> Expression<Z?> {
         let fn = try createFunction(function, 2, deterministic) { args in block(value(args[0]), args[1].map(value)) }
         return { a, b in fn([a, b]) }
     }
 
     func createFunction<Z: SafeValue, A: SafeValue, B: SafeValue>(_ function: String, deterministic: Bool = false,
-                                                                  _ block: @escaping (A?, B?) -> Z?) throws
-        -> (Expression<A?>, Expression<B?>) -> Expression<Z?> {
+                                                      _ block: @escaping (A?, B?) -> Z?) throws
+                    -> (Expression<A?>, Expression<B?>) -> Expression<Z?> {
         let fn = try createFunction(function, 2, deterministic) { args in block(args[0].map(value), args[1].map(value)) }
         return { a, b in fn([a, b]) }
     }
@@ -138,8 +138,8 @@ public extension Connection {
     // MARK: -
 
     fileprivate func createFunction<Z: SafeValue>(_ function: String, _ argumentCount: UInt, _ deterministic: Bool,
-                                                  _ block: @escaping ([Binding?]) -> Z) throws
-        -> ([Expressible]) -> Expression<Z> {
+                                              _ block: @escaping ([Binding?]) -> Z) throws
+                    -> ([Expressible]) -> Expression<Z> {
         createFunction(function, argumentCount: argumentCount, deterministic: deterministic) { arguments in
             block(arguments).datatypeValue
         }
@@ -149,8 +149,8 @@ public extension Connection {
     }
 
     fileprivate func createFunction<Z: SafeValue>(_ function: String, _ argumentCount: UInt, _ deterministic: Bool,
-                                                  _ block: @escaping ([Binding?]) -> Z?) throws
-        -> ([Expressible]) -> Expression<Z?> {
+                                              _ block: @escaping ([Binding?]) -> Z?) throws
+                    -> ([Expressible]) -> Expression<Z?> {
         createFunction(function, argumentCount: argumentCount, deterministic: deterministic) { arguments in
             block(arguments)?.datatypeValue
         }

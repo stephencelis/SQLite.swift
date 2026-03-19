@@ -24,7 +24,7 @@ class FTSIntegrationTests: SQLiteTestCase {
         }
 
         for user in try db.prepare(users) {
-            try db.run(index.insert(email <- try user.unwrapOrThrow()[email]))
+			try db.run(index.insert(email <- try user.unwrapOrThrow()[email]))
         }
     }
 
@@ -32,8 +32,8 @@ class FTSIntegrationTests: SQLiteTestCase {
         try createOrSkip { db in
             try db.run(index.create(.FTS5(
                 FTS5Config()
-                    .column(email)
-                    .tokenizer(.Trigram(caseSensitive: false)))
+                  .column(email)
+                  .tokenizer(.Trigram(caseSensitive: false)))
             ))
         }
 
@@ -72,7 +72,7 @@ class FTSIntegrationTests: SQLiteTestCase {
             try createIndex(db)
         } catch let error as Result {
             try XCTSkipIf(error.description.starts(with: "no such module:") ||
-                error.description.starts(with: "parse error")
+                          error.description.starts(with: "parse error")
             )
             throw error
         }

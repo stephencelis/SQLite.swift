@@ -2,9 +2,9 @@ import XCTest
 @testable import SQLiteSwift
 
 extension Swift.Result {
-    func unwrapOrThrow() throws -> Success {
-        try self.get()
-    }
+	func unwrapOrThrow() throws -> Success {
+		try self.get()
+	}
 }
 
 class SQLiteTestCase: XCTestCase {
@@ -151,14 +151,14 @@ class TestCodable: Codable, Equatable {
 
     static func == (lhs: TestCodable, rhs: TestCodable) -> Bool {
         lhs.int == rhs.int &&
-            lhs.string == rhs.string &&
-            lhs.bool == rhs.bool &&
-            lhs.float == rhs.float &&
-            lhs.double == rhs.double &&
-            lhs.date == rhs.date &&
-            lhs.uuid == lhs.uuid &&
-            lhs.optional == rhs.optional &&
-            lhs.sub == rhs.sub
+        lhs.string == rhs.string &&
+        lhs.bool == rhs.bool &&
+        lhs.float == rhs.float &&
+        lhs.double == rhs.double &&
+        lhs.date == rhs.date &&
+        lhs.uuid == lhs.uuid &&
+        lhs.optional == rhs.optional &&
+        lhs.sub == rhs.sub
     }
 }
 
