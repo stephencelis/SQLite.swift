@@ -26,7 +26,7 @@ GEM
   remote: https://rubygems.org/
   specs:
     CFPropertyList (3.0.8)
-    activesupport (7.2.3)
+    activesupport (7.2.3.1)
       base64
       benchmark (>= 0.3)
       bigdecimal
@@ -35,7 +35,7 @@ GEM
       drb
       i18n (>= 1.6, < 2)
       logger (>= 1.4.2)
-      minitest (>= 5.1)
+      minitest (>= 5.1, < 6)
       securerandom (>= 0.3)
       tzinfo (~> 2.0, >= 2.0.5)
     addressable (2.8.8)
@@ -86,14 +86,12 @@ GEM
       concurrent-ruby (~> 1.0)
     json (2.18.0)
     logger (1.7.0)
-    minitest (6.0.1)
-      prism (~> 1.5)
+    minitest (5.27.0)
     molinillo (0.8.0)
     mutex_m (0.3.0)
     nanaimo (0.4.0)
     nap (1.1.0)
     netrc (0.11.0)
-    prism (1.7.0)
     public_suffix (4.0.7)
     rexml (3.4.4)
     ruby-macho (4.1.0)
