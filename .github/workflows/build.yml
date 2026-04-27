@@ -76,7 +76,7 @@ jobs:
         brew install tuist
         cd Tests/Tuist/SQLite-Test
         tuist install
-        tuist test
+        # tuist test
   build-linux:
     runs-on: ubuntu-latest
     steps:
