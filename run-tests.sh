@@ -10,10 +10,10 @@ elif [ -n "$VALIDATOR_SUBSPEC" ]; then
     bundle install
     case "$VALIDATOR_SUBSPEC" in
       none)
-        bundle exec pod lib lint --no-subspecs --fail-fast
+        bundle exec pod lib lint --no-subspecs --fail-fast --platforms=ios,macos
         ;;
       *)
-        bundle exec pod lib lint --subspec="${VALIDATOR_SUBSPEC}" --fail-fast
+        bundle exec pod lib lint --subspec="${VALIDATOR_SUBSPEC}" --fail-fast --platforms=ios,macos
         ;;
       esac
 elif [ -n "$CARTHAGE_PLATFORM" ]; then
