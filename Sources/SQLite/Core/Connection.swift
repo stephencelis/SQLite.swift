@@ -102,14 +102,33 @@ public final class Connection {
     ///
     ///     Default: `false`.
     ///
+    ///   - journalMode: If non-nil, sets the journal mode after opening. Skipped
+    ///     for `.inMemory`, `.temporary`, empty URIs, and read-only connections,
+    ///     where SQLite cannot persist a different journal mode. Use `.wal` to
+    ///     opt into WAL with `synchronous = NORMAL`.
+    ///
+    ///     Default: `nil` (leaves the database’s current journal mode intact).
+    ///
     /// - Returns: A new database connection.
-    public init(_ location: Location = .inMemory, readonly: Bool = false) throws {
+    public init(_ location: Location = .inMemory, readonly: Bool = false, journalMode: JournalMode? = nil) throws {
         let flags = readonly ? SQLITE_OPEN_READONLY : (SQLITE_OPEN_CREATE | SQLITE_OPEN_READWRITE)
         try check(sqlite3_open_v2(location.description,
                                   &_handle,
                                   flags | SQLITE_OPEN_FULLMUTEX | SQLITE_OPEN_URI,
                                   nil))
         queue.setSpecific(key: Connection.queueKey, value: queueContext)
+
+        // Use the live `readonly` flag rather than the init parameter so that
+        // URI-based read-only connections (e.g. `mode=ro`, `immutable=1`) and
+        // `SQLITE_OPEN_READONLY` opens of files lacking write permission are
+        // also skipped.
+        if let journalMode, !self.readonly, Connection.canConfigureJournalMode(for: location) {
+            if journalMode == .wal {
+                try enableWAL()
+            } else {
+                try setJournalMode(journalMode)
+            }
+        }
     }
 
     /// Initializes a new connection to a database.
@@ -123,11 +142,22 @@ public final class Connection {
     ///
     ///     Default: `false`.
     ///
+    ///   - journalMode: See `init(_:readonly:journalMode:)`. Default: `nil`.
+    ///
     /// - Throws: `Result.Error` iff a connection cannot be established.
     ///
     /// - Returns: A new database connection.
-    public convenience init(_ filename: String, readonly: Bool = false) throws {
-        try self.init(.uri(filename), readonly: readonly)
+    public convenience init(_ filename: String, readonly: Bool = false, journalMode: JournalMode? = nil) throws {
+        try self.init(.uri(filename), readonly: readonly, journalMode: journalMode)
+    }
+
+    private static func canConfigureJournalMode(for location: Location) -> Bool {
+        switch location {
+        case .inMemory, .temporary:
+            return false
+        case let .uri(path, _):
+            return !path.isEmpty && path != ":memory:"
+        }
     }
 
     deinit {

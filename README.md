@@ -20,6 +20,9 @@ syntax _and_ intent.
  - Extensively tested
  - [SQLCipher][] support via Swift Package Manager
  - [Schema query/migration][]
+ - First-class WAL mode and journaling configuration via
+   `Connection(_, journalMode: .wal)` and the `enableWAL()` / `walCheckpoint(...)`
+   APIs
  - Works on [Linux](Documentation/Linux.md) (with some limitations)
  - Active support at
    [StackOverflow](https://stackoverflow.com/questions/tagged/sqlite.swift),

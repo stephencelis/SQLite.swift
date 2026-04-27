@@ -93,6 +93,15 @@
   - [Attaching and detaching databases](#attaching-and-detaching-databases)
   - [Logging](#logging)
   - [Vacuum](#vacuum)
+  - [Pragmas and WAL Mode](#pragmas-and-wal-mode)
+    - [Enabling WAL](#enabling-wal)
+    - [Why WAL](#why-wal)
+    - [Auto-skip rules](#auto-skip-rules)
+    - [Other journal modes](#other-journal-modes)
+    - [`synchronous`](#synchronous)
+    - [Checkpointing](#checkpointing)
+    - [Sidecar files](#sidecar-files)
+    - [File system caveats](#file-system-caveats)
 
 [↩]: #sqliteswift-documentation
 
@@ -2322,6 +2331,165 @@ To run the [vacuum](https://www.sqlite.org/lang_vacuum.html) command:
 ```swift
 try db.vacuum()
 ```
+
+
+## Pragmas and WAL Mode
+
+SQLite.swift exposes typed accessors for the most common
+[PRAGMAs](https://sqlite.org/pragma.html) on `Connection`, including
+journaling, synchronization, and Write-Ahead Logging (WAL).
+
+### Enabling WAL
+
+The simplest way to opt into WAL is at connection time:
+
+```swift
+let db = try Connection("path/to/db.sqlite3", journalMode: .wal)
+```
+
+This enables WAL **and** sets `synchronous = NORMAL`, the recommended
+configuration: durable, fast, and safe against database corruption.
+
+You can also enable WAL on an existing connection:
+
+```swift
+let mode = try db.enableWAL()
+guard mode == .wal else {
+    // SQLite refused WAL on this database — fall back or log.
+    return
+}
+```
+
+`enableWAL()` is idempotent: calling it on a database that is already in
+WAL mode is a no-op.
+
+### Why WAL
+
+In WAL mode, writers append new pages to a `-wal` log file instead of
+rewriting the main database. Readers and writers coordinate through a
+shared-memory index (`-shm`). Compared to the default `DELETE` (rollback
+journal) mode this gives you:
+
+- Concurrent reads and writes — readers do not block writers and vice
+  versa. Writes still serialize against each other.
+- Fewer `fsync` calls per commit, so faster small transactions.
+- Better SSD wear characteristics for write-heavy workloads.
+
+WAL is persisted in the database file header. Once enabled, subsequent
+connections inherit the mode automatically; you do not need to set it
+again per connection.
+
+### Auto-skip rules
+
+`Connection(_, journalMode:)` skips the configuration step automatically
+for databases where WAL is meaningless or unsupported:
+
+- `.inMemory` and `.temporary` connections.
+- URI locations resolving to an empty path or `:memory:`.
+- Read-only connections — including those forced read-only by URI
+  parameters such as `.uri(path, parameters: [.mode(.readOnly)])` or
+  `.immutable(true)`, or by opening a file the process cannot write.
+
+In those cases the connection opens normally and the journal mode is left
+untouched.
+
+### Other journal modes
+
+`JournalMode` covers all of SQLite's options: `.delete` (default),
+`.truncate`, `.persist`, `.memory`, `.wal`, `.off`. Use the throwing
+`setJournalMode(_:)` if you need to detect the actual mode SQLite applied
+(for example, WAL on a network volume is silently downgraded):
+
+```swift
+let actual = try db.setJournalMode(.wal)
+if actual != .wal {
+    log("WAL not supported on this volume; running with \(actual)")
+}
+```
+
+The non-throwing `journalMode` property is also available for read or
+fire-and-forget set:
+
+```swift
+db.journalMode = .truncate
+print(db.journalMode)
+```
+
+### `synchronous`
+
+`Synchronous` mirrors
+[`PRAGMA synchronous`](https://sqlite.org/pragma.html#pragma_synchronous):
+`.off`, `.normal`, `.full`, `.extra`. Pair WAL with `.normal` (the default
+applied by `enableWAL()`); only the most recent committed transaction may
+be lost on power failure, and the database itself remains uncorrupted.
+
+```swift
+try db.setSynchronous(.normal)        // throwing
+db.synchronous = .full                // non-throwing setter
+```
+
+### Checkpointing
+
+SQLite checkpoints the WAL into the main database file automatically
+once it reaches `walAutoCheckpoint` pages (default 1000, ~4 MB at the
+default page size). You can tune or disable that:
+
+```swift
+db.walAutoCheckpoint = 1000   // default
+db.walAutoCheckpoint = 0      // disable automatic checkpoints
+```
+
+To force a checkpoint — for example before backing up the file or when
+the application is moving to the background — call `walCheckpoint(...)`:
+
+```swift
+let result = try db.walCheckpoint(mode: .truncate)
+print("WAL frames: \(result.log), moved: \(result.checkpointed), busy: \(result.busy)")
+```
+
+The four checkpoint modes mirror SQLite's:
+
+| Mode | Behaviour |
+|------|-----------|
+| `.passive`  | Best-effort; never blocks readers or writers. |
+| `.full`     | Waits for active readers to finish, then checkpoints fully. |
+| `.restart`  | Like `.full`, then resets the WAL file. |
+| `.truncate` | Like `.restart`, plus shrinks `-wal` to zero bytes. |
+
+`.truncate` is the right choice for periodic clean-up since the WAL file
+otherwise only ever grows.
+
+### Sidecar files
+
+WAL mode creates two sidecar files alongside the main database:
+
+```
+mydb.sqlite3
+mydb.sqlite3-wal   ← write-ahead log
+mydb.sqlite3-shm   ← shared-memory index
+```
+
+When you copy, move, back up, or delete the database you must handle all
+three (or use the [Online Database Backup](#online-database-backup) API,
+which handles the coordination for you). When excluding the database
+from iCloud Backup with `URLResourceKey.isExcludedFromBackupKey`, set the
+key on every sidecar that exists.
+
+### File system caveats
+
+WAL relies on shared-memory locking primitives that are not available on
+every storage backend. Avoid WAL on:
+
+- Network file systems such as NFS, SMB, or iCloud Drive sync folders —
+  using WAL there can corrupt the database.
+- Read-only media (the connection has nowhere to write the `-wal`/`-shm`
+  files).
+
+On iOS, if the database file uses the `.complete` data protection class
+the `-wal` and `-shm` files become inaccessible while the device is
+locked, which causes background writes to fail. Use
+`.completeUntilFirstUserAuthentication` (or a less strict class) for
+databases that must be writable in the background.
 
 
 [ROWID]: https://sqlite.org/lang_createtable.html#rowid
