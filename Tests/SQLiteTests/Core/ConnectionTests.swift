@@ -71,6 +71,33 @@ class ConnectionTests: SQLiteTestCase {
         XCTAssertTrue(db.readonly)
     }
 
+    func test_close_closesConnectionAndIsIdempotent() throws {
+        let db = try Connection()
+
+        try db.close()
+        try db.close()
+    }
+
+    func test_close_whenPreparedStatementIsActiveThrowsBusyAndCanBeRetried() throws {
+        let db = try Connection()
+        var statement: Statement? = try db.prepare("SELECT 1")
+
+        try withExtendedLifetime(statement) {
+            XCTAssertThrowsError(try db.close()) { error in
+                if case SQLite.Result.error(_, let code, _) = error {
+                    XCTAssertEqual(SQLITE_BUSY, code)
+                } else {
+                    XCTFail("unexpected error: \(error)")
+                }
+            }
+        }
+
+        XCTAssertEqual(1, try db.scalar("SELECT 1") as? Int64)
+
+        statement = nil
+        try db.close()
+    }
+
     func test_changes_returnsZeroOnNewConnections() {
         XCTAssertEqual(0, db.changes)
     }
