@@ -7,7 +7,7 @@ IOS_VERSION = 16.4
 SWIFTLINT_VERSION=0.63.1
 SWIFTLINT=bin/swiftlint-$(SWIFTLINT_VERSION)
 SWIFTLINT_URL=https://github.com/realm/SwiftLint/releases/download/$(SWIFTLINT_VERSION)/portable_swiftlint.zip
-XCBEAUTIFY_VERSION=3.1.2
+XCBEAUTIFY_VERSION=3.2.1
 XCBEAUTIFY=bin/xcbeautify-$(XCBEAUTIFY_VERSION)
 ifeq ($(shell uname), Linux)
 	XCBEAUTIFY_PLATFORM=x86_64-unknown-linux-gnu.tar.xz

@@ -85,7 +85,10 @@ public final class Connection {
         }
     }
 
-    public var handle: OpaquePointer { _handle! }
+    public var handle: OpaquePointer {
+        precondition(_handle != nil, "connection already closed")
+        return _handle!
+    }
 
     fileprivate var _handle: OpaquePointer?
 
@@ -187,7 +190,7 @@ public final class Connection {
     }
 
     /// Closes the database connection immediately.
-    ///
+    /// Normally not needed: the underlying connection is automatically closed when `Connection` goes out of scope.
     /// Callers should release or exhaust prepared statements, BLOB handles, and backup operations before closing. If
     /// SQLite reports that the connection is still busy, this method throws and keeps the connection handle open.
     public func close() throws {

@@ -80,21 +80,23 @@ class ConnectionTests: SQLiteTestCase {
 
     func test_close_whenPreparedStatementIsActiveThrowsBusyAndCanBeRetried() throws {
         let db = try Connection()
+        // open statement
         var statement: Statement? = try db.prepare("SELECT 1")
 
-        try withExtendedLifetime(statement) {
-            XCTAssertThrowsError(try db.close()) { error in
-                if case SQLite.Result.error(_, let code, _) = error {
-                    XCTAssertEqual(SQLITE_BUSY, code)
-                } else {
-                    XCTFail("unexpected error: \(error)")
-                }
+        XCTAssertThrowsError(try db.close()) { error in
+            if case SQLite.Result.error(_, let code, _) = error {
+                // there's an open statement
+                XCTAssertEqual(SQLITE_BUSY, code)
+            } else {
+                XCTFail("unexpected error: \(error)")
             }
         }
-
+        // db still operational
         XCTAssertEqual(1, try db.scalar("SELECT 1") as? Int64)
-
-        statement = nil
+        // statement is closed, no more references
+        if statement != nil {
+            statement = nil
+        }
         try db.close()
     }
 
