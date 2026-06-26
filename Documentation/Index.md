@@ -16,6 +16,7 @@
       - [In-Memory Databases](#in-memory-databases)
       - [URI parameters](#uri-parameters)
       - [Thread-Safety](#thread-safety)
+      - [Closing a Connection](#closing-a-connection)
   - [Building Type-Safe SQL](#building-type-safe-sql)
     - [Expressions](#expressions)
     - [Compound Expressions](#compound-expressions)
@@ -489,6 +490,22 @@ db.busyHandler({ tries in
 > _Note:_ The default timeout is 0, so if you see `database is locked`
 > errors, you may be trying to access the same database simultaneously from
 > multiple connections.
+
+#### Closing a Connection
+
+Call `close()` when you need the database connection closed before the
+`Connection` goes out of scope—for example, before removing a temporary
+database file from disk.
+
+```swift
+try db.close()
+```
+
+Release prepared statements, BLOB handles, and [backup](#online-database-backup)
+objects before closing; otherwise `close()` may throw.
+
+> _Note:_ On iOS, call `close()` (and handle any errors) before deleting temporary
+> database files to avoid filesystem warnings.
 
 
 ## Building Type-Safe SQL

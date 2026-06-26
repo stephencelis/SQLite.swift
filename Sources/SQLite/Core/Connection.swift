@@ -85,7 +85,10 @@ public final class Connection {
         }
     }
 
-    public var handle: OpaquePointer { _handle! }
+    public var handle: OpaquePointer {
+        precondition(_handle != nil, "connection already closed")
+        return _handle!
+    }
 
     fileprivate var _handle: OpaquePointer?
 
@@ -161,7 +164,7 @@ public final class Connection {
     }
 
     deinit {
-        sqlite3_close(handle)
+        try? close()
     }
 
     // MARK: -
@@ -184,6 +187,26 @@ public final class Connection {
     /// database via this connection.
     public var totalChanges: Int {
         Int(sqlite3_total_changes(handle))
+    }
+
+    /// Closes the database connection immediately.
+    /// Normally not needed: the underlying connection is automatically closed when `Connection` goes out of scope.
+    /// Callers should release or exhaust prepared statements, BLOB handles, and backup operations before closing. If
+    /// SQLite reports that the connection is still busy, this method throws and keeps the connection handle open.
+    public func close() throws {
+        try sync {
+            guard let handle = _handle else {
+                return
+            }
+
+            let resultCode = sqlite3_close(handle)
+            if resultCode == SQLITE_OK {
+                _handle = nil
+                return
+            }
+
+            try check(resultCode)
+        }
     }
 
     /// Whether or not the database will return extended error codes when errors are handled.
