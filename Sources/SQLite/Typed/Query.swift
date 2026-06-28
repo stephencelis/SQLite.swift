@@ -1010,10 +1010,9 @@ extension Connection {
         let statement = try prepare(expression.template, expression.bindings)
 
         let columnNames = try columnNamesForQuery(query)
+        let rows = try statement.failableNext().map { Row(columnNames, $0) }
 
-        return AnySequence {
-            AnyIterator { statement.next().map { Row(columnNames, $0) } }
-        }
+        return AnySequence { AnyIterator { rows } }
     }
 
     public func prepareRowIterator(_ query: QueryType) throws -> RowIterator {
