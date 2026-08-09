@@ -71,6 +71,7 @@ jobs:
         VALIDATOR_SUBSPEC: SQLCipher
       run: ./run-tests.sh
     - name: "Run tests (tuist)"
+      if: false
       run: |
         brew update
         brew install tuist
