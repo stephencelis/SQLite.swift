@@ -75,6 +75,7 @@ jobs:
         brew update
         brew install tuist
         cd Tests/Tuist/SQLite-Test
+        swift package --package-path Tuist resolve
         tuist install
         # tuist test
   build-linux:
