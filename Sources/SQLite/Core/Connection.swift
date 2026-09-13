@@ -164,7 +164,14 @@ public final class Connection {
     }
 
     deinit {
-        try? close()
+        guard let handle = _handle else {
+            return
+        }
+        // Note: sqlite3_close_v2 differs from sqlite3_close. While sqlite3_close fails with
+        // SQLITE_BUSY if unfinalized prepared statements exist, sqlite3_close_v2 marks
+        // the connection as a zombie and defers final cleanup until all statements are finalized,
+        // preventing crashes or resource leaks when Connection is deallocated.
+        sqlite3_close_v2(handle)
     }
 
     // MARK: -
