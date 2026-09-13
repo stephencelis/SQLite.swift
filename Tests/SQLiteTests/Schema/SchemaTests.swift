@@ -290,6 +290,17 @@ class SchemaTests: XCTestCase {
         )
     }
 
+    // https://github.com/stephencelis/SQLite.swift/issues/1056
+    // A column-level CHECK built from a range pattern (BETWEEN) must wrap its
+    // condition in parentheses, just like every other check condition does,
+    // otherwise SQLite rejects the generated `CREATE TABLE` statement.
+    func test_column_withRangeCheck_compilesValidCheckConstraint() {
+        XCTAssertEqual(
+            "CREATE TABLE \"table\" (\"int64\" INTEGER NOT NULL CHECK (\"int64\" BETWEEN 0 AND 26))",
+            table.create { t in t.column(int64, check: 0...26 ~= int64) }
+        )
+    }
+
     func test_column_withIntegerExpression_compilesPrimaryKeyAutoincrementColumnDefinitionExpression() {
         XCTAssertEqual(
             "CREATE TABLE \"table\" (\"int64\" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL)",
