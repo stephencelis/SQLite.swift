@@ -15,6 +15,15 @@ class FTS5Tests: XCTestCase {
             sql(config))
     }
 
+    func test_bm25_order() {
+        assertSQL("SELECT * FROM \"virtual_table\" WHERE (\"virtual_table\" MATCH 'swift') " +
+                  "ORDER BY bm25(\"virtual_table\", 10.0, 1.0)",
+                  virtualTable.match("swift").order(virtualTable.bm25(10.0, 1.0)))
+        assertSQL("SELECT * FROM \"virtual_table\" WHERE (\"virtual_table\" MATCH 'swift') " +
+                  "ORDER BY bm25(\"virtual_table\")",
+                  virtualTable.match("swift").order(virtualTable.bm25()))
+    }
+
     func test_config_column() {
         XCTAssertEqual(
             "CREATE VIRTUAL TABLE \"virtual_table\" USING fts5(\"string\")",

@@ -28,6 +28,23 @@ extension Module {
     }
 }
 
+extension VirtualTable {
+    /// Builds an FTS5 `bm25` relevance score for use with `order`.
+    ///
+    /// Weights correspond to the table's columns in definition order. Omitted
+    /// weights default to 1.0. More relevant matches have lower scores.
+    ///
+    ///     articles.match("swift").order(articles.bm25(10.0, 1.0))
+    ///
+    /// - Parameter weights: The relative weight of each FTS5 column.
+    /// - Returns: An expression evaluating the weighted relevance score.
+    public func bm25(_ weights: Double...) -> Expression<Double> {
+        var arguments: [Expressible] = [Expression<Void>(clauses.from.name)]
+        arguments += weights.map { Expression<Double>(value: $0) }
+        return "bm25".wrap(arguments)
+    }
+}
+
 /// Configuration for the [FTS5](https://www.sqlite.org/fts5.html) extension.
 ///
 /// **Note:** this is currently only applicable when using SQLite.swift together with a FTS5-enabled version

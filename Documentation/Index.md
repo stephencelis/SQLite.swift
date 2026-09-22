@@ -2209,6 +2209,20 @@ let replies = emails.filter(emails.match("subject:\"Re:\"*"))
 // SELECT * FROM "emails" WHERE "emails" MATCH 'subject:"Re:"*'
 ```
 
+To order matching rows by relevance, use FTS5's `bm25` score. Pass one
+weight per table column, in the order the columns were defined. Columns
+without an explicit weight default to `1.0`; lower scores rank first.
+
+```swift
+let emails = VirtualTable("emails")
+let subject = Expression<String>("subject")
+let body = Expression<String>("body")
+try db.run(emails.create(.FTS5(FTS5Config().columns([subject, body]))))
+
+let relevant = emails.match("swift").order(emails.bm25(10.0, 1.0))
+// SELECT * FROM "emails" WHERE ("emails" MATCH 'swift') ORDER BY bm25("emails", 10.0, 1.0)
+```
+
 ## Executing Arbitrary SQL
 
 Though we recommend you stick with SQLite.swift’s
