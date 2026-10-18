@@ -59,6 +59,24 @@ class FTS5IntegrationTests: SQLiteTestCase {
         XCTAssertEqual(1, matches.count)
     }
 
+    func testWeightedBM25ChangesResultOrder() throws {
+        let articles = VirtualTable("articles")
+        let title = SQLite.Expression<String>("title")
+        let body = SQLite.Expression<String>("body")
+        try createOrSkip { db in
+            try db.run(articles.create(.FTS5(FTS5Config().columns([title, body]))))
+        }
+
+        try db.run(articles.insert(title <- "swift swift", body <- "other"))
+        try db.run(articles.insert(title <- "other", body <- "swift swift"))
+
+        let titleFirst = try db.prepare(articles.match("swift").order(articles.bm25(10.0, 1.0)))
+        XCTAssertEqual(titleFirst.map { $0[title] }, ["swift swift", "other"])
+
+        let bodyFirst = try db.prepare(articles.match("swift").order(articles.bm25(1.0, 10.0)))
+        XCTAssertEqual(bodyFirst.map { $0[title] }, ["other", "swift swift"])
+    }
+
     private func createOrSkip(_ createIndex: (Connection) throws -> Void) throws {
         #if FTS5
         try createIndex(db)
