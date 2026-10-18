@@ -102,6 +102,7 @@ jobs:
     - name: Run tests on Android
       uses: skiptools/swift-android-action@v2
       with:
+        swift-version: 6.3.3
         # Ubuntu runners low on space causes the emulator to fail to install
         free-disk-space: true
         swift-build-flags: --traits SQLiteSwiftCSQLite
