@@ -13,11 +13,11 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [macos-26]
+        os: [macos-26, xcode-27]
     runs-on: ${{ matrix.os }}
     env:
-      IOS_SIMULATOR: ${{ matrix.os == 'macos-15' && 'iPhone 16' || 'iPhone 17 Pro' }}
-      IOS_VERSION: ${{ matrix.os == 'macos-15' && '18.5' || 'latest' }}
+      IOS_SIMULATOR: 'iPhone 17'
+      IOS_VERSION: 'latest'
     steps:
     - uses: actions/checkout@v4
     - name: "xcrun simctl list"
@@ -61,14 +61,17 @@ jobs:
     - name: "Run tests (VALIDATOR_SUBSPEC: standard)"
       env:
         VALIDATOR_SUBSPEC: standard
+      if: ${{ matrix.os == 'macos-26' }}
       run: ./run-tests.sh
     - name: "Run tests (VALIDATOR_SUBSPEC: standalone)"
       env:
         VALIDATOR_SUBSPEC: standalone
+      if: ${{ matrix.os == 'macos-26' }}
       run: ./run-tests.sh
     - name: "Run tests (VALIDATOR_SUBSPEC: SQLCipher)"
       env:
         VALIDATOR_SUBSPEC: SQLCipher
+      if: ${{ matrix.os == 'macos-26' }}
       run: ./run-tests.sh
     - name: "Run tests (tuist)"
       env:
