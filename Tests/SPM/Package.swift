@@ -13,7 +13,7 @@ let package = Package(
     ],
     dependencies: [
         // for testing from same repository
-        .package(path: "../..", traits: [])
+        .package(path: "../..")
         // normally this would be:
         // .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.16.0")
     ],

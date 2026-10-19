@@ -149,6 +149,7 @@ SQLite.swift for different use cases.
 | `StandaloneSQLite`       | Only used by CocoaPods                                     |                                                                                            |
 | `SQLCipher`              | Embeds [SQLCipher][] (see below)                           | 4.13.0: `3.51.2`                                                                           |
 | `FTS5`                   | Enables FTS5, only works with `SQLiteSwiftCSQLite`         |                                                                                            |
+| `RTree`                  | Enables R*Tree, only works with `SQLiteSwiftCSQLite`       |                                                                                            |
 
 [traits]: https://docs.swift.org/swiftpm/documentation/packagemanagerdocs/packagetraits/
 [SQLite repackage]: https://github.com/stephencelis/CSQLite/tree/SQLite.swift

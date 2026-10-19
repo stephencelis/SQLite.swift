@@ -67,10 +67,15 @@ let package = Package(
                description: "Enables SQLCipher encryption when a key is supplied to Connection"),
         .trait(name: "FTS5",
               description: "Enables FTS5 in the embedded SQLite (only supported by SQLiteSwiftCSQLite)"),
+        .trait(name: "RTree",
+              description: "Enables R*Tree in the embedded SQLite (only supported by SQLiteSwiftCSQLite)"),
         .default(enabledTraits: defaultTraits)
     ],
     dependencies: [
-        .package(url: "https://github.com/stephencelis/CSQLite", from: "3.50.4", traits: [.trait(name: "FTS5", condition: .when(traits: ["FTS5"]))]),
+        .package(url: "https://github.com/stephencelis/CSQLite", from: "3.53.4", traits: [
+            .trait(name: "FTS5", condition: .when(traits: ["FTS5"])),
+            .trait(name: "RTree", condition: .when(traits: ["RTree"]))
+        ]),
         .package(url: "https://github.com/sqlcipher/SQLCipher.swift", from: "4.11.0")
     ],
     targets: [target, testTarget],
