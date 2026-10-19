@@ -1,4 +1,4 @@
-0.17.0 (tba), [diff][diff-0.17.0]
+0.17.0 (19-10-2026), [diff][diff-0.17.0]
 ========================================
 
 * Add WAL journal mode support ([#1359][])
@@ -8,6 +8,8 @@
 * Fix invalid SQL for column-level CHECK constraints using range/BETWEEN expressions ([#1371][]) 
 * Fix recurring crash when Connection deinitializes ([#1373][])
 * Add weighted BM25 ordering for FTS5 queries ([#1378][])
+* Update minimum deployment targets to match Xcode 27 (iOS 15, macOS 12, watchOS 9)
+* Add [R*Tree](https://sqlite.org/rtree.html) package trait 
 
 0.16.0 (28-01-2026), [diff][diff-0.16.0]
 ========================================
@@ -207,6 +209,7 @@ For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
 [diff-0.15.4]: https://github.com/stephencelis/SQLite.swift/compare/0.15.3...0.15.4
 [diff-0.15.5]: https://github.com/stephencelis/SQLite.swift/compare/0.15.4...0.15.5
 [diff-0.16.0]: https://github.com/stephencelis/SQLite.swift/compare/0.15.5...0.16.0
+[diff-0.17.0]: https://github.com/stephencelis/SQLite.swift/compare/0.16.0...0.17.0
 
 [#30]: https://github.com/stephencelis/SQLite.swift/issues/30
 [#142]: https://github.com/stephencelis/SQLite.swift/issues/142

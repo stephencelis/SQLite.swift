@@ -119,7 +119,7 @@ process of downloading, compiling, and linking dependencies.
 
   ```swift
   dependencies: [
-    .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.16.0")
+    .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.17.0")
   ]
   ```
 
@@ -137,19 +137,19 @@ SQLite.swift for different use cases.
   ```swift
   dependencies: [
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", 
-             from: "0.16.0",
+             from: "0.17.0",
              traits: ["XXX"])
   ]
   ```
 
-| Trait                    | Description                                                | SQLite version                                                                             |
-|--------------------------|------------------------------------------------------------|--------------------------------------------------------------------------------------------|
-| `SystemSQLite` (default) | Uses the system SQLite (provided by Apple)                 | macOS 15.7.x: `3.43.2`<br/> 26: `3.50.2`,  26.5: `3.51.0`                                  |
-| `SQLiteSwiftCSQLite`     | Embeds a [SQLite repackage][] based on [swift-toolchain][] | `3.50.4` (2025-07-30), `3.53.2` (2026-06-03), `3.53.3` (2026-06-26), `3.53.4` (2026-07-24) |
-| `StandaloneSQLite`       | Only used by CocoaPods                                     |                                                                                            |
-| `SQLCipher`              | Embeds [SQLCipher][] (see below)                           | 4.13.0: `3.51.2`                                                                           |
-| `FTS5`                   | Enables FTS5, only works with `SQLiteSwiftCSQLite`         |                                                                                            |
-| `RTree`                  | Enables R*Tree, only works with `SQLiteSwiftCSQLite`       |                                                                                            |
+| Trait                    | Description                                                                                     | SQLite version                                                                             |
+|--------------------------|-------------------------------------------------------------------------------------------------|--------------------------------------------------------------------------------------------|
+| `SystemSQLite` (default) | Uses the system SQLite (provided by Apple)                                                      | macOS 15.7.x: `3.43.2`<br/> 26: `3.50.2`,  26.5: `3.51.0`, 26.7: `3.51.0`                  |
+| `SQLiteSwiftCSQLite`     | Embeds a [SQLite repackage][] based on [swift-toolchain][]                                      | `3.50.4` (2025-07-30), `3.53.2` (2026-06-03), `3.53.3` (2026-06-26), `3.53.4` (2026-07-24) |
+| `StandaloneSQLite`       | Only used by CocoaPods                                                                          |                                                                                            |
+| `SQLCipher`              | Embeds [SQLCipher][] (see below)                                                                | 4.13.0: `3.51.2`                                                                           |
+| `FTS5`                   | Enables [FTS5](https://sqlite.org/fts5.html), only works with `SQLiteSwiftCSQLite`              |                                                                                            |
+| `RTree`                  | Enables [R*Tree]([R*Tree](https://sqlite.org/rtree.html)), only works with `SQLiteSwiftCSQLite` |                                                                                            |
 
 [traits]: https://docs.swift.org/swiftpm/documentation/packagemanagerdocs/packagetraits/
 [SQLite repackage]: https://github.com/stephencelis/CSQLite/tree/SQLite.swift
@@ -161,7 +161,7 @@ If you want to use [SQLCipher][] with SQLite.swift you can specify the `SQLCiphe
 
 ```swift
 depdencies: [
-  .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.16.0", traits: ["SQLCipher"])
+  .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.17.0", traits: ["SQLCipher"])
 ]
 ```
 
@@ -191,7 +191,7 @@ let package = Package(
     dependencies: [
         .package(
             url: "https://github.com/stephencelis/SQLite.swift.git",
-            from: "0.16.0",
+            from: "0.17.0",
             traits: ["SQLCipher"])
     ],
     targets: [
@@ -257,7 +257,7 @@ mode end of 2026. The recommended installation method is SPM.
     use_frameworks!
 
     target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.16.0'
+        pod 'SQLite.swift', '~> 0.17.0'
     end
     ```
 
@@ -271,7 +271,7 @@ with the OS you can require the `standalone` subspec:
 
 ```ruby
 target 'YourAppTargetName' do
-  pod 'SQLite.swift/standalone', '~> 0.16.0'
+  pod 'SQLite.swift/standalone', '~> 0.17.0'
 end
 ```
 
@@ -281,7 +281,7 @@ dependency to sqlite3 or one of its subspecs:
 
 ```ruby
 target 'YourAppTargetName' do
-  pod 'SQLite.swift/standalone', '~> 0.16.0'
+  pod 'SQLite.swift/standalone', '~> 0.17.0'
   pod 'sqlite3/fts5', '= 3.15.0'  # SQLite 3.15.0 with FTS5 enabled
 end
 ```
@@ -301,7 +301,7 @@ install SQLite.swift with Carthage:
 2. Update your Cartfile to include the following:
 
    ```ruby
-   github "stephencelis/SQLite.swift" ~> 0.16.0
+   github "stephencelis/SQLite.swift" ~> 0.17.0
    ```
 
 3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
