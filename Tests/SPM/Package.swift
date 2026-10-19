@@ -6,14 +6,14 @@ import PackageDescription
 let package = Package(
     name: "test",
     platforms: [
-        .iOS(.v12),
-        .macOS(.v10_13),
-        .watchOS(.v4),
+        .iOS(.v15),
+        .macOS(.v12),
+        .watchOS(.v9),
         .tvOS(.v12)
     ],
     dependencies: [
         // for testing from same repository
-        .package(path: "../..")
+        .package(path: "../..", traits: [])
         // normally this would be:
         // .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.16.0")
     ],

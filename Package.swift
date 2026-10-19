@@ -45,8 +45,8 @@ defaultTraits = ["SystemSQLite"]
 let package = Package(
     name: "SQLite.swift",
     platforms: [
-        .iOS(.v12),
-        .macOS(.v10_13),
+        .iOS(.v15),
+        .macOS(.v12),
         .watchOS(.v9),
         .tvOS(.v12),
         .visionOS(.v1)
