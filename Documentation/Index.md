@@ -131,7 +131,7 @@ process of downloading, compiling, and linking dependencies.
 
 #### Available traits
 
-The Swift package manager now supports [traits][], which can be used to configure
+The Swift package manager supports [traits][], which can be used to configure
 SQLite.swift for different use cases.
 
   ```swift
@@ -164,56 +164,6 @@ depdencies: [
   .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.17.0", traits: ["SQLCipher"])
 ]
 ```
-
-As of Xcode 26.2 (17C52), there's no direct way in the Xcode UI to select trait variations so you'll need to use a local wrapper package to pull in the SQLite.swift dependency with the `SQLCipher` trait enabled:
-
-```swift
-// swift-tools-version: 6.1
-// The swift-tools-version declares the minimum version of Swift required to build this package.
-
-import PackageDescription
-
-let package = Package(
-    name: "AppDependencies",
-    platforms: [
-        .macOS(.v10_14),
-        .iOS(.v13),
-        .macCatalyst(.v13),
-        .watchOS(.v8),
-        .tvOS(.v15),
-        .visionOS(.v1)
-    ],
-    products: [
-        .library(
-            name: "AppDependencies",
-            targets: ["AppDependencies"]),
-    ],
-    dependencies: [
-        .package(
-            url: "https://github.com/stephencelis/SQLite.swift.git",
-            from: "0.17.0",
-            traits: ["SQLCipher"])
-    ],
-    targets: [
-        .target(
-            name: "AppDependencies",
-            dependencies: [
-                .product(
-                    name: "SQLite",
-                    package: "SQLite.swift")
-            ],
-            // necessary if you have other Package dependencies which explicitly link sqlite3
-            linkerSettings: [
-              .linkedFramework("SQLCipher")
-            ]
-        )
-    ]
-)
-```
-
-_Note: It's important to include the linkerSettings to link SQLCipher framework first if you have any other Package dependencies in your wrapper package which explicitly link standard sqlite3. This ensures SQLCipher is linked first and properly used._
-
-Within Xcode add your local `AppDependencies` wrapper package as a package dependency and SQLite.swift with SQLCipher functionality will be accessible.
 
 Using the `SQLCipher` trait will cause SQLite.swift to include a dependency on SQLCipher.swift and enable `Connection` methods to set and change the database key:
 
