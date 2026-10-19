@@ -148,56 +148,6 @@ See the [Tests/SPM](https://github.com/stephencelis/SQLite.swift/tree/master/Tes
 
 [Swift Package Manager]: https://swift.org/package-manager
 
-### Carthage
-
-[Carthage][] is a simple, decentralized dependency manager for Cocoa. To
-install SQLite.swift with Carthage:
-
- 1. Make sure Carthage is [installed][Carthage Installation].
-
- 2. Update your Cartfile to include the following:
-
-    ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.16.0
-    ```
-
- 3. Run `carthage update` and
-    [add the appropriate framework][Carthage Usage].
-
-
-[Carthage]: https://github.com/Carthage/Carthage
-[Carthage Installation]: https://github.com/Carthage/Carthage#installing-carthage
-[Carthage Usage]: https://github.com/Carthage/Carthage#adding-frameworks-to-an-application
-
-
-### CocoaPods
-
-[CocoaPods][] is a dependency manager for Cocoa projects. To install
-SQLite.swift with CocoaPods:
-
- 1. Make sure CocoaPods is [installed][CocoaPods Installation].
-
-    ```sh
-    # Using the default Ruby install will require you to use sudo when
-    # installing and updating gems.
-    [sudo] gem install cocoapods
-    ```
-
- 2. Update your Podfile to include the following:
-
-    ```ruby
-    use_frameworks!
-
-    target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.15.0'
-    end
-    ```
-
- 3. Run `pod install --repo-update`.
-
-[CocoaPods]: https://cocoapods.org
-[CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
-
 ### Manual
 
 To install SQLite.swift as an Xcode sub-project:

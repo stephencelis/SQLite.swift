@@ -235,27 +235,10 @@ try db.sqlcipher_export(.uri("encrypted.sqlite3"), key: "secret")
 [Swift Package Manager]: https://swift.org/package-manager
 [SQLCipher]: https://www.zetetic.net/sqlcipher/
 
-### Carthage
-
-[Carthage][] is a simple, decentralized dependency manager for Cocoa. To
-install SQLite.swift with Carthage:
- 1. Make sure Carthage is [installed][Carthage Installation].
-
- 2. Update your Cartfile to include the following:
-
-    ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.16.0
-    ```
-
- 3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
-
-
-[Carthage]: https://github.com/Carthage/Carthage
-[Carthage Installation]: https://github.com/Carthage/Carthage#installing-carthage
-[Carthage Usage]: https://github.com/Carthage/Carthage#adding-frameworks-to-an-application
-
-
 ### CocoaPods
+
+⚠️ CocoaPods is no longer developed an will go into read-only
+mode end of 2026. The recommended installation method is SPM.
 
 [CocoaPods][] is a dependency manager for Cocoa projects. To install SQLite.swift with CocoaPods:
 
@@ -308,6 +291,25 @@ See the [sqlite3 podspec][sqlite3pod] for more details.
 [CocoaPods]: https://cocoapods.org
 [CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
 [sqlite3pod]: https://github.com/clemensg/sqlite3pod
+
+### Carthage
+
+[Carthage][] is a simple, decentralized dependency manager for Cocoa. To
+install SQLite.swift with Carthage:
+1. Make sure Carthage is [installed][Carthage Installation].
+
+2. Update your Cartfile to include the following:
+
+   ```ruby
+   github "stephencelis/SQLite.swift" ~> 0.16.0
+   ```
+
+3. Run `carthage update` and [add the appropriate framework][Carthage Usage].
+
+
+[Carthage]: https://github.com/Carthage/Carthage
+[Carthage Installation]: https://github.com/Carthage/Carthage#installing-carthage
+[Carthage Usage]: https://github.com/Carthage/Carthage#adding-frameworks-to-an-application
 
 ### Manual
 
