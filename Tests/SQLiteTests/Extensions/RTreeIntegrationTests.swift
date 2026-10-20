@@ -31,7 +31,7 @@ class RTreeIntegrationTests: SQLiteTestCase {
                            AND minY<=35.37785  AND maxY>=35.37785;
                            """)
 
-            let ids = result.compactMap({ row in row[0] as? Int64 } )
+            let ids = result.compactMap({ row in row[0] as? Int64 })
             XCTAssertEqual(ids, [28269])
         }
     }
@@ -44,4 +44,3 @@ class RTreeIntegrationTests: SQLiteTestCase {
         #endif
     }
 }
-
