@@ -488,7 +488,7 @@ public final class Connection {
     /// - Parameter callback: This block is invoked when a statement is executed
     ///   with the compiled SQL as its argument.
     ///
-    ///       db.trace { SQL in print(SQL) }    
+    ///       db.trace { SQL in print(SQL) }
     public func trace(_ callback: ((String) -> Void)?) {
         guard let callback else {
             // If the X callback is NULL or if the M mask is zero, then tracing is disabled.
@@ -716,8 +716,8 @@ public final class Connection {
         }
     }
 
-    @discardableResult func check(_ resultCode: Int32, statement: Statement? = nil) throws -> Int32 {
-        guard let error = Result(errorCode: resultCode, connection: self, statement: statement) else {
+    @discardableResult func check(_ resultCode: Int32) throws -> Int32 {
+        guard let error = Result(errorCode: resultCode, connection: self) else {
             return resultCode
         }
 

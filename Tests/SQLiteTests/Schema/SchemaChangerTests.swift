@@ -188,7 +188,7 @@ class SchemaChangerTests: SQLiteTestCase {
                 table.drop(index: "age_index", ifExists: false)
             }
         ) { error in
-            if case Result.error(let message, _, _) =  error {
+            if case Result.error(let message, _) =  error {
                 XCTAssertEqual(message, "no such index: age_index")
             } else {
                 XCTFail("unexpected error \(error)")
@@ -199,7 +199,7 @@ class SchemaChangerTests: SQLiteTestCase {
     func test_drop_table() throws {
         try schemaChanger.drop(table: "users")
         XCTAssertThrowsError(try db.scalar(users.count)) { error in
-            if case Result.error(let message, _, _) =  error {
+            if case Result.error(let message, _) =  error {
                 XCTAssertEqual(message, "no such table: users")
             } else {
                 XCTFail("unexpected error \(error)")
@@ -213,7 +213,7 @@ class SchemaChangerTests: SQLiteTestCase {
 
     func test_drop_table_if_exists_false() throws {
         XCTAssertThrowsError(try schemaChanger.drop(table: "xxx", ifExists: false)) { error in
-            if case Result.error(let message, _, _) =  error {
+            if case Result.error(let message, _) =  error {
                 XCTAssertEqual(message, "no such table: xxx")
             } else {
                 XCTFail("unexpected error \(error)")
@@ -320,7 +320,7 @@ class SchemaChangerTests: SQLiteTestCase {
                 table.add(column: .init(name: "id", primaryKey: .init(autoIncrement: true), type: .INTEGER))
             }
         ) { error in
-            if case Result.error(_, let code, _) = error {
+            if case Result.error(_, let code) = error {
                 XCTAssertEqual(code, 1)
             } else {
                 XCTFail("unexpected error: \(error)")

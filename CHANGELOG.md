@@ -9,7 +9,8 @@
 * Fix recurring crash when Connection deinitializes ([#1373][])
 * Add weighted BM25 ordering for FTS5 queries ([#1378][])
 * Update minimum deployment targets to match Xcode 27 (iOS 15, macOS 12, watchOS 9)
-* Add [R*Tree](https://sqlite.org/rtree.html) package trait 
+* Add [R*Tree](https://sqlite.org/rtree.html) package trait
+* Set Swift language version to 6
 
 0.16.0 (28-01-2026), [diff][diff-0.16.0]
 ========================================

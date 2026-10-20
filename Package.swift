@@ -79,5 +79,5 @@ let package = Package(
         .package(url: "https://github.com/sqlcipher/SQLCipher.swift", from: "4.11.0")
     ],
     targets: [target, testTarget],
-    swiftLanguageModes: [.v5],
+    swiftLanguageModes: [.v6],
 )

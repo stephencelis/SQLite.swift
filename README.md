@@ -1,6 +1,6 @@
 # SQLite.swift
 
-![Build Status][GitHubActionBadge] [![CocoaPods Version][CocoaPodsVersionBadge]][CocoaPodsVersionLink] [![Swift5 compatible][Swift5Badge]][Swift5Link] [![Platform][PlatformBadge]][PlatformLink] [![Carthage compatible][CartagheBadge]][CarthageLink] [![Join the chat at https://gitter.im/stephencelis/SQLite.swift][GitterBadge]][GitterLink]
+![Build Status][GitHubActionBadge]  [![Swift6 compatible][Swift6Badge]][Swift6Link] [![Platform][PlatformBadge]][PlatformLink] [![CocoaPods Version][CocoaPodsVersionBadge]][CocoaPodsVersionLink] [![Carthage compatible][CartagheBadge]][CarthageLink] [![Join the chat at https://gitter.im/stephencelis/SQLite.swift][GitterBadge]][GitterLink]
 
 A type-safe, [Swift][]-language layer over [SQLite3][].
 
@@ -238,8 +238,8 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
 [GitterBadge]: https://badges.gitter.im/stephencelis/SQLite.swift.svg
 [GitterLink]: https://gitter.im/stephencelis/SQLite.swift
 
-[Swift5Badge]: https://img.shields.io/badge/swift-5-orange.svg?style=flat
-[Swift5Link]: https://developer.apple.com/swift/
+[Swift6Badge]: https://img.shields.io/badge/swift-6-orange.svg?style=flat
+[Swift6Link]: https://developer.apple.com/swift/
 
 [SQLiteMigrationManager.swift]: https://github.com/garriguv/SQLiteMigrationManager.swift
 [FMDB]: https://github.com/ccgus/fmdb

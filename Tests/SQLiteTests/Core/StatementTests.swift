@@ -58,7 +58,7 @@ class StatementTests: SQLiteTestCase {
 
         // verify implicit transaction is not closed, and the users table is still locked
         XCTAssertThrowsError(try db.run("DROP TABLE users")) { error in
-            if case let Result.error(_, code, _) = error {
+            if case let Result.error(_, code) = error {
                 XCTAssertEqual(code, SQLITE_LOCKED)
             } else {
                 XCTFail("unexpected error")
