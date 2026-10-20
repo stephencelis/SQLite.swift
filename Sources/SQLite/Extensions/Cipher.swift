@@ -167,7 +167,7 @@ extension Connection {
             let migrateResult = try scalar("PRAGMA cipher_migrate;")
             if (migrateResult as? String) != "0" {
                 // "0" is the result of successful migration
-                throw Result.error(message: "Error in cipher migration, result \(migrateResult.debugDescription)", code: 1, statement: nil)
+                throw Result.error(message: "Error in cipher migration, result \(migrateResult.debugDescription)", code: 1)
             }
         }
         try cipher_key_check()

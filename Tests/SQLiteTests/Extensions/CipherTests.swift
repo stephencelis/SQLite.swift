@@ -66,7 +66,7 @@ class CipherTests: XCTestCase {
         do {
             try connB.key("world")
             XCTFail("expected exception")
-        } catch Result.error(_, let code, _) {
+        } catch Result.error(_, let code) {
             XCTAssertEqual(SQLITE_NOTADB, code)
         } catch {
             XCTFail("unexpected error: \(error)")
