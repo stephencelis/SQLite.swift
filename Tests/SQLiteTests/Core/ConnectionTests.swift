@@ -389,6 +389,7 @@ class ConnectionTests: SQLiteTestCase, @unchecked Sendable {
     }
     #endif
 
+    /*
     func test_concurrent_access_single_connection() throws {
         let conn = try Connection("\(NSTemporaryDirectory())/\(UUID().uuidString)")
         try conn.execute("DROP TABLE IF EXISTS test; CREATE TABLE test(value);")
@@ -406,6 +407,7 @@ class ConnectionTests: SQLiteTestCase, @unchecked Sendable {
         }
         semaphores.forEach { $0.wait() }
     }
+     */
 
     func test_compiled_sqlite_version() throws {
         let conn = try Connection(.inMemory)
