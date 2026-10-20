@@ -414,7 +414,7 @@ class ConnectionTests: SQLiteTestCase, @unchecked Sendable {
         #if SystemSQLite
         XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 43, point: 2))
         #elseif SQLiteSwiftCSQLite
-        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 50, point: 4))
+        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 53, point: 4))
         #elseif SQLCipher
         // 4.12.0 uses SQLite 3.51.1
         // 4.10.0 uses SQLite 3.50.4 (last available pod)
