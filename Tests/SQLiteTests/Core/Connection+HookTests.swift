@@ -2,6 +2,7 @@ import XCTest
 import Foundation
 @testable import SQLite
 
+#if !os(Android)
 @MainActor
 class ConnectionHookTests: SQLiteTestCase {
     override func setUpWithError() throws {
@@ -101,3 +102,4 @@ class ConnectionHookTests: SQLiteTestCase {
         waitForExpectations(timeout: timeout, handler: nil)
     }
 }
+#endif
