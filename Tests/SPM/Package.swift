@@ -6,9 +6,9 @@ import PackageDescription
 let package = Package(
     name: "test",
     platforms: [
-        .iOS(.v12),
-        .macOS(.v10_13),
-        .watchOS(.v4),
+        .iOS(.v15),
+        .macOS(.v12),
+        .watchOS(.v9),
         .tvOS(.v12)
     ],
     dependencies: [

@@ -1,6 +1,6 @@
 # SQLite.swift
 
-![Build Status][GitHubActionBadge] [![CocoaPods Version][CocoaPodsVersionBadge]][CocoaPodsVersionLink] [![Swift5 compatible][Swift5Badge]][Swift5Link] [![Platform][PlatformBadge]][PlatformLink] [![Carthage compatible][CartagheBadge]][CarthageLink] [![Join the chat at https://gitter.im/stephencelis/SQLite.swift][GitterBadge]][GitterLink]
+![Build Status][GitHubActionBadge]  [![Swift6 compatible][Swift6Badge]][Swift6Link] [![Platform][PlatformBadge]][PlatformLink] [![CocoaPods Version][CocoaPodsVersionBadge]][CocoaPodsVersionLink] [![Carthage compatible][CartagheBadge]][CarthageLink] [![Join the chat at https://gitter.im/stephencelis/SQLite.swift][GitterBadge]][GitterLink]
 
 A type-safe, [Swift][]-language layer over [SQLite3][].
 
@@ -134,7 +134,7 @@ Swift code.
 
   ```swift
   dependencies: [
-      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.16.0")
+      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.17.0")
   ]
   ```
 
@@ -147,56 +147,6 @@ Swift code.
 See the [Tests/SPM](https://github.com/stephencelis/SQLite.swift/tree/master/Tests/SPM) folder for a small demo project which uses SPM.
 
 [Swift Package Manager]: https://swift.org/package-manager
-
-### Carthage
-
-[Carthage][] is a simple, decentralized dependency manager for Cocoa. To
-install SQLite.swift with Carthage:
-
- 1. Make sure Carthage is [installed][Carthage Installation].
-
- 2. Update your Cartfile to include the following:
-
-    ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.16.0
-    ```
-
- 3. Run `carthage update` and
-    [add the appropriate framework][Carthage Usage].
-
-
-[Carthage]: https://github.com/Carthage/Carthage
-[Carthage Installation]: https://github.com/Carthage/Carthage#installing-carthage
-[Carthage Usage]: https://github.com/Carthage/Carthage#adding-frameworks-to-an-application
-
-
-### CocoaPods
-
-[CocoaPods][] is a dependency manager for Cocoa projects. To install
-SQLite.swift with CocoaPods:
-
- 1. Make sure CocoaPods is [installed][CocoaPods Installation].
-
-    ```sh
-    # Using the default Ruby install will require you to use sudo when
-    # installing and updating gems.
-    [sudo] gem install cocoapods
-    ```
-
- 2. Update your Podfile to include the following:
-
-    ```ruby
-    use_frameworks!
-
-    target 'YourAppTargetName' do
-        pod 'SQLite.swift', '~> 0.15.0'
-    end
-    ```
-
- 3. Run `pod install --repo-update`.
-
-[CocoaPods]: https://cocoapods.org
-[CocoaPods Installation]: https://guides.cocoapods.org/using/getting-started.html#getting-started
 
 ### Manual
 
@@ -288,8 +238,8 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
 [GitterBadge]: https://badges.gitter.im/stephencelis/SQLite.swift.svg
 [GitterLink]: https://gitter.im/stephencelis/SQLite.swift
 
-[Swift5Badge]: https://img.shields.io/badge/swift-5-orange.svg?style=flat
-[Swift5Link]: https://developer.apple.com/swift/
+[Swift6Badge]: https://img.shields.io/badge/swift-6-orange.svg?style=flat
+[Swift6Link]: https://developer.apple.com/swift/
 
 [SQLiteMigrationManager.swift]: https://github.com/garriguv/SQLiteMigrationManager.swift
 [FMDB]: https://github.com/ccgus/fmdb

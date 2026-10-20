@@ -105,7 +105,7 @@ extension Blob: Binding, Value {
 
 extension Bool: Binding, Value {
 
-    public static var declaredDatatype = Int64.declaredDatatype
+    public static let declaredDatatype = Int64.declaredDatatype
 
     public static func fromDatatypeValue(_ datatypeValue: Int64) -> Bool {
         datatypeValue != 0
@@ -119,7 +119,7 @@ extension Bool: Binding, Value {
 
 extension Int: Number, Value {
 
-    public static var declaredDatatype = Int64.declaredDatatype
+    public static let declaredDatatype = Int64.declaredDatatype
 
     public static func fromDatatypeValue(_ datatypeValue: Int64) -> Int {
         Int(datatypeValue)

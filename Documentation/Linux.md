@@ -13,7 +13,7 @@ embed SQLite:
   ```swift
   dependencies: [
     .package(url: "https://github.com/stephencelis/SQLite.swift.git", 
-             from: "0.16.0",
+             from: "0.17.0",
              traits: ["SQLiteSwiftCSQLite"])
   ]
   ```

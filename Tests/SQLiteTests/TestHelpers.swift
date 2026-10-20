@@ -46,32 +46,20 @@ class SQLiteTestCase: XCTestCase {
                    "\(name)@example.com", age?.datatypeValue, admin.datatypeValue)
     }
 
-    func assertSQL(_ SQL: String, _ executions: Int = 1, _ message: String? = nil, file: StaticString = #file, line: UInt = #line) {
+    func assertSQL(_ SQL: String, _ executions: Int = 1, _ message: String? = nil, file: StaticString = #filePath, line: UInt = #line) {
         XCTAssertEqual(
             executions, trace[SQL] ?? 0,
             message ?? SQL,
-            file: file, line: line
+            file: file,
+            line: line
         )
     }
 
-    func assertSQL(_ SQL: String, _ statement: Statement, _ message: String? = nil, file: StaticString = #file, line: UInt = #line) throws {
+    func assertSQL(_ SQL: String, _ statement: Statement, _ message: String? = nil, file: StaticString = #filePath, line: UInt = #line) throws {
         try statement.run()
         assertSQL(SQL, 1, message, file: file, line: line)
         if let count = trace[SQL] { trace[SQL] = count - 1 }
     }
-
-//    func AssertSQL(SQL: String, _ query: Query, _ message: String? = nil, file: String = __FILE__, line: UInt = __LINE__) {
-//        for _ in query {}
-//        AssertSQL(SQL, 1, message, file: file, line: line)
-//        if let count = trace[SQL] { trace[SQL] = count - 1 }
-//    }
-
-    func async(expect description: String = "async", timeout: Double = 5, block: (@escaping () -> Void) throws -> Void) throws {
-        let expectation = self.expectation(description: description)
-        try block({ expectation.fulfill() })
-        waitForExpectations(timeout: timeout, handler: nil)
-    }
-
 }
 
 let bool = SQLite.Expression<Bool>("bool")
@@ -101,7 +89,7 @@ let uuidOptional = SQLite.Expression<UUID?>("uuidOptional")
 let testUUIDValue = UUID(uuidString: "E621E1F8-C36C-495A-93FC-0C247A3E6E5F")!
 
 func assertSQL(_ expression1: @autoclosure () -> String, _ expression2: @autoclosure () -> Expressible,
-               file: StaticString = #file, line: UInt = #line) {
+               file: StaticString = #filePath, line: UInt = #line) {
     XCTAssertEqual(expression1(), expression2().asSQL(), file: file, line: line)
 }
 

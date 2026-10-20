@@ -8,6 +8,7 @@ let project = Project(
             destinations: .iOS,
             product: .app,
             bundleId: "dev.tuist.SQLite-Test",
+            deploymentTargets: .iOS("15.0"),
             infoPlist: .extendingDefault(
                 with: [
                     "UILaunchScreen": [
@@ -26,6 +27,7 @@ let project = Project(
             destinations: .iOS,
             product: .unitTests,
             bundleId: "dev.tuist.SQLite-TestTests",
+            deploymentTargets: .iOS("15.0"),
             infoPlist: .default,
             buildableFolders: [
                 "SQLite-Test/Tests"

@@ -13,7 +13,7 @@ import SQLiteSwiftCSQLite
 import SQLite3 // SystemSQLite
 #endif
 
-class ConnectionTests: SQLiteTestCase {
+class ConnectionTests: SQLiteTestCase, @unchecked Sendable {
 
     override func setUpWithError() throws {
         try super.setUpWithError()
@@ -84,7 +84,7 @@ class ConnectionTests: SQLiteTestCase {
         var statement: Statement? = try db.prepare("SELECT 1")
 
         XCTAssertThrowsError(try db.close()) { error in
-            if case SQLite.Result.error(_, let code, _) = error {
+            if case SQLite.Result.error(_, let code) = error {
                 // there's an open statement
                 XCTAssertEqual(SQLITE_BUSY, code)
             } else {
@@ -116,7 +116,7 @@ class ConnectionTests: SQLiteTestCase {
         XCTAssertThrowsError(
             try db.run("INSERT INTO \"users\" (email, age, admin) values ('invalid@example.com', 12, 'invalid')")
         ) { error in
-            if case SQLite.Result.error(_, let code, _) = error {
+            if case SQLite.Result.error(_, let code) = error {
                 XCTAssertEqual(SQLITE_CONSTRAINT, code)
             } else {
                 XCTFail("expected error")
@@ -239,7 +239,7 @@ class ConnectionTests: SQLiteTestCase {
                 try stmt.run()
             }
             XCTFail("expected error")
-        } catch let Result.error(_, code, _) {
+        } catch let Result.error(_, code) {
             XCTAssertEqual(SQLITE_CONSTRAINT, code)
         } catch let error {
             XCTFail("unexpected error: \(error)")
@@ -338,89 +338,6 @@ class ConnectionTests: SQLiteTestCase {
         XCTAssertEqual(1, try db.scalar(users.count))
     }
 
-    func test_updateHook_setsUpdateHook_withInsert() throws {
-        try async { done in
-            db.updateHook { operation, db, table, rowid in
-                XCTAssertEqual(Connection.Operation.insert, operation)
-                XCTAssertEqual("main", db)
-                XCTAssertEqual("users", table)
-                XCTAssertEqual(1, rowid)
-                done()
-            }
-            try insertUser("alice")
-        }
-    }
-
-    func test_updateHook_setsUpdateHook_withUpdate() throws {
-        try insertUser("alice")
-        try async { done in
-            db.updateHook { operation, db, table, rowid in
-                XCTAssertEqual(Connection.Operation.update, operation)
-                XCTAssertEqual("main", db)
-                XCTAssertEqual("users", table)
-                XCTAssertEqual(1, rowid)
-                done()
-            }
-            try db.run("UPDATE users SET email = 'alice@example.com'")
-        }
-    }
-
-    func test_updateHook_setsUpdateHook_withDelete() throws {
-        try insertUser("alice")
-        try async { done in
-            db.updateHook { operation, db, table, rowid in
-                XCTAssertEqual(Connection.Operation.delete, operation)
-                XCTAssertEqual("main", db)
-                XCTAssertEqual("users", table)
-                XCTAssertEqual(1, rowid)
-                done()
-            }
-            try db.run("DELETE FROM users WHERE id = 1")
-        }
-    }
-
-    func test_commitHook_setsCommitHook() throws {
-        try async { done in
-            db.commitHook {
-                done()
-            }
-            try db.transaction {
-                try insertUser("alice")
-            }
-            XCTAssertEqual(1, try db.scalar("SELECT count(*) FROM users") as? Int64)
-        }
-    }
-
-    func test_rollbackHook_setsRollbackHook() throws {
-        try async { done in
-            db.rollbackHook(done)
-            do {
-                try db.transaction {
-                    try insertUser("alice")
-                    try insertUser("alice") // throw
-                }
-            } catch {
-            }
-            XCTAssertEqual(0, try db.scalar("SELECT count(*) FROM users") as? Int64)
-        }
-    }
-
-    func test_commitHook_withRollback_rollsBack() throws {
-        try async { done in
-            db.commitHook {
-                throw NSError(domain: "com.stephencelis.SQLiteTests", code: 1, userInfo: nil)
-            }
-            db.rollbackHook(done)
-            do {
-                try db.transaction {
-                    try insertUser("alice")
-                }
-            } catch {
-            }
-            XCTAssertEqual(0, try db.scalar("SELECT count(*) FROM users") as? Int64)
-        }
-    }
-
     // https://github.com/stephencelis/SQLite.swift/issues/1071
     #if !(os(Linux) || os(Android))
     func test_createFunction_withArrayArguments() throws {
@@ -451,10 +368,10 @@ class ConnectionTests: SQLiteTestCase {
         XCTAssertEqual(1, try db.scalar("SELECT ? = ? COLLATE \"NO DIACRITIC\"", "cafe", "café") as? Int64)
     }
 
-    func XXX_test_interrupt_interruptsLongRunningQuery() throws {
+    func test_interrupt_interruptsLongRunningQuery() throws {
         let semaphore = DispatchSemaphore(value: 0)
         db.createFunction("sleep") { _ in
-            DispatchQueue.global(qos: .background).async {
+            DispatchQueue.global(qos: .userInitiated).async {
                 self.db.interrupt()
                 semaphore.signal()
             }
@@ -463,7 +380,7 @@ class ConnectionTests: SQLiteTestCase {
         }
         let stmt = try db.prepare("SELECT sleep()")
         XCTAssertThrowsError(try stmt.run()) { error in
-            if case Result.error(_, let code, _) = error {
+            if case Result.error(_, let code) = error {
                 XCTAssertEqual(code, SQLITE_INTERRUPT)
             } else {
                 XCTFail("unexpected error: \(error)")
@@ -473,9 +390,6 @@ class ConnectionTests: SQLiteTestCase {
     #endif
 
     func test_concurrent_access_single_connection() throws {
-        // test can fail on iOS/tvOS 9.x: SQLite compile-time differences?
-        guard #available(iOS 10.0, OSX 10.10, tvOS 10.0, watchOS 2.2, *) else { return }
-
         let conn = try Connection("\(NSTemporaryDirectory())/\(UUID().uuidString)")
         try conn.execute("DROP TABLE IF EXISTS test; CREATE TABLE test(value);")
         try conn.run("INSERT INTO test(value) VALUES(?)", 0)
@@ -500,7 +414,7 @@ class ConnectionTests: SQLiteTestCase {
         #if SystemSQLite
         XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 43, point: 2))
         #elseif SQLiteSwiftCSQLite
-        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 50, point: 4))
+        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 53, point: 4))
         #elseif SQLCipher
         // 4.12.0 uses SQLite 3.51.1
         // 4.10.0 uses SQLite 3.50.4 (last available pod)
@@ -513,3 +427,10 @@ class ConnectionTests: SQLiteTestCase {
         #endif
     }
 }
+
+#if SWIFT_PACKAGE
+extension Connection: @unchecked Sendable {}
+#else
+// Xcode complains about missing @retroactive
+extension Connection: @retroactive @unchecked Sendable {}
+#endif

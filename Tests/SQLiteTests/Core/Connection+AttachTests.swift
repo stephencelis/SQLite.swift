@@ -51,7 +51,7 @@ class ConnectionAttachTests: SQLiteTestCase {
 
     func test_detach_invalid_schema_name_errors_with_no_such_database() throws {
         XCTAssertThrowsError(try db.detach("no-exist")) { error in
-            if case let Result.error(message, code, _) = error {
+            if case let Result.error(message, code) = error {
                 XCTAssertEqual(code, SQLITE_ERROR)
                 XCTAssertEqual("no such database: no-exist", message)
             } else {

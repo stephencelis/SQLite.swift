@@ -20,7 +20,7 @@ class ConnectionSchemaTests: SQLiteTestCase {
 
     func test_foreignKeyCheck_table_not_found() throws {
         XCTAssertThrowsError(try db.foreignKeyCheck(table: "xxx")) { error in
-            guard case Result.error(let message, _, _) = error else {
+            guard case Result.error(let message, _) = error else {
                 assertionFailure("invalid error type")
                 return
             }
@@ -42,7 +42,7 @@ class ConnectionSchemaTests: SQLiteTestCase {
     func test_integrityCheck_table_not_found() throws {
         guard db.supports(.partialIntegrityCheck) else { return }
         XCTAssertThrowsError(try db.integrityCheck(table: "xxx")) { error in
-            guard case Result.error(let message, _, _) = error else {
+            guard case Result.error(let message, _) = error else {
                 assertionFailure("invalid error type")
                 return
             }

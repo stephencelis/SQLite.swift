@@ -34,9 +34,9 @@ jobs:
       env:
         PACKAGE_MANAGER_COMMAND: test -Xswiftc -warnings-as-errors --traits SQLiteSwiftCSQLite
       run: ./run-tests.sh
-    - name: "Run tests (PACKAGE_MANAGER_COMMAND: test --traits SQLiteSwiftCSQLite,FTS5)"
+    - name: "Run tests (PACKAGE_MANAGER_COMMAND: test --traits SQLiteSwiftCSQLite,FTS5,RTree)"
       env:
-        PACKAGE_MANAGER_COMMAND: test -Xswiftc -warnings-as-errors --traits SQLiteSwiftCSQLite,FTS5
+        PACKAGE_MANAGER_COMMAND: test -Xswiftc -warnings-as-errors --traits SQLiteSwiftCSQLite,FTS5,RTree
       run: ./run-tests.sh
     - name: "Run tests (PACKAGE_MANAGER_COMMAND: test --traits SQLCipher)"
       env:
@@ -81,7 +81,7 @@ jobs:
         brew install tuist
         cd Tests/Tuist/SQLite-Test
         tuist install
-        # tuist test
+        tuist test
   build-linux:
     runs-on: ubuntu-latest
     steps:

@@ -160,6 +160,10 @@
 		19A17FD22EF43DF428DD93BA /* ValueTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A17AE284BB1DF31D1B753E /* ValueTests.swift */; };
 		19A17FE78A39E86F330420EC /* SchemaDefinitionsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A176174862D0F0139B3987 /* SchemaDefinitionsTests.swift */; };
 		19A17FF4A10B44D3937C8CAC /* Errors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 19A1710E73A46D5AC721CDA9 /* Errors.swift */; };
+		3D118FEB308782E500B8169D /* Connection+HookTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D118FEA308782DF00B8169D /* Connection+HookTests.swift */; };
+		3D118FEC308782E500B8169D /* Connection+HookTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D118FEA308782DF00B8169D /* Connection+HookTests.swift */; };
+		3D118FED308782E500B8169D /* Connection+HookTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D118FEA308782DF00B8169D /* Connection+HookTests.swift */; };
+		3D118FEE308782E500B8169D /* Connection+HookTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D118FEA308782DF00B8169D /* Connection+HookTests.swift */; };
 		3D67B3E61DB2469200A4F4C6 /* libsqlite3.tbd in Frameworks */ = {isa = PBXBuildFile; fileRef = 3D67B3E51DB2469200A4F4C6 /* libsqlite3.tbd */; };
 		3D67B3E71DB246BA00A4F4C6 /* Blob.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEE1C3F06E900AE3E12 /* Blob.swift */; };
 		3D67B3E81DB246BA00A4F4C6 /* Connection.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AEF1C3F06E900AE3E12 /* Connection.swift */; };
@@ -417,6 +421,7 @@
 		19A17F285B767BFACD96714B /* Connection+Pragmas.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Connection+Pragmas.swift"; sourceTree = "<group>"; };
 		19A17F2B5959B212A33C383F /* CustomFunctionsTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CustomFunctionsTests.swift; sourceTree = "<group>"; };
 		19A17FDB0B0CFB8987906FD0 /* SchemaChangerTests.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaChangerTests.swift; sourceTree = "<group>"; };
+		3D118FEA308782DF00B8169D /* Connection+HookTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+HookTests.swift"; sourceTree = "<group>"; };
 		3D3C3CCB26E5568800759140 /* SQLite.playground */ = {isa = PBXFileReference; lastKnownFileType = file.playground; path = SQLite.playground; sourceTree = "<group>"; xcLanguageSpecificationIdentifier = xcode.lang.swift; };
 		3D67B3E51DB2469200A4F4C6 /* libsqlite3.tbd */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.text-based-dylib-definition"; name = libsqlite3.tbd; path = Platforms/WatchOS.platform/Developer/SDKs/WatchOS3.0.sdk/usr/lib/libsqlite3.tbd; sourceTree = DEVELOPER_DIR; };
 		3DF7B78728842972005DD8CA /* Connection+Attach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Connection+Attach.swift"; sourceTree = "<group>"; };
@@ -564,6 +569,7 @@
 		19A1798E3459573BEE50FA34 /* Core */ = {
 			isa = PBXGroup;
 			children = (
+				3D118FEA308782DF00B8169D /* Connection+HookTests.swift */,
 				19A1756EB81E9F7F45B12A78 /* StatementTests.swift */,
 				19A171A2ED4E2640F197F48C /* BlobTests.swift */,
 				19A17855BD524FF888265B3C /* ConnectionTests.swift */,
@@ -1208,6 +1214,7 @@
 				19A17F907258E524B3CA2FAE /* SetterTests.swift in Sources */,
 				19A17ABCF0EB4808BDC5B5FF /* RowTests.swift in Sources */,
 				19A17BACF4C032513DE1F879 /* Connection+PragmaTests.swift in Sources */,
+				3D118FED308782E500B8169D /* Connection+HookTests.swift in Sources */,
 				19A173F25449876761347072 /* Connection+AttachTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1320,6 +1327,7 @@
 				DEB306FC2B61CF9500F9D46B /* CustomFunctionsTests.swift in Sources */,
 				DEB306FD2B61CF9500F9D46B /* OperatorsTests.swift in Sources */,
 				DEB306FE2B61CF9500F9D46B /* ResultTests.swift in Sources */,
+				3D118FEB308782E500B8169D /* Connection+HookTests.swift in Sources */,
 				DEB306FF2B61CF9500F9D46B /* RTreeTests.swift in Sources */,
 				DEB307002B61CF9500F9D46B /* SchemaTests.swift in Sources */,
 				DEB307012B61CF9500F9D46B /* SelectTests.swift in Sources */,
@@ -1413,6 +1421,7 @@
 				19A1773155AC2BF2CA86A473 /* SetterTests.swift in Sources */,
 				19A176B3316281F004F92276 /* RowTests.swift in Sources */,
 				19A17FBAA26953EB854E790D /* Connection+PragmaTests.swift in Sources */,
+				3D118FEE308782E500B8169D /* Connection+HookTests.swift in Sources */,
 				19A17026DCDCDA405B09A229 /* Connection+AttachTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1496,6 +1505,7 @@
 				19A17E0ABA6C415F014CD51C /* SetterTests.swift in Sources */,
 				19A170D938343E30119EDFB3 /* RowTests.swift in Sources */,
 				19A178F9008614B8A8425635 /* Connection+PragmaTests.swift in Sources */,
+				3D118FEC308782E500B8169D /* Connection+HookTests.swift in Sources */,
 				19A179BCD483DEA21661FD37 /* Connection+AttachTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1772,13 +1782,13 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MARKETING_VERSION = 0.16.0;
+				MARKETING_VERSION = 0.17.0;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				PRODUCT_NAME = "";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TVOS_DEPLOYMENT_TARGET = 12.0;
 				VERSIONING_SYSTEM = "apple-generic";
@@ -1832,12 +1842,12 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
 				MACOSX_DEPLOYMENT_TARGET = 10.13;
-				MARKETING_VERSION = 0.16.0;
+				MARKETING_VERSION = 0.17.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				PRODUCT_NAME = "";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
-				SWIFT_VERSION = 5.0;
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2,3";
 				TVOS_DEPLOYMENT_TARGET = 12.0;
 				VALIDATE_PRODUCT = YES;

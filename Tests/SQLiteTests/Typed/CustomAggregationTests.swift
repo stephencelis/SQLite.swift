@@ -138,8 +138,8 @@ class CustomAggregationTests: SQLiteTestCase {
 /// can be reference types and are properly memory managed when
 /// crossing the Swift<->C boundary multiple times.
 class TestObject {
-    static var inits = 0
-    static var deinits = 0
+    nonisolated(unsafe) static var inits = 0
+    nonisolated(unsafe) static var deinits = 0
 
     var value: Int64
     init(value: Int64) {

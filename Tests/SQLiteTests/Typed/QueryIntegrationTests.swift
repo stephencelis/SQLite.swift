@@ -249,7 +249,7 @@ class QueryIntegrationTests: SQLiteTestCase {
         do {
             try db.run(users.insert(email <- "alice@example.com"))
             XCTFail("expected error")
-        } catch let Result.error(_, code, _) where code == SQLITE_CONSTRAINT {
+        } catch let Result.error(_, code) where code == SQLITE_CONSTRAINT {
             // expected
         } catch let error {
             XCTFail("unexpected error: \(error)")
@@ -262,7 +262,7 @@ class QueryIntegrationTests: SQLiteTestCase {
         do {
             try db.run(users.insert(email <- "alice@example.com"))
             XCTFail("expected error")
-        } catch let Result.extendedError(_, extendedCode, _) where extendedCode == 2_067 {
+        } catch let Result.extendedError(_, extendedCode) where extendedCode == 2_067 {
             // SQLITE_CONSTRAINT_UNIQUE expected
         } catch let error {
             XCTFail("unexpected error: \(error)")
