@@ -3,6 +3,9 @@ import Foundation
 @testable import SQLite
 
 #if !os(Android)
+// this fails on Android with
+// Could not cast value of type '(SQLiteTests.ConnectionHookTests) -> @Swift.MainActor () throws -> ()'
+// (0x7170f15b7a00) to '(SQLiteTests.ConnectionHookTests) -> () throws -> ()' (0x7170f15b7be8).
 @MainActor
 class ConnectionHookTests: SQLiteTestCase {
     override func setUpWithError() throws {
