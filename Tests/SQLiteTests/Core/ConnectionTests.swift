@@ -429,8 +429,8 @@ class ConnectionTests: SQLiteTestCase, @unchecked Sendable {
 }
 
 #if SWIFT_PACKAGE
-extension Connection : @unchecked Sendable {}
+extension Connection: @unchecked Sendable {}
 #else
 // Xcode complains about missing @retroactive
-extension Connection : @retroactive @unchecked Sendable {}
+extension Connection: @retroactive @unchecked Sendable {}
 #endif
