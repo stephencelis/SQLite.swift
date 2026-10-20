@@ -1,5 +1,6 @@
 0.17.0 (20-10-2026), [diff][diff-0.17.0]
 ========================================
+For breaking changes, see [Upgrading.md](Documentation/Upgrading.md).
 
 * Add WAL journal mode support ([#1359][])
 * Add explicit deterministic close support for SQLite connections ([#1361][])
@@ -11,6 +12,7 @@
 * Update minimum deployment targets to match Xcode 27 (iOS 15, macOS 12, watchOS 9)
 * Add [R*Tree](https://sqlite.org/rtree.html) package trait
 * Set Swift language version to 6
+* Update embedded SQLite to 3.53.4
 
 0.16.0 (28-01-2026), [diff][diff-0.16.0]
 ========================================

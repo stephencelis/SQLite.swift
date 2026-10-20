@@ -17,8 +17,6 @@ public enum Result: Error {
     /// - message: English-language text that describes the error
     ///
     /// - code: SQLite [error code](https://sqlite.org/rescode.html#primary_result_code_list)
-    ///
-    /// - statement: the statement which produced the error
     case error(message: String, code: Int32)
 
     /// Represents a SQLite specific [extended error code] (https://sqlite.org/rescode.html#primary_result_codes_versus_extended_result_codes)
@@ -26,8 +24,6 @@ public enum Result: Error {
     /// - message: English-language text that describes the error
     ///
     /// - extendedCode: SQLite [extended error code](https://sqlite.org/rescode.html#extended_result_code_list)
-    ///
-    /// - statement: the statement which produced the error
     case extendedError(message: String, extendedCode: Int32)
 
     init?(errorCode: Int32, connection: Connection) {
