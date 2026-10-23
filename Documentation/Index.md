@@ -903,13 +903,15 @@ for user in try db.prepare(users) {
 }
 ```
 
-Note that the iterator can throw *undeclared* database errors at any point during
-iteration:
+Note that iterating the result of `prepare` force-tries each step. If SQLite
+returns an error partway through the results (for example `SQLITE_BUSY` while
+another connection holds a lock, or an I/O error), execution aborts, and the
+error can't be caught:
 
 ```swift
 let query = try db.prepare(users)
 for user in query {
-    // 💥 can throw an error here
+    // 💥 a database error while stepping to the next row aborts execution
 }
 ```
 
@@ -953,7 +955,7 @@ To collect all rows into an array, we can simply wrap the sequence (though
 this is not always the most memory-efficient idea).
 
 ```swift
-let all = Array(try db.prepare(users))
+let all = try Array(db.prepareRowIterator(users))
 // SELECT * FROM "users"
 ```
 
@@ -1843,7 +1845,7 @@ There are two other parameters also available to this method:
 Rows have a method to decode a [Decodable][] type.
 
 ```swift
-let loadedUsers: [User] = try db.prepare(users).map { row in
+let loadedUsers: [User] = try db.prepareRowIterator(users).map { row in
     return try row.decode()
 }
 ```
@@ -1865,7 +1867,7 @@ enum ImageKind: Int, Codable {
     case png, jpg, heif
 }
 
-let loadedImages: [Image] = try db.prepare(images).map { row in
+let loadedImages: [Image] = try db.prepareRowIterator(images).map { row in
     let decoder = row.decoder()
     let container = try decoder.container(keyedBy: ImageCodingKeys.self)
     switch try container.decode(ImageKind.self, forKey: .kind) {
