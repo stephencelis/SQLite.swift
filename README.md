@@ -86,6 +86,14 @@ do {
 }
 ```
 
+> [!WARNING]
+> Iterating the sequence that `prepare(_:)` returns force-tries each step. If
+> SQLite reports an error partway through the results (for example
+> `SQLITE_BUSY` while another connection holds a lock, or an I/O error), your
+> app crashes instead of throwing. To handle these errors, read rows with
+> `prepareRowIterator(_:)` instead. See
+> [Failable iteration](Documentation/Index.md#failable-iteration).
+
 Note that `Expression` should be written as `SQLite.Expression` to avoid
 conflicts with the `SwiftUI.Expression` if you are using SwiftUI too.
 
